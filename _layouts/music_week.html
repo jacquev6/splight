@@ -1,12 +1,20 @@
 ---
-layout: default
+layout: category
 ---
 <h1>Concerts de la semaine du {{ page.start_date }}</h1>
+
+<div class="row">
+    <div class="col-9">
 {% for day in page.days %}
 <h2>{{ day.date }}</h2>
   {% for concert in day.concerts %}
 <h3>{{ concert.time }}, {{ concert.location }}: {{ concert.artist }} ({{ concert.genre }})</h3>
   {% endfor %}
 {% endfor %}
+    </div>
+    <div class="col-3">
+        <iframe height="300" width="200" src="/pub"></iframe>
+    </div>
+</div>
 
 <p>{% if page.previous_week %}<a href="/musique/{{ page.previous_week }}">Semaine précédente</a>{% endif %}{% if page.next_week %}<a href="/musique/{{ page.next_week }}">Semaine suivante</a>{% endif %}</p>
