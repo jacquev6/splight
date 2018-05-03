@@ -1,0 +1,26 @@
+permalink: pretty
+
+markdown: kramdown
+kramdown:
+  parse_block_html: true
+
+sass:
+    style: compressed
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"
+  - scope:
+      path: "_music_weeks"
+    values:
+      layout: "music_week"
+
+collections:
+  music_weeks:
+    output: true
+    permalink: /musique/:name/
+
+ignore:
+  - README.md

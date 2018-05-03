@@ -1,0 +1,12 @@
+---
+layout: default
+---
+<h1>Concerts de la semaine du {{ page.start_date }}</h1>
+{% for day in page.days %}
+<h2>{{ day.date }}</h2>
+  {% for concert in day.concerts %}
+<h3>{{ concert.time }}, {{ concert.location }}: {{ concert.artist }} ({{ concert.genre }})</h3>
+  {% endfor %}
+{% endfor %}
+
+<p>{% if page.previous_week %}<a href="/musique/{{ page.previous_week }}">Semaine précédente</a>{% endif %}{% if page.next_week %}<a href="/musique/{{ page.next_week }}">Semaine suivante</a>{% endif %}</p>
