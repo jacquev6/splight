@@ -4,17 +4,23 @@ layout: category
 <h1>Concerts de la semaine du {{ page.start_date }}</h1>
 
 <div class="row">
-    <div class="col-9">
+  <div class="col">
+    <img class="img-fluid d-lg-none" src="{{ site.baseurl }}/ads/468x60-banner.png" />
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
 {% for day in page.days %}
-<h2>{{ day.date }}</h2>
+    <h2>{{ day.date }}</h2>
   {% for concert in day.concerts %}
-<h3>{{ concert.time }}, {{ concert.location }}: {{ concert.artist }} ({{ concert.genre }})</h3>
+    <h3>{{ concert.time }}, {{ concert.location }}: {{ concert.artist }} ({{ concert.genre }})</h3>
   {% endfor %}
 {% endfor %}
-    </div>
-    <div class="col-3">
-        <iframe height="300" width="200" src="{{ site.baseurl }}/ad"></iframe>
-    </div>
+  </div>
+  <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
+    <img class="img-fluid" src="{{ site.baseurl }}/ads/160x600-wide-skyscraper.png" />
+  </div>
 </div>
 
 <div class="row">
