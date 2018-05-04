@@ -3,7 +3,8 @@
 Outils utilisés
 ===============
 
-- [Jekyll](http://jekyllrb.com)
+- HTML5, CSS3
+- [Jekyll](http://jekyllrb.com) et donc [Liquid](https://shopify.github.io/liquid/)
 - [Bootstrap](http://getbootstrap.com)
 - [Sass](https://sass-lang.com/)
 - [jQuery](http://jquery.com)

@@ -12,40 +12,78 @@
   </head>
   <body>
     <div class="container">
-      <div class="row">
-        <div class="col">
-          <p>
-            Breakpoint:
-            <span class="d-none d-sm-inline-block">xs</span>
-            <strong class="d-inline-block d-sm-none">xs</strong>
-            &lt; 576px &le;
-            <span class="d-sm-none d-md-inline-block">sm</span>
-            <strong class="d-none d-sm-inline-block d-md-none">sm</strong>
-            &lt; 768px &le;
-            <span class="d-md-none d-lg-inline-block">md</span>
-            <strong class="d-none d-md-inline-block d-lg-none">md</strong>
-            &lt; 992px &le;
-            <span class="d-lg-none d-xl-inline-block">lg</span>
-            <strong class="d-none d-lg-inline-block d-xl-none">lg</strong>
-            &lt; 1200px &le;
-            <span class="d-xl-none">xl</span>
-            <strong class="d-none d-xl-inline-block">xl</strong>
-          <br />
-            <span class="d-inline-block d-sm-none">Container: fluid</span>
-            <span class="d-none d-sm-inline-block d-md-none">Container: 540px = 12 * 45px</span>
-            <span class="d-none d-md-inline-block d-lg-none">Container: 720px = 12 * 60px</span>
-            <span class="d-none d-lg-inline-block d-xl-none">Container: 960px = 12 * 80px</span>
-            <span class="d-none d-xl-inline-block">Container: 1140px = 12 * 95px</span>
-          <br />
-            <a href="" onclick="location.href='http://www.responsinator.com/?url='+window.location.href; return false">Show in Responsinator</a>
-          </p>
-        </div>
+      <div class="jumbotron">
+        <h1 class="display-4"><a href="{{ site.baseurl }}/">Splight</a>
+          {% if page.category or page.title %}
+            {% capture category %}{% if page.category %}{{ page.category }}{% else %}{{ page.title }}{% endif %}{% endcapture %}
+            - <a href="{{ site.baseurl }}/{{ category | slugify }}">{{ category }}</a>
+          {% endif %}
+        </h1>
+        <p class="lead">L'agenda de vos sorties culturelles sur Reims et sa région.</p>
+        {% if page.category or page.title %}
+          {% assign sections = site.sections | sort: 'display_order' %}
+        <p class="lead">
+          {% for section in sections %}
+            {% if section.title == category %}
+          {{ section.title }}
+            {% else %}
+          <a href="{{ site.baseurl }}/{{ section.slug }}">{{ section.title }}</a>
+            {% endif %}
+          {% endfor %}
+        </p>
+        {% endif %}
       </div>
+
+      <div>
 {{ content }}
+      </div>
+
+      <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018</p>
     </div>
+
+    <div id="debug" style="margin-top: 50px; display: none"><ul>
+      <li>Title: {{ page.title }}</li>
+      <li>Name: {{ page.name }}</li>
+      <li>Category: {{ page.category }}</li>
+      <li>Layout: {{ page.layout }}</li>
+      <li>Breakpoint:
+        <span class="d-none d-sm-inline-block">xs</span>
+        <strong class="d-inline-block d-sm-none">xs</strong>
+        &lt; 576px &le;
+        <span class="d-sm-none d-md-inline-block">sm</span>
+        <strong class="d-none d-sm-inline-block d-md-none">sm</strong>
+        &lt; 768px &le;
+        <span class="d-md-none d-lg-inline-block">md</span>
+        <strong class="d-none d-md-inline-block d-lg-none">md</strong>
+        &lt; 992px &le;
+        <span class="d-lg-none d-xl-inline-block">lg</span>
+        <strong class="d-none d-lg-inline-block d-xl-none">lg</strong>
+        &lt; 1200px &le;
+        <span class="d-xl-none">xl</span>
+        <strong class="d-none d-xl-inline-block">xl</strong>
+      </li>
+      <li>Container:
+        <span class="d-inline-block d-sm-none">fluid</span>
+        <span class="d-none d-sm-inline-block d-md-none">540px = 12 * 45px</span>
+        <span class="d-none d-md-inline-block d-lg-none">720px = 12 * 60px</span>
+        <span class="d-none d-lg-inline-block d-xl-none">960px = 12 * 80px</span>
+        <span class="d-none d-xl-inline-block">1140px = 12 * 95px</span>
+      </li>
+      <li><a href="" onclick="location.href='http://www.responsinator.com/?url='+window.location.href; return false">Show in Responsinator</a></li>
+    </ul></div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script>
+      $(function() {
+        if(window.location.href.includes("?debug")) {
+          $("#debug").show();
+          $("a").each(function(a, b) {
+            $(b).attr("href", $(b).attr("href") + "?debug");
+          });
+        }
+      })
+    </script>
   </body>
 </html>

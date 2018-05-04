@@ -1,33 +1,42 @@
 ---
-layout: category
+layout: all
 ---
-<h1>Concerts de la semaine du {{ page.start_date }}</h1>
-
-<div class="row">
+<div class="row d-lg-none">
   <div class="col">
-    <img class="img-fluid d-lg-none" src="{{ site.baseurl }}/ads/468x60-banner.png" />
+    <div class="advertisement">
+      <p>Publicité</p>
+      <p><img class="img-fluid" src="{{ site.baseurl }}/ads/468x60-banner.png" /></p>
+    </div>
   </div>
 </div>
 
 <div class="row">
   <div class="col">
+    <h1>Concerts de la semaine du {{ page.start_date }}</h1>
+    <dl>
 {% for day in page.days %}
-    <h2>{{ day.date }}</h2>
+    <dt>{{ day.date }}</dt>
+    <dd><ul>
   {% for concert in day.concerts %}
-    <h3>{{ concert.time }}, {{ concert.location }}: {{ concert.artist }} ({{ concert.genre }})</h3>
+    <li>{{ concert.time }}, {{ concert.location }}&nbsp;: {{ concert.artist }} ({{ concert.genre }})</li>
   {% endfor %}
+    </ul></dd>
 {% endfor %}
+    </dl>
+
+    <div class="row">
+      <div class="col">
+        {% if page.previous_week %}<p class="text-right"><a href="{{ site.baseurl }}/musique/{{ page.previous_week }}">&lt; Semaine précédente</a></p>{% endif %}
+      </div>
+      <div class="col">
+        {% if page.next_week %}<p><a href="{{ site.baseurl }}/musique/{{ page.next_week }}">Semaine suivante &gt;</a></p>{% endif %}
+      </div>
+    </div>
   </div>
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
-    <img class="img-fluid" src="{{ site.baseurl }}/ads/160x600-wide-skyscraper.png" />
-  </div>
-</div>
-
-<div class="row">
-  <div class="col">
-    {% if page.previous_week %}<p><a href="{{ site.baseurl }}/musique/{{ page.previous_week }}">Semaine précédente</a></p>{% endif %}
-  </div>
-  <div class="col">
-    {% if page.next_week %}<p><a href="{{ site.baseurl }}/musique/{{ page.next_week }}">Semaine suivante</a></p>{% endif %}
+    <div class="advertisement">
+      <p>Publicité</p>
+      <p><img class="img-fluid" src="{{ site.baseurl }}/ads/160x600-wide-skyscraper.png" /></p>
+    </div>
   </div>
 </div>

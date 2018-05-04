@@ -1,10 +1,11 @@
 ---
-layout: all
 ---
-<h1>Splight</h1>
-
-<p><a href="{{ site.baseurl }}/musique">Musique</a></p>
-
-<p><a href="{{ site.baseurl }}/cinema">Cinéma</a></p>
-
-<p><a href="{{ site.baseurl }}/theatre">Théâtre</a></p>
+<div class="row">
+{% assign sections = site.sections | sort: 'display_order' %}
+{% for section in sections %}
+  <div class="col-6 col-md-3">
+    <p><a href="{{ site.baseurl }}/{{ section.slug }}"><img class="img-fluid" src="{{ site.baseurl }}/{{ section.slug }}-rectangle.jpg" /></a></p>
+    <p><a href="{{ site.baseurl }}/{{ section.slug }}">{{ section.title }}</a></p>
+  </div>
+{% endfor %}
+</div>

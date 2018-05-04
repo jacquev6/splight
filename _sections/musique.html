@@ -1,8 +1,6 @@
 ---
-layout: category
+display_order: 10
 ---
-<h1>Splight - Musique</h1>
-
 {% for week in site.music_weeks %}
 <p><a href="{{ site.baseurl }}{{ week.url }}">Semaine du {{ week.start_date }}</a></p>
 {% endfor %}

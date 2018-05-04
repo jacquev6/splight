@@ -10,11 +10,19 @@ sass:
 
 defaults:
   - scope:
-      path: "_music_weeks"
+      path: ""
     values:
-      layout: "music_week"
+      layout: all
+  - scope:
+      path: _music_weeks
+    values:
+      layout: music_week
+      category: Musique
 
 collections:
+  sections:
+    output: true
+    permalink: /:name/
   music_weeks:
     output: true
     permalink: /musique/:name/
