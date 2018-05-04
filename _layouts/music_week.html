@@ -13,8 +13,8 @@ layout: category
 {% endfor %}
     </div>
     <div class="col-3">
-        <iframe height="300" width="200" src="/pub"></iframe>
+        <iframe height="300" width="200" src="{{ site.baseurl }}/ad"></iframe>
     </div>
 </div>
 
-<p>{% if page.previous_week %}<a href="/musique/{{ page.previous_week }}">Semaine précédente</a>{% endif %}{% if page.next_week %}<a href="/musique/{{ page.next_week }}">Semaine suivante</a>{% endif %}</p>
+<p>{% if page.previous_week %}<a href="{{ site.baseurl }}/musique/{{ page.previous_week }}">Semaine précédente</a>{% endif %}{% if page.next_week %}<a href="{{ site.baseurl }}/musique/{{ page.next_week }}">Semaine suivante</a>{% endif %}</p>
