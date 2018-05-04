@@ -17,4 +17,11 @@ layout: category
     </div>
 </div>
 
-<p>{% if page.previous_week %}<a href="{{ site.baseurl }}/musique/{{ page.previous_week }}">Semaine précédente</a>{% endif %}{% if page.next_week %}<a href="{{ site.baseurl }}/musique/{{ page.next_week }}">Semaine suivante</a>{% endif %}</p>
+<div class="row">
+  <div class="col">
+    {% if page.previous_week %}<p><a href="{{ site.baseurl }}/musique/{{ page.previous_week }}">Semaine précédente</a></p>{% endif %}
+  </div>
+  <div class="col">
+    {% if page.next_week %}<p><a href="{{ site.baseurl }}/musique/{{ page.next_week }}">Semaine suivante</a></p>{% endif %}
+  </div>
+</div>
