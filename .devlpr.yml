@@ -1,0 +1,23 @@
+format: 1
+project:
+  name: splight.fr
+jekyll:
+  baseurl: /splight.fr
+  config:
+    defaults:
+      - scope:
+          path: ""
+        values:
+          layout: all
+      - scope:
+          path: _music_weeks
+        values:
+          layout: music_week
+          category: Musique
+    collections:
+      sections:
+        output: true
+        permalink: /:name/
+      music_weeks:
+        output: true
+        permalink: /musique/:name/
