@@ -8,5 +8,9 @@ mv _site docs
 touch docs/.nojekyll
 echo -n splight.fr >docs/CNAME
 
+cd docs
+# python -m SimpleHTTPServer 4000
+cd ..
+
 echo
 echo "Development cycle OK"
