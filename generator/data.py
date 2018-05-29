@@ -46,23 +46,35 @@ def load(source_directory):
 def make_data(*, artists, locations, events):
     artists = {slug: Artist(slug=slug, **artist) for (slug, artist) in artists.items()}
     locations = {slug: Location(slug=slug, **location) for (slug, location) in locations.items()}
-    events = list(itertools.chain.from_iterable(
-        make_events(artists, locations, **event)
-        for event in events
-    ))
+    events = list(generate_events(artists, locations, events))
     return Data(events=events)
 
 
-def make_events(artists, locations, *, datetime=None, artist=None, location=None, tags=[], occurrences=None):
+def generate_events(artists, locations, events):
+    for (tag, tagged_events) in events.items():
+        for event in tagged_events:
+            yield from generate_tagged_events(artists, locations, tag, **event)
+
+
+def generate_tagged_events(
+    artists, locations, main_tag,
+    *,
+    datetime=None, artist=None, location=None, tags=[], occurrences=None,
+):
     artist = artists.get(artist)
     location = locations.get(location)
+
     if isinstance(tags, str):
         tags = [tags]
+    tags = set(tags)
+    tags.add(main_tag)
+
     if occurrences:
         datetimes = [o["datetime"] for o in occurrences]
     else:
         assert datetime is not None
         datetimes = [datetime]
+
     for datetime in datetimes:
         datetime = datetime_.datetime.strptime(datetime, "%Y/%m/%d %H:%M")
         yield Event(datetime=datetime, artist=artist, location=location, tags=tags)
