@@ -15,7 +15,11 @@ class NS(dict):
         self.__dict__.update(kwargs)
 
 
-environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
+environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader("templates"),
+    trim_blocks=True,
+    lstrip_blocks=True,
+)
 
 
 def render(*, template, destination, **context):

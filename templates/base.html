@@ -13,24 +13,19 @@
   <body>
     <div class="container">
       <div class="jumbotron">
-        <h1 class="display-4"><a href="/">Splight</a>
-          {% if section %}
-
-            - <a href="/{{ section.slug }}">{{ section.title }}</a>
-          {% endif %}
-        </h1>
+        <h1 class="display-4"><a href="/">Splight</a>{% if section %} - <a href="/{{ section.slug }}">{{ section.title }}</a>{% endif %}</h1>
         <p class="lead">L'agenda de vos sorties culturelles sur Reims et sa région.</p>
-        {% if section %}
+{% if section %}
         <p class="lead">
-        {% for s in sections %}
-          {% if s.slug == section.slug %}
+  {% for s in sections %}
+    {% if s.slug == section.slug %}
           {{ s.title }}
-          {% else %}
+    {% else %}
           <a href="/{{ s.slug }}">{{ s.title }}</a>
-          {% endif %}
-        {% endfor %}
+    {% endif %}
+  {% endfor %}
         </p>
-        {% endif %}
+{% endif %}
       </div>
 
       <div>

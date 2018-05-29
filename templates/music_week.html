@@ -14,23 +14,19 @@
   <div class="col">
     <h1>Concerts de la semaine du {{ start_date }}</h1>
     <dl>
-{% for day in days %}
+  {% for day in days %}
     <dt>{{ day.date }}</dt>
     <dd><ul>
-  {% for concert in day.concerts %}
+    {% for concert in day.concerts %}
     <li>{{ concert.time }}, {{ concert.location }}&nbsp;: {{ concert.artist }} ({{ concert.genre }})</li>
-  {% endfor %}
+    {% endfor %}
     </ul></dd>
-{% endfor %}
+  {% endfor %}
     </dl>
 
     <div class="row">
-      <div class="col">
-        {% if previous_week %}<p class="text-right"><a href="/musique/{{ previous_week }}">&lt; Semaine précédente</a></p>{% endif %}
-      </div>
-      <div class="col">
-        {% if next_week %}<p><a href="/musique/{{ next_week }}">Semaine suivante &gt;</a></p>{% endif %}
-      </div>
+      <div class="col">{% if previous_week %}<p class="text-right"><a href="/musique/{{ previous_week }}">&lt; Semaine précédente</a></p>{% endif %}</div>
+      <div class="col">{% if next_week %}<p><a href="/musique/{{ next_week }}">Semaine suivante &gt;</a></p>{% endif %}</div>
     </div>
   </div>
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
