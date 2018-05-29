@@ -5,10 +5,9 @@
 set -o errexit
 
 rm -rf docs
-mkdir -p docs/ads
+./generate.py docs
 cp -r ads/*.png docs/ads
 cp *.jpg docs
-./generate.py docs
 touch docs/.nojekyll
 echo -n splight.fr >docs/CNAME
 
