@@ -12,5 +12,7 @@ cd docs
 # python -m SimpleHTTPServer 4000
 cd ..
 
+pycodestyle --max-line-length=120 $(git ls-files "*.py")
+
 echo
 echo "Development cycle OK"

@@ -12,7 +12,9 @@ class NS(dict):
         super().__init__(**kwargs)
         self.__dict__.update(kwargs)
 
+
 environment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
+
 
 def render(*, template, destination, **context):
     os.makedirs(os.path.dirname(destination), exist_ok=True)
@@ -20,9 +22,11 @@ def render(*, template, destination, **context):
         f.write(environment.get_template(template).render(context))
         f.write("\n")
 
+
 def load_yaml_file(file_name):
     with open(file_name) as f:
         return yaml.load(f)
+
 
 def main(source_directory, destination_directory):
     music_weeks = [
@@ -87,6 +91,7 @@ def main(source_directory, destination_directory):
             sections=sections,
             **music_week,
         )
+
 
 if __name__ == "__main__":
     main(sys.argv[1], sys.argv[2])
