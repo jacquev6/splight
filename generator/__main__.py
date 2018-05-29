@@ -1,10 +1,10 @@
-import glob
 import os
 import shutil
 import sys
 
-import yaml
 import jinja2
+
+from . import data
 
 
 class NS(dict):
@@ -23,22 +23,20 @@ def render(*, template, destination, **context):
         f.write("\n")
 
 
-def load_yaml_file(file_name):
-    with open(file_name) as f:
-        return yaml.load(f)
-
-
 def main(source_directory, destination_directory):
-    music_weeks = [
-        NS(slug=os.path.splitext(os.path.basename(f))[0], **load_yaml_file(f))
-        for f in sorted(glob.glob(os.path.join(source_directory, "data", "music_weeks", "*.yml")))
-    ]
+    raw_data = data.load(source_directory)
+
+    music_weeks = sorted(
+        (
+            NS(slug=slug, **music_week)
+            for (slug, music_week) in raw_data["music_weeks"].items()
+        ),
+        key=lambda w: w.slug,
+    )
 
     sections = [
-        NS(slug="musique", title="Musique", template="musique.html", context=NS(music_weeks=music_weeks)),
-        NS(slug="cinema", title="Cinéma", template="section.html", context=NS()),
-        NS(slug="theatre", title="Théâtre", template="section.html", context=NS()),
-        NS(slug="expositions", title="Expositions", template="section.html", context=NS()),
+        NS(**section)
+        for section in raw_data["sections"]
     ]
 
     shutil.rmtree(destination_directory)
@@ -73,13 +71,18 @@ def main(source_directory, destination_directory):
     )
 
     for section in sections:
+        context = NS()
+        template = "section.html"
+        if section.slug == "musique":
+            context = NS(music_weeks=music_weeks)
+            template = "musique.html"
         render(
-            template=section.template,
+            template=template,
             destination=os.path.join(destination_directory, section.slug, "index.html"),
             title=section.title,
             section=section,
             sections=sections,
-            **section.context,
+            **context,
         )
 
     for music_week in music_weeks:

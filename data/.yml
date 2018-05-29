@@ -1,0 +1,10 @@
+sections:
+  - slug: musique
+    title: Musique
+  - slug: cinema
+    title: Cinéma
+  - slug: theatre
+    title: Théâtre
+  - slug: expositions
+    title: Expositions
+music_weeks: {}
