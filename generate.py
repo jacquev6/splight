@@ -29,10 +29,10 @@ def load_yaml_file(file_name):
 music_weeks = [NS(slug=f[12:-4], **load_yaml_file(f)) for f in sorted(glob.glob("music_weeks/*.yml"))]
 
 sections = [
-    NS(slug="musique", title="Musique"),
-    NS(slug="cinema", title="Cinéma"),
-    NS(slug="theatre", title="Théâtre"),
-    NS(slug="expositions", title="Expositions"),
+    NS(slug="musique", title="Musique", template="musique.html", context=NS(music_weeks=music_weeks)),
+    NS(slug="cinema", title="Cinéma", template="section.html", context=NS()),
+    NS(slug="theatre", title="Théâtre", template="section.html", context=NS()),
+    NS(slug="expositions", title="Expositions", template="section.html", context=NS()),
 ]
 
 render(
@@ -45,6 +45,16 @@ render(
     template="ads.html",
     destination="ads/index.html",
 )
+
+for section in sections:
+    render(
+        template=section.template,
+        destination="{}/index.html".format(section.slug),
+        title=section.title,
+        section=section,
+        sections=sections,
+        **section.context,
+    )
 
 for music_week in music_weeks:
     render(
