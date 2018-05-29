@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block contents %}
+<div class="row d-lg-none">
+  <div class="col">
+    <div class="advertisement">
+      <p>Publicité</p>
+      <p><img class="img-fluid" src="/ads/468x60-banner.png" /></p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <h1>Concerts de la semaine du {{ start_date }}</h1>
+    <dl>
+{% for day in days %}
+    <dt>{{ day.date }}</dt>
+    <dd><ul>
+  {% for concert in day.concerts %}
+    <li>{{ concert.time }}, {{ concert.location }}&nbsp;: {{ concert.artist }} ({{ concert.genre }})</li>
+  {% endfor %}
+    </ul></dd>
+{% endfor %}
+    </dl>
+
+    <div class="row">
+      <div class="col">
+        {% if previous_week %}<p class="text-right"><a href="/musique/{{ previous_week }}">&lt; Semaine précédente</a></p>{% endif %}
+      </div>
+      <div class="col">
+        {% if next_week %}<p><a href="/musique/{{ next_week }}">Semaine suivante &gt;</a></p>{% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
+    <div class="advertisement">
+      <p>Publicité</p>
+      <p><img class="img-fluid" src="/ads/160x600-wide-skyscraper.png" /></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

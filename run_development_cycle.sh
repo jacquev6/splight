@@ -11,7 +11,7 @@ cp *.jpg docs
 touch docs/.nojekyll
 echo -n splight.fr >docs/CNAME
 
-git diff --ignore-all-space --stat --exit-code docs
+git diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat --exit-code docs
 
 cd docs
 # python -m SimpleHTTPServer 4000
