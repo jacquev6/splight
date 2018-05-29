@@ -32,11 +32,11 @@ def _make_base(name, fields):
     return namespace[name]
 
 
-exec(_make_source("Data", "short_events"))
+exec(_make_source("Data", "events"))
 
 exec(_make_source("Artist", "slug name genre"))
 exec(_make_source("Location", "slug name"))
-exec(_make_source("ShortEvent", "datetime artist location tags"))
+exec(_make_source("Event", "datetime artist location tags"))
 
 
 def load(source_directory):
@@ -46,11 +46,11 @@ def load(source_directory):
 def make_data(*, artists, locations, events):
     artists = {slug: Artist(slug=slug, **artist) for (slug, artist) in artists.items()}
     locations = {slug: Location(slug=slug, **location) for (slug, location) in locations.items()}
-    short_events = list(itertools.chain.from_iterable(
+    events = list(itertools.chain.from_iterable(
         make_events(artists, locations, **event)
         for event in events
     ))
-    return Data(short_events=short_events)
+    return Data(events=events)
 
 
 def make_events(artists, locations, *, datetime=None, artist=None, location=None, tags=[], occurrences=None):
@@ -65,4 +65,4 @@ def make_events(artists, locations, *, datetime=None, artist=None, location=None
         datetimes = [datetime]
     for datetime in datetimes:
         datetime = datetime_.datetime.strptime(datetime, "%Y/%m/%d %H:%M")
-        yield ShortEvent(datetime=datetime, artist=artist, location=location, tags=tags)
+        yield Event(datetime=datetime, artist=artist, location=location, tags=tags)

@@ -28,7 +28,7 @@ def render(*, template, destination, **context):
 def main(source_directory, destination_directory):
     data = data_.load(source_directory)
 
-    music_weeks = make_music_weeks(data.short_events)
+    music_weeks = make_music_weeks(data.events)
 
     sections = [
         NS(slug="musique", title="Musique"),
