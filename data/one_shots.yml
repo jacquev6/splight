@@ -1,0 +1,23 @@
+- datetime: 2018/06/04 19:00
+  artist: zinzin
+  location: cartonnerie
+  tags: musique
+- datetime: 2018/06/04 21:00
+  artist: beatles
+  location: fond_droite
+  tags: musique
+- datetime: 2018/06/05 21:00
+  artist: who
+  location: parvis_gare
+  tags: musique
+- datetime: 2018/06/07 20:30
+  artist: trio_des_quatre
+  tags: musique
+- datetime: 2018/06/11 20:00
+  artist: rolling_stones
+  location: erlon
+  tags: musique
+- datetime: 2018/06/20 20:00
+  artist: rolling_stones
+  location: erlon
+  tags: musique

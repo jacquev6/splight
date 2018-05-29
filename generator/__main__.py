@@ -1,10 +1,12 @@
+import datetime
+import itertools
 import os
 import shutil
 import sys
 
 import jinja2
 
-from . import data
+from . import data as data_
 
 
 class NS(dict):
@@ -24,19 +26,15 @@ def render(*, template, destination, **context):
 
 
 def main(source_directory, destination_directory):
-    raw_data = data.load(source_directory)
+    data = data_.load(source_directory)
 
-    music_weeks = sorted(
-        (
-            NS(slug=slug, **music_week)
-            for (slug, music_week) in raw_data["music_weeks"].items()
-        ),
-        key=lambda w: w.slug,
-    )
+    music_weeks = make_music_weeks(data.short_events)
 
     sections = [
-        NS(**section)
-        for section in raw_data["sections"]
+        NS(slug="musique", title="Musique"),
+        NS(slug="cinema", title="Cinéma"),
+        NS(slug="theatre", title="Théâtre"),
+        NS(slug="expositions", title="Expositions"),
     ]
 
     shutil.rmtree(destination_directory)
@@ -94,6 +92,56 @@ def main(source_directory, destination_directory):
             sections=sections,
             **music_week,
         )
+
+
+# https://stackoverflow.com/a/38283685/905845
+def iso_to_gregorian(iso_year, iso_week, iso_day):
+    jan4 = datetime.date(iso_year, 1, 4)
+    start = jan4 - datetime.timedelta(days=jan4.isoweekday()-1)
+    return start + datetime.timedelta(weeks=iso_week-1, days=iso_day-1)
+
+
+def make_music_weeks(events):
+    music_weeks = []
+
+    for ((year, week), week_events) in itertools.groupby(
+        sorted(
+            (e for e in events if "musique" in e.tags),
+            key=lambda e: e.datetime
+        ),
+        key=lambda e: e.datetime.isocalendar()[:2],
+    ):
+        slug = "{}-{}".format(year, week)
+        start_date = iso_to_gregorian(year, week, 1)
+        days = []
+        for (day, day_events) in itertools.groupby(week_events, key=lambda e: e.datetime.isoweekday()):
+            date = iso_to_gregorian(year, week, day).strftime("%Y/%m/%d")
+            concerts = []
+            for event in day_events:
+                time = event.datetime.time()
+                if time.minute:
+                    time = time.strftime("%Hh%M")
+                else:
+                    time = time.strftime("%Hh")
+                location = ""
+                if event.location:
+                    location = event.location.name
+                artist = ""
+                if event.artist:
+                    artist = event.artist.name
+                genre = ""
+                if event.artist:
+                    genre = event.artist.genre
+                concerts.append(NS(time=time, location=location, artist=artist, genre=genre))
+            days.append(NS(date=date, concerts=concerts))
+        music_weeks.append(dict(slug=slug, start_date=start_date.strftime("%Y/%m/%d"), days=days))
+
+    for i in range(0, len(music_weeks) - 1):
+        music_weeks[i]["next_week"] = music_weeks[i + 1]["slug"]
+    for i in range(1, len(music_weeks)):
+        music_weeks[i]["previous_week"] = music_weeks[i - 1]["slug"]
+
+    return [NS(**w) for w in music_weeks]
 
 
 if __name__ == "__main__":
