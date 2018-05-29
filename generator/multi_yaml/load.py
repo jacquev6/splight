@@ -42,7 +42,7 @@ def load(dir_name, initial_value=None):
         contents = initial_value
     else:
         assert initial_value is None
-        contents = []
+        contents = {}
 
     if os.path.isdir(dir_name):
         has_data = True
