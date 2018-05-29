@@ -1,1 +1,7 @@
 {% extends "base.html" %}
+
+{% block contents %}
+  {% for week in weeks %}
+<p><a href="/{{ section.slug }}/{{ week.slug }}/">Semaine du {{ week.start_date }}</a></p>
+  {% endfor %}
+{% endblock %}

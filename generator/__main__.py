@@ -32,13 +32,11 @@ def render(*, template, destination, **context):
 def main(source_directory, destination_directory):
     data = data_.load(source_directory)
 
-    music_weeks = make_music_weeks(data.events)
-
     sections = [
-        NS(slug="musique", title="Musique"),
-        NS(slug="cinema", title="Cinéma"),
-        NS(slug="theatre", title="Théâtre"),
-        NS(slug="expositions", title="Expositions"),
+        NS(slug="musique", title="Musique", event_type="Concerts"),
+        NS(slug="cinema", title="Cinéma", event_type="Scéances"),
+        NS(slug="theatre", title="Théâtre", event_type="Représentations"),
+        NS(slug="expositions", title="Expositions", event_type="Expositions"),
     ]
 
     shutil.rmtree(destination_directory)
@@ -53,6 +51,7 @@ def main(source_directory, destination_directory):
     render(
         template="ads.html",
         destination=os.path.join(destination_directory, "ads", "index.html"),
+        sections=sections,
     )
 
     render(
@@ -73,29 +72,26 @@ def main(source_directory, destination_directory):
     )
 
     for section in sections:
-        context = NS()
-        template = "section.html"
-        if section.slug == "musique":
-            context = NS(music_weeks=music_weeks)
-            template = "musique.html"
+        weeks = make_section_weeks(section, data.events)
+
         render(
-            template=template,
+            template="section.html",
             destination=os.path.join(destination_directory, section.slug, "index.html"),
             title=section.title,
             section=section,
             sections=sections,
-            **context,
+            weeks=weeks,
         )
 
-    for music_week in music_weeks:
-        render(
-            template="music_week.html",
-            destination=os.path.join(destination_directory, "musique", music_week.slug, "index.html"),
-            title=music_week.slug.replace("-", " "),
-            section=sections[0],
-            sections=sections,
-            **music_week,
-        )
+        for week in weeks:
+            render(
+                template="week.html",
+                destination=os.path.join(destination_directory, section.slug, week.slug, "index.html"),
+                title=week.slug.replace("-", " "),
+                section=section,
+                sections=sections,
+                **week,
+            )
 
 
 # https://stackoverflow.com/a/38283685/905845
@@ -105,12 +101,12 @@ def iso_to_gregorian(iso_year, iso_week, iso_day):
     return start + datetime.timedelta(weeks=iso_week-1, days=iso_day-1)
 
 
-def make_music_weeks(events):
-    music_weeks = []
+def make_section_weeks(section, events):
+    weeks = []
 
     for ((year, week), week_events) in itertools.groupby(
         sorted(
-            (e for e in events if "musique" in e.tags),
+            (e for e in events if section.slug in e.tags),
             key=lambda e: e.datetime
         ),
         key=lambda e: e.datetime.isocalendar()[:2],
@@ -120,7 +116,7 @@ def make_music_weeks(events):
         days = []
         for (day, day_events) in itertools.groupby(week_events, key=lambda e: e.datetime.isoweekday()):
             date = iso_to_gregorian(year, week, day).strftime("%Y/%m/%d")
-            concerts = []
+            events = []
             for event in day_events:
                 time = event.datetime.time()
                 if time.minute:
@@ -136,16 +132,16 @@ def make_music_weeks(events):
                 genre = ""
                 if event.artist:
                     genre = event.artist.genre
-                concerts.append(NS(time=time, location=location, artist=artist, genre=genre))
-            days.append(NS(date=date, concerts=concerts))
-        music_weeks.append(dict(slug=slug, start_date=start_date.strftime("%Y/%m/%d"), days=days))
+                events.append(NS(time=time, location=location, artist=artist, genre=genre))
+            days.append(NS(date=date, events=events))
+        weeks.append(dict(slug=slug, start_date=start_date.strftime("%Y/%m/%d"), days=days))
 
-    for i in range(0, len(music_weeks) - 1):
-        music_weeks[i]["next_week"] = music_weeks[i + 1]["slug"]
-    for i in range(1, len(music_weeks)):
-        music_weeks[i]["previous_week"] = music_weeks[i - 1]["slug"]
+    for i in range(0, len(weeks) - 1):
+        weeks[i]["next_week"] = weeks[i + 1]["slug"]
+    for i in range(1, len(weeks)):
+        weeks[i]["previous_week"] = weeks[i - 1]["slug"]
 
-    return [NS(**w) for w in music_weeks]
+    return [NS(**w) for w in weeks]
 
 
 if __name__ == "__main__":
