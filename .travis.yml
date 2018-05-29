@@ -11,4 +11,4 @@ install:
 script:
 - python -m generator . docs
 after_success:
-- "git diff --exit-code docs || (git commit -m 'Generate site on Travis' && git push https://$GITHUB_TOKEN@github.com/jacquev6/splight.fr.git master"
+- "git diff --exit-code docs || (git commit -m 'Generate site on Travis' && git push https://$GITHUB_TOKEN@github.com/jacquev6/splight.fr.git master)"
