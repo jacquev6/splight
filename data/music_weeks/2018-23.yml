@@ -10,7 +10,7 @@ days:
       - time: 21h
         artist: Les Beatles
         genre: Pop
-        location: Au fond à gauche
+        location: Au fond à droite
   - date: 2018/06/05
     concerts:
       - time: 21h
