@@ -4,14 +4,9 @@
 
 set -o errexit
 
-rm -rf docs
-./generate.py docs
-cp -r ads/*.png docs/ads
-cp *.jpg docs
-touch docs/.nojekyll
-echo -n splight.fr >docs/CNAME
+python3 -m generator . docs
 
-git diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat --exit-code docs
+git diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat docs
 
 cd docs
 # python -m SimpleHTTPServer 4000
