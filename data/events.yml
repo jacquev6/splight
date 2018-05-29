@@ -13,11 +13,9 @@
 - datetime: 2018/06/07 20:30
   artist: trio_des_quatre
   tags: musique
-- datetime: 2018/06/11 20:00
-  artist: rolling_stones
+- artist: rolling_stones
   location: erlon
   tags: musique
-- datetime: 2018/06/20 20:00
-  artist: rolling_stones
-  location: erlon
-  tags: musique
+  occurrences:
+    - datetime: 2018/06/11 20:00
+    - datetime: 2018/06/20 20:00

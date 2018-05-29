@@ -1,5 +1,6 @@
-import os
 import datetime as datetime_
+import itertools
+import os
 
 from . import multi_yaml
 
@@ -42,17 +43,26 @@ def load(source_directory):
     return make_data(**multi_yaml.load(os.path.join(source_directory, "data")))
 
 
-def make_data(*, artists, locations, one_shots):
+def make_data(*, artists, locations, events):
     artists = {slug: Artist(slug=slug, **artist) for (slug, artist) in artists.items()}
     locations = {slug: Location(slug=slug, **location) for (slug, location) in locations.items()}
-    short_events = [make_event(artists, locations, **event) for event in one_shots]
+    short_events = list(itertools.chain.from_iterable(
+        make_events(artists, locations, **event)
+        for event in events
+    ))
     return Data(short_events=short_events)
 
 
-def make_event(artists, locations, *, datetime, artist=None, location=None, tags=[]):
+def make_events(artists, locations, *, datetime=None, artist=None, location=None, tags=[], occurrences=None):
     artist = artists.get(artist)
     location = locations.get(location)
-    datetime = datetime_.datetime.strptime(datetime, "%Y/%m/%d %H:%M")
     if isinstance(tags, str):
         tags = [tags]
-    return ShortEvent(datetime=datetime, artist=artist, location=location, tags=tags)
+    if occurrences:
+        datetimes = [o["datetime"] for o in occurrences]
+    else:
+        assert datetime is not None
+        datetimes = [datetime]
+    for datetime in datetimes:
+        datetime = datetime_.datetime.strptime(datetime, "%Y/%m/%d %H:%M")
+        yield ShortEvent(datetime=datetime, artist=artist, location=location, tags=tags)
