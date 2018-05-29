@@ -1,7 +1,6 @@
----
-layout: all
----
-<div class="row">
+{% extends "base.html" %}
+
+{% block contents %}<div class="row">
   <div class="col">
     <p>468x60-banner.png:</p><p><img src="468x60-banner.png" /></p>
     <p>728x90-leaderboard.png:</p><p><img src="728x90-leaderboard.png" /></p>
@@ -25,3 +24,4 @@ layout: all
     <p>300x600-half-page.png:</p><p><img src="300x600-half-page.png" /></p>
   </div>
 </div>
+{% endblock %}

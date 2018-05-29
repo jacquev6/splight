@@ -1,12 +1,9 @@
----
-start_date: 2018/06/11
-previous_week: 2018-23
-next_week: 2018-25
+start_date: 2018/06/18
+previous_week: 2018-24
 days:
-  - date: 2018/06/11
+  - date: 2018/06/20
     concerts:
       - time: 20h
         artist: The Rolling Stones
         genre: Rock
         location: Place d'Erlon
----

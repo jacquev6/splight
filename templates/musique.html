@@ -1,0 +1,7 @@
+{% extends "section.html" %}
+
+{% block contents %}
+{% for music_week in music_weeks %}
+<p><a href="/musique/{{ music_week.slug }}/">Semaine du {{ music_week.start_date }}</a></p>
+{% endfor %}
+{% endblock %}
