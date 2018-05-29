@@ -4,6 +4,8 @@
 
 set -o errexit
 
+python3 -m unittest --verbose generator.tests
+
 python3 -m generator . docs
 
 git diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat docs
