@@ -46,6 +46,23 @@ render(
     destination="ads/index.html",
 )
 
+render(
+    template="style.css",
+    destination="style.css",
+    colors=NS(
+        primary_very_light="#9AB2E8",
+        primary_light="#5E81D2",
+        primary="#3660C1",
+        primary_dark="#103FAC",
+        primary_very_dark="#0A2B77",
+        complement_very_light="#FFDF9F",
+        complement_light="#FFCB62",
+        complement="#FFBA31",
+        complement_dark="#FFAA00",
+        complement_very_dark="#B17600",
+    ),
+)
+
 for section in sections:
     render(
         template=section.template,
