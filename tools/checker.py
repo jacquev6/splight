@@ -26,7 +26,7 @@ def check_local_links(root_dir_name, all_files):
                 if link == "" or link.startswith("mailto:") or link.startswith("http:") or link.startswith("https:"):
                     continue
                 if not link.startswith("/"):
-                    link = "{}/{}".format(make_url(file_name), link)
+                    link = "{}{}".format(make_url(file_name), link)
                 linked_urls.add(link)
                 if link not in served_urls:
                     print("DEAD LINK:", link, "in", file_name)
@@ -35,10 +35,8 @@ def check_local_links(root_dir_name, all_files):
 
 def make_url(file_name):
     file_name = "/{}".format(file_name)
-    if file_name == "/index.html":
-        return "/"
-    elif file_name.endswith("/index.html"):
-        return file_name[:-11]
+    if file_name.endswith("/index.html"):
+        return file_name[:-10]
     else:
         return file_name
 
