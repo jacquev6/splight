@@ -45,7 +45,7 @@ def main(source_directory, destination_directory):
     render(
         template="index.html",
         destination=os.path.join(destination_directory, "index.html"),
-        sections=sections,
+        cities=data.cities,
     )
 
     render(
@@ -71,27 +71,35 @@ def main(source_directory, destination_directory):
         ),
     )
 
-    for section in sections:
-        weeks = make_section_weeks(section, data.events)
-
+    for city in data.cities:
         render(
-            template="section.html",
-            destination=os.path.join(destination_directory, section.slug, "index.html"),
-            title=section.title,
-            section=section,
+            template="city.html",
+            destination=os.path.join(destination_directory, city.slug, "index.html"),
+            city=city,
             sections=sections,
-            weeks=weeks,
         )
 
-        for week in weeks:
+        for section in sections:
+            weeks = make_section_weeks(section, city.events)
+
             render(
-                template="week.html",
-                destination=os.path.join(destination_directory, section.slug, week.slug, "index.html"),
-                title=week.slug.replace("-", " "),
+                template="section.html",
+                destination=os.path.join(destination_directory, city.slug, section.slug, "index.html"),
+                city=city,
                 section=section,
                 sections=sections,
-                **week,
+                weeks=weeks,
             )
+
+            for week in weeks:
+                render(
+                    template="week.html",
+                    destination=os.path.join(destination_directory, city.slug, section.slug, week.slug, "index.html"),
+                    city=city,
+                    section=section,
+                    sections=sections,
+                    **week,
+                )
 
 
 # https://stackoverflow.com/a/38283685/905845

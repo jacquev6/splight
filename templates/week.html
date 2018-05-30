@@ -25,8 +25,8 @@
     </dl>
 
     <div class="row">
-      <div class="col">{% if previous_week %}<p class="text-right"><a href="/{{ section.slug }}/{{ previous_week }}">&lt; Semaine précédente</a></p>{% endif %}</div>
-      <div class="col">{% if next_week %}<p><a href="/{{ section.slug }}/{{ next_week }}">Semaine suivante &gt;</a></p>{% endif %}</div>
+      <div class="col">{% if previous_week %}<p class="text-right"><a href="/{{ city.slug }}/{{ section.slug }}/{{ previous_week }}">&lt; Semaine précédente</a></p>{% endif %}</div>
+      <div class="col">{% if next_week %}<p><a href="/{{ city.slug }}/{{ section.slug }}/{{ next_week }}">Semaine suivante &gt;</a></p>{% endif %}</div>
     </div>
   </div>
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">

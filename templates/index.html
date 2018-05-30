@@ -2,10 +2,9 @@
 
 {% block contents %}
 <div class="row">
-  {% for section in sections %}
+  {% for city in cities %}
   <div class="col-6 col-md-3">
-    <p><a href="/{{ section.slug }}"><img class="img-fluid" src="/{{ section.slug }}-rectangle.jpg" /></a></p>
-    <p><a href="/{{ section.slug }}">{{ section.title }}</a></p>
+    <p><a href="/{{ city.slug }}">{{ city.name }}</a></p>
   </div>
   {% endfor %}
 </div>

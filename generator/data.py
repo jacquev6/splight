@@ -32,22 +32,27 @@ def _make_base(name, fields):
     return namespace[name]
 
 
-exec(_make_source("Data", "events"))
-
+exec(_make_source("Data", "cities"))
+exec(_make_source("City", "slug name events"))
+exec(_make_source("Event", "datetime artist location tags"))
 exec(_make_source("Artist", "slug name genre"))
 exec(_make_source("Location", "slug name"))
-exec(_make_source("Event", "datetime artist location tags"))
 
 
 def load(source_directory):
     return make_data(**multi_yaml.load(os.path.join(source_directory, "data")))
 
 
-def make_data(*, artists, locations, events):
+def make_data(*, artists, cities):
     artists = {slug: Artist(slug=slug, **artist) for (slug, artist) in artists.items()}
+    cities = [make_city(artists, slug=slug, **city) for (slug, city) in cities.items()]
+    return Data(cities=cities)
+
+
+def make_city(artists, *, slug, name, locations, events):
     locations = {slug: Location(slug=slug, **location) for (slug, location) in locations.items()}
     events = list(generate_events(artists, locations, events))
-    return Data(events=events)
+    return City(slug=slug, name=name, events=events)
 
 
 def generate_events(artists, locations, events):
