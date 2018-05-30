@@ -21,7 +21,11 @@ Sur le site statique (en HTML, CSS3 en JavaScript) :
 
 Pour générer le site statique :
 
-- Une moulinette en [Python](http://python.org)
+- Une moulinette en [Python](http://python.org) : [tools.generator](tools/generator)
 - [Yaml](https://en.wikipedia.org/wiki/YAML) comme format pour les données à afficher
 - Des templates en [Jinja](http://jinja.pocoo.org)
 - [Travis CI](https://travis-ci.org/jacquev6/splight.fr) pour lancer la moulinette automatiquement
+
+Pour valider certains aspects techniques du site (p. ex. l'absence de liens morts) :
+
+- Une autre moulinette en Python : [tools.checker](tools/checker)
