@@ -9,6 +9,6 @@ sudo: false
 install:
 - pip install --upgrade pip jinja2 PyYAML
 script:
-- python -m generator . docs
+- python -m tools.generator . docs
 after_success:
 - "git diff --exit-code docs || (git add docs && git commit -m 'Generate site [skip ci]' && git push https://$GITHUB_TOKEN@github.com/jacquev6/splight.fr.git HEAD:master)"

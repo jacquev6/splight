@@ -30,11 +30,13 @@ do
   shift
 done
 
-python3 -m unittest --verbose generator.tests
+python3 -m unittest --verbose tools.tests
 
 fuser -k 4000/tcp >/dev/null 2>/dev/null || true
 
-python3 -m generator . docs
+python3 -m tools.generator . docs
+
+python3 -m tools.checker docs
 
 git diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat docs
 
