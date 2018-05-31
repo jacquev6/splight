@@ -30,7 +30,7 @@ do
   shift
 done
 
-python3 -m unittest --verbose tools.tests
+python3 -m unittest discover --verbose --start-directory tools --pattern "*.py"
 
 fuser -k 4000/tcp >/dev/null 2>/dev/null || true
 
