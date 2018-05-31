@@ -51,7 +51,10 @@ class Generator:
             root_path="",
         )
 
-        for root_path in ["", "/admin"]:
+        for (root_path, weeks_count) in [("", 5), ("/admin", 5)]:
+            previous_monday = dateutils.previous_week_day(datetime.date.today(), 0)
+            week_start_dates = [previous_monday + datetime.timedelta(weeks=i) for i in range(weeks_count)]
+
             self.render(
                 template="index.html",
                 destination=os.path.join(self.destination_directory + root_path, "index.html"),
@@ -87,21 +90,6 @@ class Generator:
                 )
 
                 for section in sections:
-                    if section.slug == "musique":
-                        week_start_dates = [
-                            datetime.date(2018, 6,  4),
-                            datetime.date(2018, 6, 11),
-                            datetime.date(2018, 6, 18),
-                        ]
-                    elif section.slug == "theatre":
-                        week_start_dates = [
-                            datetime.date(2018, 6, 18),
-                            datetime.date(2018, 6, 25),
-                            datetime.date(2018, 7,  2),
-                        ]
-                    else:
-                        week_start_dates = []
-
                     weeks = self.make_section_weeks(week_start_dates, section, city.events_by_date)
 
                     self.render(
