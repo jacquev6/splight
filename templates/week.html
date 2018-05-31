@@ -16,11 +16,15 @@
     <dl>
   {% for day in week.days %}
     <dt>{{ day.date }}</dt>
+    {% if day.events %}
     <dd><ul>
-    {% for event in day.events %}
+      {% for event in day.events %}
     <li>{{ event.time }}, {{ event.location }}&nbsp;: {{ event.artist }} ({{ event.genre }})</li>
-    {% endfor %}
+      {% endfor %}
     </ul></dd>
+    {% else %}
+    <p>Rien de prévu.</p>
+    {% endif %}
   {% endfor %}
     </dl>
 

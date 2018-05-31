@@ -168,8 +168,7 @@ class Generator:
                         if event.artist:
                             genre = event.artist.genre
                         events.append(NS(time=time, location=location, artist=artist, genre=genre))
-                if events:
-                    days.append(NS(date=date.strftime("%Y/%m/%d"), events=events))
+                days.append(NS(date=date.strftime("%Y/%m/%d"), events=events))
 
             weeks.append(dict(slug=slug, start_date=week_start_date.strftime("%Y/%m/%d"), days=days))
 
