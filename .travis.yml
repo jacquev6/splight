@@ -12,4 +12,4 @@ script:
 - python -m tools.generator . docs
 - python -m tools.checker docs
 after_success:
-- "git diff --exit-code docs || (git add docs && git commit -m 'Generate site [skip ci]' && git push https://$GITHUB_TOKEN@github.com/jacquev6/splight.fr.git HEAD:master)"
+- "git diff --stat --exit-code docs || (git add docs && git commit -m 'Generate site [skip ci]' && git push https://$GITHUB_TOKEN@github.com/jacquev6/splight.fr.git HEAD:master)"
