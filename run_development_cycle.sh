@@ -40,7 +40,7 @@ python3 -m tools.checker docs
 
 git diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat docs
 
-(cd docs; python -m SimpleHTTPServer 4000) >>web.log 2>&1 &
+(cd docs; python3 -m http.server 4000) >>web.log 2>&1 &
 show_in_browser "Website" "http://localhost:4000"
 
 pycodestyle --max-line-length=120 $(git ls-files "*.py")
