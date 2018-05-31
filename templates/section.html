@@ -2,6 +2,6 @@
 
 {% block contents %}
   {% for week in weeks %}
-<p><a href="/{{ city.slug }}/{{ section.slug }}/{{ week.slug }}/">Semaine du {{ week.start_date }}</a></p>
+<p><a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ week.slug }}/">Semaine du {{ week.start_date }}</a></p>
   {% endfor %}
 {% endblock %}

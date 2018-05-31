@@ -6,14 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="{{ root_path }}/style.css">
 
     <title>Splight{% if city %} - {{ city.name }}{% if section %} - {{ section.title }}{% endif %}{% endif %}</title>
   </head>
   <body>
     <div class="container">
       <div class="jumbotron">
-        <h1 class="display-4"><a href="/">Splight</a>{% if city %} - <a href="/{{ city.slug }}/">{{ city.name }}</a>{% if section %} - <a href="/{{ city.slug }}/{{ section.slug }}/">{{ section.title }}</a>{% endif %}{% endif %}</h1>
+        <h1 class="display-4"><a href="{{ root_path }}/">Splight</a>{% if city %} - <a href="{{ root_path }}/{{ city.slug }}/">{{ city.name }}</a>{% if section %} - <a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/">{{ section.title }}</a>{% endif %}{% endif %}</h1>
         <p class="lead">Votre agenda culturel {% if city %}à {{ city.name }} et dans sa région{% else %}régional{% endif %}.</p>
 {% if section %}
         <p class="lead">
@@ -21,7 +21,7 @@
     {% if s.slug == section.slug %}
           {{ s.title }}
     {% else %}
-          <a href="/{{ city.slug }}/{{ s.slug }}/">{{ s.title }}</a>
+          <a href="{{ root_path }}/{{ city.slug }}/{{ s.slug }}/">{{ s.title }}</a>
     {% endif %}
   {% endfor %}
         </p>
