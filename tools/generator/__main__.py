@@ -6,6 +6,7 @@ import sys
 
 import jinja2
 
+from . import dateutils
 from . import data as data_
 
 
@@ -43,70 +44,72 @@ def main(source_directory, destination_directory):
     shutil.copytree(os.path.join(source_directory, "skeleton"), destination_directory)
 
     render(
-        template="index.html",
-        destination=os.path.join(destination_directory, "index.html"),
-        cities=data.cities,
-    )
-
-    render(
         template="ads.html",
         destination=os.path.join(destination_directory, "ads", "index.html"),
         sections=sections,
+        root_path="",
     )
 
-    render(
-        template="style.css",
-        destination=os.path.join(destination_directory, "style.css"),
-        colors=NS(
-            primary_very_light="#9AB2E8",
-            primary_light="#5E81D2",
-            primary="#3660C1",
-            primary_dark="#103FAC",
-            primary_very_dark="#0A2B77",
-            complement_very_light="#FFDF9F",
-            complement_light="#FFCB62",
-            complement="#FFBA31",
-            complement_dark="#FFAA00",
-            complement_very_dark="#B17600",
-        ),
-    )
-
-    for city in data.cities:
+    for root_path in ["", "/admin"]:
         render(
-            template="city.html",
-            destination=os.path.join(destination_directory, city.slug, "index.html"),
-            city=city,
-            sections=sections,
+            template="index.html",
+            destination=os.path.join(destination_directory + root_path, "index.html"),
+            cities=data.cities,
+            root_path=root_path,
         )
 
-        for section in sections:
-            weeks = make_section_weeks(section, city.events)
+        render(
+            template="style.css",
+            destination=os.path.join(destination_directory + root_path, "style.css"),
+            colors=NS(
+                primary_very_light="#F99" if root_path else "#9AB2E8",
+                primary_light="#5E81D2",
+                primary="#3660C1",
+                primary_dark="#103FAC",
+                primary_very_dark="#0A2B77",
+                complement_very_light="#FFDF9F",
+                complement_light="#FFCB62",
+                complement="#FFBA31",
+                complement_dark="#FFAA00",
+                complement_very_dark="#B17600",
+            ),
+            root_path="",
+        )
 
+        for city in data.cities:
             render(
-                template="section.html",
-                destination=os.path.join(destination_directory, city.slug, section.slug, "index.html"),
+                template="city.html",
+                destination=os.path.join(destination_directory + root_path, city.slug, "index.html"),
                 city=city,
-                section=section,
                 sections=sections,
-                weeks=weeks,
+                root_path=root_path,
             )
 
-            for week in weeks:
+            for section in sections:
+                weeks = make_section_weeks(section, city.events)
+
                 render(
-                    template="week.html",
-                    destination=os.path.join(destination_directory, city.slug, section.slug, week.slug, "index.html"),
+                    template="section.html",
+                    destination=os.path.join(destination_directory + root_path, city.slug, section.slug, "index.html"),
                     city=city,
                     section=section,
                     sections=sections,
-                    **week,
+                    weeks=weeks,
+                    root_path=root_path,
                 )
 
-
-# https://stackoverflow.com/a/38283685/905845
-def iso_to_gregorian(iso_year, iso_week, iso_day):
-    jan4 = datetime.date(iso_year, 1, 4)
-    start = jan4 - datetime.timedelta(days=jan4.isoweekday()-1)
-    return start + datetime.timedelta(weeks=iso_week-1, days=iso_day-1)
+                for week in weeks:
+                    render(
+                        template="week.html",
+                        destination=os.path.join(
+                            destination_directory + root_path, city.slug, section.slug, week.slug, "index.html"
+                        ),
+                        city=city,
+                        section=section,
+                        sections=sections,
+                        week=week,
+                        root_path=root_path,
+                    )
 
 
 def make_section_weeks(section, events):
@@ -120,10 +123,10 @@ def make_section_weeks(section, events):
         key=lambda e: e.datetime.isocalendar()[:2],
     ):
         slug = "{}-{}".format(year, week)
-        start_date = iso_to_gregorian(year, week, 1)
+        start_date = dateutils.iso_to_gregorian(year, week, 1)
         days = []
         for (day, day_events) in itertools.groupby(week_events, key=lambda e: e.datetime.isoweekday()):
-            date = iso_to_gregorian(year, week, day).strftime("%Y/%m/%d")
+            date = dateutils.iso_to_gregorian(year, week, day).strftime("%Y/%m/%d")
             events = []
             for event in day_events:
                 time = event.datetime.time()

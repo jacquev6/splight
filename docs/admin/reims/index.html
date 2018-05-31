@@ -6,31 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ root_path }}/style.css">
+    <link rel="stylesheet" href="/admin/style.css">
 
-    <title>Splight{% if city %} - {{ city.name }}{% if section %} - {{ section.title }}{% endif %}{% endif %}</title>
+    <title>Splight - Reims</title>
   </head>
   <body>
     <div class="container">
       <div class="jumbotron">
-        <h1 class="display-4"><a href="{{ root_path }}/">Splight</a>{% if city %} - <a href="{{ root_path }}/{{ city.slug }}/">{{ city.name }}</a>{% if section %} - <a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/">{{ section.title }}</a>{% endif %}{% endif %}</h1>
-        <p class="lead">Votre agenda culturel {% if city %}à {{ city.name }} et dans sa région{% else %}régional{% endif %}.</p>
-{% if section %}
-        <p class="lead">
-  {% for s in sections %}
-    {% if s.slug == section.slug %}
-          {{ s.title }}
-    {% else %}
-          <a href="{{ root_path }}/{{ city.slug }}/{{ s.slug }}/">{{ s.title }}</a>
-    {% endif %}
-  {% endfor %}
-        </p>
-{% endif %}
+        <h1 class="display-4"><a href="/admin/">Splight</a> - <a href="/admin/reims/">Reims</a></h1>
+        <p class="lead">Votre agenda culturel à Reims et dans sa région.</p>
       </div>
 
       <div>
-{% block contents %}
-{% endblock %}
+<div class="row">
+  <div class="col-6 col-md-3">
+    <p><a href="/admin/reims/musique/"><img class="img-fluid" src="/musique-rectangle.jpg" /></a></p>
+    <p><a href="/admin/reims/musique/">Musique</a></p>
+  </div>
+  <div class="col-6 col-md-3">
+    <p><a href="/admin/reims/cinema/"><img class="img-fluid" src="/cinema-rectangle.jpg" /></a></p>
+    <p><a href="/admin/reims/cinema/">Cinéma</a></p>
+  </div>
+  <div class="col-6 col-md-3">
+    <p><a href="/admin/reims/theatre/"><img class="img-fluid" src="/theatre-rectangle.jpg" /></a></p>
+    <p><a href="/admin/reims/theatre/">Théâtre</a></p>
+  </div>
+  <div class="col-6 col-md-3">
+    <p><a href="/admin/reims/expositions/"><img class="img-fluid" src="/expositions-rectangle.jpg" /></a></p>
+    <p><a href="/admin/reims/expositions/">Expositions</a></p>
+  </div>
+</div>
       </div>
 
       <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018</p>
