@@ -13,7 +13,7 @@
   <body>
     <div class="container">
       <div class="jumbotron">
-        <h1 class="display-4"><a href="{{ root_path }}/">Splight</a>{% if city %} - <a href="{{ root_path }}/{{ city.slug }}/">{{ city.name }}</a>{% if section %} - <a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/">{{ section.title }}</a>{% endif %}{% endif %}</h1>
+        <h1 class="display-4"><a href="{{ root_path }}/">Splight</a>{% if city %} - <a href="{{ root_path }}/{{ city.slug }}/">{{ city.name }}</a>{% if section %} - <a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ current_week.slug }}/">{{ section.title }}</a>{% endif %}{% endif %}</h1>
         <p class="lead">Votre agenda culturel {% if city %}à {{ city.name }} et dans sa région{% else %}régional{% endif %}.</p>
 {% if section %}
         <p class="lead">
@@ -21,7 +21,7 @@
     {% if s.slug == section.slug %}
           {{ s.title }}
     {% else %}
-          <a href="{{ root_path }}/{{ city.slug }}/{{ s.slug }}/">{{ s.title }}</a>
+          <a href="{{ root_path }}/{{ city.slug }}/{{ s.slug }}/{{ week|default(current_week)|attr("slug") }}/">{{ s.title }}</a>
     {% endif %}
   {% endfor %}
         </p>

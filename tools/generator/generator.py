@@ -87,12 +87,15 @@ class Generator:
                 current_week_start_date = dateutils.previous_week_day(today, 0)
                 last_week_start_date = current_week_start_date + datetime.timedelta(weeks=weeks_count - 1)
 
+                current_week = NS(slug=current_week_start_date.strftime("%Y-%W"))
+
                 self.render(
                     template="city.html",
                     destination=os.path.join(self.destination_directory + root_path, city.slug, "index.html"),
                     city=city,
                     sections=sections,
                     root_path=root_path,
+                    current_week=current_week,
                 )
 
                 for section in sections:
@@ -114,6 +117,7 @@ class Generator:
                         sections=sections,
                         weeks=weeks,
                         root_path=root_path,
+                        current_week=current_week,
                     )
 
                     for week in weeks:
@@ -126,6 +130,7 @@ class Generator:
                             section=section,
                             sections=sections,
                             week=week,
+                            current_week=current_week,
                             root_path=root_path,
                         )
 
