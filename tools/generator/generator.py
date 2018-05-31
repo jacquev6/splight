@@ -87,7 +87,22 @@ class Generator:
                 )
 
                 for section in sections:
-                    weeks = self.make_section_weeks(section, city.events)
+                    if section.slug == "musique":
+                        week_start_dates = [
+                            datetime.date(2018, 6,  4),
+                            datetime.date(2018, 6, 11),
+                            datetime.date(2018, 6, 18),
+                        ]
+                    elif section.slug == "theatre":
+                        week_start_dates = [
+                            datetime.date(2018, 6, 18),
+                            datetime.date(2018, 6, 25),
+                            datetime.date(2018, 7,  2),
+                        ]
+                    else:
+                        week_start_dates = []
+
+                    weeks = self.make_section_weeks(week_start_dates, section, city.events_by_date)
 
                     self.render(
                         template="section.html",
@@ -114,40 +129,36 @@ class Generator:
                             root_path=root_path,
                         )
 
-    def make_section_weeks(self, section, events):
+    def make_section_weeks(self, week_start_dates, section, events_by_date):
         weeks = []
-
-        for ((year, week), week_events) in itertools.groupby(
-            sorted(
-                (e for e in events if section.slug in e.tags),
-                key=lambda e: e.datetime
-            ),
-            key=lambda e: e.datetime.isocalendar()[:2],
-        ):
-            slug = "{}-{}".format(year, week)
-            start_date = dateutils.iso_to_gregorian(year, week, 1)
+        for week_start_date in week_start_dates:
+            slug = week_start_date.strftime("%Y-%W")
             days = []
-            for (day, day_events) in itertools.groupby(week_events, key=lambda e: e.datetime.isoweekday()):
-                date = dateutils.iso_to_gregorian(year, week, day).strftime("%Y/%m/%d")
+            for i in range(7):
+                date = week_start_date + datetime.timedelta(days=i)
+
                 events = []
-                for event in day_events:
-                    time = event.datetime.time()
-                    if time.minute:
-                        time = time.strftime("%Hh%M")
-                    else:
-                        time = time.strftime("%Hh")
-                    location = ""
-                    if event.location:
-                        location = event.location.name
-                    artist = ""
-                    if event.artist:
-                        artist = event.artist.name
-                    genre = ""
-                    if event.artist:
-                        genre = event.artist.genre
-                    events.append(NS(time=time, location=location, artist=artist, genre=genre))
-                days.append(NS(date=date, events=events))
-            weeks.append(dict(slug=slug, start_date=start_date.strftime("%Y/%m/%d"), days=days))
+                for event in events_by_date.get(date, []):
+                    if section.slug in event.tags:
+                        time = event.datetime.time()
+                        if time.minute:
+                            time = time.strftime("%Hh%M")
+                        else:
+                            time = time.strftime("%Hh")
+                        location = ""
+                        if event.location:
+                            location = event.location.name
+                        artist = ""
+                        if event.artist:
+                            artist = event.artist.name
+                        genre = ""
+                        if event.artist:
+                            genre = event.artist.genre
+                        events.append(NS(time=time, location=location, artist=artist, genre=genre))
+                if events:
+                    days.append(NS(date=date.strftime("%Y/%m/%d"), events=events))
+
+            weeks.append(dict(slug=slug, start_date=week_start_date.strftime("%Y/%m/%d"), days=days))
 
         for i in range(0, len(weeks) - 1):
             weeks[i]["next_week"] = weeks[i + 1]["slug"]

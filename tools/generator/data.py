@@ -33,7 +33,7 @@ def _make_base(name, fields):
 
 
 exec(_make_source("Data", "cities"))
-exec(_make_source("City", "slug name events"))
+exec(_make_source("City", "slug name events_by_date"))
 exec(_make_source("Event", "datetime artist location tags"))
 exec(_make_source("Artist", "slug name genre"))
 exec(_make_source("Location", "slug name"))
@@ -51,8 +51,16 @@ def make_data(*, artists, cities):
 
 def make_city(artists, *, slug, name, locations, events):
     locations = {slug: Location(slug=slug, **location) for (slug, location) in locations.items()}
-    events = list(generate_events(artists, locations, events))
-    return City(slug=slug, name=name, events=events)
+    events_by_date = group_events_by_date(generate_events(artists, locations, events))
+    return City(slug=slug, name=name, events_by_date=events_by_date)
+
+
+def group_events_by_date(events):
+    events = sorted(events, key=lambda e: e.datetime)
+    events_by_date = {}
+    for (day, day_events) in itertools.groupby(events, key=lambda e: e.datetime.date()):
+        events_by_date[day] = list(day_events)
+    return events_by_date
 
 
 def generate_events(artists, locations, events):
