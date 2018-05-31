@@ -7,8 +7,9 @@ branches:
 dist: trusty
 sudo: false
 install:
-- pip install --upgrade pip jinja2 PyYAML
+- pip install --upgrade pip jinja2 PyYAML bs4
 script:
 - python -m tools.generator . docs
+- python -m tools.checker docs
 after_success:
 - "git diff --exit-code docs || (git add docs && git commit -m 'Generate site [skip ci]' && git push https://$GITHUB_TOKEN@github.com/jacquev6/splight.fr.git HEAD:master)"
