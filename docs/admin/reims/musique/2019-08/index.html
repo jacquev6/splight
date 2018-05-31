@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/admin/style.css">
+
+    <title>Splight - Reims - Musique</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1 class="display-4"><a href="/admin/">Splight</a> - <a href="/admin/reims/">Reims</a> - <a href="/admin/reims/musique/">Musique</a></h1>
+        <p class="lead">Votre agenda culturel à Reims et dans sa région.</p>
+        <p class="lead">
+          Musique
+          <a href="/admin/reims/cinema/">Cinéma</a>
+          <a href="/admin/reims/theatre/">Théâtre</a>
+          <a href="/admin/reims/expositions/">Expositions</a>
+        </p>
+      </div>
+
+      <div>
+<div class="row d-lg-none">
+  <div class="col">
+    <div class="advertisement">
+      <p>Publicité</p>
+      <p><img class="img-fluid" src="/ads/468x60-banner.png" /></p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <h1>Concerts de la semaine du 2019/02/25</h1>
+    <dl>
+    </dl>
+
+    <div class="row">
+      <div class="col"><p class="text-right"><a href="/admin/reims/musique/2019-07/">&lt; Semaine précédente</a></p></div>
+      <div class="col"><p><a href="/admin/reims/musique/2019-09/">Semaine suivante &gt;</a></p></div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
+    <div class="advertisement">
+      <p>Publicité</p>
+      <p><img class="img-fluid" src="/ads/160x600-wide-skyscraper.png" /></p>
+    </div>
+  </div>
+</div>
+      </div>
+
+      <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018</p>
+    </div>
+
+    <div id="debug" style="margin-top: 50px; display: none"><ul>
+      <li>Breakpoint:
+        <span class="d-none d-sm-inline-block">xs</span>
+        <strong class="d-inline-block d-sm-none">xs</strong>
+        &lt; 576px &le;
+        <span class="d-sm-none d-md-inline-block">sm</span>
+        <strong class="d-none d-sm-inline-block d-md-none">sm</strong>
+        &lt; 768px &le;
+        <span class="d-md-none d-lg-inline-block">md</span>
+        <strong class="d-none d-md-inline-block d-lg-none">md</strong>
+        &lt; 992px &le;
+        <span class="d-lg-none d-xl-inline-block">lg</span>
+        <strong class="d-none d-lg-inline-block d-xl-none">lg</strong>
+        &lt; 1200px &le;
+        <span class="d-xl-none">xl</span>
+        <strong class="d-none d-xl-inline-block">xl</strong>
+      </li>
+      <li>Container:
+        <span class="d-inline-block d-sm-none">fluid</span>
+        <span class="d-none d-sm-inline-block d-md-none">540px = 12 * 45px</span>
+        <span class="d-none d-md-inline-block d-lg-none">720px = 12 * 60px</span>
+        <span class="d-none d-lg-inline-block d-xl-none">960px = 12 * 80px</span>
+        <span class="d-none d-xl-inline-block">1140px = 12 * 95px</span>
+      </li>
+      <li><a href="" onclick="location.href='http://www.responsinator.com/?url='+window.location.href; return false">Show in Responsinator</a></li>
+    </ul></div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script>
+      $(function() {
+        if(window.location.href.includes("?debug")) {
+          $("#debug").show();
+          $("a").each(function(a, b) {
+            $(b).attr("href", $(b).attr("href") + "?debug");
+          });
+        }
+      })
+    </script>
+  </body>
+</html>

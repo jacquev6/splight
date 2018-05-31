@@ -51,7 +51,7 @@ class Generator:
             root_path="",
         )
 
-        for (root_path, weeks_count) in [("", 5), ("/admin", 5)]:
+        for (root_path, weeks_count) in [("", 5), ("/admin", 52)]:
             previous_monday = dateutils.previous_week_day(datetime.date.today(), 0)
             week_start_dates = [previous_monday + datetime.timedelta(weeks=i) for i in range(weeks_count)]
 
