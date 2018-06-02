@@ -1,1 +1,19 @@
 name: Reims
+locations:
+  lieu-a:
+    name: Lieu de test A
+  lieu-b:
+    name: Lieu de test B
+  lieu-c:
+    name: Lieu de test C
+events:
+  musique:
+    - datetime: 2018/05/22 19:00
+      artist: artist-b
+      location: lieu-a
+    - datetime: 2018/05/22 19:30
+      artist: artist-a
+      location: lieu-b
+    - datetime: 2018/05/25 21:00
+      artist: artist-c
+      location: lieu-c

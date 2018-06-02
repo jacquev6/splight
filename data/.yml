@@ -1,0 +1,10 @@
+artists:
+  artist-a:
+    name: Artiste de test A
+    genre: Genre Toto
+  artist-b:
+    name: Artiste de test B
+    genre: Genre Titi
+  artist-c:
+    name: Artiste de test C
+    genre: Genre Tutu
