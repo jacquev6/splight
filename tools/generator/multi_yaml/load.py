@@ -1,3 +1,4 @@
+import copy
 import json
 import os.path
 import unittest
@@ -22,44 +23,74 @@ def make_key(dir_name, name):
         return None
 
 
-def load(dir_name, initial_value=None):
-    has_data = False
+def dict_to_list(d):
+    return list(v for (k, v) in sorted(d.items()))
+
+
+def merge(x, y):
+    x = copy.deepcopy(x)
+    y = copy.deepcopy(y)
+    if x is None:
+        return y
+    elif y is None:
+        return x
+    elif isinstance(x, list) and isinstance(y, list):
+        return x + y
+    elif isinstance(x, dict) and isinstance(y, dict):
+        for (k, v) in y.items():
+            x[k] = merge(x.get(k), v)
+        return x
+    elif isinstance(x, list) and isinstance(y, dict):
+        return merge(x, dict_to_list(y))
+    elif isinstance(x, dict) and isinstance(y, list):
+        return merge(dict_to_list(x), y)
+    else:
+        assert False, ("Types incompatible for merging:", x, y)
+
+
+class DeepMergeTestCase(unittest.TestCase):
+    def run_test(self, x, y, r):
+        x2 = copy.deepcopy(x)
+        y2 = copy.deepcopy(y)
+        self.assertEqual(merge(x, y), r)
+        self.assertEqual(x, x2)
+        self.assertEqual(y, y2)
+
+    def test_none(self):
+        self.run_test(None, ["a"], ["a"])
+        self.run_test(["a"], None, ["a"])
+
+    def test_lists(self):
+        self.run_test(["a", "c"], ["d", "b"], ["a", "c", "d", "b"])
+
+    def test_dicts(self):
+        self.run_test({"a": 1, "c": 3}, {"d": 4, "b": 2}, {"a": 1, "b": 2, "c": 3, "d": 4})
+
+    def test_lists_in_dict(self):
+        self.run_test({"k": ["a"]}, {"k": ["b"]}, {"k": ["a", "b"]})
+
+    def test_dicts_in_dict(self):
+        self.run_test({"k": {"a": 1}}, {"k": {"b": 2}}, {"k": {"a": 1, "b": 2}})
+
+
+def load(dir_name):
+    contents = None
 
     for (ext, loader) in loaders.items():
-        file_name = "{}{}".format(dir_name, ext)
-        if os.path.isfile(file_name):
-            break
-        file_name = os.path.join(dir_name, ext)
-        if os.path.isfile(file_name):
-            break
-    else:
-        file_name = None
-
-    if file_name:
-        has_data = True
-        with open(file_name) as f:
-            contents = loader(f)
-    elif isinstance(initial_value, (dict, list)):
-        contents = initial_value
-    else:
-        assert initial_value is None
-        contents = {}
+        for file_name in [
+            "{}{}".format(dir_name, ext),
+            os.path.join(dir_name, ext),
+        ]:
+            if os.path.isfile(file_name):
+                with open(file_name) as f:
+                    contents = merge(contents, loader(f))
 
     if os.path.isdir(dir_name):
-        has_data = True
         keys = set(make_key(dir_name, name) for name in os.listdir(dir_name))
         keys.discard(None)
-        if isinstance(contents, dict):
-            contents.update({key: load(os.path.join(dir_name, key), contents.get(key)) for key in keys})
-        elif isinstance(contents, list):
-            contents.extend([load(os.path.join(dir_name, key)) for key in sorted(keys)])
-        else:
-            assert False
+        contents = merge(contents, {key: load(os.path.join(dir_name, key)) for key in keys})
 
-    if has_data:
-        return contents
-    else:
-        return None
+    return contents
 
 
 class LoadTestCase(unittest.TestCase):
