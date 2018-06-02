@@ -25,7 +25,7 @@ class Generator:
             lstrip_blocks=True,
         )
 
-    def render(self, *, template, destination, **context):
+    def render(self, template, destination, **context):
         os.makedirs(os.path.dirname(destination), exist_ok=True)
         with open(destination, "w") as f:
             f.write(self.environment.get_template(template).render(context))
@@ -33,6 +33,9 @@ class Generator:
 
     def run(self):
         data = data_.load(self.source_directory)
+        today = datetime.date.today()
+        current_week_start_date = dateutils.previous_week_day(today, 0)
+        current_week = NS(slug=current_week_start_date.strftime("%Y-%W"))
 
         sections = [
             NS(slug="musique", title="Musique", event_type="Concerts"),
@@ -44,24 +47,34 @@ class Generator:
         shutil.rmtree(self.destination_directory)
         shutil.copytree(os.path.join(self.source_directory, "skeleton"), self.destination_directory)
 
-        self.render(
-            template="ads.html",
-            destination=os.path.join(self.destination_directory, "ads", "index.html"),
+        global_context = dict(
             sections=sections,
-            root_path="",
+            cities=data.cities,
+            current_week=current_week,
+        )
+
+        self.render(
+            "ads.html",
+            os.path.join(self.destination_directory, "ads", "index.html"),
+            **global_context,
         )
 
         for (root_path, weeks_count) in [("", 5), ("/admin", 52)]:
-            self.render(
-                template="index.html",
-                destination=os.path.join(self.destination_directory + root_path, "index.html"),
-                cities=data.cities,
+            root_context = self.enrich_context(
+                global_context,
                 root_path=root_path,
             )
 
             self.render(
-                template="style.css",
-                destination=os.path.join(self.destination_directory + root_path, "style.css"),
+                "index.html",
+                os.path.join(self.destination_directory + root_path, "index.html"),
+                **root_context,
+            )
+
+            self.render(
+                "style.css",
+                os.path.join(self.destination_directory + root_path, "style.css"),
+                **root_context,
                 colors=NS(
                     primary_very_light="#F99" if root_path else "#9AB2E8",
                     primary_light="#5E81D2",
@@ -74,28 +87,25 @@ class Generator:
                     complement_dark="#FFAA00",
                     complement_very_dark="#B17600",
                 ),
-                root_path="",
             )
 
             for city in data.cities:
-                today = datetime.date.today()
                 oldest_day = min(
                     min(e.datetime.date() for e in itertools.chain.from_iterable(city.events_by_date.values())),
                     today,
                 )
                 first_week_start_date = dateutils.previous_week_day(oldest_day, 0)
-                current_week_start_date = dateutils.previous_week_day(today, 0)
                 last_week_start_date = current_week_start_date + datetime.timedelta(weeks=weeks_count - 1)
 
-                current_week = NS(slug=current_week_start_date.strftime("%Y-%W"))
+                city_context = self.enrich_context(
+                    root_context,
+                    city=city,
+                )
 
                 self.render(
-                    template="city.html",
-                    destination=os.path.join(self.destination_directory + root_path, city.slug, "index.html"),
-                    city=city,
-                    sections=sections,
-                    root_path=root_path,
-                    current_week=current_week,
+                    "city.html",
+                    os.path.join(self.destination_directory + root_path, city.slug, "index.html"),
+                    **city_context,
                 )
 
                 for section in sections:
@@ -107,32 +117,39 @@ class Generator:
                         city.events_by_date,
                     )
 
+                    section_context = self.enrich_context(
+                        city_context,
+                        section=section,
+                        weeks=weeks,
+                    )
+
                     self.render(
-                        template="section.html",
-                        destination=os.path.join(
+                        "city/section.html",
+                        os.path.join(
                             self.destination_directory + root_path, city.slug, section.slug, "index.html"
                         ),
-                        city=city,
-                        section=section,
-                        sections=sections,
-                        weeks=weeks,
-                        root_path=root_path,
-                        current_week=current_week,
+                        **section_context,
                     )
 
                     for week in weeks:
+                        week_context = self.enrich_context(
+                            section_context,
+                            week=week,
+                        )
+
                         self.render(
-                            template="week.html",
+                            template="city/section/week.html",
                             destination=os.path.join(
                                 self.destination_directory + root_path, city.slug, section.slug, week.slug, "index.html"
                             ),
-                            city=city,
-                            section=section,
-                            sections=sections,
-                            week=week,
-                            current_week=current_week,
-                            root_path=root_path,
+                            **week_context,
                         )
+
+    @staticmethod
+    def enrich_context(context, **kwds):
+        context = dict(context)
+        context.update(kwds)
+        return context
 
     def make_section_weeks(
         self,
