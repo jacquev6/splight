@@ -59,7 +59,7 @@ class Generator:
             **global_context,
         )
 
-        for (root_path, weeks_count) in [("", 5), ("/admin", 52)]:
+        for (root_path, weeks_count) in [("", 5), ("/admin", 10)]:
             root_context = self.enrich_context(
                 global_context,
                 root_path=root_path,
