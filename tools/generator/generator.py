@@ -90,10 +90,7 @@ class Generator:
             )
 
             for city in data.cities:
-                oldest_day = min(
-                    min(e.datetime.date() for e in itertools.chain.from_iterable(city.events_by_date.values())),
-                    today,
-                )
+                oldest_day = min(city.events[0].datetime.date(), today)
                 first_week_start_date = dateutils.previous_week_day(oldest_day, 0)
                 last_week_start_date = current_week_start_date + datetime.timedelta(weeks=weeks_count - 1)
 
@@ -114,7 +111,7 @@ class Generator:
                         current_week_start_date,
                         last_week_start_date,
                         section,
-                        city.events_by_date,
+                        city.events,
                     )
 
                     section_context = self.enrich_context(
@@ -157,8 +154,11 @@ class Generator:
         current_week_start_date,
         last_week_start_date,
         section,
-        events_by_date,
+        events,
     ):
+        events_by_date = {}
+        for (day, day_events) in itertools.groupby(events, key=lambda e: e.datetime.date()):
+            events_by_date[day] = list(day_events)
         weeks = []
         for week_index in range(1 + (last_week_start_date - first_week_start_date).days // 7):
             week_start_date = first_week_start_date + datetime.timedelta(weeks=week_index)
