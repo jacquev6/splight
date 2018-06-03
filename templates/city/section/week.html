@@ -1,3 +1,9 @@
+{% set additional_css = ["https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css"] %}
+{% set additional_js = [
+    "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/locale/fr.js",
+] %}
 {% extends "base.html" %}
 
 {% block contents %}
@@ -19,20 +25,22 @@
       <div class="col">{% if week.next_week %}<p><a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ week.next_week }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
     </div>
 
-    <dl>
+    <div id="calendar">
+      <dl>
   {% for day in week.days %}
-    <dt>{{ day.date }}</dt>
+        <dt>{{ day.date }}</dt>
     {% if day.events %}
-    <dd><ul>
+        <dd><ul>
       {% for event in day.events %}
-    <li>{{ event.time }}, {{ event.location }}&nbsp;: {{ event.artist }} ({{ event.genre }})</li>
+          <li>{{ event.time }}, {{ event.location }}&nbsp;: {{ event.artist }} ({{ event.genre }})</li>
       {% endfor %}
-    </ul></dd>
+        </ul></dd>
     {% else %}
-    <p>Rien de prévu.</p>
+        <dd>Rien de prévu.</dd>
     {% endif %}
   {% endfor %}
-    </dl>
+      </dl>
+    </div>
 
     <div class="row">
       <div class="col">{% if week.previous_week %}<p class="text-right"><a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ week.previous_week }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
@@ -46,4 +54,31 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(function() {
+        $("#calendar").empty();
+        $("#calendar").fullCalendar({
+            header: false,
+            defaultDate: "{{ week.iso_start_date }}",
+            defaultView: "agendaWeek",
+            locale: "fr",
+            allDaySlot: false,
+            eventLimit: true,
+            minTime: "11:00:00",
+            events: [
+  {% for day in week.days %}
+    {% for event in day.events %}
+            {
+                title: "{{ event.location }}: {{ event.artist }} ({{ event.genr }})",
+                start: "{{ event.datetime }}"
+            },
+    {% endfor %}
+  {% endfor %}
+            ]
+        });
+    });
+</script>
 {% endblock %}

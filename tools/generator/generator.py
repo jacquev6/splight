@@ -184,10 +184,22 @@ class Generator:
                         genre = ""
                         if event.artist:
                             genre = event.artist.genre
-                        events.append(NS(time=time, location=location, artist=artist, genre=genre))
+                        events.append(NS(
+                            datetime=event.datetime,
+                            time=time,
+                            location=location,
+                            artist=artist,
+                            genre=genre,
+                        ))
                 days.append(NS(date=date.strftime("%Y/%m/%d"), events=events))
 
-            weeks.append(dict(slug=slug, start_date=week_start_date.strftime("%Y/%m/%d"), days=days))
+            weeks.append(dict(
+                slug=slug,
+                # @todo Format all datetimes in templates, using custom filters
+                start_date=week_start_date.strftime("%Y/%m/%d"),
+                iso_start_date=week_start_date.strftime("%Y-%m-%d"),
+                days=days,
+            ))
 
         for i in range(0, len(weeks) - 1):
             weeks[i]["next_week"] = weeks[i + 1]["slug"]
