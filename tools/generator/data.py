@@ -1,6 +1,4 @@
 import datetime as datetime_
-import itertools
-import os
 
 from . import multi_yaml
 
@@ -39,8 +37,8 @@ exec(_make_source("Artist", "slug name genre"))
 exec(_make_source("Location", "slug name"))
 
 
-def load(source_directory):
-    return make_data(**multi_yaml.load(os.path.join(source_directory, "data")))
+def load(data_directory):
+    return make_data(**multi_yaml.load(data_directory))
 
 
 def make_data(*, artists, cities):

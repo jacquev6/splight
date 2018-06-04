@@ -250,12 +250,12 @@ class OldWeekGenerator(Generator):
         self.render(template="city/section/week.html")
 
 
-def generate(*, source_directory, destination_directory):
+def generate(*, data_directory, destination_directory):
     shutil.rmtree(destination_directory)
-    shutil.copytree(os.path.join(source_directory, "skeleton"), destination_directory)
+    shutil.copytree(os.path.join(os.path.dirname(__file__), "skeleton"), destination_directory)
 
     environment = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(os.path.join(source_directory, "templates")),
+        loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), "templates")),
         trim_blocks=True,
         lstrip_blocks=True,
     )
@@ -263,6 +263,6 @@ def generate(*, source_directory, destination_directory):
 
     RootGenerator(
         destination_directory=destination_directory,
-        data=data.load(source_directory),
+        data=data.load(data_directory),
         environment=environment,
     ).run()
