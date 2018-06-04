@@ -15,160 +15,164 @@ class NS(dict):
         self.__dict__.update(kwargs)
 
 
-class Generator:
-    def __init__(self, *, parent):
-        self.__parent = parent
+def full_day_info(dt):
+    assert isinstance(dt, datetime.date)
+    return NS(
+        date=dt,
+        week=NS(
+            start_date=dateutils.previous_week_day(dt, 0),
+            year=dt.isocalendar()[0],
+            index=dt.isocalendar()[1],
+        ),
+    )
 
-    def render(self, *, template, destination):
-        destination = self.__full_destination(destination)
+
+class Generator:
+    def __init__(self, *, parent, slug, add_to_context):
+        self.__parent = parent
+        self.__destination = os.path.join(parent.__destination, slug) if parent else slug
+        context = dict(parent.context) if parent else dict()
+        context.update(add_to_context)
+        self.context = NS(**context)
+
+    def render(self, *, template, destination="index.html"):
+        destination = os.path.join(self.__destination, destination)
+        # print("Rendering", destination, "with", self.context.keys())
         os.makedirs(os.path.dirname(destination), exist_ok=True)
         with open(destination, "w") as f:
-            f.write(self.__root_environment().get_template(template).render(self.__full_context()))
+            f.write(self.__root_environment().get_template(template).render(self.context))
             f.write("\n")
 
-    def __lineage(self):
-        return list(reversed(list(self.__ancestors())))
-
-    def __ancestors(self):
-        parent = self
-        while parent:
-            yield parent
-            parent = parent.__parent
-
-    def __full_context(self):
-        ctx = dict()
-        for g in self.__lineage():
-            ctx.update(g.context)
-        return ctx
-
-    def __full_destination(self, destination):
-        if isinstance(destination, str):
-            destination = (destination,)
-        return os.path.join(*(g.slug for g in self.__lineage()), *destination)
-
     def __root_environment(self):
-        return self.__lineage()[0].environment
+        if self.__parent:
+            return self.__parent.__root_environment()
+        else:
+            return self.environment
 
 
 class RootGenerator(Generator):
     def __init__(self, *, destination_directory, data, environment):
-        super().__init__(parent=None)
-        self.__data = data
-        self.__sections = [
+        # @todo Get these from data
+        sections = [
             NS(slug="musique", title="Musique", event_type="Concerts"),
             NS(slug="cinema", title="Cinéma", event_type="Scéances"),
             NS(slug="theatre", title="Théâtre", event_type="Représentations"),
             NS(slug="expositions", title="Expositions", event_type="Expositions"),
         ]
 
-        today = datetime.date.today()
-
-        self.slug = destination_directory
-        self.environment = environment
-        self.context = dict(
-            sections=self.__sections,
-            cities=self.__data.cities,
-            current_week=NS(start_date=dateutils.previous_week_day(today, 0)),
+        super().__init__(
+            parent=None,
+            slug=destination_directory,
+            add_to_context=dict(
+                sections=sections,
+                cities=data.cities,
+                generation=full_day_info(datetime.date.today()),
+            ),
         )
 
+        self.environment = environment
+
     def run(self):
-        self.render(template="ads.html", destination=("ads", "index.html"))
+        AdsGenerator(parent=self).run()
 
         for (version, weeks_count) in [("", 5), ("admin", 10)]:
             VersionGenerator(
                 parent=self,
-                data=self.__data,
-                sections=self.__sections,
                 version=version,
                 weeks_count=weeks_count,
             ).run()
 
 
-class VersionGenerator(Generator):
-    def __init__(self, *, parent, data, sections, version, weeks_count):
-        super().__init__(parent=parent)
-        self.__weeks_count = weeks_count
-        self.__data = data
-        self.__sections = sections
+class AdsGenerator(Generator):
+    def __init__(self, *, parent):
+        super().__init__(parent=parent, slug="ads", add_to_context=dict())
 
-        self.slug = version
-        self.context = dict(
-            root_path="/{}".format(version) if version else "",
-            colors=NS(
-                primary_very_light="#F99" if version else "#9AB2E8",
-                primary_light="#5E81D2",
-                primary="#3660C1",
-                primary_dark="#103FAC",
-                primary_very_dark="#0A2B77",
-                complement_very_light="#FFDF9F",
-                complement_light="#FFCB62",
-                complement="#FFBA31",
-                complement_dark="#FFAA00",
-                complement_very_dark="#B17600",
+    def run(self):
+        self.render(template="ads.html")
+
+
+class VersionGenerator(Generator):
+    def __init__(self, *, parent, version, weeks_count):
+        super().__init__(
+            parent=parent,
+            slug=version,
+            add_to_context=dict(
+                root_path="/{}".format(version) if version else "",
+                colors=NS(
+                    primary_very_light="#F99" if version else "#9AB2E8",
+                    primary_light="#5E81D2",
+                    primary="#3660C1",
+                    primary_dark="#103FAC",
+                    primary_very_dark="#0A2B77",
+                    complement_very_light="#FFDF9F",
+                    complement_light="#FFCB62",
+                    complement="#FFBA31",
+                    complement_dark="#FFAA00",
+                    complement_very_dark="#B17600",
+                ),
+            ),
+        )
+        self.__weeks_count = weeks_count
+
+    def run(self):
+        self.render(template="index.html")
+        self.render(template="style.css", destination="style.css")
+
+        for city in self.context.cities:
+            CityGenerator(parent=self, city=city, weeks_count=self.__weeks_count).run()
+
+
+class CityGenerator(Generator):
+    def __init__(self, *, parent, city, weeks_count):
+        super().__init__(
+            parent=parent,
+            slug=city.slug,
+            add_to_context=dict(
+                city=city,
+                events=city.events,
+            ),
+        )
+        self.__weeks_count = weeks_count
+
+    def run(self):
+        self.render(template="city.html")
+
+        for section in self.context.sections:
+            OldSectionGenerator(parent=self, section=section, weeks_count=self.__weeks_count).run()
+
+
+class OldSectionGenerator(Generator):
+    def __init__(self, *, parent, section, weeks_count):
+        city = parent.context.city
+        generation_date = parent.context.generation.date
+        oldest_day = min(city.events[0].datetime.date(), generation_date)
+        first_week_start_date = dateutils.previous_week_day(oldest_day, 0)
+        last_week_start_date = parent.context.generation.week.start_date + datetime.timedelta(weeks=weeks_count - 1)
+        weeks = self.__make_section_weeks(
+            first_week_start_date,
+            last_week_start_date,
+            section,
+            parent.context.events,
+        )
+
+        super().__init__(
+            parent=parent,
+            slug=section.slug,
+            add_to_context=dict(
+                section=section,
+                weeks=weeks,
             ),
         )
 
     def run(self):
-        self.render(template="index.html", destination="index.html")
-        self.render(template="style.css", destination="style.css")
+        self.render(template="city/section.html")
 
-        for city in self.__data.cities:
-            CityGenerator(parent=self, city=city, sections=self.__sections, weeks_count=self.__weeks_count).run()
-
-
-class CityGenerator(Generator):
-    def __init__(self, *, parent, city, sections, weeks_count):
-        super().__init__(parent=parent)
-        self.__sections = sections
-        self.__city = city
-        self.__weeks_count = weeks_count
-
-        self.slug = city.slug
-        self.context = dict(
-            city=city,
-        )
-
-    def run(self):
-        self.render(template="city.html", destination="index.html")
-
-        for section in self.__sections:
-            OldSectionGenerator(parent=self, city=self.__city, section=section, weeks_count=self.__weeks_count).run()
-
-
-class OldSectionGenerator(Generator):
-    def __init__(self, *, parent, city, section, weeks_count):
-        super().__init__(parent=parent)
-
-        today = datetime.date.today()
-        oldest_day = min(city.events[0].datetime.date(), today)
-        first_week_start_date = dateutils.previous_week_day(oldest_day, 0)
-        current_week_start_date = dateutils.previous_week_day(today, 0)
-        last_week_start_date = current_week_start_date + datetime.timedelta(weeks=weeks_count - 1)
-
-        self.__weeks = self.__make_section_weeks(
-            first_week_start_date,
-            current_week_start_date,
-            last_week_start_date,
-            section,
-            city.events,
-        )
-
-        self.slug = section.slug
-        self.context = dict(
-            section=section,
-            weeks=self.__weeks,
-        )
-
-    def run(self):
-        self.render(template="city/section.html", destination="index.html")
-
-        for week in self.__weeks:
+        for week in self.context.weeks:
             OldWeekGenerator(parent=self, week=week).run()
 
+    @staticmethod
     def __make_section_weeks(
-        self,
         first_week_start_date,
-        current_week_start_date,
         last_week_start_date,
         section,
         events,
@@ -234,16 +238,16 @@ def format_datetime(dt, format=None):
 
 class OldWeekGenerator(Generator):
     def __init__(self, *, parent, week):
-        super().__init__(parent=parent)
-        self.__week = week
-
-        self.slug = format_datetime(self.__week.start_date, "%Y-%W")
-        self.context = dict(
-            week=week,
+        super().__init__(
+            parent=parent,
+            slug=format_datetime(week.start_date, "%Y-%W"),
+            add_to_context=dict(
+                week=week,
+            ),
         )
 
     def run(self):
-        self.render(template="city/section/week.html", destination="index.html")
+        self.render(template="city/section/week.html")
 
 
 def generate(*, source_directory, destination_directory):
