@@ -132,10 +132,10 @@ class CityGenerator(Generator):
         self.render(template="city.html", destination="index.html")
 
         for section in self.__sections:
-            SectionGenerator(parent=self, city=self.__city, section=section, weeks_count=self.__weeks_count).run()
+            OldSectionGenerator(parent=self, city=self.__city, section=section, weeks_count=self.__weeks_count).run()
 
 
-class SectionGenerator(Generator):
+class OldSectionGenerator(Generator):
     def __init__(self, *, parent, city, section, weeks_count):
         super().__init__(parent=parent)
 
@@ -163,7 +163,7 @@ class SectionGenerator(Generator):
         self.render(template="city/section.html", destination="index.html")
 
         for week in self.__weeks:
-            WeekGenerator(parent=self, week=week).run()
+            OldWeekGenerator(parent=self, week=week).run()
 
     def __make_section_weeks(
         self,
@@ -232,7 +232,7 @@ def format_datetime(dt, format=None):
     return dt.strftime(format)
 
 
-class WeekGenerator(Generator):
+class OldWeekGenerator(Generator):
     def __init__(self, *, parent, week):
         super().__init__(parent=parent)
         self.__week = week
