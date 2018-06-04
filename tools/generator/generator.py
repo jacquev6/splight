@@ -61,7 +61,7 @@ class RootGenerator(Generator):
             NS(slug="expositions", title="Expositions", event_type="Expositions"),
         ]
 
-        today = datetime.date.today() - datetime.timedelta(weeks=1)  # @todo Remove delay
+        today = datetime.date.today()
 
         self.slug = destination_directory
         self.environment = environment
@@ -139,7 +139,7 @@ class SectionGenerator(Generator):
     def __init__(self, *, parent, city, section, weeks_count):
         super().__init__(parent=parent)
 
-        today = datetime.date.today() - datetime.timedelta(weeks=1)  # @todo Remove delay
+        today = datetime.date.today()
         oldest_day = min(city.events[0].datetime.date(), today)
         first_week_start_date = dateutils.previous_week_day(oldest_day, 0)
         current_week_start_date = dateutils.previous_week_day(today, 0)
