@@ -68,7 +68,7 @@ class RootGenerator(Generator):
         self.context = dict(
             sections=self.__sections,
             cities=self.__data.cities,
-            current_week=NS(slug=dateutils.previous_week_day(today, 0).strftime("%Y-%W")),
+            current_week=NS(start_date=dateutils.previous_week_day(today, 0)),
         )
 
     def run(self):
@@ -179,7 +179,6 @@ class SectionGenerator(Generator):
         weeks = []
         for week_index in range(1 + (last_week_start_date - first_week_start_date).days // 7):
             week_start_date = first_week_start_date + datetime.timedelta(weeks=week_index)
-            slug = week_start_date.strftime("%Y-%W")
             days = []
             for i in range(7):
                 date = week_start_date + datetime.timedelta(days=i)
@@ -188,10 +187,6 @@ class SectionGenerator(Generator):
                 for event in events_by_date.get(date, []):
                     if section.slug in event.tags:
                         time = event.datetime.time()
-                        if time.minute:
-                            time = time.strftime("%Hh%M")
-                        else:
-                            time = time.strftime("%Hh")
                         location = ""
                         if event.location:
                             location = event.location.name
@@ -208,22 +203,33 @@ class SectionGenerator(Generator):
                             artist=artist,
                             genre=genre,
                         ))
-                days.append(NS(date=date.strftime("%Y/%m/%d"), events=events))
+                days.append(NS(date=date, events=events))
 
             weeks.append(dict(
-                slug=slug,
-                # @todo Format all datetimes in templates, using custom filters
-                start_date=week_start_date.strftime("%Y/%m/%d"),
-                iso_start_date=week_start_date.strftime("%Y-%m-%d"),
+                start_date=week_start_date,
                 days=days,
             ))
 
         for i in range(0, len(weeks) - 1):
-            weeks[i]["next_week"] = weeks[i + 1]["slug"]
+            weeks[i]["next_week"] = weeks[i + 1]
         for i in range(1, len(weeks)):
-            weeks[i]["previous_week"] = weeks[i - 1]["slug"]
+            weeks[i]["previous_week"] = weeks[i - 1]
 
         return [NS(**w) for w in weeks]
+
+
+def format_datetime(dt, format=None):
+    if format is None:
+        if isinstance(dt, datetime.date):
+            format = "%Y/%m/%d"
+        elif isinstance(dt, datetime.time):
+            if dt.minute:
+                format = "%Hh%M"
+            else:
+                format = "%Hh"
+        else:
+            assert False, ("Not a datetime:", dt)
+    return dt.strftime(format)
 
 
 class WeekGenerator(Generator):
@@ -231,7 +237,7 @@ class WeekGenerator(Generator):
         super().__init__(parent=parent)
         self.__week = week
 
-        self.slug = self.__week.slug
+        self.slug = format_datetime(self.__week.start_date, "%Y-%W")
         self.context = dict(
             week=week,
         )
@@ -244,12 +250,15 @@ def generate(*, source_directory, destination_directory):
     shutil.rmtree(destination_directory)
     shutil.copytree(os.path.join(source_directory, "skeleton"), destination_directory)
 
+    environment = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(os.path.join(source_directory, "templates")),
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
+    environment.filters["dt"] = format_datetime
+
     RootGenerator(
         destination_directory=destination_directory,
         data=data.load(source_directory),
-        environment=jinja2.Environment(
-            loader=jinja2.FileSystemLoader(os.path.join(source_directory, "templates")),
-            trim_blocks=True,
-            lstrip_blocks=True,
-        ),
+        environment=environment,
     ).run()

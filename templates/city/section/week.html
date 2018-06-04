@@ -18,21 +18,21 @@
 
 <div class="row">
   <div class="col">
-    <h1>{{ section.event_type }} de la semaine du {{ week.start_date }}</h1>
+    <h1>{{ section.event_type }} de la semaine du {{ week.start_date|dt }}</h1>
 
     <div class="row">
-      <div class="col">{% if week.previous_week %}<p class="text-right"><a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ week.previous_week }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
-      <div class="col">{% if week.next_week %}<p><a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ week.next_week }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
+      <div class="col">{% if week.previous_week %}<p class="text-right"><a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ week.previous_week.start_date|dt("%Y-%W") }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
+      <div class="col">{% if week.next_week %}<p><a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ week.next_week.start_date|dt("%Y-%W") }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
     </div>
 
     <div id="calendar">
       <dl>
   {% for day in week.days %}
-        <dt>{{ day.date }}</dt>
+        <dt>{{ day.date|dt }}</dt>
     {% if day.events %}
         <dd><ul>
       {% for event in day.events %}
-          <li>{{ event.time }}, {{ event.location }}&nbsp;: {{ event.artist }} ({{ event.genre }})</li>
+          <li>{{ event.time|dt }}, {{ event.location }}&nbsp;: {{ event.artist }} ({{ event.genre }})</li>
       {% endfor %}
         </ul></dd>
     {% else %}
@@ -43,8 +43,8 @@
     </div>
 
     <div class="row">
-      <div class="col">{% if week.previous_week %}<p class="text-right"><a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ week.previous_week }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
-      <div class="col">{% if week.next_week %}<p><a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ week.next_week }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
+      <div class="col">{% if week.previous_week %}<p class="text-right"><a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ week.previous_week.start_date|dt("%Y-%W") }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
+      <div class="col">{% if week.next_week %}<p><a href="{{ root_path }}/{{ city.slug }}/{{ section.slug }}/{{ week.next_week.start_date|dt("%Y-%W") }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
     </div>
   </div>
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
@@ -62,7 +62,7 @@
         $("#calendar").empty();
         $("#calendar").fullCalendar({
             header: false,
-            defaultDate: "{{ week.iso_start_date }}",
+            defaultDate: "{{ week.start_date|dt("%Y-%m-%d") }}",
             defaultView: "agendaWeek",
             locale: "fr",
             allDaySlot: false,
