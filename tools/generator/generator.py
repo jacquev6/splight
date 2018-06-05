@@ -260,7 +260,7 @@ class WeekGenerator(Generator):
     def __init__(self, *, parent, week):
         start_date = dateutils.iso_to_gregorian(parent.context.year, week, 1)
         previous_week = NS(start_date=start_date - datetime.timedelta(days=7))
-        if previous_week.start_date < parent.context.first_day:
+        if previous_week.start_date < dateutils.previous_week_day(parent.context.first_day, 0):
             previous_week = None
         next_week = NS(start_date=start_date + datetime.timedelta(days=7))
         if next_week.start_date > parent.context.last_day:
