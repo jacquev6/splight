@@ -6,7 +6,11 @@ import bs4
 
 def main(root_dir_name):
     all_files = set(find_all_files(root_dir_name))
-    check_local_links(root_dir_name, all_files)
+    errors = sorted(check_local_links(root_dir_name, all_files))
+    for error in errors:
+        print(error)
+    if errors:
+        exit(1)
 
 
 def find_all_files(root_dir_name):
@@ -17,20 +21,43 @@ def find_all_files(root_dir_name):
 
 def check_local_links(root_dir_name, all_files):
     served_urls = set(make_url(f) for f in all_files)
-    linked_urls = set()
+
+    links = dict()
     for file_name in all_files:
         if file_name.endswith(".html"):
             with open(os.path.join(root_dir_name, file_name)) as f:
                 soup = bs4.BeautifulSoup(f, "html.parser")
-            for link in find_local_links(soup):
-                if link == "" or link.startswith("mailto:") or link.startswith("http:") or link.startswith("https:"):
-                    continue
-                if not link.startswith("/"):
-                    link = "{}{}".format(make_url(file_name), link)
-                linked_urls.add(link)
-                if link not in served_urls:
-                    print("DEAD LINK:", link, "in", file_name)
-                    exit(1)
+            links[make_url(file_name)] = set(keep_interesting_links(file_name, find_local_links(soup)))
+
+    for (file_name, file_links) in links.items():
+        for link in file_links - served_urls:
+            yield "DEAD LINK: {} in {}".format(link, file_name)
+
+    reacheable = set()
+
+    def aux(url):
+        url_links = links.get(url, set())
+        reacheable.add(url)
+        for link in url_links:
+            if link not in reacheable:
+                aux(link)
+
+    aux("/ads/")
+    aux("/CNAME")
+    aux("/.nojekyll")
+    for root in ["", "/admin"]:
+        aux("{}/".format(root))
+        # @todo Remove when days are linked from main site
+        aux("{}/reims/2018/mai/28/".format(root))
+        # @todo Remove when weeks are linked from main site
+        aux("{}/reims/2018/25/".format(root))
+        # @todo Remove when categories are deleted
+        for city in ["reims"]:
+            for category in ["musique", "cinema", "expositions", "theatre"]:
+                aux("{}/{}/{}/".format(root, city, category))
+
+    for url in served_urls - reacheable:
+        yield "UNREACHABLE URL: {}".format(url)
 
 
 def make_url(file_name):
@@ -48,6 +75,16 @@ def find_local_links(soup):
         yield link["href"]
     for img in soup.find_all("img"):
         yield img["src"]
+
+
+def keep_interesting_links(file_name, links):
+    for link in links:
+        link = link.split("?")[0]
+        if link == "" or link.startswith("mailto:") or link.startswith("http:") or link.startswith("https:"):
+            continue
+        if not link.startswith("/"):
+            link = "{}{}".format(make_url(file_name), link)
+        yield link
 
 
 if __name__ == "__main__":
