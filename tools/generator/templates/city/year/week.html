@@ -72,7 +72,7 @@
   {% for day in week.days %}
     {% for event in day.events %}
             {
-                title: "{{ event.location }}: {{ event.artist }} ({{ event.genr }})",
+                title: "{{ event.location }}: {{ event.artist }} ({{ event.genre }})",
                 start: "{{ event.datetime }}"
             },
     {% endfor %}

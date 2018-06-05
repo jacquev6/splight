@@ -93,7 +93,7 @@ class RootGenerator(Generator):
 
 class AdsGenerator(Generator):
     def __init__(self, *, parent):
-        super().__init__(parent=parent, slug="ads", add_to_context=dict())
+        super().__init__(parent=parent, slug="ads", add_to_context=dict(root_path=""))
 
     def run(self):
         self.render(template="ads.html")
@@ -423,6 +423,7 @@ def generate(*, data_directory, destination_directory):
         loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), "templates")),
         trim_blocks=True,
         lstrip_blocks=True,
+        undefined=jinja2.StrictUndefined,
     )
     environment.filters["dt"] = format_datetime
     environment.filters["dt_as_path"] = format_datetime_as_path
