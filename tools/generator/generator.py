@@ -291,6 +291,7 @@ class WeekGenerator(Generator):
                     location=location,
                     artist=artist,
                     genre=genre,
+                    tags=event.tags,
                 ))
             days.append(NS(date=date, events=events))
 
