@@ -31,8 +31,8 @@
     </p>
 
     <div class="row">
-      <div class="col">{% if week.previous_week %}<p class="text-right"><a href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.start_date|dt("%Y/%W") }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
-      <div class="col">{% if week.next_week %}<p><a href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.start_date|dt("%Y/%W") }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
+      <div class="col">{% if week.previous_week %}<p class="text-right"><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.start_date|dt("%Y/%W") }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
+      <div class="col">{% if week.next_week %}<p><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.start_date|dt("%Y/%W") }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
     </div>
 
     <div id="calendar">
@@ -53,8 +53,8 @@
     </div>
 
     <div class="row">
-      <div class="col">{% if week.previous_week %}<p class="text-right"><a href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.start_date|dt("%Y/%W") }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
-      <div class="col">{% if week.next_week %}<p><a href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.start_date|dt("%Y/%W") }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
+      <div class="col">{% if week.previous_week %}<p class="text-right"><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.start_date|dt("%Y/%W") }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
+      <div class="col">{% if week.next_week %}<p><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.start_date|dt("%Y/%W") }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
     </div>
   </div>
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
@@ -99,6 +99,14 @@
     }
     History.replaceState(null, title, uri.toString());
     window.document.title = title;
+    $("a.tagged").each(function() {
+      var a = $(this);
+      var uri = new URI(a.prop("href"));
+      uri.search(function(data) {
+        data.tags = tags;
+      });
+      a.prop("href", uri.toString());
+    });
   }
 
   function get_tags_from_inputs() {

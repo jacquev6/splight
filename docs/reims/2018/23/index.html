@@ -40,8 +40,8 @@
     </p>
 
     <div class="row">
-      <div class="col"><p class="text-right"><a href="/reims/2018/22/">&lt; Semaine précédente</a></p></div>
-      <div class="col"><p><a href="/reims/2018/24/">Semaine suivante &gt;</a></p></div>
+      <div class="col"><p class="text-right"><a class="tagged" href="/reims/2018/22/">&lt; Semaine précédente</a></p></div>
+      <div class="col"><p><a class="tagged" href="/reims/2018/24/">Semaine suivante &gt;</a></p></div>
     </div>
 
     <div id="calendar">
@@ -71,8 +71,8 @@
     </div>
 
     <div class="row">
-      <div class="col"><p class="text-right"><a href="/reims/2018/22/">&lt; Semaine précédente</a></p></div>
-      <div class="col"><p><a href="/reims/2018/24/">Semaine suivante &gt;</a></p></div>
+      <div class="col"><p class="text-right"><a class="tagged" href="/reims/2018/22/">&lt; Semaine précédente</a></p></div>
+      <div class="col"><p><a class="tagged" href="/reims/2018/24/">Semaine suivante &gt;</a></p></div>
     </div>
   </div>
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
@@ -165,6 +165,14 @@
     }
     History.replaceState(null, title, uri.toString());
     window.document.title = title;
+    $("a.tagged").each(function() {
+      var a = $(this);
+      var uri = new URI(a.prop("href"));
+      uri.search(function(data) {
+        data.tags = tags;
+      });
+      a.prop("href", uri.toString());
+    });
   }
 
   function get_tags_from_inputs() {
