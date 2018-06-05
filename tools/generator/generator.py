@@ -150,9 +150,6 @@ class CityGenerator(Generator):
     def run(self):
         self.render(template="city.html")
 
-        for section in self.context.sections:
-            OldSectionGenerator(parent=self, section=section).run()
-
         first_year = self.context.first_day.year
         last_year = self.context.last_day.year
         for year in range(first_year, last_year + 1):
@@ -307,82 +304,6 @@ class WeekGenerator(Generator):
         self.render(template="city/year/week.html")
 
 
-class OldSectionGenerator(Generator):
-    def __init__(self, *, parent, section):
-        weeks = self.__make_section_weeks(
-            dateutils.previous_week_day(parent.context.first_day, 0),
-            dateutils.previous_week_day(parent.context.last_day, 0),
-            section,
-            parent.context.events,
-        )
-
-        super().__init__(
-            parent=parent,
-            slug=section.slug,
-            add_to_context=dict(
-                section=section,
-                weeks=weeks,
-            ),
-        )
-
-    def run(self):
-        self.render(template="city/section.html")
-
-        for week in self.context.weeks:
-            OldWeekGenerator(parent=self, week=week).run()
-
-    @staticmethod
-    def __make_section_weeks(
-        first_week_start_date,
-        last_week_start_date,
-        section,
-        events,
-    ):
-        events_by_date = {}
-        for (day, day_events) in itertools.groupby(events, key=lambda e: e.datetime.date()):
-            events_by_date[day] = list(day_events)
-        weeks = []
-        for week_index in range(1 + (last_week_start_date - first_week_start_date).days // 7):
-            week_start_date = first_week_start_date + datetime.timedelta(weeks=week_index)
-            days = []
-            for i in range(7):
-                date = week_start_date + datetime.timedelta(days=i)
-
-                events = []
-                for event in events_by_date.get(date, []):
-                    if section.slug in event.tags:
-                        time = event.datetime.time()
-                        location = ""
-                        if event.location:
-                            location = event.location.name
-                        artist = ""
-                        if event.artist:
-                            artist = event.artist.name
-                        genre = ""
-                        if event.artist:
-                            genre = event.artist.genre
-                        events.append(NS(
-                            datetime=event.datetime,
-                            time=time,
-                            location=location,
-                            artist=artist,
-                            genre=genre,
-                        ))
-                days.append(NS(date=date, events=events))
-
-            weeks.append(dict(
-                start_date=week_start_date,
-                days=days,
-            ))
-
-        for i in range(0, len(weeks) - 1):
-            weeks[i]["next_week"] = weeks[i + 1]
-        for i in range(1, len(weeks)):
-            weeks[i]["previous_week"] = weeks[i - 1]
-
-        return [NS(**w) for w in weeks]
-
-
 def format_datetime(dt, format=None):
     if format is None:
         if isinstance(dt, datetime.date):
@@ -400,20 +321,6 @@ def format_datetime(dt, format=None):
 def format_datetime_as_path(d):
     assert isinstance(d, datetime.date)
     return "{}/{}/{:02}".format(d.year, months[d.month], d.day)
-
-
-class OldWeekGenerator(Generator):
-    def __init__(self, *, parent, week):
-        super().__init__(
-            parent=parent,
-            slug=format_datetime(week.start_date, "%Y-%W"),
-            add_to_context=dict(
-                week=week,
-            ),
-        )
-
-    def run(self):
-        self.render(template="city/section/week.html")
 
 
 def generate(*, data_directory, destination_directory):

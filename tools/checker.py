@@ -49,10 +49,6 @@ def check_local_links(root_dir_name, all_files):
         aux("{}/".format(root))
         # @todo Remove when days are linked from main site
         aux("{}/reims/2018/mai/28/".format(root))
-        # @todo Remove when categories are deleted
-        for city in ["reims"]:
-            for category in ["musique", "cinema", "expositions", "theatre"]:
-                aux("{}/{}/{}/".format(root, city, category))
 
     for url in served_urls - reacheable:
         yield "UNREACHABLE URL: {}".format(url)
