@@ -67,18 +67,23 @@
       <noscript><dl>
         <dt>2018/06/11</dt>
         <dd><ul>
-          <li>20h, Place d'Erlon&nbsp;: The Rolling Stones (Rock)</li>
+          <li>19h, Lieu de test A&nbsp;: Artiste de test B (Genre Titi)</li>
         </ul></dd>
         <dt>2018/06/12</dt>
         <dd>Rien de prévu.</dd>
         <dt>2018/06/13</dt>
-        <dd>Rien de prévu.</dd>
+        <dd><ul>
+          <li>19h30, Lieu de test B&nbsp;: Artiste de test C (Genre Tutu)</li>
+          <li>20h, Lieu de test C&nbsp;: Artiste de test A (Genre Toto)</li>
+        </ul></dd>
         <dt>2018/06/14</dt>
         <dd>Rien de prévu.</dd>
         <dt>2018/06/15</dt>
         <dd>Rien de prévu.</dd>
         <dt>2018/06/16</dt>
-        <dd>Rien de prévu.</dd>
+        <dd><ul>
+          <li>19h, Lieu de test A&nbsp;: Artiste de test B (Genre Titi)</li>
+        </ul></dd>
         <dt>2018/06/17</dt>
         <dd>Rien de prévu.</dd>
       </dl></noscript>
@@ -213,8 +218,23 @@
 
   var all_events = [
     {
-      title: "Place d'Erlon: The Rolling Stones (Rock)",
-      start: "2018-06-11 20:00:00",
+      title: "Lieu de test A: Artiste de test B (Genre Titi)",
+      start: "2018-06-11 19:00:00",
+      tags: new Set(["musique"]),
+    },
+    {
+      title: "Lieu de test B: Artiste de test C (Genre Tutu)",
+      start: "2018-06-13 19:30:00",
+      tags: new Set(["cinema"]),
+    },
+    {
+      title: "Lieu de test C: Artiste de test A (Genre Toto)",
+      start: "2018-06-13 20:00:00",
+      tags: new Set(["theatre"]),
+    },
+    {
+      title: "Lieu de test A: Artiste de test B (Genre Titi)",
+      start: "2018-06-16 19:00:00",
       tags: new Set(["musique"]),
     },
   ];

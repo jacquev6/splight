@@ -8,12 +8,69 @@ locations:
     name: Lieu de test C
 events:
   musique:
-    - datetime: 2018/05/22 19:00
-      artist: artist-b
+    - artist: artist-b
       location: lieu-a
-    - datetime: 2018/05/22 19:30
-      artist: artist-a
-      location: lieu-b
-    - datetime: 2018/05/25 21:00
-      artist: artist-c
+      occurrences:
+        - datetime: 2018/05/22 19:00
+        - datetime: 2018/05/27 19:00
+        - datetime: 2018/06/01 19:00
+        - datetime: 2018/06/06 19:00
+        - datetime: 2018/06/11 19:00
+        - datetime: 2018/06/16 19:00
+        - datetime: 2018/06/21 19:00
+        - datetime: 2018/06/26 19:00
+        - datetime: 2018/07/01 19:00
+        - datetime: 2018/07/06 19:00
+        - datetime: 2018/07/11 19:00
+        - datetime: 2018/07/16 19:00
+        - datetime: 2018/07/21 19:00
+        - datetime: 2018/07/26 19:00
+        - datetime: 2018/07/31 19:00
+        - datetime: 2018/08/05 19:00
+        - datetime: 2018/08/09 19:00
+  theatre:
+    - artist: artist-a
       location: lieu-c
+      occurrences:
+        - datetime: 2018/05/24 20:00
+        - datetime: 2018/05/29 20:00
+        - datetime: 2018/06/03 20:00
+        - datetime: 2018/06/08 20:00
+        - datetime: 2018/06/13 20:00
+        - datetime: 2018/06/19 20:00
+        - datetime: 2018/06/23 20:00
+        - datetime: 2018/06/29 20:00
+        - datetime: 2018/07/03 20:00
+        - datetime: 2018/07/08 20:00
+        - datetime: 2018/07/13 20:00
+        - datetime: 2018/07/18 20:00
+        - datetime: 2018/07/23 20:00
+        - datetime: 2018/07/28 20:00
+        - datetime: 2018/08/02 20:00
+        - datetime: 2018/08/07 20:00
+        - datetime: 2018/08/11 20:00
+  cinema:
+    - artist: artist-c
+      location: lieu-b
+      occurrences:
+        - datetime: 2018/05/24 19:30
+        - datetime: 2018/05/28 19:30
+        - datetime: 2018/06/01 19:30
+        - datetime: 2018/06/05 19:30
+        - datetime: 2018/06/09 19:30
+        - datetime: 2018/06/13 19:30
+        - datetime: 2018/06/18 19:30
+        - datetime: 2018/06/22 19:30
+        - datetime: 2018/06/26 19:30
+        - datetime: 2018/06/30 19:30
+        - datetime: 2018/07/04 19:30
+        - datetime: 2018/07/08 19:30
+        - datetime: 2018/07/12 19:30
+        - datetime: 2018/07/16 19:30
+        - datetime: 2018/07/20 19:30
+        - datetime: 2018/07/24 19:30
+        - datetime: 2018/07/28 19:30
+        - datetime: 2018/08/01 19:30
+        - datetime: 2018/08/05 19:30
+        - datetime: 2018/08/09 19:30
+  expositions: []

@@ -66,17 +66,26 @@
     <div id="calendar">
       <noscript><dl>
         <dt>2018/07/16</dt>
-        <dd>Rien de prévu.</dd>
+        <dd><ul>
+          <li>19h, Lieu de test A&nbsp;: Artiste de test B (Genre Titi)</li>
+          <li>19h30, Lieu de test B&nbsp;: Artiste de test C (Genre Tutu)</li>
+        </ul></dd>
         <dt>2018/07/17</dt>
         <dd>Rien de prévu.</dd>
         <dt>2018/07/18</dt>
-        <dd>Rien de prévu.</dd>
+        <dd><ul>
+          <li>20h, Lieu de test C&nbsp;: Artiste de test A (Genre Toto)</li>
+        </ul></dd>
         <dt>2018/07/19</dt>
         <dd>Rien de prévu.</dd>
         <dt>2018/07/20</dt>
-        <dd>Rien de prévu.</dd>
+        <dd><ul>
+          <li>19h30, Lieu de test B&nbsp;: Artiste de test C (Genre Tutu)</li>
+        </ul></dd>
         <dt>2018/07/21</dt>
-        <dd>Rien de prévu.</dd>
+        <dd><ul>
+          <li>19h, Lieu de test A&nbsp;: Artiste de test B (Genre Titi)</li>
+        </ul></dd>
         <dt>2018/07/22</dt>
         <dd>Rien de prévu.</dd>
       </dl></noscript>
@@ -210,6 +219,31 @@
   }
 
   var all_events = [
+    {
+      title: "Lieu de test A: Artiste de test B (Genre Titi)",
+      start: "2018-07-16 19:00:00",
+      tags: new Set(["musique"]),
+    },
+    {
+      title: "Lieu de test B: Artiste de test C (Genre Tutu)",
+      start: "2018-07-16 19:30:00",
+      tags: new Set(["cinema"]),
+    },
+    {
+      title: "Lieu de test C: Artiste de test A (Genre Toto)",
+      start: "2018-07-18 20:00:00",
+      tags: new Set(["theatre"]),
+    },
+    {
+      title: "Lieu de test B: Artiste de test C (Genre Tutu)",
+      start: "2018-07-20 19:30:00",
+      tags: new Set(["cinema"]),
+    },
+    {
+      title: "Lieu de test A: Artiste de test B (Genre Titi)",
+      start: "2018-07-21 19:00:00",
+      tags: new Set(["musique"]),
+    },
   ];
 
   function have_intersection(setA, setB) {

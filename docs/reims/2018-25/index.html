@@ -66,30 +66,29 @@
     <div id="calendar">
       <noscript><dl>
         <dt>2018/06/18</dt>
-        <dd>Rien de prévu.</dd>
-        <dt>2018/06/19</dt>
-        <dd>Rien de prévu.</dd>
-        <dt>2018/06/20</dt>
         <dd><ul>
-          <li>20h, Place d'Erlon&nbsp;: The Rolling Stones (Rock)</li>
-          <li>20h, Théâtre municipal&nbsp;: William Shakespeare (Drame)</li>
+          <li>19h30, Lieu de test B&nbsp;: Artiste de test C (Genre Tutu)</li>
         </ul></dd>
+        <dt>2018/06/19</dt>
+        <dd><ul>
+          <li>20h, Lieu de test C&nbsp;: Artiste de test A (Genre Toto)</li>
+        </ul></dd>
+        <dt>2018/06/20</dt>
+        <dd>Rien de prévu.</dd>
         <dt>2018/06/21</dt>
         <dd><ul>
-          <li>20h, Théâtre municipal&nbsp;: William Shakespeare (Drame)</li>
+          <li>19h, Lieu de test A&nbsp;: Artiste de test B (Genre Titi)</li>
         </ul></dd>
         <dt>2018/06/22</dt>
         <dd><ul>
-          <li>20h, Théâtre municipal&nbsp;: William Shakespeare (Drame)</li>
+          <li>19h30, Lieu de test B&nbsp;: Artiste de test C (Genre Tutu)</li>
         </ul></dd>
         <dt>2018/06/23</dt>
         <dd><ul>
-          <li>20h, Théâtre municipal&nbsp;: William Shakespeare (Drame)</li>
+          <li>20h, Lieu de test C&nbsp;: Artiste de test A (Genre Toto)</li>
         </ul></dd>
         <dt>2018/06/24</dt>
-        <dd><ul>
-          <li>20h, Théâtre municipal&nbsp;: William Shakespeare (Drame)</li>
-        </ul></dd>
+        <dd>Rien de prévu.</dd>
       </dl></noscript>
     </div>
 
@@ -222,33 +221,28 @@
 
   var all_events = [
     {
-      title: "Place d'Erlon: The Rolling Stones (Rock)",
-      start: "2018-06-20 20:00:00",
+      title: "Lieu de test B: Artiste de test C (Genre Tutu)",
+      start: "2018-06-18 19:30:00",
+      tags: new Set(["cinema"]),
+    },
+    {
+      title: "Lieu de test C: Artiste de test A (Genre Toto)",
+      start: "2018-06-19 20:00:00",
+      tags: new Set(["theatre"]),
+    },
+    {
+      title: "Lieu de test A: Artiste de test B (Genre Titi)",
+      start: "2018-06-21 19:00:00",
       tags: new Set(["musique"]),
     },
     {
-      title: "Théâtre municipal: William Shakespeare (Drame)",
-      start: "2018-06-20 20:00:00",
-      tags: new Set(["theatre"]),
+      title: "Lieu de test B: Artiste de test C (Genre Tutu)",
+      start: "2018-06-22 19:30:00",
+      tags: new Set(["cinema"]),
     },
     {
-      title: "Théâtre municipal: William Shakespeare (Drame)",
-      start: "2018-06-21 20:00:00",
-      tags: new Set(["theatre"]),
-    },
-    {
-      title: "Théâtre municipal: William Shakespeare (Drame)",
-      start: "2018-06-22 20:00:00",
-      tags: new Set(["theatre"]),
-    },
-    {
-      title: "Théâtre municipal: William Shakespeare (Drame)",
+      title: "Lieu de test C: Artiste de test A (Genre Toto)",
       start: "2018-06-23 20:00:00",
-      tags: new Set(["theatre"]),
-    },
-    {
-      title: "Théâtre municipal: William Shakespeare (Drame)",
-      start: "2018-06-24 20:00:00",
       tags: new Set(["theatre"]),
     },
   ];
