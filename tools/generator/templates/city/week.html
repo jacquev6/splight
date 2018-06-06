@@ -23,7 +23,7 @@
   <div class="col">
     <h1>Événements de la semaine du {{ week.start_date|dt }}</h1>
 
-    <p id="display_tags">
+    <p id="display_tags" style="display: none">
       Musique <input type="checkbox" data-tag="musique">
       Cinéma <input type="checkbox" data-tag="cinema">
       Théâtre <input type="checkbox" data-tag="theatre">
@@ -154,6 +154,8 @@
   }
 
   $(function() {
+    $("#display_tags").show();
+
     put_tags_in_inputs(get_tags_from_location());
     put_tags_in_location(get_tags_from_inputs());
 

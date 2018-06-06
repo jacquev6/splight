@@ -18,6 +18,13 @@
         <p class="lead">Votre agenda culturel à Reims et dans sa région.</p>
       </div>
 
+      <noscript>
+        <div class="row"><div class="col-md-3"></div><div class="col-md-6" style="border: red solid 3px">
+          <p>Pour accéder à toutes les fonctionnalités de Splight (notamment l'affichage des calendriers filtrés par catégories), vous devez activer JavaScript.</p>
+          <p>Voici les <a href="https://www.enable-javascript.com/fr/" target="_blank">instructions pour activer JavaScript dans votre navigateur Web</a>.</p>
+        </div><div class="col-md-3"></div></div>
+      </noscript>
+
       <div>
 <div class="row d-lg-none">
   <div class="col">
@@ -32,7 +39,7 @@
   <div class="col">
     <h1>Événements de la semaine du 2018/06/25</h1>
 
-    <p id="display_tags">
+    <p id="display_tags" style="display: none">
       Musique <input type="checkbox" data-tag="musique">
       Cinéma <input type="checkbox" data-tag="cinema">
       Théâtre <input type="checkbox" data-tag="theatre">
@@ -225,6 +232,8 @@
   }
 
   $(function() {
+    $("#display_tags").show();
+
     put_tags_in_inputs(get_tags_from_location());
     put_tags_in_location(get_tags_from_inputs());
 
