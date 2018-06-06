@@ -1,26 +1,6 @@
-En tant que dévelopeur, je veux réutiliser du code open-source existant
-=======================================================================
-
-Problème
---------
-
-Réinventer la roue prend du temps. Et je ne suis pas si efficace en JavaScript.
-
-Solution(s)
------------
-
-Affichage de calendrier:
-
-- https://fullcalendar.io/
-- http://bootstrap-calendar.eivissapp.com/
-- https://www.w3schools.com/howto/howto_css_calendar.asp
-- https://www.codeproject.com/Articles/732679/HTML-Event-Calendar-Scheduler
-- https://bootsnipp.com/tags/calendar
-- https://www.bootply.com/tagged/calendar
-
-Affichage de dates relative (i.e. "il y a 5 jours"):
-
-- http://momentjs.com/
+* Agenda sur un jour
+* Agenda sur trois jours
+* Couleurs différentes pour les événements des différentes catégories. Avec légende là où on coche.
 
 
 En tant que visiteur, je ne veux plus réfléchir pour savoir à quelle semaine se rapporte ce que je vois
@@ -29,28 +9,12 @@ En tant que visiteur, je ne veux plus réfléchir pour savoir à quelle semaine 
 Problème
 --------
 
-Afficher la date est certe parfaitement explicite, mais demande une certaine gymnastique cérébrale.
+Afficher la date est certes parfaitement explicite, mais demande une certaine gymnastique cérébrale.
 
 Solution(s)
 -----------
 
 Afficher "cette semaine", "la semaine prochaine", "dans 15 jours", "dans 3 semaines", "dans un mois", etc.
-
-
-En tant que visiteur, je veux une vue synthétique de tout ce qui m'intéresse
-============================================================================
-
-Problème
---------
-
-Un visiteur intéressé par plusieurs catégories doit faire des aller-retours entre les pages de ces catégories.
-Il serait utile de les visualiser sur la même page.
-
-Solution(s)
------------
-
-Un agenda (hebdomadaire ou quotidien) regroupant tous les événements de toutes les catégories.
-Filtrable par catégories.
 
 
 En tant que visiteur, je veux des détails sur les événements
