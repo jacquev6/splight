@@ -3,9 +3,7 @@ import unittest
 
 
 def previous_week_day(date, weekday):
-    while date.weekday() != weekday:
-        date -= datetime.timedelta(days=1)
-    return date
+    return date - datetime.timedelta(days=((date.weekday() - weekday) % 7))
 
 
 class PreviousWeekDayTestCase(unittest.TestCase):

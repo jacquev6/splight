@@ -2,8 +2,8 @@
 
 {% block contents %}
 <div class="row"><div class="col-md-3"></div><div class="col-md-6">
-  <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.start_date|dt("%Y-%W") }}/?{% for section in sections %}{{ section.slug }}{% if not loop.last %}&{% endif %}{% endfor %}"><img class="img-fluid" src="/actualite-leaderboard.jpg" /></a></p>
-  <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.start_date|dt("%Y-%W") }}/?{% for section in sections %}{{ section.slug }}{% if not loop.last %}&{% endif %}{% endfor %}">Toute l'actualité</a></p>
+  <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.slug }}/?{% for section in sections %}{{ section.slug }}{% if not loop.last %}&{% endif %}{% endfor %}"><img class="img-fluid" src="/actualite-leaderboard.jpg" /></a></p>
+  <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.slug }}/?{% for section in sections %}{{ section.slug }}{% if not loop.last %}&{% endif %}{% endfor %}">Toute l'actualité</a></p>
 </div></div>
 <div class="row"><div class="col">
   <h1>Catégories</h1>
@@ -11,8 +11,8 @@
 <div class="row">
   {% for section in sections %}
   <div class="col-6 col-md-3">
-    <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.start_date|dt("%Y-%W") }}/?{{ section.slug }}"><img class="img-fluid" src="/{{ section.slug }}-rectangle.jpg" /></a></p>
-    <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.start_date|dt("%Y-%W") }}/?{{ section.slug }}">{{ section.title }}</a></p>
+    <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.slug }}/?{{ section.slug }}"><img class="img-fluid" src="/{{ section.slug }}-rectangle.jpg" /></a></p>
+    <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.slug }}/?{{ section.slug }}">{{ section.title }}</a></p>
   </div>
   {% endfor %}
 </div>

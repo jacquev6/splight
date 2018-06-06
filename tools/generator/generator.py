@@ -10,13 +10,6 @@ from . import dateutils
 from . import data
 
 
-months = [
-    "NOT_A_MONTH",
-    "janvier", "fevrier", "mars", "avril", "mai", "juin",
-    "juillet", "aout", "septembre", "octobre", "novembre", "decembre",
-]
-
-
 class NS(dict):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -29,6 +22,7 @@ def full_day_info(dt):
         date=dt,
         week=NS(
             start_date=dateutils.previous_week_day(dt, 0),
+            slug="{0:04}-{1:02}".format(*dt.isocalendar()),
             year=dt.isocalendar()[0],
             index=dt.isocalendar()[1],
         ),
@@ -65,6 +59,8 @@ class RootGenerator(Generator):
             slug=destination_directory,
             add_to_context=dict(
                 cities=data.cities,
+                # @todo Remove generation date from context:
+                # generate site independently from generation date, and fix it with JavaScript
                 generation=full_day_info(datetime.date.today()),
             ),
         )
@@ -154,11 +150,11 @@ class CityGenerator(Generator):
 class WeekGenerator(Generator):
     def __init__(self, *, parent, year, week):
         start_date = dateutils.iso_to_gregorian(year, week, 1)
-        previous_week = NS(start_date=start_date - datetime.timedelta(days=7))
-        if previous_week.start_date < dateutils.previous_week_day(parent.context.first_day, 0):
+        previous_week = NS(slug="{0:04}-{1:02}".format(*(start_date - datetime.timedelta(days=7)).isocalendar()))
+        if start_date - datetime.timedelta(days=7) < dateutils.previous_week_day(parent.context.first_day, 0):
             previous_week = None
-        next_week = NS(start_date=start_date + datetime.timedelta(days=7))
-        if next_week.start_date > parent.context.last_day:
+        next_week = NS(slug="{0:04}-{1:02}".format(*(start_date + datetime.timedelta(days=7)).isocalendar()))
+        if start_date + datetime.timedelta(days=7) > parent.context.last_day:
             next_week = None
 
         events_by_date = {}
@@ -202,23 +198,17 @@ class WeekGenerator(Generator):
         self.render(template="week.html")
 
 
-def format_datetime(dt, format=None):
-    if format is None:
-        if isinstance(dt, datetime.date):
-            format = "%Y/%m/%d"  # @todo Fix format to "15 janvier 2018"
-        elif isinstance(dt, datetime.time):
-            if dt.minute:
-                format = "%Hh%M"
-            else:
-                format = "%Hh"
+def format_datetime(dt):
+    if isinstance(dt, datetime.date):
+        format = "%Y/%m/%d"  # @todo Fix format to "15 janvier 2018"
+    elif isinstance(dt, datetime.time):
+        if dt.minute:
+            format = "%Hh%M"
         else:
-            assert False, ("Not a datetime:", dt)
+            format = "%Hh"
+    else:
+        assert False, ("Not a datetime:", dt)
     return dt.strftime(format)
-
-
-def format_datetime_as_path(d):
-    assert isinstance(d, datetime.date)
-    return "{}/{}/{:02}".format(d.year, months[d.month], d.day)
 
 
 def generate(*, data_directory, destination_directory):
@@ -232,7 +222,6 @@ def generate(*, data_directory, destination_directory):
         undefined=jinja2.StrictUndefined,
     )
     environment.filters["dt"] = format_datetime
-    environment.filters["dt_as_path"] = format_datetime_as_path
 
     RootGenerator(
         destination_directory=destination_directory,

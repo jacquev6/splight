@@ -33,8 +33,8 @@
     </form>
 
     <div class="row">
-      <div class="col">{% if week.previous_week %}<p class="text-right"><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.start_date|dt("%Y-%W") }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
-      <div class="col">{% if week.next_week %}<p><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.start_date|dt("%Y-%W") }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
+      <div class="col">{% if week.previous_week %}<p class="text-right"><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.slug }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
+      <div class="col">{% if week.next_week %}<p><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.slug }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
     </div>
 
     <div id="calendar">
@@ -55,8 +55,8 @@
     </div>
 
     <div class="row">
-      <div class="col">{% if week.previous_week %}<p class="text-right"><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.start_date|dt("%Y-%W") }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
-      <div class="col">{% if week.next_week %}<p><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.start_date|dt("%Y-%W") }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
+      <div class="col">{% if week.previous_week %}<p class="text-right"><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.slug }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
+      <div class="col">{% if week.next_week %}<p><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.slug }}/">Semaine suivante &gt;</a></p>{% endif %}</div>
     </div>
   </div>
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
@@ -166,7 +166,7 @@
 
     $("#calendar").fullCalendar({
       header: false,
-      defaultDate: "{{ week.start_date|dt("%Y-%m-%d") }}",
+      defaultDate: "{{ week.start_date }}",
       defaultView: "agendaWeek",
       locale: "fr",
       allDaySlot: false,
