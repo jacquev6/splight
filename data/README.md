@@ -29,7 +29,7 @@ Contre-exemples:
   - `Charleville.yml` (majuscule interdite)
   - `the who.yml` (espace)
   - `the_who.yml` (underscore)
-  - `théâtre.yaml` (accents)
+  - `théâtre.yml` (accents)
   - `theatre.yaml` (mauvaise extension)
 
 Structure
@@ -100,7 +100,7 @@ Les champs "artist" et "location" contiennent respectivement une référence ver
 Ces références sont les slugs (c.-à-d. les noms de base des fichiers) de cet artistes et ce lieu.
 
 Pour les événements ne se produisant qu'une fois, le champ "datetime" contient la date et l'heure du début de l'événement,
-au format "YYYY/MM/DD hh:mm".
+au format "AAAA/MM/JJ hh:mm".
 Pour les événements avec plusieurs représentations, le champs "occurrences" contient une liste de "datetime" similaires.
 
 Tags
