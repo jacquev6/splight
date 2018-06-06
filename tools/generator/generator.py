@@ -188,7 +188,12 @@ class WeekGenerator(Generator):
 
 
 def format_date(d):
-    return d.strftime("%Y/%m/%d")  # @todo Fix format to "15 janvier 2018"
+    months = [
+        "janvier", "février", "mars", "avril", "mai", "juin",
+        "juillet", "août", "septembre", "octobre", "novembre", "décembre",
+    ]
+    days = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
+    return d.strftime("{} %d {} %Y".format(days[d.weekday()], months[d.month]))
 
 
 def format_time(t):
