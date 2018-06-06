@@ -60,19 +60,10 @@ class Generator:
 
 class RootGenerator(Generator):
     def __init__(self, *, destination_directory, data, environment):
-        # @todo Get these from data
-        sections = [
-            NS(slug="musique", title="Musique", event_type="Concerts"),
-            NS(slug="cinema", title="Cinéma", event_type="Scéances"),
-            NS(slug="theatre", title="Théâtre", event_type="Représentations"),
-            NS(slug="expositions", title="Expositions", event_type="Expositions"),
-        ]
-
         super().__init__(
             parent=None,
             slug=destination_directory,
             add_to_context=dict(
-                sections=sections,
                 cities=data.cities,
                 generation=full_day_info(datetime.date.today()),
             ),
@@ -141,6 +132,7 @@ class CityGenerator(Generator):
             slug=city.slug,
             add_to_context=dict(
                 city=city,
+                sections=city.tags,
                 events=city.events,
                 first_day=first_day,
                 last_day=last_day,

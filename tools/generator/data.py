@@ -31,7 +31,8 @@ def _make_base(name, fields):
 
 
 exec(_make_source("Data", "cities"))
-exec(_make_source("City", "slug name events"))
+exec(_make_source("City", "slug name tags events"))
+exec(_make_source("Tag", "slug title display_order"))
 exec(_make_source("Event", "datetime artist location tags"))
 exec(_make_source("Artist", "slug name genre"))
 exec(_make_source("Location", "slug name"))
@@ -47,10 +48,11 @@ def make_data(*, artists, cities):
     return Data(cities=cities)
 
 
-def make_city(artists, *, slug, name, locations, events):
+def make_city(artists, *, slug, name, tags, locations, events):
     locations = {slug: Location(slug=slug, **location) for (slug, location) in locations.items()}
     events = sorted(generate_events(artists, locations, events), key=lambda e: e.datetime)
-    return City(slug=slug, name=name, events=events)
+    tags = sorted((Tag(slug=slug, **tag) for (slug, tag) in tags.items()), key=lambda tag: tag.display_order)
+    return City(slug=slug, name=name, tags=tags, events=events)
 
 
 def generate_events(artists, locations, events):
