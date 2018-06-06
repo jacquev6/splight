@@ -145,19 +145,6 @@
       });
     </script>
 <script>
-  function get_tags_from_location() {
-    var query = URI.parseQuery(URI.parse(window.location.href).query);
-    if(_.has(query, "tags")) {
-      if(query.tags.constructor === Array) {
-        return query.tags;
-      } else {
-        return [query.tags];
-      }
-    } else {
-      return [];
-    }
-  }
-
   var tag_names = {
     musique: "musique",
     cinema: "cinéma",
@@ -165,11 +152,30 @@
     expositions: "expositions",
   };
 
+  function get_tags_from_location() {
+    var query = URI.parseQuery(URI.parse(window.location.href).query);
+    var tags = [];
+    for(var tag in tag_names) {
+      if(_.has(query, tag)) {
+        tags.push(tag);
+      }
+    }
+    return tags;
+  }
+
   function put_tags_in_location(tags) {
+    tags = new Set(tags);
+    function fix_query(data) {
+      for(tag in tag_names) {
+        if(tags.has(tag)) {
+          data[tag] = null;
+        } else {
+          delete data[tag];
+        }
+      }
+    }
     var uri = new URI(window.location.href);
-    uri.search(function(data) {
-      data.tags = tags;
-    });
+    uri.search(fix_query);
     var title = "Splight";
     if(tags.length) {
       title = "Splight: " + tags.map(x => tag_names[x]).join(", ");
@@ -179,9 +185,7 @@
     $("a.tagged").each(function() {
       var a = $(this);
       var uri = new URI(a.prop("href"));
-      uri.search(function(data) {
-        data.tags = tags;
-      });
+      uri.search(fix_query);
       a.prop("href", uri.toString());
     });
   }
