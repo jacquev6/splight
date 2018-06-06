@@ -45,10 +45,8 @@ def check_local_links(root_dir_name, all_files):
     aux("/ads/")
     aux("/CNAME")
     aux("/.nojekyll")
-    for root in ["", "/admin"]:
-        aux("{}/".format(root))
-        # @todo Remove when days are linked from main site
-        aux("{}/reims/2018/mai/28/".format(root))
+    aux("/")
+    aux("/admin/")
 
     for url in served_urls - reacheable:
         yield "UNREACHABLE URL: {}".format(url)

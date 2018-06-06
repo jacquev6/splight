@@ -169,88 +169,10 @@ class YearGenerator(Generator):
     def run(self):
         # @todo self.render(template="city/year.html")
 
-        first_month = max(self.context.first_day, datetime.date(self.context.year, 1, 1)).month
-        last_month = min(self.context.last_day, datetime.date(self.context.year, 12, 31)).month
-        for month in range(first_month, last_month + 1):
-            MonthGenerator(parent=self, month=month).run()
-
         first_week = max(self.context.first_day, datetime.date(self.context.year, 1, 1)).isocalendar()[1]
         last_week = min(self.context.last_day, datetime.date(self.context.year, 12, 31)).isocalendar()[1]
         for week in range(first_week, last_week + 1):
             WeekGenerator(parent=self, week=week).run()
-
-
-class MonthGenerator(Generator):
-    def __init__(self, *, parent, month):
-        super().__init__(
-            parent=parent,
-            slug=months[month],
-            add_to_context=dict(
-                month=month,
-            ),
-        )
-
-    def run(self):
-        # @todo self.render(template="city/year/month.html")
-
-        first_day = max(self.context.first_day, datetime.date(self.context.year, self.context.month, 1)).day
-        last_day = min(
-            self.context.last_day,
-            datetime.date(
-                self.context.year,
-                self.context.month,
-                calendar.monthrange(self.context.year, self.context.month)[1],
-            ),
-        ).day
-        for day in range(first_day, last_day + 1):
-            DayGenerator(parent=self, day=day).run()
-
-
-class DayGenerator(Generator):
-    def __init__(self, *, parent, day):
-        date = datetime.date(parent.context.year, parent.context.month, day)
-        previous_day = NS(date=date - datetime.timedelta(days=1))
-        if previous_day.date < parent.context.first_day:
-            previous_day = None
-        next_day = NS(date=date + datetime.timedelta(days=1))
-        if next_day.date > parent.context.last_day:
-            next_day = None
-
-        events_by_date = {}
-        for (day, day_events) in itertools.groupby(parent.context.city.events, key=lambda e: e.datetime.date()):
-            events_by_date[day] = list(day_events)
-
-        events = []
-        for event in events_by_date.get(date, []):
-            time = event.datetime.time()
-            location = ""
-            if event.location:
-                location = event.location.name
-            artist = ""
-            if event.artist:
-                artist = event.artist.name
-            genre = ""
-            if event.artist:
-                genre = event.artist.genre
-            events.append(NS(
-                datetime=event.datetime,
-                time=time,
-                location=location,
-                artist=artist,
-                genre=genre,
-            ))
-        day = NS(date=date, previous_day=previous_day, next_day=next_day, events=events)
-
-        super().__init__(
-            parent=parent,
-            slug="{:02}".format(day.date.day),
-            add_to_context=dict(
-                day=day,
-            ),
-        )
-
-    def run(self):
-        self.render(template="city/year/month/day.html")
 
 
 class WeekGenerator(Generator):
