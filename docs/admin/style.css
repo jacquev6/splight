@@ -28,3 +28,7 @@ a {
     margin: 0;
     font-size: .8em;
 }
+
+.script {
+    display: none;
+}

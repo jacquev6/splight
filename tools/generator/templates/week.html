@@ -23,7 +23,7 @@
   <div class="col">
     <h1>Événements de la semaine du {{ week.start_date|format_date }}</h1>
 
-    <form id="display_tags" style="display: none">
+    <form class="script" id="display_tags">
   {% for section in sections %}
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" id="display_tag_{{ section.slug }}" data-tag="{{ section.slug }}">
@@ -161,7 +161,7 @@
   }
 
   $(function() {
-    $("#display_tags").show();
+    $(".script").show();
 
     put_tags_in_inputs(get_tags_from_location());
     put_tags_in_location(get_tags_from_inputs());

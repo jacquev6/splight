@@ -39,7 +39,7 @@
   <div class="col">
     <h1>Événements de la semaine du 2018/07/09</h1>
 
-    <form id="display_tags" style="display: none">
+    <form class="script" id="display_tags">
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" id="display_tag_musique" data-tag="musique">
         <label class="form-check-label" for="display_tag_musique">Musique</label>
@@ -248,7 +248,7 @@
   }
 
   $(function() {
-    $("#display_tags").show();
+    $(".script").show();
 
     put_tags_in_inputs(get_tags_from_location());
     put_tags_in_location(get_tags_from_inputs());
