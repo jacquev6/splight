@@ -39,12 +39,24 @@
   <div class="col">
     <h1>Événements de la semaine du 2018/05/21</h1>
 
-    <p id="display_tags" style="display: none">
-      Musique <input type="checkbox" data-tag="musique">
-      Cinéma <input type="checkbox" data-tag="cinema">
-      Théâtre <input type="checkbox" data-tag="theatre">
-      Expositions <input type="checkbox" data-tag="expositions">
-    </p>
+    <form id="display_tags" style="display: none">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="display_tag_musique" data-tag="musique">
+        <label class="form-check-label" for="display_tag_musique">Musique</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="display_tag_cinema" data-tag="cinema">
+        <label class="form-check-label" for="display_tag_cinema">Cinéma</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="display_tag_theatre" data-tag="theatre">
+        <label class="form-check-label" for="display_tag_theatre">Théâtre</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="display_tag_expositions" data-tag="expositions">
+        <label class="form-check-label" for="display_tag_expositions">Expositions</label>
+      </div>
+    </form>
 
     <div class="row">
       <div class="col"></div>

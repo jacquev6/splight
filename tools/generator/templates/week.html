@@ -23,11 +23,14 @@
   <div class="col">
     <h1>Événements de la semaine du {{ week.start_date|dt }}</h1>
 
-    <p id="display_tags" style="display: none">
-{% for section in sections %}
-      {{ section.title }} <input type="checkbox" data-tag="{{ section.slug }}">
-{% endfor %}
-    </p>
+    <form id="display_tags" style="display: none">
+  {% for section in sections %}
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="display_tag_{{ section.slug }}" data-tag="{{ section.slug }}">
+        <label class="form-check-label" for="display_tag_{{ section.slug }}">{{ section.title }}</label>
+      </div>
+  {% endfor %}
+    </form>
 
     <div class="row">
       <div class="col">{% if week.previous_week %}<p class="text-right"><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.start_date|dt("%Y-%W") }}/">&lt; Semaine précédente</a></p>{% endif %}</div>
