@@ -4,8 +4,8 @@
 <div class="row">
   {% for section in sections %}
   <div class="col-6 col-md-3">
-    <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.start_date|dt("%Y/%W") }}/?tags={{ section.slug }}"><img class="img-fluid" src="/{{ section.slug }}-rectangle.jpg" /></a></p>
-    <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.start_date|dt("%Y/%W") }}/?tags={{ section.slug }}">{{ section.title }}</a></p>
+    <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.start_date|dt("%Y-%W") }}/?tags={{ section.slug }}"><img class="img-fluid" src="/{{ section.slug }}-rectangle.jpg" /></a></p>
+    <p><a href="{{ root_path }}/{{ city.slug }}/{{ generation.week.start_date|dt("%Y-%W") }}/?tags={{ section.slug }}">{{ section.title }}</a></p>
   </div>
   {% endfor %}
 </div>

@@ -160,7 +160,7 @@ class YearGenerator(Generator):
     def __init__(self, *, parent, year):
         super().__init__(
             parent=parent,
-            slug=str(year),
+            slug="",
             add_to_context=dict(
                 year=year,
             ),
@@ -172,11 +172,11 @@ class YearGenerator(Generator):
         first_week = max(self.context.first_day, datetime.date(self.context.year, 1, 1)).isocalendar()[1]
         last_week = min(self.context.last_day, datetime.date(self.context.year, 12, 31)).isocalendar()[1]
         for week in range(first_week, last_week + 1):
-            WeekGenerator(parent=self, week=week).run()
+            WeekGenerator(parent=self, year=self.context.year, week=week).run()
 
 
 class WeekGenerator(Generator):
-    def __init__(self, *, parent, week):
+    def __init__(self, *, parent, year, week):
         start_date = dateutils.iso_to_gregorian(parent.context.year, week, 1)
         previous_week = NS(start_date=start_date - datetime.timedelta(days=7))
         if previous_week.start_date < dateutils.previous_week_day(parent.context.first_day, 0):
@@ -216,14 +216,14 @@ class WeekGenerator(Generator):
 
         super().__init__(
             parent=parent,
-            slug="{:02}".format(week),
+            slug="{:04}-{:02}".format(year, week),
             add_to_context=dict(
                 week=NS(start_date=start_date, previous_week=previous_week, next_week=next_week, days=days),
             ),
         )
 
     def run(self):
-        self.render(template="city/year/week.html")
+        self.render(template="city/week.html")
 
 
 def format_datetime(dt, format=None):
