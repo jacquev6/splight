@@ -21,7 +21,7 @@
 
 <div class="row">
   <div class="col">
-    <h1>Événements de la semaine du {{ week.start_date|dt }}</h1>
+    <h1>Événements de la semaine du {{ week.start_date|format_date }}</h1>
 
     <form id="display_tags" style="display: none">
   {% for section in sections %}
@@ -40,11 +40,12 @@
     <div id="calendar">
       <noscript><dl>
   {% for day in week.days %}
-        <dt>{{ day.date|dt }}</dt>
-    {% if day.events %}
+        <dt>{{ day|format_date }}</dt>
+    {% set day_events = events.get(day, []) %}
+    {% if day_events %}
         <dd><ul>
-      {% for event in day.events %}
-          <li>{{ event.time|dt }}, {{ event.location }}&nbsp;: {{ event.artist }} ({{ event.genre }})</li>
+      {% for event in day_events %}
+          <li>{{ event.datetime|format_time }}, {{ event.location }}&nbsp;: {{ event.artist }} ({{ event.genre }})</li>
       {% endfor %}
         </ul></dd>
     {% else %}
@@ -134,7 +135,8 @@
 
   var all_events = [
   {% for day in week.days %}
-    {% for event in day.events %}
+    {% set day_events = events.get(day, []) %}
+    {% for event in day_events %}
     {
       title: "{{ event.location }}: {{ event.artist }} ({{ event.genre }})",
       start: "{{ event.datetime }}",

@@ -16,19 +16,6 @@ class NS(dict):
         self.__dict__.update(kwargs)
 
 
-def full_day_info(dt):
-    assert isinstance(dt, datetime.date)
-    return NS(
-        date=dt,
-        week=NS(
-            start_date=dateutils.previous_week_day(dt, 0),
-            slug="{0:04}-{1:02}".format(*dt.isocalendar()),
-            year=dt.isocalendar()[0],
-            index=dt.isocalendar()[1],
-        ),
-    )
-
-
 class Generator:
     def __init__(self, *, parent, slug, add_to_context):
         self.__parent = parent
@@ -54,6 +41,7 @@ class Generator:
 
 class RootGenerator(Generator):
     def __init__(self, *, destination_directory, data, environment):
+        today = datetime.date.today()
         super().__init__(
             parent=None,
             slug=destination_directory,
@@ -61,7 +49,7 @@ class RootGenerator(Generator):
                 cities=data.cities,
                 # @todo Remove generation date from context:
                 # generate site independently from generation date, and fix it with JavaScript
-                generation=full_day_info(datetime.date.today()),
+                generation=NS(date=today, week=NS(slug=today.strftime("%Y-%W"))),
             ),
         )
 
@@ -119,53 +107,10 @@ class VersionGenerator(Generator):
 
 class CityGenerator(Generator):
     def __init__(self, *, parent, city, weeks_count):
-        first_day = min(city.events[0].datetime.date(), parent.context.generation.date)
-        last_week_start_date = parent.context.generation.week.start_date + datetime.timedelta(weeks=weeks_count - 1)
-        last_day = last_week_start_date + datetime.timedelta(days=6)
-
-        super().__init__(
-            parent=parent,
-            slug=city.slug,
-            add_to_context=dict(
-                city=city,
-                sections=city.tags,
-                events=city.events,
-                first_day=first_day,
-                last_day=last_day,
-            ),
-        )
-
-    def run(self):
-        self.render(template="city.html")
-
-        first_year = self.context.first_day.year
-        last_year = self.context.last_day.year
-        for year in range(first_year, last_year + 1):
-            first_week = max(self.context.first_day, datetime.date(year, 1, 1)).isocalendar()[1]
-            last_week = min(self.context.last_day, datetime.date(year, 12, 31)).isocalendar()[1]
-            for week in range(first_week, last_week + 1):
-                WeekGenerator(parent=self, year=year, week=week).run()
-
-
-class WeekGenerator(Generator):
-    def __init__(self, *, parent, year, week):
-        start_date = dateutils.iso_to_gregorian(year, week, 1)
-        previous_week = NS(slug="{0:04}-{1:02}".format(*(start_date - datetime.timedelta(days=7)).isocalendar()))
-        if start_date - datetime.timedelta(days=7) < dateutils.previous_week_day(parent.context.first_day, 0):
-            previous_week = None
-        next_week = NS(slug="{0:04}-{1:02}".format(*(start_date + datetime.timedelta(days=7)).isocalendar()))
-        if start_date + datetime.timedelta(days=7) > parent.context.last_day:
-            next_week = None
-
-        events_by_date = {}
-        for (day, day_events) in itertools.groupby(parent.context.city.events, key=lambda e: e.datetime.date()):
-            events_by_date[day] = list(day_events)
-
-        days = []
-        for i in range(7):
-            date = start_date + datetime.timedelta(days=i)
-            events = []
-            for event in events_by_date.get(date, []):
+        events = dict()
+        for (day, day_events) in itertools.groupby(city.events, key=lambda e: e.datetime.date()):
+            events[day] = []
+            for event in day_events:
                 time = event.datetime.time()
                 location = ""
                 if event.location:
@@ -176,39 +121,82 @@ class WeekGenerator(Generator):
                 genre = ""
                 if event.artist:
                     genre = event.artist.genre
-                events.append(NS(
+                events[day].append(NS(
                     datetime=event.datetime,
-                    time=time,
                     location=location,
                     artist=artist,
                     genre=genre,
                     tags=event.tags,
                 ))
-            days.append(NS(date=date, events=events))
 
         super().__init__(
             parent=parent,
-            slug="{:04}-{:02}".format(year, week),
+            slug=city.slug,
             add_to_context=dict(
-                week=NS(start_date=start_date, previous_week=previous_week, next_week=next_week, days=days),
+                city=city,
+                sections=city.tags,
+                events=events,
             ),
         )
+        self.__weeks_count = weeks_count
+
+    def run(self):
+        self.render(template="city.html")
+
+        for week in self.__make_weeks(self.context.city.events):
+            WeekGenerator(parent=self, week=week).run()
+
+    def __make_weeks(self, events):
+        weeks = [self.__make_week(start_date) for start_date in self.__generate_start_dates(events)]
+
+        for i in range(1, len(weeks)):
+            # previous and next_week are dict instead of NS. This is fine for now.
+            weeks[i]["previous_week"] = weeks[i - 1]
+            weeks[i - 1]["next_week"] = weeks[i]
+
+        return [NS(**week) for week in weeks]
+
+    def __make_week(self, start_date):
+        return dict(
+            start_date=start_date,
+            slug=start_date.strftime("%Y-%W"),
+            previous_week=None,
+            next_week=None,
+            days=[start_date + datetime.timedelta(days=i) for i in range(7)],
+        )
+
+    def __generate_start_dates(self, events):
+        start_date = dateutils.previous_week_day(events[0].datetime.date(), 0)
+        last_day = min(
+            events[-1].datetime.date(),
+            (
+                dateutils.previous_week_day(self.context.generation.date, 0)
+                + datetime.timedelta(weeks=self.__weeks_count, days=-1)
+            ),
+        )
+        while start_date <= last_day:
+            yield start_date
+            start_date += datetime.timedelta(days=7)
+
+
+class WeekGenerator(Generator):
+    def __init__(self, *, parent, week):
+        super().__init__(parent=parent, slug=week.slug, add_to_context=dict(week=week))
 
     def run(self):
         self.render(template="week.html")
 
 
-def format_datetime(dt):
-    if isinstance(dt, datetime.date):
-        format = "%Y/%m/%d"  # @todo Fix format to "15 janvier 2018"
-    elif isinstance(dt, datetime.time):
-        if dt.minute:
-            format = "%Hh%M"
-        else:
-            format = "%Hh"
+def format_date(d):
+    return d.strftime("%Y/%m/%d")  # @todo Fix format to "15 janvier 2018"
+
+
+def format_time(t):
+    if t.minute:
+        format = "%Hh%M"
     else:
-        assert False, ("Not a datetime:", dt)
-    return dt.strftime(format)
+        format = "%Hh"
+    return t.strftime(format)
 
 
 def generate(*, data_directory, destination_directory):
@@ -221,7 +209,8 @@ def generate(*, data_directory, destination_directory):
         lstrip_blocks=True,
         undefined=jinja2.StrictUndefined,
     )
-    environment.filters["dt"] = format_datetime
+    environment.filters["format_date"] = format_date
+    environment.filters["format_time"] = format_time
 
     RootGenerator(
         destination_directory=destination_directory,
