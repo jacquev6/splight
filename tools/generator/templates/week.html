@@ -24,10 +24,9 @@
     <h1>Événements de la semaine du {{ week.start_date|dt }}</h1>
 
     <p id="display_tags" style="display: none">
-      Musique <input type="checkbox" data-tag="musique">
-      Cinéma <input type="checkbox" data-tag="cinema">
-      Théâtre <input type="checkbox" data-tag="theatre">
-      Expositions <input type="checkbox" data-tag="expositions">
+{% for section in sections %}
+      {{ section.title }} <input type="checkbox" data-tag="{{ section.slug }}">
+{% endfor %}
     </p>
 
     <div class="row">
@@ -69,10 +68,9 @@
 {% block script %}
 <script>
   var tag_names = {
-    musique: "musique",
-    cinema: "cinéma",
-    theatre: "théâtre",
-    expositions: "expositions",
+{% for section in sections %}
+    {{ section.slug }}: "{{ section.title|lower }}",
+{% endfor %}
   };
 
   function get_tags_from_location() {
