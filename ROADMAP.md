@@ -1,213 +1,217 @@
-* Agenda sur un jour
-* Agenda sur trois jours
-* Couleurs différentes pour les événements des différentes catégories. Avec légende là où on coche.
+À préciser :
+
+- Agenda sur un jour
+- Agenda sur trois jours
 
 
-En tant que visiteur, je ne veux plus réfléchir pour savoir à quelle semaine se rapporte ce que je vois
-=======================================================================================================
+Définition des rôles
+====================
 
-Problème
---------
+- développeur : modifie le dossier "tools"
+- web-master : modifie le dossier "data"
+- spectateurs : consultent le site pour trouver un spectacle à aller voir
+- organisateurs : veulent faire apparaître leurs spectacles sur le site
+
+
+User-stories
+============
+
+En tant que développeur, je veux que la génération du site soit une fonction pure des data
+------------------------------------------------------------------------------------------
+
+### Problème
+
+Le site a une date de publication. Cela a été implémenté en faisant dépendre le site généré de la date de génération.
+Cela rend difficile la validation manuelle du site généré après une modification du générateur :
+un changement peut venir de cette modification, ou simplement de la nouvelle date de génération.
+
+### Solution(s)
+
+Générer le site uniquement en fonction des data, et implémenter la date de publication en JavaScript.
+
+
+En tant que spectateur, je ne veux plus réfléchir pour savoir à quelle semaine se rapporte ce que je vois
+---------------------------------------------------------------------------------------------------------
+
+### Problème
 
 Afficher la date est certes parfaitement explicite, mais demande une certaine gymnastique cérébrale.
 
-Solution(s)
------------
+### Solution(s)
 
 Afficher "cette semaine", "la semaine prochaine", "dans 15 jours", "dans 3 semaines", "dans un mois", etc.
 
 
-En tant que visiteur, je veux des détails sur les événements
-============================================================
+En tant que spectateur, je veux des détails sur les événements
+--------------------------------------------------------------
 
-Problème
---------
+### Problème
 
 (évident, existe seulement au stade préliminaire)
 
 Solution
 --------
 
-Ajouter aux événements une boite de dialogue affichant:
+Ajouter aux événements une boite de dialogue affichant :
 
-- les détails du lieu:
+- les détails du lieu :
     - adresse, plan de situation, photo
     - site web
     - heure d'ouverture
     - modalités d'admission
-    - modalités de réservation (pour les resto/bars)
-- les détails du spectacle:
-    - description/résumé
+    - modalités de réservation (pour les resto / bars)
+- les détails du spectacle :
+    - description / résumé
     - public ciblé
     - site web
     - modalité de réservation
     - autres représentations
-- les détails des artistes:
-    - description/résumé
+- les détails des artistes :
+    - description / résumé
     - site web
 
 
-En tant que visiteur, je veux les horaires de cinéma
-====================================================
+En tant que spectateur, je veux les horaires de cinéma
+------------------------------------------------------
 
-Problème
---------
+### Problème
 
 Les horaires de cinéma ne sont pas disponibles à l'avance.
 Ils sont publiés le mercredi matin.
 
-Solution(s)
------------
+### Solution(s)
 
 Peut-être automatiser la récupération sur AlloCiné? https://github.com/search?q=allocine
-Mais ça ne serait jamais fiable de manière pérenne: on serait toujours sujet aux changements faits par AlloCiné.
+Mais ça ne serait jamais fiable de manière pérenne : on serait toujours sujet aux changements faits par AlloCiné.
 
 Se renseigner auprès des cinémas pour savoir comment leurs horaires arrivent sur AlloCiné.
 Peut-être peut-on se brancher dans le circuit?
 
 
-En tant que visiteur, je veux que les horaires de cinéma soient lisibles
-========================================================================
+En tant que spectateur, je veux que les horaires de cinéma soient lisibles
+--------------------------------------------------------------------------
 
-Problème
---------
+### Problème
 
 Les séances de cinéma sont répétées un grand nombre de fois.
 Les afficher naïvement comme les autres événements leur donnerait une trop grande importance.
 
-Solution(s)
------------
+### Solution(s)
 
 ?
 Peut-être on met juste des liens vers les pages AlloCiné des cinémas ?
 
 
-En tant que visiteur, je veux que les horaires des expositions soient lisibles
-==============================================================================
+En tant que spectateur, je veux que les horaires des expositions soient lisibles
+--------------------------------------------------------------------------------
 
-Problème
---------
+### Problème
 
 Les expositions durent de plusieurs jours à plusieurs semaines.
 On ne peut pas les afficher comme les événements avec une heure de début dans l'agenda.
 
-Solution(s)
------------
+### Solution(s)
 
 
-En tant que webmaster, je veux que mes visiteurs explorent le site
-==================================================================
+En tant que web-master, je veux que mes visiteurs explorent le site
+-------------------------------------------------------------------
 
-Problème
---------
+### Problème
 
 Les visiteurs se contentent de regarder ce qu'ils connaissent déjà.
 Il faut aiguiller leur curiosité.
 
-Solution(s)
------------
+### Solution(s)
 
 Cacher des easter-eggs sur le site, et offrir des entrées et places gratuites aux visiteurs qui les découvrent.
 
 
-En tant que webmaster, je veux fidéliser mes visiteurs
-======================================================
+En tant que web-master, je veux fidéliser mes visiteurs
+-------------------------------------------------------
 
-Problème
---------
+### Problème
 
-Les visiteurs ne viennent que très occasionellement.
+Les visiteurs ne viennent que très occasionnellement.
 
-Solution(s)
------------
+### Solution(s)
 
-Organiser un concours de reconnaissance de photos (détails d'oeuvres d'art, de films, de monuments, etc.).
+Organiser un concours de reconnaissance de photos (détails d’œuvres d'art, de films, de monuments, etc.).
 Mettre les épreuves à disposition pendant quelques jours, tous les quelques jours.
-Lots: entrées et places gratuites.
+Lots : entrées et places gratuites.
 
 
-En tant qu'organisateur, je veux informer le webmaster d'un événement
-=====================================================================
+En tant qu'organisateur, je veux informer le web-master d'un événement
+---------------------------------------------------------------------
 
-Problème
---------
+### Problème
 
-Le webmaster ne peut pas tout savoir
+Le web-master ne peut pas tout savoir
 
-Solution(s)
------------
+### Solution(s)
 
-Une page de contact permet d'envoyer des informations au webmaster.
+Une page de contact permet d'envoyer des informations au web-master.
 
 
-En tant que visiteur, je veux être averti suffisamment à l'avance pour les événements demandant une réservation anticipée
-=========================================================================================================================
+En tant que spectateur, je veux être averti suffisamment à l'avance pour les événements demandant une réservation anticipée
+---------------------------------------------------------------------------------------------------------------------------
 
-Problème
---------
+### Problème
 
 La vue par calendrier limité à 5 semaines ne permet pas de voir les événements qui sont complets des mois à l'avance
 (p. ex. les gros concerts de groupes célèbres).
 
-Solution(s)
------------
+### Solution(s)
 
 Afficher de manière très visible (page d'accueil?) ces événements avant l'ouverture des réservations.
 
 
-En tant que webmaster, je veux monétiser le site
-================================================
+En tant que web-master, je veux monétiser le site
+-------------------------------------------------
 
-Problème
---------
+### Problème
 
 L'argent, ça ne fait pas le bonheur. Mais bon...
 
-Solution(s)
------------
+### Solution(s)
 
 Afficher de la publicité. Ciblée en fonction des tags visités. (Pas nécessairement besoin de tracker le visiteur :
 ça peut juste vouloir dire qu'on met de la pub pour des concerts sur la page musique,
 et de la pub plus générique (restos, bars, etc.) sur les pages d'agenda agrégé.)
 
 
-En tant que visiteur, je veux une diversité de catégories
-=========================================================
+En tant que spectateur, je veux une diversité de catégories
+-----------------------------------------------------------
 
-Problème
---------
+### Problème
 
-Les visiteurs peuvent avoir des goûts très variés et spécifiques.
+Les spectateurs peuvent avoir des goûts très variés et spécifiques.
 
-Solution(s)
------------
+### Solution(s)
 
-Les catégories identifiées:
+Les catégories identifiées :
 
-    - musique (concerts, opéras au ciné, festivals, etc.)
-    - théâtre
-    - spectacles (danse, humour, etc.)
-    - cinéma (associations cinéphiles, projections exceptionnelles, cinémas conventionnels, etc.)
-    - animations (dans la rue: e.g. semaine de l'Italie)
-    - expositions
-    - rencontres et débat (conférences, débats, dédicaces, etc.)
-    - salons et forums (dont portes ouvertes)
-    - au vert / plein air / sport populaire ? (nom pas encore fixé) (randonnée, course à pied, géocatching, course à vélo, etc.)
-    - patrimoine (monuments visitables en permanence, visites exceptionnelles, etc.)
-    - brocantes
-    - avec les enfants
+- musique (concerts, opéras au ciné, festivals, etc.)
+- théâtre
+- spectacles (danse, humour, etc.)
+- cinéma (associations cinéphiles, projections exceptionnelles, cinémas conventionnels, etc.)
+- animations (dans la rue : e.g. semaine de l'Italie)
+- expositions
+- rencontres et débat (conférences, débats, dédicaces, etc.)
+- salons et forums (dont portes ouvertes)
+- au vert / plein air / sport populaire ? (nom pas encore fixé) (randonnée, course à pied, géocatching, course à vélo, etc.)
+- patrimoine (monuments visitables en permanence, visites exceptionnelles, etc.)
+- brocantes
+- avec les enfants
 
 
-An tant que webmaster, je veux mettre certains événements dans plusieurs catégories
-===================================================================================
+An tant que web-master, je veux mettre certains événements dans plusieurs catégories
+-----------------------------------------------------------------------------------
 
-Problème
---------
+### Problème
 
 Certains événements ont leur place dans plusieurs catégories. Par exemple, un opéra dans musique et théâtre,
 ou un ballet dans musique et danse. La catégorie "avec les enfants" contient beaucoup d'événements des autres catégories.
 
-Solution(s)
------------
+### Solution(s)
 
 Utiliser une notion plus générale de "tags". Les catégories sont simplement un sous-ensemble des tags.
