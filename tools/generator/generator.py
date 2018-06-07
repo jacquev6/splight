@@ -208,7 +208,7 @@ def format_date(d):
         "juillet", "août", "septembre", "octobre", "novembre", "décembre",
     ]
     days = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
-    return d.strftime("{} %d {} %Y".format(days[d.weekday()], months[d.month]))
+    return d.strftime("{} %d {} %Y".format(days[d.weekday()], months[d.month - 1]))
 
 
 def format_time(t):
