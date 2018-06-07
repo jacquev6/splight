@@ -42,6 +42,19 @@ Afficher la date est certes parfaitement explicite, mais demande une certaine gy
 Afficher "cette semaine", "la semaine prochaine", "dans 15 jours", "dans 3 semaines", "dans un mois", etc.
 
 
+En tant que spectateur, je veux connaître la durée des événements
+-----------------------------------------------------------------
+
+### Problème
+
+Savoir à quelle heure c'est, c'est bien. Savoir jusqu'à quelle heure ça va durer, c'est mieux.
+
+### Solution(s)
+
+Data : ajouter un champ "duration".
+Générateur : calculer la date de fin et l'ajouter à l'event FullCalendar.
+
+
 En tant que spectateur, je veux des détails sur les événements
 --------------------------------------------------------------
 
