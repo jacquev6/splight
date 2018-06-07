@@ -40,19 +40,19 @@
     <h1>Semaine du lundi 18 juillet 2018</h1>
 
     <form class="script" id="display_tags">
-      <div class="form-check form-check-inline">
+      <div class="form-check form-check-inline display_checkbox" style="border-color: #7f3f3f; background-color: #e5a0a0">
         <input class="form-check-input" type="checkbox" id="display_tag_musique" data-tag="musique">
         <label class="form-check-label" for="display_tag_musique">Musique</label>
       </div>
-      <div class="form-check form-check-inline">
+      <div class="form-check form-check-inline display_checkbox" style="border-color: #5f7f3f; background-color: #c3e5a0">
         <input class="form-check-input" type="checkbox" id="display_tag_cinema" data-tag="cinema">
         <label class="form-check-label" for="display_tag_cinema">Cinéma</label>
       </div>
-      <div class="form-check form-check-inline">
+      <div class="form-check form-check-inline display_checkbox" style="border-color: #3f7f7f; background-color: #a0e5e5">
         <input class="form-check-input" type="checkbox" id="display_tag_theatre" data-tag="theatre">
         <label class="form-check-label" for="display_tag_theatre">Théâtre</label>
       </div>
-      <div class="form-check form-check-inline">
+      <div class="form-check form-check-inline display_checkbox" style="border-color: #5f3f7f; background-color: #c3a0e5">
         <input class="form-check-input" type="checkbox" id="display_tag_expositions" data-tag="expositions">
         <label class="form-check-label" for="display_tag_expositions">Expositions</label>
       </div>
@@ -224,26 +224,36 @@
       title: "Lieu de test B: Artiste de test C (Genre Tutu)",
       start: "2018-06-18 19:30:00",
       tags: new Set(["cinema"]),
+      backgroundColor: "#c3e5a0",
+      borderColor: "#5f7f3f",
     },
     {
       title: "Lieu de test C: Artiste de test A (Genre Toto)",
       start: "2018-06-19 20:00:00",
       tags: new Set(["theatre"]),
+      backgroundColor: "#a0e5e5",
+      borderColor: "#3f7f7f",
     },
     {
       title: "Lieu de test A: Artiste de test B (Genre Titi)",
       start: "2018-06-21 19:00:00",
       tags: new Set(["musique"]),
+      backgroundColor: "#e5a0a0",
+      borderColor: "#7f3f3f",
     },
     {
       title: "Lieu de test B: Artiste de test C (Genre Tutu)",
       start: "2018-06-22 19:30:00",
       tags: new Set(["cinema"]),
+      backgroundColor: "#c3e5a0",
+      borderColor: "#5f7f3f",
     },
     {
       title: "Lieu de test C: Artiste de test A (Genre Toto)",
       start: "2018-06-23 20:00:00",
       tags: new Set(["theatre"]),
+      backgroundColor: "#a0e5e5",
+      borderColor: "#3f7f7f",
     },
   ];
 

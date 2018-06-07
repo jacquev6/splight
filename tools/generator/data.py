@@ -50,19 +50,20 @@ def make_data(*, artists, cities):
 
 def make_city(artists, *, slug, name, tags, locations, events):
     locations = {slug: Location(slug=slug, **location) for (slug, location) in locations.items()}
-    events = sorted(generate_events(artists, locations, events), key=lambda e: e.datetime)
-    tags = sorted((Tag(slug=slug, **tag) for (slug, tag) in tags.items()), key=lambda tag: tag.display_order)
+    tags = {slug: Tag(slug=slug, **tag) for (slug, tag) in tags.items()}
+    events = sorted(generate_events(artists, locations, tags, events), key=lambda e: e.datetime)
+    tags = sorted(tags.values(), key=lambda tag: tag.display_order)
     return City(slug=slug, name=name, tags=tags, events=events)
 
 
-def generate_events(artists, locations, events):
+def generate_events(artists, locations, tags, events):
     for (tag, tagged_events) in events.items():
         for event in tagged_events:
-            yield from generate_tagged_events(artists, locations, tag, **event)
+            yield from generate_tagged_events(artists, locations, tag, tags, **event)
 
 
 def generate_tagged_events(
-    artists, locations, main_tag,
+    artists, locations, main_tag, tags_map,
     *,
     datetime=None, artist=None, location=None, tags=[], occurrences=None,
 ):
@@ -71,8 +72,8 @@ def generate_tagged_events(
 
     if isinstance(tags, str):
         tags = [tags]
-    tags = set(tags)
-    tags.add(main_tag)
+    tags = [tags_map[tag] for tag in sorted(set(tags))]
+    tags.append(tags_map[main_tag])
 
     if occurrences:
         datetimes = [o["datetime"] for o in occurrences]

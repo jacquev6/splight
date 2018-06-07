@@ -1,4 +1,5 @@
 import calendar
+import colorsys
 import datetime
 import itertools
 import os
@@ -107,6 +108,16 @@ class VersionGenerator(Generator):
 
 class CityGenerator(Generator):
     def __init__(self, *, parent, city, weeks_count):
+        tags = {
+            tag.slug: NS(
+                slug=tag.slug,
+                title=tag.title,
+                border_color=self.__make_color(h=i / len(city.tags), s=0.5, v=0.5),
+                background_color=self.__make_color(h=i / len(city.tags), s=0.3, v=0.9),
+            )
+            for (i, tag) in enumerate(city.tags)
+        }
+
         events = dict()
         for (day, day_events) in itertools.groupby(city.events, key=lambda e: e.datetime.date()):
             events[day] = []
@@ -126,7 +137,7 @@ class CityGenerator(Generator):
                     location=location,
                     artist=artist,
                     genre=genre,
-                    tags=event.tags,
+                    tags=[tags[tag.slug] for tag in event.tags],
                 ))
 
         super().__init__(
@@ -134,11 +145,15 @@ class CityGenerator(Generator):
             slug=city.slug,
             add_to_context=dict(
                 city=city,
-                sections=city.tags,
+                tags=[tags[tag.slug] for tag in city.tags],
                 events=events,
             ),
         )
         self.__weeks_count = weeks_count
+
+    @staticmethod
+    def __make_color(*, h, s, v):
+        return "#{}".format("".join("{:02x}".format(int(0xFF * x)) for x in colorsys.hsv_to_rgb(h, s, v)))
 
     def run(self):
         self.render(template="city.html")

@@ -24,10 +24,10 @@
     <h1>Semaine du {{ week.start_date|format_date }}</h1>
 
     <form class="script" id="display_tags">
-  {% for section in sections %}
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" id="display_tag_{{ section.slug }}" data-tag="{{ section.slug }}">
-        <label class="form-check-label" for="display_tag_{{ section.slug }}">{{ section.title }}</label>
+  {% for tag in tags %}
+      <div class="form-check form-check-inline display_checkbox" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
+        <input class="form-check-input" type="checkbox" id="display_tag_{{ tag.slug }}" data-tag="{{ tag.slug }}">
+        <label class="form-check-label" for="display_tag_{{ tag.slug }}">{{ tag.title }}</label>
       </div>
   {% endfor %}
     </form>
@@ -72,8 +72,8 @@
 {% block script %}
 <script>
   var tag_names = {
-{% for section in sections %}
-    {{ section.slug }}: "{{ section.title|lower }}",
+{% for tag in tags %}
+    {{ tag.slug }}: "{{ tag.title|lower }}",
 {% endfor %}
   };
 
@@ -140,7 +140,9 @@
     {
       title: "{{ event.location }}: {{ event.artist }} ({{ event.genre }})",
       start: "{{ event.datetime }}",
-      tags: new Set([{% for tag in event.tags %}"{{ tag }}"{% if not loop.last %}, {% endif %}{% endfor %}]),
+      tags: new Set([{% for tag in event.tags %}"{{ tag.slug }}"{% if not loop.last %}, {% endif %}{% endfor %}]),
+      backgroundColor: "{{ event.tags[0].background_color }}",
+      borderColor: "{{ event.tags[0].border_color }}",
     },
     {% endfor %}
   {% endfor %}

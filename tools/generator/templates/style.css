@@ -32,3 +32,9 @@ a {
 .script {
     display: none;
 }
+
+.display_checkbox {
+    padding: 2px;
+    border-radius: 3px;
+    border: solid 1px;
+}
