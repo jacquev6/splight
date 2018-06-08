@@ -173,11 +173,11 @@ class CityGenerator(Generator):
 
     def __make_week(self, start_date):
         return dict(
-            start_date=start_date,
             slug=start_date.strftime("%Y-%W"),
             previous_week=None,
             next_week=None,
             days=[start_date + datetime.timedelta(days=i) for i in range(7)],
+            day_after=start_date + datetime.timedelta(days=7),
         )
 
     def __generate_start_dates(self, events):

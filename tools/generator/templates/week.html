@@ -21,7 +21,7 @@
 
 <div class="row">
   <div class="col">
-    <h1>Semaine du {{ week.start_date|format_date }}</h1>
+    <h1>Semaine du {{ week.days[0]|format_date }}</h1>
 
     <form class="script" id="display_tags">
   {% for tag in tags %}
@@ -170,7 +170,7 @@
 
     $("#calendar").fullCalendar({
       header: false,
-      defaultDate: "{{ week.start_date }}",
+      defaultDate: "{{ week.days[0] }}",
       defaultView: "agendaWeek",
       locale: "fr",
       allDaySlot: false,
