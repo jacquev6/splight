@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/admin/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css">
 
-    <title>Splight - Reims</title>
+    <title>Splight</title>
   </head>
   <body>
     <div class="container">
@@ -187,12 +187,7 @@
     }
     var uri = new URI(window.location.href);
     uri.search(fix_query);
-    var title = "Splight";
-    if(tags.length) {
-      title = "Splight: " + tags.map(x => tag_names[x]).join(", ");
-    }
-    History.replaceState(null, title, uri.toString());
-    window.document.title = title;
+    History.replaceState(null, window.document.title, uri.toString());
     $("a.tagged").each(function() {
       var a = $(this);
       var uri = new URI(a.prop("href"));
