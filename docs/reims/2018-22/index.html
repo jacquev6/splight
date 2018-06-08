@@ -217,7 +217,9 @@
       $('#display_tags input[data-tag="' + tag + '"]').prop("checked", true);
     }
   }
+</script>
 
+<script>
   var all_events = [
     {
       title: "Lieu de test B: Artiste de test C (Genre Tutu)",
@@ -256,9 +258,9 @@
     },
   ];
 
-  function have_intersection(setA, setB) {
-    for(var elem of setB) {
-      if(setA.has(elem)) {
+  function have_intersection(xs, ys) {
+    for(var y of ys) {
+      if(xs.has(y)) {
         return true;
       }
     }
@@ -269,7 +271,9 @@
     var displayed_tags = new Set(get_tags_from_inputs());
     callback(all_events.filter(event => have_intersection(event.tags, displayed_tags)));
   }
+</script>
 
+<script>
   $(function() {
     $(".script").show();
 

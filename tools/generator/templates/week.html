@@ -72,9 +72,9 @@
 {% block script %}
 <script>
   var tag_names = {
-{% for tag in tags %}
+  {% for tag in tags %}
     {{ tag.slug }}: "{{ tag.title|lower }}",
-{% endfor %}
+  {% endfor %}
   };
 
   function get_tags_from_location() {
@@ -132,11 +132,12 @@
       $('#display_tags input[data-tag="' + tag + '"]').prop("checked", true);
     }
   }
+</script>
 
+<script>
   var all_events = [
   {% for day in week.days %}
-    {% set day_events = events.get(day, []) %}
-    {% for event in day_events %}
+    {% for event in events.get(day, []) %}
     {
       title: "{{ event.location }}: {{ event.artist }} ({{ event.genre }})",
       start: "{{ event.datetime }}",
@@ -148,9 +149,9 @@
   {% endfor %}
   ];
 
-  function have_intersection(setA, setB) {
-    for(var elem of setB) {
-      if(setA.has(elem)) {
+  function have_intersection(xs, ys) {
+    for(var y of ys) {
+      if(xs.has(y)) {
         return true;
       }
     }
@@ -161,7 +162,9 @@
     var displayed_tags = new Set(get_tags_from_inputs());
     callback(all_events.filter(event => have_intersection(event.tags, displayed_tags)));
   }
+</script>
 
+<script>
   $(function() {
     $(".script").show();
 
