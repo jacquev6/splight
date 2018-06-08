@@ -84,17 +84,17 @@ Le nom du fichier correspond au tag principal (voir "Tags" ci-dessous) des évé
 
 Exemple de fichier `musique.yml` (@todo Compléter):
 
-- datetime: 2018/06/04 19:00
-  artist: zinzin
-  location: cartonnerie
-- datetime: 2018/06/04 21:00
-  artist: beatles
-  location: fond_droite
-- artist: rolling_stones
-  location: erlon
-  occurrences:
-    - datetime: 2018/06/11 20:00
-    - datetime: 2018/06/20 20:00
+    - datetime: 2018/06/04 19:00
+      artist: zinzin
+      location: cartonnerie
+    - datetime: 2018/06/04 21:00
+      artist: beatles
+      location: fond_droite
+    - artist: rolling_stones
+      location: erlon
+      occurrences:
+        - datetime: 2018/06/11 20:00
+        - datetime: 2018/06/20 20:00
 
 Les champs "artist" et "location" contiennent respectivement une référence vers un artiste et une référence vers un lieu.
 Ces références sont les slugs (c.-à-d. les noms de base des fichiers) de cet artistes et ce lieu.
