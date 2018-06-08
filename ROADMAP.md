@@ -1,16 +1,16 @@
-À préciser :
-
-- Agenda sur un jour
-- Agenda sur trois jours
-
-
 Définition des rôles
 ====================
 
-- développeur : modifie le dossier "tools"
-- web-master : modifie le dossier "data"
-- spectateurs : consultent le site pour trouver un spectacle à aller voir
-- organisateurs : veulent faire apparaître leurs spectacles sur le site
+- développeur :
+    - s'occupe de la partie technique du site
+    - modifie le dossier "tools"
+- web-master :
+    - met à jour les événements affichés sur le site
+    - modifie le dossier "data"
+- spectateurs :
+    - consultent le site pour trouver un spectacle à aller voir
+- organisateurs :
+    - veulent faire apparaître leurs spectacles sur le site
 
 
 User-stories
