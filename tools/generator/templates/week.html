@@ -23,17 +23,32 @@
   <div class="col">
     <h1>Semaine du {{ week.days[0]|format_date }}</h1>
 
-    <form class="script" id="display_tags">
+    <div class="script"><div class="row"><div class="col"><form id="display_tags">
   {% for tag in tags %}
       <div class="form-check form-check-inline display_checkbox" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
         <input class="form-check-input" type="checkbox" id="display_tag_{{ tag.slug }}" data-tag="{{ tag.slug }}">
         <label class="form-check-label" for="display_tag_{{ tag.slug }}">{{ tag.title }}</label>
       </div>
   {% endfor %}
-    </form>
+    </form></div></div></div>
+
+    <div class="script"><div class="row"><div class="col"><form id="agenda_views">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="agenda_view" id="agenda_view_week" value="agendaWeek">
+        <label class="form-check-label" for="agenda_view_week">semaine</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="agenda_view" id="agenda_view_three_days" value="agendaThreeDays">
+        <label class="form-check-label" for="agenda_view_three_days">3 jours</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="agenda_view" id="agenda_view_day" value="agendaDay">
+        <label class="form-check-label" for="agenda_view_day">1 jour</label>
+      </div>
+    </form></div></div></div>
 
   {% macro previous_and_next_links() -%}
-    <div class="row">
+    <div class="previous_next_weeks_links"><div class="row">
       <div class="col">
         {%- if week.previous_week -%}
           <p class="text-right"><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.slug }}/">&lt; Semaine précédente</a></p>
@@ -44,7 +59,12 @@
           <p><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.slug }}/">Semaine suivante &gt;</a></p>
         {%- endif -%}
       </div>
-    </div>
+    </div></div>
+
+    <div class="previous_next_days_links script"><div class="row">
+      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="{{ root_path }}/{{ city.slug }}/{{ week.slug }}/">&lt; Jour précédent</a></p></div>
+      <div class="col"><p><a class="tagged next_day_link" href="{{ root_path }}/{{ city.slug }}/{{ week.slug }}/">Jour suivant &gt;</a></p></div>
+    </div></div>
   {%- endmacro %}
     {{ previous_and_next_links() }}
 
@@ -79,6 +99,12 @@
 
 {% block script %}
 <script>
+  function set_location(uri) {
+    History.replaceState(null, window.document.title, uri.toString());
+  }
+</script>
+
+<script>
   var tag_names = {
   {% for tag in tags %}
     {{ tag.slug }}: "{{ tag.title|lower }}",
@@ -107,14 +133,9 @@
         }
       }
     }
-    var uri = new URI(window.location.href);
-    uri.search(fix_query);
-    History.replaceState(null, window.document.title, uri.toString());
-    $("a.tagged").each(function() {
-      var a = $(this);
-      var uri = new URI(a.prop("href"));
-      uri.search(fix_query);
-      a.prop("href", uri.toString());
+    set_location(URI(window.location.href).search(fix_query));
+    $("a.tagged").prop("href", function(index, href) {
+      return URI(href).search(fix_query).toString();
     });
   }
 
@@ -138,8 +159,137 @@
 </script>
 
 <script>
+  function get_view_from_location() {
+    var fragment = URI.parse(window.location.href).fragment;
+    if(!fragment) {
+      return {view: "agendaWeek"};
+    }
+    fragment = fragment.split("+");
+    var range = (function (day) {
+      switch(fragment[0]) {
+        case "lundi":
+          return "{{ week.days[0] }}";
+        case "mardi":
+          return "{{ week.days[1] }}";
+        case "mercredi":
+          return "{{ week.days[2] }}";
+        case "jeudi":
+          return "{{ week.days[3] }}";
+        case "vendredi":
+          return "{{ week.days[4] }}";
+        case "samedi":
+          return "{{ week.days[5] }}";
+        case "dimanche":
+          return "{{ week.days[6] }}";
+      }
+    })(fragment[0]);
+    if(!range) {
+      return {view: "agendaWeek"};
+    }
+    var view = fragment.length > 1 && fragment[1] == "2" ? "agendaThreeDays" : "agendaDay";
+    return {
+      view: view,
+      range: range,
+      day: fragment[0],
+    };
+  }
+
+  function get_view_from_form() {
+    return {
+      view: $("input[name=agenda_view]:checked").val(),
+      // @todo Keep day when switching between agendaDay and agendaThreeDays
+      range: "{{ week.days[0] }}",
+      day: "lundi",
+    };
+  }
+
+  function set_view(calendar, view) {
+    calendar.changeView(view.view, view.range);
+    $("#agenda_views input[value=" + view.view + "]").prop("checked", true);
+    var fragment = (function(view) {
+      switch(view.view) {
+        case "agendaDay":
+          return view.day;
+        case "agendaThreeDays":
+          return view.day + "+2";
+        default:
+          return "";
+      }
+    })(view);
+    if(fragment) {
+      $(".previous_next_weeks_links").hide();
+      $(".previous_next_days_links").show();
+      var fragment_suffix = fragment.endsWith("+2") ? "+2" : "";
+      var previous_fragment = (function() {
+        switch(fragment.split("+")[0]) {
+          case "mardi": return "lundi"
+          case "mercredi": return "mardi"
+          case "jeudi": return "mercredi"
+          case "vendredi": return "jeudi"
+          case "samedi": return "vendredi"
+          case "dimanche": return "samedi"
+        }
+      })();
+      var next_fragment = (function() {
+        switch(fragment.split("+")[0]) {
+          case "lundi": return "mardi"
+          case "mardi": return "mercredi"
+          case "mercredi": return "jeudi"
+          case "jeudi": return "vendredi"
+          case "vendredi": return "samedi"
+          case "samedi": return "dimanche"
+        }
+      })();
+
+      if(previous_fragment) {
+        {% if not week.previous_week %}
+        $(".previous_day_link").show();
+        {% endif %}
+        $(".previous_day_link").prop("href", function(index, href) {
+          return URI(href).path("{{ root_path }}/{{ city.slug }}/{{ week.slug }}/").fragment(previous_fragment + fragment_suffix).toString();
+        });
+      } else {
+        {% if week.previous_week %}
+        $(".previous_day_link").prop("href", function(index, href) {
+          return URI(href).path("{{ root_path }}/{{ city.slug }}/{{ week.previous_week.slug }}/").fragment("dimanche" + fragment_suffix).toString();
+        });
+        {% else %}
+        $(".previous_day_link").hide();
+        {% endif %}
+      }
+
+      if(next_fragment) {
+        {% if not week.next_week %}
+        $(".next_day_link").show();
+        {% endif %}
+        $(".next_day_link").prop("href", function(index, href) {
+          return URI(href).path("{{ root_path }}/{{ city.slug }}/{{ week.slug }}/").fragment(next_fragment + fragment_suffix).toString();
+        });
+      } else {
+        {% if week.next_week %}
+        $(".next_day_link").prop("href", function(index, href) {
+          return URI(href).path("{{ root_path }}/{{ city.slug }}/{{ week.next_week.slug }}/").fragment("lundi" + fragment_suffix).toString();
+        });
+        {% else %}
+        $(".next_day_link").hide();
+        {% endif %}
+      }
+    } else {
+      $(".previous_next_weeks_links").show();
+      $(".previous_next_days_links").hide();
+    }
+    set_location(URI(window.location.href).fragment(fragment));
+  }
+</script>
+
+<script>
   var all_events = [
-  {% for day in week.days %}
+  {% if week.next_week %}
+    {% set days = week.days + week.next_week.days %}
+  {% else %}
+    {% set days = week.days %}
+  {% endif %}
+  {% for day in days %}
     {% for event in events.get(day, []) %}
     {
       title: "{{ event.location }}: {{ event.artist }} ({{ event.genre }})",
@@ -183,13 +333,28 @@
       eventLimit: true,
       scrollTime: "11:00:00",
       events: eventSourceFunction,
+      views: {
+        agendaThreeDays: {
+          type: "agenda",
+          duration: {days: 3},
+        },
+      },
     });
 
     var calendar = $('#calendar').fullCalendar('getCalendar');
 
+    set_view(calendar, get_view_from_location());
+
     $("#display_tags input").on("change", function() {
       put_tags_in_location(get_tags_from_inputs());
       calendar.refetchEventSources(calendar.getEventSources());
+    });
+
+    $("#agenda_views input").on("change", function() {
+      set_view(calendar, get_view_from_form());
+    });
+    $(window).on("hashchange", function() {
+      set_view(calendar, get_view_from_location());
     });
   });
 </script>

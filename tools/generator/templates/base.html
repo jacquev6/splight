@@ -68,6 +68,7 @@
 {% if additional_js is defined %}{% for js in additional_js %}
     <script src="{{ js }}" crossorigin="anonymous"></script>
 {% endfor %}{% endif %}
+
     <script>
       $(function() {
         if(window.location.href.includes("?debug")) {
@@ -78,6 +79,7 @@
         }
       });
     </script>
+
 {% block script %}
 {% endblock %}
   </body>
