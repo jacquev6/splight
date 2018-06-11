@@ -120,9 +120,11 @@ function initialize_week(config) {
     })();
     calendar.changeView(view_type + view_duration, config.days[first_day]);
 
+    $("#agenda_settings").toggle(view_type == "agenda");
     $(".previous_next_days_links").toggle(view_duration != "Week");
     $(".previous_next_weeks_links").toggle(view_duration == "Week");
 
+    calendar.option("slotEventOverlap", $("#display_settings input[name=overlap]").is(":checked"));
 
     calendar.refetchEventSources(calendar.getEventSources());
   }
