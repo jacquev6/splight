@@ -1,3 +1,11 @@
+- mettre une ligne d'options pour choisir le type d'affichages (liste, agenda, simple, etc.)
+- supprimer le deuxième ascenseur (sur le calendrier) (afficher tout le calendrier)
+- supprimer les heures vides avant le premier événement
+- réduire le jumbotron Splight
+- privatiser les données non affichées (GitHub et /admin)
+- supprimer le lien "semaine précédente" de la semaine actuelle
+
+
 Définition des rôles
 ====================
 
@@ -15,20 +23,6 @@ Définition des rôles
 
 User-stories
 ============
-
-En tant que développeur, je veux que la génération du site soit une fonction pure des data
-------------------------------------------------------------------------------------------
-
-### Problème
-
-Le site a une date de publication. Cela a été implémenté en faisant dépendre le site généré de la date de génération.
-Cela rend difficile la validation manuelle du site généré après une modification du générateur :
-un changement peut venir de cette modification, ou simplement de la nouvelle date de génération.
-
-### Solution(s)
-
-Générer le site uniquement en fonction des data, et implémenter la date de publication en JavaScript.
-
 
 En tant que spectateur, je ne veux plus réfléchir pour savoir à quelle semaine se rapporte ce que je vois
 ---------------------------------------------------------------------------------------------------------
@@ -228,3 +222,44 @@ ou un ballet dans musique et danse. La catégorie "avec les enfants" contient be
 ### Solution(s)
 
 Utiliser une notion plus générale de "tags". Les catégories sont simplement un sous-ensemble des tags.
+
+
+En tant que développeur, je veux gérer les dépendances du code JavaScript
+-------------------------------------------------------------------------
+
+### Problème
+
+Les dépendances JavaScript sont déjà nombreuses.
+Les lister manuellement dans les templates n'est pas fiable, et fonctionne différemment dans Node.js.
+
+### Solution(s)
+
+http://www.requirejs.org/ ?
+
+
+En tant que développeur, je veux que la génération du site soit une fonction pure des data
+------------------------------------------------------------------------------------------
+
+### Problème
+
+Le site a une date de publication. Cela a été implémenté en faisant dépendre le site généré de la date de génération.
+Cela rend difficile la validation manuelle du site généré après une modification du générateur :
+un changement peut venir de cette modification, ou simplement de la nouvelle date de génération.
+
+### Solution(s)
+
+Générer le site uniquement en fonction des data, et implémenter la date de publication en JavaScript.
+
+
+En tant que développeur, je veux valider le code JavaScript
+-----------------------------------------------------------
+
+### Problème
+
+JavaScript est un langage interprété. Les erreurs n’apparaissent que quand le code est activé, c'est à dire
+dans le navigateur des visiteurs. C'est trop tard dans le cycle de vie du site.
+
+### Solution(s)
+
+Tests automatiques. Peut-être utilisant https://github.com/jsdom/jsdom dans Node.js?
+Ça devrait permettre de valider les manipulations du DOM.
