@@ -67,6 +67,10 @@ def find_local_links(soup):
         yield link["href"]
     for img in soup.find_all("img"):
         yield img["src"]
+    for script in soup.find_all("script"):
+        src = script.get("src")
+        if src:
+            yield src
 
 
 def keep_interesting_links(file_name, links):
