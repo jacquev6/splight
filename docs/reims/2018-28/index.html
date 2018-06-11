@@ -37,7 +37,7 @@
 
 <div class="row">
   <div class="col">
-    <h1>Semaine du lundi 02 juillet 2018</h1>
+    <h1>Semaine du lundi 09 juillet 2018</h1>
 
     <div class="script"><div class="row"><div class="col"><form id="display_tags">
       <div class="form-check form-check-inline display_checkbox" style="border-color: #7f3f3f; background-color: #e5a0a0">
@@ -74,51 +74,48 @@
     </form></div></div></div>
 
     <div class="previous_next_weeks_links"><div class="row">
-      <div class="col"><p class="text-right"><a class="tagged" href="/reims/2018-26/">&lt; Semaine précédente</a></p></div>
-      <div class="col"><p><a class="tagged" href="/reims/2018-28/">Semaine suivante &gt;</a></p></div>
+      <div class="col"><p class="text-right"><a class="tagged" href="/reims/2018-27/">&lt; Semaine précédente</a></p></div>
+      <div class="col"></div>
     </div></div>
 
     <div class="previous_next_days_links script"><div class="row">
-      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="/reims/2018-27/">&lt; Jour précédent</a></p></div>
-      <div class="col"><p><a class="tagged next_day_link" href="/reims/2018-27/">Jour suivant &gt;</a></p></div>
+      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="/reims/2018-28/">&lt; Jour précédent</a></p></div>
+      <div class="col"><p><a class="tagged next_day_link" href="/reims/2018-28/">Jour suivant &gt;</a></p></div>
     </div></div>
 
     <div id="calendar">
       <noscript><dl>
-        <dt>lundi 02 juillet 2018</dt>
+        <dt>lundi 09 juillet 2018</dt>
         <dd>Rien de prévu.</dd>
-        <dt>mardi 03 juillet 2018</dt>
-        <dd><ul>
-          <li>20h, Lieu de test C&nbsp;: Artiste de test A (Genre Toto)</li>
-        </ul></dd>
-        <dt>mercredi 04 juillet 2018</dt>
-        <dd><ul>
-          <li>19h30, Lieu de test B&nbsp;: Artiste de test C (Genre Tutu)</li>
-        </ul></dd>
-        <dt>jeudi 05 juillet 2018</dt>
+        <dt>mardi 10 juillet 2018</dt>
         <dd>Rien de prévu.</dd>
-        <dt>vendredi 06 juillet 2018</dt>
+        <dt>mercredi 11 juillet 2018</dt>
         <dd><ul>
           <li>19h, Lieu de test A&nbsp;: Artiste de test B (Genre Titi)</li>
         </ul></dd>
-        <dt>samedi 07 juillet 2018</dt>
-        <dd>Rien de prévu.</dd>
-        <dt>dimanche 08 juillet 2018</dt>
+        <dt>jeudi 12 juillet 2018</dt>
         <dd><ul>
           <li>19h30, Lieu de test B&nbsp;: Artiste de test C (Genre Tutu)</li>
+        </ul></dd>
+        <dt>vendredi 13 juillet 2018</dt>
+        <dd><ul>
           <li>20h, Lieu de test C&nbsp;: Artiste de test A (Genre Toto)</li>
         </ul></dd>
+        <dt>samedi 14 juillet 2018</dt>
+        <dd>Rien de prévu.</dd>
+        <dt>dimanche 15 juillet 2018</dt>
+        <dd>Rien de prévu.</dd>
       </dl></noscript>
     </div>
 
     <div class="previous_next_weeks_links"><div class="row">
-      <div class="col"><p class="text-right"><a class="tagged" href="/reims/2018-26/">&lt; Semaine précédente</a></p></div>
-      <div class="col"><p><a class="tagged" href="/reims/2018-28/">Semaine suivante &gt;</a></p></div>
+      <div class="col"><p class="text-right"><a class="tagged" href="/reims/2018-27/">&lt; Semaine précédente</a></p></div>
+      <div class="col"></div>
     </div></div>
 
     <div class="previous_next_days_links script"><div class="row">
-      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="/reims/2018-27/">&lt; Jour précédent</a></p></div>
-      <div class="col"><p><a class="tagged next_day_link" href="/reims/2018-27/">Jour suivant &gt;</a></p></div>
+      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="/reims/2018-28/">&lt; Jour précédent</a></p></div>
+      <div class="col"><p><a class="tagged next_day_link" href="/reims/2018-28/">Jour suivant &gt;</a></p></div>
     </div></div>
   </div>
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
@@ -252,19 +249,19 @@
     var range = (function (day) {
       switch(fragment[0]) {
         case "lundi":
-          return "2018-07-02";
+          return "2018-07-09";
         case "mardi":
-          return "2018-07-03";
+          return "2018-07-10";
         case "mercredi":
-          return "2018-07-04";
+          return "2018-07-11";
         case "jeudi":
-          return "2018-07-05";
+          return "2018-07-12";
         case "vendredi":
-          return "2018-07-06";
+          return "2018-07-13";
         case "samedi":
-          return "2018-07-07";
+          return "2018-07-14";
         case "dimanche":
-          return "2018-07-08";
+          return "2018-07-15";
       }
     })(fragment[0]);
     if(!range) {
@@ -282,7 +279,7 @@
     return {
       view: $("input[name=agenda_view]:checked").val(),
       // @todo Keep day when switching between agendaDay and agendaThreeDays
-      range: "2018-07-02",
+      range: "2018-07-09",
       day: "lundi",
     };
   }
@@ -327,22 +324,21 @@
 
       if(previous_fragment) {
         $(".previous_day_link").prop("href", function(index, href) {
-          return URI(href).path("/reims/2018-27/").fragment(previous_fragment + fragment_suffix).toString();
+          return URI(href).path("/reims/2018-28/").fragment(previous_fragment + fragment_suffix).toString();
         });
       } else {
         $(".previous_day_link").prop("href", function(index, href) {
-          return URI(href).path("/reims/2018-26/").fragment("dimanche" + fragment_suffix).toString();
+          return URI(href).path("/reims/2018-27/").fragment("dimanche" + fragment_suffix).toString();
         });
       }
 
       if(next_fragment) {
+        $(".next_day_link").show();
         $(".next_day_link").prop("href", function(index, href) {
-          return URI(href).path("/reims/2018-27/").fragment(next_fragment + fragment_suffix).toString();
+          return URI(href).path("/reims/2018-28/").fragment(next_fragment + fragment_suffix).toString();
         });
       } else {
-        $(".next_day_link").prop("href", function(index, href) {
-          return URI(href).path("/reims/2018-28/").fragment("lundi" + fragment_suffix).toString();
-        });
+        $(".next_day_link").hide();
       }
     } else {
       $(".previous_next_weeks_links").show();
@@ -354,41 +350,6 @@
 
 <script>
   var all_events = [
-    {
-      title: "Lieu de test C: Artiste de test A (Genre Toto)",
-      start: "2018-07-03 20:00:00",
-      tags: new Set(["theatre"]),
-      backgroundColor: "#a0e5e5",
-      borderColor: "#3f7f7f",
-    },
-    {
-      title: "Lieu de test B: Artiste de test C (Genre Tutu)",
-      start: "2018-07-04 19:30:00",
-      tags: new Set(["cinema"]),
-      backgroundColor: "#c3e5a0",
-      borderColor: "#5f7f3f",
-    },
-    {
-      title: "Lieu de test A: Artiste de test B (Genre Titi)",
-      start: "2018-07-06 19:00:00",
-      tags: new Set(["musique"]),
-      backgroundColor: "#e5a0a0",
-      borderColor: "#7f3f3f",
-    },
-    {
-      title: "Lieu de test B: Artiste de test C (Genre Tutu)",
-      start: "2018-07-08 19:30:00",
-      tags: new Set(["cinema"]),
-      backgroundColor: "#c3e5a0",
-      borderColor: "#5f7f3f",
-    },
-    {
-      title: "Lieu de test C: Artiste de test A (Genre Toto)",
-      start: "2018-07-08 20:00:00",
-      tags: new Set(["theatre"]),
-      backgroundColor: "#a0e5e5",
-      borderColor: "#3f7f7f",
-    },
     {
       title: "Lieu de test A: Artiste de test B (Genre Titi)",
       start: "2018-07-11 19:00:00",
@@ -436,7 +397,7 @@
 
     $("#calendar").fullCalendar({
       header: false,
-      defaultDate: "2018-07-02",
+      defaultDate: "2018-07-09",
       defaultView: "agendaWeek",
       locale: "fr",
       allDaySlot: false,
