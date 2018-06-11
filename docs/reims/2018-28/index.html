@@ -166,6 +166,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.19.1/URI.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled/html5/native.history.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js" crossorigin="anonymous"></script>
+    <script src="/week.js" crossorigin="anonymous"></script>
 
     <script>
       $(function() {
@@ -179,255 +180,51 @@
     </script>
 
 <script>
-  function set_location(uri) {
-    History.replaceState(null, window.document.title, uri.toString());
-  }
-</script>
-
-<script>
-  var tag_names = {
-    musique: "musique",
-    cinema: "cinéma",
-    theatre: "théâtre",
-    expositions: "expositions",
-  };
-
-  function get_tags_from_location() {
-    var query = URI.parseQuery(URI.parse(window.location.href).query);
-    var tags = [];
-    for(var tag in tag_names) {
-      if(_.has(query, tag)) {
-        tags.push(tag);
-      }
-    }
-    return tags;
-  }
-
-  function put_tags_in_location(tags) {
-    tags = new Set(tags);
-    function fix_query(data) {
-      for(tag in tag_names) {
-        if(tags.has(tag)) {
-          data[tag] = null;
-        } else {
-          delete data[tag];
-        }
-      }
-    }
-    set_location(URI(window.location.href).search(fix_query));
-    $("a.tagged").prop("href", function(index, href) {
-      return URI(href).search(fix_query).toString();
-    });
-  }
-
-  function get_tags_from_inputs() {
-    var tags = [];
-    $("#display_tags input").each(function() {
-      var checkbox = $(this);
-      if(checkbox.prop("checked")) {
-        tags.push(checkbox.data("tag"));
-      }
-    });
-    return tags;
-  }
-
-  function put_tags_in_inputs(tags) {
-    $('#display_tags input').prop("checked", false);
-    for(var tag of tags) {
-      $('#display_tags input[data-tag="' + tag + '"]').prop("checked", true);
-    }
-  }
-</script>
-
-<script>
-  function get_view_from_location() {
-    var fragment = URI.parse(window.location.href).fragment;
-    if(!fragment) {
-      return {view: "agendaWeek"};
-    }
-    fragment = fragment.split("+");
-    var range = (function (day) {
-      switch(fragment[0]) {
-        case "lundi":
-          return "2018-07-09";
-        case "mardi":
-          return "2018-07-10";
-        case "mercredi":
-          return "2018-07-11";
-        case "jeudi":
-          return "2018-07-12";
-        case "vendredi":
-          return "2018-07-13";
-        case "samedi":
-          return "2018-07-14";
-        case "dimanche":
-          return "2018-07-15";
-      }
-    })(fragment[0]);
-    if(!range) {
-      return {view: "agendaWeek"};
-    }
-    var view = fragment.length > 1 && fragment[1] == "2" ? "agendaThreeDays" : "agendaDay";
-    return {
-      view: view,
-      range: range,
-      day: fragment[0],
-    };
-  }
-
-  function get_view_from_form() {
-    return {
-      view: $("input[name=agenda_view]:checked").val(),
-      // @todo Keep day when switching between agendaDay and agendaThreeDays
-      range: "2018-07-09",
-      day: "lundi",
-    };
-  }
-
-  function set_view(calendar, view) {
-    calendar.changeView(view.view, view.range);
-    $("#agenda_views input[value=" + view.view + "]").prop("checked", true);
-    var fragment = (function(view) {
-      switch(view.view) {
-        case "agendaDay":
-          return view.day;
-        case "agendaThreeDays":
-          return view.day + "+2";
-        default:
-          return "";
-      }
-    })(view);
-    if(fragment) {
-      $(".previous_next_weeks_links").hide();
-      $(".previous_next_days_links").show();
-      var fragment_suffix = fragment.endsWith("+2") ? "+2" : "";
-      var previous_fragment = (function() {
-        switch(fragment.split("+")[0]) {
-          case "mardi": return "lundi"
-          case "mercredi": return "mardi"
-          case "jeudi": return "mercredi"
-          case "vendredi": return "jeudi"
-          case "samedi": return "vendredi"
-          case "dimanche": return "samedi"
-        }
-      })();
-      var next_fragment = (function() {
-        switch(fragment.split("+")[0]) {
-          case "lundi": return "mardi"
-          case "mardi": return "mercredi"
-          case "mercredi": return "jeudi"
-          case "jeudi": return "vendredi"
-          case "vendredi": return "samedi"
-          case "samedi": return "dimanche"
-        }
-      })();
-
-      if(previous_fragment) {
-        $(".previous_day_link").prop("href", function(index, href) {
-          return URI(href).path("/reims/2018-28/").fragment(previous_fragment + fragment_suffix).toString();
-        });
-      } else {
-        $(".previous_day_link").prop("href", function(index, href) {
-          return URI(href).path("/reims/2018-27/").fragment("dimanche" + fragment_suffix).toString();
-        });
-      }
-
-      if(next_fragment) {
-        $(".next_day_link").show();
-        $(".next_day_link").prop("href", function(index, href) {
-          return URI(href).path("/reims/2018-28/").fragment(next_fragment + fragment_suffix).toString();
-        });
-      } else {
-        $(".next_day_link").hide();
-      }
-    } else {
-      $(".previous_next_weeks_links").show();
-      $(".previous_next_days_links").hide();
-    }
-    set_location(URI(window.location.href).fragment(fragment));
-  }
-</script>
-
-<script>
-  var all_events = [
-    {
-      title: "Lieu de test A: Artiste de test B (Genre Titi)",
-      start: "2018-07-11 19:00:00",
-      tags: new Set(["musique"]),
-      backgroundColor: "#e5a0a0",
-      borderColor: "#7f3f3f",
-    },
-    {
-      title: "Lieu de test B: Artiste de test C (Genre Tutu)",
-      start: "2018-07-12 19:30:00",
-      tags: new Set(["cinema"]),
-      backgroundColor: "#c3e5a0",
-      borderColor: "#5f7f3f",
-    },
-    {
-      title: "Lieu de test C: Artiste de test A (Genre Toto)",
-      start: "2018-07-13 20:00:00",
-      tags: new Set(["theatre"]),
-      backgroundColor: "#a0e5e5",
-      borderColor: "#3f7f7f",
-    },
-  ];
-
-  function have_intersection(xs, ys) {
-    for(var y of ys) {
-      if(xs.has(y)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function eventSourceFunction(start, end, timezone, callback) {
-    var displayed_tags = new Set(get_tags_from_inputs());
-    callback(all_events.filter(event => have_intersection(event.tags, displayed_tags)));
-  }
-</script>
-
-<script>
-  $(function() {
-    $(".script").show();
-
-    put_tags_in_inputs(get_tags_from_location());
-    put_tags_in_location(get_tags_from_inputs());
-
-    $("#calendar").fullCalendar({
-      header: false,
-      defaultDate: "2018-07-09",
-      defaultView: "agendaWeek",
-      locale: "fr",
-      allDaySlot: false,
-      eventLimit: true,
-      scrollTime: "11:00:00",
-      events: eventSourceFunction,
-      views: {
-        agendaThreeDays: {
-          type: "agenda",
-          duration: {days: 3},
+  initialize_week({
+    defaultDate: "2018-07-09",
+    all_events: [
+        {
+          title: "Lieu de test A: Artiste de test B (Genre Titi)",
+          start: "2018-07-11 19:00:00",
+          tags: new Set(["musique"]),
+          backgroundColor: "#e5a0a0",
+          borderColor: "#7f3f3f",
         },
-      },
-    });
-
-    var calendar = $('#calendar').fullCalendar('getCalendar');
-
-    set_view(calendar, get_view_from_location());
-
-    $("#display_tags input").on("change", function() {
-      put_tags_in_location(get_tags_from_inputs());
-      calendar.refetchEventSources(calendar.getEventSources());
-    });
-
-    $("#agenda_views input").on("change", function() {
-      set_view(calendar, get_view_from_form());
-    });
-    $(window).on("hashchange", function() {
-      set_view(calendar, get_view_from_location());
-    });
-  });
+        {
+          title: "Lieu de test B: Artiste de test C (Genre Tutu)",
+          start: "2018-07-12 19:30:00",
+          tags: new Set(["cinema"]),
+          backgroundColor: "#c3e5a0",
+          borderColor: "#5f7f3f",
+        },
+        {
+          title: "Lieu de test C: Artiste de test A (Genre Toto)",
+          start: "2018-07-13 20:00:00",
+          tags: new Set(["theatre"]),
+          backgroundColor: "#a0e5e5",
+          borderColor: "#3f7f7f",
+        },
+    ],
+    days: {
+      lundi: "2018-07-09",
+      mardi: "2018-07-10",
+      mercredi: "2018-07-11",
+      jeudi: "2018-07-12",
+      vendredi: "2018-07-13",
+      samedi: "2018-07-14",
+      dimanche: "2018-07-15",
+    },
+    tag_names: {
+      musique: "musique",
+      cinema: "cinéma",
+      theatre: "théâtre",
+      expositions: "expositions",
+    },
+    week_paths: {
+      previous: "/reims/2018-27/",
+      current: "/reims/2018-28/",
+    }
+  })
 </script>
   </body>
 </html>
