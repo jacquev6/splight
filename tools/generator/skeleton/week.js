@@ -188,7 +188,7 @@ function initialize_week(config) {
       locale: "fr",
       allDaySlot: false,
       eventLimit: true,
-      scrollTime: "11:00:00",
+      height: "auto",
       events: eventSourceFunction,
       views: {
         agendaThreeDays: {
