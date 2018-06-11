@@ -6,6 +6,7 @@
   "https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.19.1/URI.min.js",
   "https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled/html5/native.history.js",
   "https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js",
+  "http://kflorence.github.io/jquery-deserialize/src/jquery.deserialize.js",
   "/week.js",
 ] %}
 {% extends "base.html" %}
@@ -24,42 +25,45 @@
   <div class="col">
     <h1>Semaine du {{ week.days[0]|format_date }}</h1>
 
-    <div class="script"><div class="row"><div class="col"><form id="display_tags">
-  {% for tag in tags %}
-      <div class="form-check form-check-inline display_checkbox" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
-        <input class="form-check-input" type="checkbox" id="display_tag_{{ tag.slug }}" data-tag="{{ tag.slug }}">
-        <label class="form-check-label" for="display_tag_{{ tag.slug }}">{{ tag.title }}</label>
+    <div class="script"><div class="row"><div class="col"><form id="display_settings">
+      <div class="form-group">
+        {% for tag in tags %}
+        <div class="form-check form-check-inline display_checkbox" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
+          <input class="form-check-input" type="checkbox" name="tag" id="tag_{{ tag.slug }}" value="{{ tag.slug }}">
+          <label class="form-check-label" for="tag_{{ tag.slug }}">{{ tag.title }}</label>
+        </div>
+        {% endfor %}
       </div>
-  {% endfor %}
-    </form></div></div></div>
 
-    <div class="script"><div class="row"><div class="col"><form id="view_durations">
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="view_duration" id="view_duration_1_week" value="Week">
-        <label class="form-check-label" for="view_duration_1_week">1 semaine</label>
+      <div class="form-group">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_7" value="7" checked="checked">
+          <label class="form-check-label" for="view_duration_7">1 semaine</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_3" value="3">
+          <label class="form-check-label" for="view_duration_3">3 jours</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_1" value="1">
+          <label class="form-check-label" for="view_duration_1">1 jour</label>
+        </div>
       </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="view_duration" id="view_duration_3_days" value="ThreeDays">
-        <label class="form-check-label" for="view_duration_3_days">3 jours</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="view_duration" id="view_duration_1_day" value="Day">
-        <label class="form-check-label" for="view_duration_1_day">1 jour</label>
-      </div>
-    </form></div></div></div>
 
-    <div class="script"><div class="row"><div class="col"><form id="view_types">
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="view_type" id="view_type_agenda" value="agenda">
-        <label class="form-check-label" for="view_type_agenda">agenda</label>
+      <div class="form-group">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_type" id="view_type_basic" value="basic" checked="checked">
+          <label class="form-check-label" for="view_type_basic">basique</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_type" id="view_type_list" value="list">
+          <label class="form-check-label" for="view_type_list">liste</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_type" id="view_type_agenda" value="agenda">
+          <label class="form-check-label" for="view_type_agenda">agenda</label>
+        </div>
       </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="view_type" id="view_type_basic" value="basic">
-        <label class="form-check-label" for="view_type_basic">basique</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="view_type" id="view_type_list" value="list">
-        <label class="form-check-label" for="view_type_list">liste</label>
       </div>
     </form></div></div></div>
 
