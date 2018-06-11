@@ -33,18 +33,33 @@
   {% endfor %}
     </form></div></div></div>
 
-    <div class="script"><div class="row"><div class="col"><form id="agenda_views">
+    <div class="script"><div class="row"><div class="col"><form id="view_durations">
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="agenda_view" id="agenda_view_week" value="agendaWeek">
-        <label class="form-check-label" for="agenda_view_week">semaine</label>
+        <input class="form-check-input" type="radio" name="view_duration" id="view_duration_1_week" value="Week">
+        <label class="form-check-label" for="view_duration_1_week">1 semaine</label>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="agenda_view" id="agenda_view_three_days" value="agendaThreeDays">
-        <label class="form-check-label" for="agenda_view_three_days">3 jours</label>
+        <input class="form-check-input" type="radio" name="view_duration" id="view_duration_3_days" value="ThreeDays">
+        <label class="form-check-label" for="view_duration_3_days">3 jours</label>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="agenda_view" id="agenda_view_day" value="agendaDay">
-        <label class="form-check-label" for="agenda_view_day">1 jour</label>
+        <input class="form-check-input" type="radio" name="view_duration" id="view_duration_1_day" value="Day">
+        <label class="form-check-label" for="view_duration_1_day">1 jour</label>
+      </div>
+    </form></div></div></div>
+
+    <div class="script"><div class="row"><div class="col"><form id="view_types">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="view_type" id="view_type_agenda" value="agenda">
+        <label class="form-check-label" for="view_type_agenda">agenda</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="view_type" id="view_type_basic" value="basic">
+        <label class="form-check-label" for="view_type_basic">basique</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="view_type" id="view_type_list" value="list">
+        <label class="form-check-label" for="view_type_list">liste</label>
       </div>
     </form></div></div></div>
 

@@ -61,7 +61,10 @@ function initialize_week(config) {
   function get_view_from_location() {
     var fragment = URI.parse(window.location.href).fragment;
     if(!fragment) {
-      return {view: "agendaWeek"};
+      return {
+        type: "agenda",
+        duration: "Week",
+      };
     }
     fragment = fragment.split("+");
     var range = (function (day) {
@@ -76,33 +79,41 @@ function initialize_week(config) {
       }
     })(fragment[0]);
     if(!range) {
-      return {view: "agendaWeek"};
+      return {
+        type: "agenda",
+        duration: "Week",
+      };
     }
-    var view = fragment.length > 1 && fragment[1] == "2" ? "agendaThreeDays" : "agendaDay";
+    var duration = fragment.length > 1 && fragment[1] == "2" ? "ThreeDays" : "Day";
     return {
-      view: view,
+      type: "agenda",
+      duration: duration,
       range: range,
       day: fragment[0],
     };
   }
 
   function get_view_from_form() {
+    var type = $("input[name=view_type]:checked").val();
+    var duration = $("input[name=view_duration]:checked").val();
     return {
-      view: $("input[name=agenda_view]:checked").val(),
-      // @todo Keep day when switching between agendaDay and agendaThreeDays
+      type: type,
+      duration: duration,
+      // @todo Keep day when switching between Day and ThreeDays
       range: config.days.lundi,
       day: "lundi",
     };
   }
 
   function set_view(calendar, view) {
-    calendar.changeView(view.view, view.range);
-    $("#agenda_views input[value=" + view.view + "]").prop("checked", true);
+    calendar.changeView(view.type + view.duration, view.range);
+    $("#view_durations input[value=" + view.duration + "]").prop("checked", true);
+    $("#view_types input[value=" + view.type + "]").prop("checked", true);
     var fragment = (function(view) {
-      switch(view.view) {
-        case "agendaDay":
+      switch(view.duration) {
+        case "Day":
           return view.day;
-        case "agendaThreeDays":
+        case "ThreeDays":
           return view.day + "+2";
         default:
           return "";
@@ -195,6 +206,14 @@ function initialize_week(config) {
           type: "agenda",
           duration: {days: 3},
         },
+        listThreeDays: {
+          type: "list",
+          duration: {days: 3},
+        },
+        basicThreeDays: {
+          type: "basic",
+          duration: {days: 3},
+        },
       },
     });
 
@@ -207,7 +226,10 @@ function initialize_week(config) {
       calendar.refetchEventSources(calendar.getEventSources());
     });
 
-    $("#agenda_views input").on("change", function() {
+    $("#view_durations input").on("change", function() {
+      set_view(calendar, get_view_from_form());
+    });
+    $("#view_types input").on("change", function() {
       set_view(calendar, get_view_from_form());
     });
     $(window).on("hashchange", function() {
