@@ -188,14 +188,11 @@ class CityGenerator(Generator):
 
     def __generate_start_dates(self, events):
         start_date = dateutils.previous_week_day(events[0].datetime.date(), 0)
-        last_day = min(
-            events[-1].datetime.date(),
-            (
-                dateutils.previous_week_day(self.context.generation.date, 0)
-                + datetime.timedelta(weeks=self.__weeks_count, days=-1)
-            ),
+        last_day = (
+            dateutils.previous_week_day(self.context.generation.date, 0)
+            + datetime.timedelta(weeks=self.__weeks_count)
         )
-        while start_date <= last_day:
+        while start_date < last_day:
             yield start_date
             start_date += datetime.timedelta(days=7)
 
