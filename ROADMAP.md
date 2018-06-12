@@ -1,8 +1,4 @@
-- mettre une ligne d'options pour choisir le type d'affichages (liste, agenda, simple, etc.)
-- supprimer le deuxième ascenseur (sur le calendrier) (afficher tout le calendrier)
-- supprimer les heures vides avant le premier événement
 - réduire le jumbotron Splight
-- privatiser les données non affichées (GitHub et /admin)
 - supprimer le lien "semaine précédente" de la semaine actuelle
 
 
@@ -120,6 +116,19 @@ On ne peut pas les afficher comme les événements avec une heure de début dans
 ### Solution(s)
 
 
+En tant que web-master, je veux cacher de manière sécurisée les événements pas encore publiés
+---------------------------------------------------------------------------------------------
+
+### Problème
+
+@todo
+
+### Solution(s)
+
+Rendre le repository GitHub privé (7€/mois).
+Ajouter un contrôle d'accès à la version /admin du site. (Pas évident techniquement)
+
+
 En tant que web-master, je veux que mes visiteurs explorent le site
 -------------------------------------------------------------------
 
@@ -148,7 +157,7 @@ Lots : entrées et places gratuites.
 
 
 En tant qu'organisateur, je veux informer le web-master d'un événement
----------------------------------------------------------------------
+----------------------------------------------------------------------
 
 ### Problème
 
@@ -211,7 +220,7 @@ Les catégories identifiées :
 - avec les enfants
 
 
-An tant que web-master, je veux mettre certains événements dans plusieurs catégories
+En tant que web-master, je veux mettre certains événements dans plusieurs catégories
 -----------------------------------------------------------------------------------
 
 ### Problème

@@ -1,185 +1,150 @@
-function set_location(uri) {
-  History.replaceState(null, window.document.title, uri.toString());
-}
-
-function have_intersection(xs, ys) {
-  for(var y of ys) {
-    if(xs.has(y)) {
-      return true;
-    }
-  }
-  return false;
-}
-
 function initialize_week(config) {
-  function get_tags_from_location() {
-    var query = URI.parseQuery(URI.parse(window.location.href).query);
-    var tags = [];
-    for(var tag in config.tag_names) {
-      if(_.has(query, tag)) {
-        tags.push(tag);
+  function have_intersection(xs, ys) {
+    for(var y of ys) {
+      if(xs.has(y)) {
+        return true;
       }
     }
-    return tags;
+    return false;
   }
 
-  function put_tags_in_location(tags) {
-    tags = new Set(tags);
-    function fix_query(data) {
-      for(tag in config.tag_names) {
-        if(tags.has(tag)) {
-          data[tag] = null;
+  // Display settings
+  var first_day = null;
+  // All other display settings are stored in the #display_settings form.
+
+  function next_day_url(url) {
+    var uri = new URI(url);
+    uri.path(config.week_paths.current);
+    switch(first_day) {
+      case "mardi":
+        uri.fragment("mercredi");
+        break
+      case "mercredi":
+        uri.fragment("jeudi");
+        break
+      case "jeudi":
+        uri.fragment("vendredi");
+        break
+      case "vendredi":
+        uri.fragment("samedi");
+        break
+      case "samedi":
+        uri.fragment("dimanche");
+        break
+      case "dimanche":
+        if(config.week_paths.next == undefined) {
+          throw "no next day";
         } else {
-          delete data[tag];
+          uri.path(config.week_paths.next).fragment("lundi");
         }
-      }
-    }
-    set_location(URI(window.location.href).search(fix_query));
-    $("a.tagged").prop("href", function(index, href) {
-      return URI(href).search(fix_query).toString();
-    });
-  }
-
-  function get_tags_from_inputs() {
-    var tags = [];
-    $("#display_tags input").each(function() {
-      var checkbox = $(this);
-      if(checkbox.prop("checked")) {
-        tags.push(checkbox.data("tag"));
-      }
-    });
-    return tags;
-  }
-
-  function put_tags_in_inputs(tags) {
-    $('#display_tags input').prop("checked", false);
-    for(var tag of tags) {
-      $('#display_tags input[data-tag="' + tag + '"]').prop("checked", true);
-    }
-  }
-
-  function get_view_from_location() {
-    var fragment = URI.parse(window.location.href).fragment;
-    if(!fragment) {
-      return {view: "agendaWeek"};
-    }
-    fragment = fragment.split("+");
-    var range = (function (day) {
-      switch(fragment[0]) {
-        case "lundi": return config.days.lundi;
-        case "mardi": return config.days.mardi;
-        case "mercredi": return config.days.mercredi;
-        case "jeudi": return config.days.jeudi;
-        case "vendredi": return config.days.vendredi;
-        case "samedi": return config.days.samedi;
-        case "dimanche": return config.days.dimanche;
-      }
-    })(fragment[0]);
-    if(!range) {
-      return {view: "agendaWeek"};
-    }
-    var view = fragment.length > 1 && fragment[1] == "2" ? "agendaThreeDays" : "agendaDay";
-    return {
-      view: view,
-      range: range,
-      day: fragment[0],
+        break
+      default:
+        uri.fragment("mardi");
+        break
     };
+    return uri.toString();
   }
 
-  function get_view_from_form() {
-    return {
-      view: $("input[name=agenda_view]:checked").val(),
-      // @todo Keep day when switching between agendaDay and agendaThreeDays
-      range: config.days.lundi,
-      day: "lundi",
+  function previous_day_url(url) {
+    var uri = new URI(url);
+    uri.path(config.week_paths.current);
+    switch(first_day) {
+      case "mardi":
+        uri.fragment("lundi");
+        break
+      case "mercredi":
+        uri.fragment("mardi");
+        break
+      case "jeudi":
+        uri.fragment("mercredi");
+        break
+      case "vendredi":
+        uri.fragment("jeudi");
+        break
+      case "samedi":
+        uri.fragment("vendredi");
+        break
+      case "dimanche":
+        uri.fragment("samedi");
+        break
+      default:
+        if(config.week_paths.previous == undefined) {
+          throw "no previous day";
+        } else {
+          uri.path(config.week_paths.previous).fragment("dimanche");
+        }
+        break
     };
+    return uri.toString();
   }
 
-  function set_view(calendar, view) {
-    calendar.changeView(view.view, view.range);
-    $("#agenda_views input[value=" + view.view + "]").prop("checked", true);
-    var fragment = (function(view) {
-      switch(view.view) {
-        case "agendaDay":
-          return view.day;
-        case "agendaThreeDays":
-          return view.day + "+2";
-        default:
-          return "";
-      }
-    })(view);
-    if(fragment) {
-      $(".previous_next_weeks_links").hide();
-      $(".previous_next_days_links").show();
-      var fragment_suffix = fragment.endsWith("+2") ? "+2" : "";
-      var previous_fragment = (function() {
-        switch(fragment.split("+")[0]) {
-          case "mardi": return "lundi"
-          case "mercredi": return "mardi"
-          case "jeudi": return "mercredi"
-          case "vendredi": return "jeudi"
-          case "samedi": return "vendredi"
-          case "dimanche": return "samedi"
-        }
-      })();
-      var next_fragment = (function() {
-        switch(fragment.split("+")[0]) {
-          case "lundi": return "mardi"
-          case "mardi": return "mercredi"
-          case "mercredi": return "jeudi"
-          case "jeudi": return "vendredi"
-          case "vendredi": return "samedi"
-          case "samedi": return "dimanche"
-        }
-      })();
+  function get_display_settings_from_location() {
+    var location = URI.parse(window.location.href);
+    $("#display_settings").deserialize(location.query);
+    first_day = location.fragment;
+  }
 
-      if(previous_fragment) {
-        $(".previous_day_link").show();
-        $(".previous_day_link").prop("href", function(index, href) {
-          return URI(href).path(config.week_paths.current).fragment(previous_fragment + fragment_suffix).toString();
-        });
-      } else {
-        if(config.week_paths.previous) {
-          $(".previous_day_link").prop("href", function(index, href) {
-            return URI(href).path(config.week_paths.previous).fragment("dimanche" + fragment_suffix).toString();
-          });
-        } else {
-          $(".previous_day_link").hide();
-        }
-      }
+  function filter_events() {
+    var displayed_tags = new Set($("#display_settings input[name=tag]:checked").map((x, y) => $(y).val()).toArray());
+    return config.all_events.filter(event => have_intersection(event.tags, displayed_tags));
+  }
 
-      // @todo Hide .next_day_link at vendredi+2 (to avoid showing monday and tuesday of not-yet-published week)
-      if(next_fragment) {
-        $(".next_day_link").show();
-        $(".next_day_link").prop("href", function(index, href) {
-          return URI(href).path(config.week_paths.current).fragment(next_fragment + fragment_suffix).toString();
-        });
-      } else {
-        if(config.week_paths.next) {
-          $(".next_day_link").prop("href", function(index, href) {
-            return URI(href).path(config.week_paths.next).fragment("lundi" + fragment_suffix).toString();
-          });
-        } else {
-          $(".next_day_link").hide();
-        }
-      }
-    } else {
-      $(".previous_next_weeks_links").show();
-      $(".previous_next_days_links").hide();
+  function apply_display_settings(calendar) {
+    var new_uri = URI(window.location.href);
+    new_uri.query($("#display_settings").serialize());  // @todo Remove parameters that have their default value?
+    new_uri.fragment(first_day);
+    History.replaceState(null, window.document.title, new_uri.toString());
+
+    $(".tagged").prop("href", function(index, href) {
+      return URI(href).query($("#display_settings").serialize());
+    });
+
+    $(".next_day_link").show();
+    try {
+      $(".next_day_link").prop("href", (index, href) => next_day_url(href));
+    } catch {
+      $(".next_day_link").hide();
     }
-    set_location(URI(window.location.href).fragment(fragment));
+
+    $(".previous_day_link").show();
+    try {
+      $(".previous_day_link").prop("href", (index, href) => previous_day_url(href));
+    } catch {
+      $(".previous_day_link").hide();
+    }
+
+    var view_type = $("#display_settings input[name=view_type]:checked").val();
+    var view_duration = (function () {
+      switch($("#display_settings input[name=view_duration]:checked").val()) {
+        case "1": return "Day"
+        case "3": return "ThreeDays"
+        default: return "Week"
+      }
+    })();
+    calendar.changeView(view_type + view_duration, config.days[first_day]);
+
+    $("#agenda_settings").toggle(view_type == "agenda");
+    $(".previous_next_days_links").toggle(view_duration != "Week");
+    $(".previous_next_weeks_links").toggle(view_duration == "Week");
+
+    calendar.option("slotEventOverlap", $("#display_settings input[name=overlap]").is(":checked"));
+
+    var events = filter_events();
+    calendar.option("minTime", {hour: Math.min(...events.map(e => moment(e.start).hour())) - 1});
+    // @todo Use max(e.end) + 1 (when e.end is populated)
+    calendar.option("maxTime", {hour: Math.max(...events.map(e => moment(e.start).hour())) + 3});
+
+    calendar.refetchEventSources(calendar.getEventSources());
   }
 
-  function eventSourceFunction(start, end, timezone, callback) {
-    var displayed_tags = new Set(get_tags_from_inputs());
-    callback(config.all_events.filter(event => have_intersection(event.tags, displayed_tags)));
+  function event_source(start, end, timezone, callback) {
+    callback(filter_events());
   }
 
   $(function() {
     $(".script").show();
 
-    put_tags_in_inputs(get_tags_from_location());
-    put_tags_in_location(get_tags_from_inputs());
+    get_display_settings_from_location();
 
     $("#calendar").fullCalendar({
       header: false,
@@ -188,11 +153,19 @@ function initialize_week(config) {
       locale: "fr",
       allDaySlot: false,
       eventLimit: true,
-      scrollTime: "11:00:00",
-      events: eventSourceFunction,
+      height: "auto",
+      events: event_source,
       views: {
         agendaThreeDays: {
           type: "agenda",
+          duration: {days: 3},
+        },
+        listThreeDays: {
+          type: "list",
+          duration: {days: 3},
+        },
+        basicThreeDays: {
+          type: "basic",
           duration: {days: 3},
         },
       },
@@ -200,18 +173,14 @@ function initialize_week(config) {
 
     var calendar = $('#calendar').fullCalendar('getCalendar');
 
-    set_view(calendar, get_view_from_location());
+    apply_display_settings(calendar);
 
-    $("#display_tags input").on("change", function() {
-      put_tags_in_location(get_tags_from_inputs());
-      calendar.refetchEventSources(calendar.getEventSources());
-    });
-
-    $("#agenda_views input").on("change", function() {
-      set_view(calendar, get_view_from_form());
+    $("#display_settings input").on("change", function() {
+      apply_display_settings(calendar);
     });
     $(window).on("hashchange", function() {
-      set_view(calendar, get_view_from_location());
+      get_display_settings_from_location();
+      apply_display_settings(calendar);
     });
   });
 }

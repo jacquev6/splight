@@ -39,37 +39,61 @@
   <div class="col">
     <h1>Semaine du lundi 23 juillet 2018</h1>
 
-    <div class="script"><div class="row"><div class="col"><form id="display_tags">
-      <div class="form-check form-check-inline display_checkbox" style="border-color: #7f3f3f; background-color: #e5a0a0">
-        <input class="form-check-input" type="checkbox" id="display_tag_musique" data-tag="musique">
-        <label class="form-check-label" for="display_tag_musique">Musique</label>
+    <div class="script"><div class="row"><div class="col"><form id="display_settings">
+      <div class="form-group">
+        <div class="form-check form-check-inline display_checkbox" style="border-color: #7f3f3f; background-color: #e5a0a0">
+          <input class="form-check-input" type="checkbox" name="tag" id="tag_musique" value="musique">
+          <label class="form-check-label" for="tag_musique">Musique</label>
+        </div>
+        <div class="form-check form-check-inline display_checkbox" style="border-color: #5f7f3f; background-color: #c3e5a0">
+          <input class="form-check-input" type="checkbox" name="tag" id="tag_cinema" value="cinema">
+          <label class="form-check-label" for="tag_cinema">Cinéma</label>
+        </div>
+        <div class="form-check form-check-inline display_checkbox" style="border-color: #3f7f7f; background-color: #a0e5e5">
+          <input class="form-check-input" type="checkbox" name="tag" id="tag_theatre" value="theatre">
+          <label class="form-check-label" for="tag_theatre">Théâtre</label>
+        </div>
+        <div class="form-check form-check-inline display_checkbox" style="border-color: #5f3f7f; background-color: #c3a0e5">
+          <input class="form-check-input" type="checkbox" name="tag" id="tag_expositions" value="expositions">
+          <label class="form-check-label" for="tag_expositions">Expositions</label>
+        </div>
       </div>
-      <div class="form-check form-check-inline display_checkbox" style="border-color: #5f7f3f; background-color: #c3e5a0">
-        <input class="form-check-input" type="checkbox" id="display_tag_cinema" data-tag="cinema">
-        <label class="form-check-label" for="display_tag_cinema">Cinéma</label>
-      </div>
-      <div class="form-check form-check-inline display_checkbox" style="border-color: #3f7f7f; background-color: #a0e5e5">
-        <input class="form-check-input" type="checkbox" id="display_tag_theatre" data-tag="theatre">
-        <label class="form-check-label" for="display_tag_theatre">Théâtre</label>
-      </div>
-      <div class="form-check form-check-inline display_checkbox" style="border-color: #5f3f7f; background-color: #c3a0e5">
-        <input class="form-check-input" type="checkbox" id="display_tag_expositions" data-tag="expositions">
-        <label class="form-check-label" for="display_tag_expositions">Expositions</label>
-      </div>
-    </form></div></div></div>
 
-    <div class="script"><div class="row"><div class="col"><form id="agenda_views">
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="agenda_view" id="agenda_view_week" value="agendaWeek">
-        <label class="form-check-label" for="agenda_view_week">semaine</label>
+      <div class="form-group">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_7" value="7" checked="checked">
+          <label class="form-check-label" for="view_duration_7">1 semaine</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_3" value="3">
+          <label class="form-check-label" for="view_duration_3">3 jours</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_1" value="1">
+          <label class="form-check-label" for="view_duration_1">1 jour</label>
+        </div>
       </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="agenda_view" id="agenda_view_three_days" value="agendaThreeDays">
-        <label class="form-check-label" for="agenda_view_three_days">3 jours</label>
+
+      <div class="form-group">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_type" id="view_type_basic" value="basic" checked="checked">
+          <label class="form-check-label" for="view_type_basic">basique</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_type" id="view_type_list" value="list">
+          <label class="form-check-label" for="view_type_list">liste</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="view_type" id="view_type_agenda" value="agenda">
+          <label class="form-check-label" for="view_type_agenda">agenda</label>
+        </div>
       </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="agenda_view" id="agenda_view_day" value="agendaDay">
-        <label class="form-check-label" for="agenda_view_day">1 jour</label>
+
+      <div id="agenda_settings" class="form-group">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" name="overlap" id="overlap">
+          <label class="form-check-label" for="overlap">événements se recouvrent</label>
+        </div>
       </div>
     </form></div></div></div>
 
@@ -169,6 +193,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.19.1/URI.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled/html5/native.history.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js" crossorigin="anonymous"></script>
+    <script src="http://kflorence.github.io/jquery-deserialize/src/jquery.deserialize.js" crossorigin="anonymous"></script>
     <script src="/week.js" crossorigin="anonymous"></script>
 
     <script>
