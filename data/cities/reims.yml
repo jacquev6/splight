@@ -28,6 +28,7 @@ events:
         - datetime: 2018/07/31 19:00
         - datetime: 2018/08/05 19:00
         - datetime: 2018/08/09 19:00
+        - datetime: 2022/08/09 19:00
   theatre:
     - artist: artist-a
       location: lieu-c
@@ -50,8 +51,9 @@ events:
         - datetime: 2018/08/07 20:00
         - datetime: 2018/08/11 20:00
   cinema:
-    - artist: artist-c
+    - title: Film de test
       location: lieu-b
+      duration: 01:15
       occurrences:
         - datetime: 2018/05/24 19:30
         - datetime: 2018/05/28 19:30

@@ -122,22 +122,28 @@ class CityGenerator(Generator):
         for (day, day_events) in itertools.groupby(city.events, key=lambda e: e.datetime.date()):
             events[day] = []
             for event in day_events:
-                time = event.datetime.time()
                 location = ""
                 if event.location:
                     location = event.location.name
-                artist = ""
-                if event.artist:
-                    artist = event.artist.name
-                genre = ""
-                if event.artist:
-                    genre = event.artist.genre
+
+                if event.title:
+                    title = event.title
+                elif event.artist:
+                    title = "{} ({})".format(event.artist.name, event.artist.genre)
+                else:
+                    assert False, "Event without title information"
+
+                kwds = dict()
+
+                if event.duration:
+                    kwds["end"] = event.datetime + event.duration
+
                 events[day].append(NS(
-                    datetime=event.datetime,
+                    title=title,
                     location=location,
-                    artist=artist,
-                    genre=genre,
+                    start=event.datetime,
                     tags=[tags[tag.slug] for tag in event.tags],
+                    **kwds,
                 ))
 
         super().__init__(
@@ -182,14 +188,11 @@ class CityGenerator(Generator):
 
     def __generate_start_dates(self, events):
         start_date = dateutils.previous_week_day(events[0].datetime.date(), 0)
-        last_day = min(
-            events[-1].datetime.date(),
-            (
-                dateutils.previous_week_day(self.context.generation.date, 0)
-                + datetime.timedelta(weeks=self.__weeks_count, days=-1)
-            ),
+        last_day = (
+            dateutils.previous_week_day(self.context.generation.date, 0)
+            + datetime.timedelta(weeks=self.__weeks_count)
         )
-        while start_date <= last_day:
+        while start_date < last_day:
             yield start_date
             start_date += datetime.timedelta(days=7)
 

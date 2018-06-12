@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/admin/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css">
 
     <title>Splight</title>
@@ -14,7 +14,7 @@
   <body>
     <div class="container">
       <div class="jumbotron">
-        <h1 class="display-4"><a href="/">Splight</a> - <a href="/reims/">Reims</a></h1>
+        <h1 class="display-4"><a href="/admin/">Splight</a> - <a href="/admin/reims/">Reims</a></h1>
         <p class="lead">Votre agenda culturel à Reims et dans sa région.</p>
       </div>
 
@@ -37,7 +37,7 @@
 
 <div class="row">
   <div class="col">
-    <h1>Semaine du lundi 21 mai 2018</h1>
+    <h1>Semaine du lundi 13 août 2018</h1>
 
     <div class="script"><div class="row"><div class="col"><form id="display_settings">
       <div class="form-group">
@@ -98,49 +98,42 @@
     </form></div></div></div>
 
     <div class="previous_next_weeks_links"><div class="row">
+      <div class="col"><p class="text-right"><a class="tagged" href="/admin/reims/2018-32/">&lt; Semaine précédente</a></p></div>
       <div class="col"></div>
-      <div class="col"><p><a class="tagged" href="/reims/2018-22/">Semaine suivante &gt;</a></p></div>
     </div></div>
 
     <div class="previous_next_days_links script"><div class="row">
-      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="/reims/2018-21/">&lt; Jour précédent</a></p></div>
-      <div class="col"><p><a class="tagged next_day_link" href="/reims/2018-21/">Jour suivant &gt;</a></p></div>
+      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="/admin/reims/2018-33/">&lt; Jour précédent</a></p></div>
+      <div class="col"><p><a class="tagged next_day_link" href="/admin/reims/2018-33/">Jour suivant &gt;</a></p></div>
     </div></div>
 
     <div id="calendar">
       <noscript><dl>
-        <dt>lundi 21 mai 2018</dt>
+        <dt>lundi 13 août 2018</dt>
         <dd>Rien de prévu.</dd>
-        <dt>mardi 22 mai 2018</dt>
-        <dd><ul>
-          <li>19h, Lieu de test A&nbsp;: Artiste de test B (Genre Titi)</li>
-        </ul></dd>
-        <dt>mercredi 23 mai 2018</dt>
+        <dt>mardi 14 août 2018</dt>
         <dd>Rien de prévu.</dd>
-        <dt>jeudi 24 mai 2018</dt>
-        <dd><ul>
-          <li>19h30, Lieu de test B&nbsp;: Film de test</li>
-          <li>20h, Lieu de test C&nbsp;: Artiste de test A (Genre Toto)</li>
-        </ul></dd>
-        <dt>vendredi 25 mai 2018</dt>
+        <dt>mercredi 15 août 2018</dt>
         <dd>Rien de prévu.</dd>
-        <dt>samedi 26 mai 2018</dt>
+        <dt>jeudi 16 août 2018</dt>
         <dd>Rien de prévu.</dd>
-        <dt>dimanche 27 mai 2018</dt>
-        <dd><ul>
-          <li>19h, Lieu de test A&nbsp;: Artiste de test B (Genre Titi)</li>
-        </ul></dd>
+        <dt>vendredi 17 août 2018</dt>
+        <dd>Rien de prévu.</dd>
+        <dt>samedi 18 août 2018</dt>
+        <dd>Rien de prévu.</dd>
+        <dt>dimanche 19 août 2018</dt>
+        <dd>Rien de prévu.</dd>
       </dl></noscript>
     </div>
 
     <div class="previous_next_weeks_links"><div class="row">
+      <div class="col"><p class="text-right"><a class="tagged" href="/admin/reims/2018-32/">&lt; Semaine précédente</a></p></div>
       <div class="col"></div>
-      <div class="col"><p><a class="tagged" href="/reims/2018-22/">Semaine suivante &gt;</a></p></div>
     </div></div>
 
     <div class="previous_next_days_links script"><div class="row">
-      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="/reims/2018-21/">&lt; Jour précédent</a></p></div>
-      <div class="col"><p><a class="tagged next_day_link" href="/reims/2018-21/">Jour suivant &gt;</a></p></div>
+      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="/admin/reims/2018-33/">&lt; Jour précédent</a></p></div>
+      <div class="col"><p><a class="tagged next_day_link" href="/admin/reims/2018-33/">Jour suivant &gt;</a></p></div>
     </div></div>
   </div>
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
@@ -207,83 +200,17 @@
 
 <script>
   initialize_week({
-    defaultDate: "2018-05-21",
+    defaultDate: "2018-08-13",
     all_events: [
-        {
-          title: "Lieu de test A: Artiste de test B (Genre Titi)",
-          start: "2018-05-22 19:00:00",
-          tags: new Set(["musique"]),
-          backgroundColor: "#e5a0a0",
-          borderColor: "#7f3f3f",
-        },
-        {
-          title: "Lieu de test B: Film de test",
-          start: "2018-05-24 19:30:00",
-          end: "2018-05-24 20:45:00",
-          tags: new Set(["cinema"]),
-          backgroundColor: "#c3e5a0",
-          borderColor: "#5f7f3f",
-        },
-        {
-          title: "Lieu de test C: Artiste de test A (Genre Toto)",
-          start: "2018-05-24 20:00:00",
-          tags: new Set(["theatre"]),
-          backgroundColor: "#a0e5e5",
-          borderColor: "#3f7f7f",
-        },
-        {
-          title: "Lieu de test A: Artiste de test B (Genre Titi)",
-          start: "2018-05-27 19:00:00",
-          tags: new Set(["musique"]),
-          backgroundColor: "#e5a0a0",
-          borderColor: "#7f3f3f",
-        },
-        {
-          title: "Lieu de test B: Film de test",
-          start: "2018-05-28 19:30:00",
-          end: "2018-05-28 20:45:00",
-          tags: new Set(["cinema"]),
-          backgroundColor: "#c3e5a0",
-          borderColor: "#5f7f3f",
-        },
-        {
-          title: "Lieu de test C: Artiste de test A (Genre Toto)",
-          start: "2018-05-29 20:00:00",
-          tags: new Set(["theatre"]),
-          backgroundColor: "#a0e5e5",
-          borderColor: "#3f7f7f",
-        },
-        {
-          title: "Lieu de test A: Artiste de test B (Genre Titi)",
-          start: "2018-06-01 19:00:00",
-          tags: new Set(["musique"]),
-          backgroundColor: "#e5a0a0",
-          borderColor: "#7f3f3f",
-        },
-        {
-          title: "Lieu de test B: Film de test",
-          start: "2018-06-01 19:30:00",
-          end: "2018-06-01 20:45:00",
-          tags: new Set(["cinema"]),
-          backgroundColor: "#c3e5a0",
-          borderColor: "#5f7f3f",
-        },
-        {
-          title: "Lieu de test C: Artiste de test A (Genre Toto)",
-          start: "2018-06-03 20:00:00",
-          tags: new Set(["theatre"]),
-          backgroundColor: "#a0e5e5",
-          borderColor: "#3f7f7f",
-        },
     ],
     days: {
-      lundi: "2018-05-21",
-      mardi: "2018-05-22",
-      mercredi: "2018-05-23",
-      jeudi: "2018-05-24",
-      vendredi: "2018-05-25",
-      samedi: "2018-05-26",
-      dimanche: "2018-05-27",
+      lundi: "2018-08-13",
+      mardi: "2018-08-14",
+      mercredi: "2018-08-15",
+      jeudi: "2018-08-16",
+      vendredi: "2018-08-17",
+      samedi: "2018-08-18",
+      dimanche: "2018-08-19",
     },
     tag_names: {
       musique: "musique",
@@ -292,8 +219,8 @@
       expositions: "expositions",
     },
     week_paths: {
-      current: "/reims/2018-21/",
-      next: "/reims/2018-22/",
+      previous: "/admin/reims/2018-32/",
+      current: "/admin/reims/2018-33/",
     }
   })
 </script>

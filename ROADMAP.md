@@ -221,7 +221,7 @@ Les catégories identifiées :
 
 
 En tant que web-master, je veux mettre certains événements dans plusieurs catégories
------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
 
 ### Problème
 
@@ -231,6 +231,19 @@ ou un ballet dans musique et danse. La catégorie "avec les enfants" contient be
 ### Solution(s)
 
 Utiliser une notion plus générale de "tags". Les catégories sont simplement un sous-ensemble des tags.
+
+
+En tant que web-master, je veux avoir des statistiques de fréquentation du site
+-------------------------------------------------------------------------------
+
+### Problème
+
+Pour la collaboration avec l'agence publicitaire, il faut avoir une idée du nombres de pages vues et du nombre de
+visiteurs uniques.
+
+### Solution(s)
+
+Google Analytics ?
 
 
 En tant que développeur, je veux gérer les dépendances du code JavaScript
