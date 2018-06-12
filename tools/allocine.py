@@ -47,31 +47,34 @@ places = {
 }
 
 
-data = request("showtimelist", theaters=",".join(sorted(places.keys())))
-
-
 def title_(s):
     # @todo Add VF/VO and 3D to title
     return s["onShow"]["movie"]["title"]
 
 
-for theaterShowtime in data["feed"]["theaterShowtimes"]:
-    location = places[theaterShowtime["place"]["theater"]["code"]]
-    for (title, movieShowtimes) in itertools.groupby(sorted(theaterShowtime["movieShowtimes"], key=title_), key=title_):
-        movieShowtimes = list(movieShowtimes)
-        print('- title: "{}"'.format(title))
-        print("  location:", location)
-        duration = movieShowtimes[0]["onShow"]["movie"].get("runtime")
-        if duration:
-            duration += 15 * 60  # 15 minutes of ads and trailers before the movie starts
-            hours = duration // 3600
-            minutes = int(duration // 60 - 60 * hours)
-            print("  duration: {:02}:{:02}".format(hours, minutes))
-        print("  occurrences:")
-        for (d, t) in sorted(
-            (screening["d"].replace("-", "/"), time["$"])
-            for movieShowtime in movieShowtimes
-            for screening in movieShowtime["scr"]
-            for time in screening["t"]
+if __name__ == "__main__":
+    data = request("showtimelist", theaters=",".join(sorted(places.keys())))
+
+    for theaterShowtime in data["feed"]["theaterShowtimes"]:
+        location = places[theaterShowtime["place"]["theater"]["code"]]
+        for (title, movieShowtimes) in itertools.groupby(
+            sorted(theaterShowtime["movieShowtimes"], key=title_),
+            key=title_,
         ):
-            print("    - datetime:", d, t)
+            movieShowtimes = list(movieShowtimes)
+            print('- title: "{}"'.format(title))
+            print("  location:", location)
+            duration = movieShowtimes[0]["onShow"]["movie"].get("runtime")
+            if duration:
+                duration += 15 * 60  # 15 minutes of ads and trailers before the movie starts
+                hours = duration // 3600
+                minutes = int(duration // 60 - 60 * hours)
+                print("  duration: {:02}:{:02}".format(hours, minutes))
+            print("  occurrences:")
+            for (d, t) in sorted(
+                (screening["d"].replace("-", "/"), time["$"])
+                for movieShowtime in movieShowtimes
+                for screening in movieShowtime["scr"]
+                for time in screening["t"]
+            ):
+                print("    - datetime:", d, t)

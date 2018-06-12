@@ -52,6 +52,8 @@ then
   ln -f tools/random-canvas/_build/default/random_canvas.bc.js tools/generator/skeleton/random_canvas.js
 fi
 
+python3 -m tools.allocine >data/cities/reims/events/cinema.yml
+
 python3 -m tools.generator data docs
 
 git --no-pager diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat docs
