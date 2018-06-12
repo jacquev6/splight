@@ -1,6 +1,4 @@
 function initialize_week(config) {
-  console.log("initialize_week", config);
-
   function have_intersection(xs, ys) {
     for(var y of ys) {
       if(xs.has(y)) {
@@ -135,8 +133,6 @@ function initialize_week(config) {
   }
 
   $(function() {
-    console.log("there");
-
     $(".script").show();
 
     get_display_settings_from_location();
