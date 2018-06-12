@@ -52,6 +52,7 @@ events:
   cinema:
     - title: Film de test
       location: lieu-b
+      duration: 01:15
       occurrences:
         - datetime: 2018/05/24 19:30
         - datetime: 2018/05/28 19:30

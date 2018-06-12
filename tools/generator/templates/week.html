@@ -138,6 +138,9 @@
         {
           title: "{{ event.location }}: {{ event.title }}",
           start: "{{ event.start }}",
+          {% if event.end is defined %}
+          end: "{{ event.end }}",
+          {% endif %}
           tags: new Set([{% for tag in event.tags %}"{{ tag.slug }}"{% if not loop.last %}, {% endif %}{% endfor %}]),
           backgroundColor: "{{ event.tags[0].background_color }}",
           borderColor: "{{ event.tags[0].border_color }}",

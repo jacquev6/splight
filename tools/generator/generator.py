@@ -125,17 +125,25 @@ class CityGenerator(Generator):
                 location = ""
                 if event.location:
                     location = event.location.name
+
                 if event.title:
                     title = event.title
                 elif event.artist:
                     title = "{} ({})".format(event.artist.name, event.artist.genre)
                 else:
                     assert False, "Event without title information"
+
+                kwds = dict()
+
+                if event.duration:
+                    kwds["end"] = event.datetime + event.duration
+
                 events[day].append(NS(
                     title=title,
                     location=location,
                     start=event.datetime,
                     tags=[tags[tag.slug] for tag in event.tags],
+                    **kwds,
                 ))
 
         super().__init__(
