@@ -152,7 +152,6 @@ function initialize_week(config) {
       defaultView: "agendaWeek",
       locale: "fr",
       allDaySlot: false,
-      eventLimit: true,
       height: "auto",
       events: event_source,
       views: {
