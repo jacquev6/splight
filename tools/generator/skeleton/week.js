@@ -129,7 +129,7 @@ function initialize_week(config) {
     calendar.refetchEventSources(calendar.getEventSources());
   }
 
-  function eventSourceFunction(start, end, timezone, callback) {
+  function event_source(start, end, timezone, callback) {
     var displayed_tags = new Set($("#display_settings input[name=tag]:checked").map((x, y) => $(y).val()).toArray());
     callback(config.all_events.filter(event => have_intersection(event.tags, displayed_tags)));
   }
@@ -149,7 +149,7 @@ function initialize_week(config) {
       allDaySlot: false,
       eventLimit: true,
       height: "auto",
-      events: eventSourceFunction,
+      events: event_source,
       views: {
         agendaThreeDays: {
           type: "agenda",
