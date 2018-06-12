@@ -84,6 +84,11 @@ function initialize_week(config) {
     first_day = location.fragment;
   }
 
+  function filter_events() {
+    var displayed_tags = new Set($("#display_settings input[name=tag]:checked").map((x, y) => $(y).val()).toArray());
+    return config.all_events.filter(event => have_intersection(event.tags, displayed_tags));
+  }
+
   function apply_display_settings(calendar) {
     var new_uri = URI(window.location.href);
     new_uri.query($("#display_settings").serialize());  // @todo Remove parameters that have their default value?
@@ -124,12 +129,16 @@ function initialize_week(config) {
 
     calendar.option("slotEventOverlap", $("#display_settings input[name=overlap]").is(":checked"));
 
+    var events = filter_events();
+    calendar.option("minTime", {hour: Math.min(...events.map(e => moment(e.start).hour())) - 1});
+    // @todo Use max(e.end) + 1 (when e.end is populated)
+    calendar.option("maxTime", {hour: Math.max(...events.map(e => moment(e.start).hour())) + 3});
+
     calendar.refetchEventSources(calendar.getEventSources());
   }
 
   function event_source(start, end, timezone, callback) {
-    var displayed_tags = new Set($("#display_settings input[name=tag]:checked").map((x, y) => $(y).val()).toArray());
-    callback(config.all_events.filter(event => have_intersection(event.tags, displayed_tags)));
+    callback(filter_events());
   }
 
   $(function() {
