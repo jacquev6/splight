@@ -102,7 +102,7 @@
     {% if day_events %}
         <dd><ul>
       {% for event in day_events %}
-          <li>{{ event.datetime|format_time }}, {{ event.location }}&nbsp;: {{ event.artist }} ({{ event.genre }})</li>
+          <li>{{ event.start|format_time }}, {{ event.location }}&nbsp;: {{ event.title }}</li>
       {% endfor %}
         </ul></dd>
     {% else %}
@@ -136,8 +136,8 @@
       {% for day in days %}
         {% for event in events.get(day, []) %}
         {
-          title: "{{ event.location }}: {{ event.artist }} ({{ event.genre }})",
-          start: "{{ event.datetime }}",
+          title: "{{ event.location }}: {{ event.title }}",
+          start: "{{ event.start }}",
           tags: new Set([{% for tag in event.tags %}"{{ tag.slug }}"{% if not loop.last %}, {% endif %}{% endfor %}]),
           backgroundColor: "{{ event.tags[0].background_color }}",
           borderColor: "{{ event.tags[0].border_color }}",

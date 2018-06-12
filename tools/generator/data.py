@@ -33,7 +33,7 @@ def _make_base(name, fields):
 exec(_make_source("Data", "cities"))
 exec(_make_source("City", "slug name tags events"))
 exec(_make_source("Tag", "slug title display_order"))
-exec(_make_source("Event", "datetime artist location tags"))
+exec(_make_source("Event", "datetime title artist location tags"))
 exec(_make_source("Artist", "slug name genre"))
 exec(_make_source("Location", "slug name"))
 
@@ -65,7 +65,7 @@ def generate_events(artists, locations, tags, events):
 def generate_tagged_events(
     artists, locations, main_tag, tags_map,
     *,
-    datetime=None, artist=None, location=None, tags=[], occurrences=None,
+    datetime=None, title=None, artist=None, location=None, tags=[], occurrences=None,
 ):
     artist = artists.get(artist)
     location = locations.get(location)
@@ -83,4 +83,4 @@ def generate_tagged_events(
 
     for datetime in datetimes:
         datetime = datetime_.datetime.strptime(datetime, "%Y/%m/%d %H:%M")
-        yield Event(datetime=datetime, artist=artist, location=location, tags=tags)
+        yield Event(datetime=datetime, title=title, artist=artist, location=location, tags=tags)

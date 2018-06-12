@@ -122,21 +122,19 @@ class CityGenerator(Generator):
         for (day, day_events) in itertools.groupby(city.events, key=lambda e: e.datetime.date()):
             events[day] = []
             for event in day_events:
-                time = event.datetime.time()
                 location = ""
                 if event.location:
                     location = event.location.name
-                artist = ""
-                if event.artist:
-                    artist = event.artist.name
-                genre = ""
-                if event.artist:
-                    genre = event.artist.genre
+                if event.title:
+                    title = event.title
+                elif event.artist:
+                    title = "{} ({})".format(event.artist.name, event.artist.genre)
+                else:
+                    assert False, "Event without title information"
                 events[day].append(NS(
-                    datetime=event.datetime,
+                    title=title,
                     location=location,
-                    artist=artist,
-                    genre=genre,
+                    start=event.datetime,
                     tags=[tags[tag.slug] for tag in event.tags],
                 ))
 
