@@ -19,17 +19,17 @@ a {
     color: {{ colors.primary }};
 }
 
-.advertisement {
+.sp-advertisement {
     color: gray;
     padding-bottom: 20px;
 }
 
-.advertisement p {
+.sp-advertisement p {
     margin: 0;
     font-size: .8em;
 }
 
-.display_checkbox {
+.sp-display-checkbox {
     padding: 2px;
     border-radius: 3px;
     border: solid 1px;

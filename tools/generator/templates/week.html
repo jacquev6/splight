@@ -14,7 +14,7 @@
 {% block contents %}
 <div class="row d-lg-none">
   <div class="col">
-    <div class="advertisement">
+    <div class="sp-advertisement">
       <p>Publicité</p>
       <p><img class="img-fluid" src="/ads/468x60-banner.png" /></p>
     </div>
@@ -25,82 +25,82 @@
   <div class="col">
     <h1>Semaine du {{ week.days[0]|format_date }}</h1>
 
-    <div><div class="row"><div class="col"><form id="display_settings">
+    <div><div class="row"><div class="col"><form id="sp-display-settings">
       <div class="form-group">
         {% for tag in tags %}
-        <div class="form-check form-check-inline display_checkbox" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
-          <input class="form-check-input" type="checkbox" name="tag" id="tag_{{ tag.slug }}" value="{{ tag.slug }}">
-          <label class="form-check-label" for="tag_{{ tag.slug }}">{{ tag.title }}</label>
+        <div class="form-check form-check-inline sp-display-checkbox" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
+          <input class="form-check-input" type="checkbox" name="tag" id="sp-tag-{{ tag.slug }}" value="{{ tag.slug }}">
+          <label class="form-check-label" for="sp-tag-{{ tag.slug }}">{{ tag.title }}</label>
         </div>
         {% endfor %}
       </div>
 
       <div class="form-group">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_7" value="7" checked="checked">
-          <label class="form-check-label" for="view_duration_7">1 semaine</label>
+          <input class="form-check-input" type="radio" name="vd" id="sp-view-duration-7" value="7" checked="checked">
+          <label class="form-check-label" for="sp-view-duration-7">1 semaine</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_3" value="3">
-          <label class="form-check-label" for="view_duration_3">3 jours</label>
+          <input class="form-check-input" type="radio" name="vd" id="sp-view-duration-3" value="3">
+          <label class="form-check-label" for="sp-view-duration-3">3 jours</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_1" value="1">
-          <label class="form-check-label" for="view_duration_1">1 jour</label>
+          <input class="form-check-input" type="radio" name="vd" id="sp-view-duration-1" value="1">
+          <label class="form-check-label" for="sp-view-duration-1">1 jour</label>
         </div>
       </div>
 
       <div class="form-group">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_type" id="view_type_basic" value="basic" checked="checked">
-          <label class="form-check-label" for="view_type_basic">basique</label>
+          <input class="form-check-input" type="radio" name="vt" id="sp-view-type-basic" value="basic" checked="checked">
+          <label class="form-check-label" for="sp-view-type-basic">basique</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_type" id="view_type_list" value="list">
-          <label class="form-check-label" for="view_type_list">liste</label>
+          <input class="form-check-input" type="radio" name="vt" id="sp-view-type-list" value="list">
+          <label class="form-check-label" for="sp-view-type-list">liste</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_type" id="view_type_agenda" value="agenda">
-          <label class="form-check-label" for="view_type_agenda">agenda</label>
+          <input class="form-check-input" type="radio" name="vt" id="sp-view-type-agenda" value="agenda">
+          <label class="form-check-label" for="sp-view-type-agenda">agenda</label>
         </div>
       </div>
 
-      <div id="agenda_settings" class="form-group">
+      <div id="sp-agenda-settings" class="form-group">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" name="overlap" id="overlap">
-          <label class="form-check-label" for="overlap">événements se recouvrent</label>
+          <input class="form-check-input" type="checkbox" name="ov" id="sp-overlap">
+          <label class="form-check-label" for="sp-overlap">événements se recouvrent</label>
         </div>
       </div>
     </form></div></div></div>
 
   {% macro previous_and_next_links() -%}
-    <div class="previous_next_weeks_links"><div class="row">
+    <div class="sp-previous-next-weeks-links"><div class="row">
       <div class="col">
         {%- if week.previous_week -%}
-          <p class="text-right"><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.slug }}/">&lt; Semaine précédente</a></p>
+          <p class="text-right"><a class="sp-tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.slug }}/">&lt; Semaine précédente</a></p>
         {%- endif -%}
       </div>
       <div class="col">
         {%- if week.next_week -%}
-          <p><a class="tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.slug }}/">Semaine suivante &gt;</a></p>
+          <p><a class="sp-tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.slug }}/">Semaine suivante &gt;</a></p>
         {%- endif -%}
       </div>
     </div></div>
 
-    <div class="previous_next_days_links"><div class="row">
-      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="{{ root_path }}/{{ city.slug }}/{{ week.slug }}/">&lt; Jour précédent</a></p></div>
-      <div class="col"><p><a class="tagged next_day_link" href="{{ root_path }}/{{ city.slug }}/{{ week.slug }}/">Jour suivant &gt;</a></p></div>
+    <div class="sp-previous-next-days-links"><div class="row">
+      <div class="col"><p class="text-right"><a class="sp-tagged sp-previous-day-link" href="{{ root_path }}/{{ city.slug }}/{{ week.slug }}/">&lt; Jour précédent</a></p></div>
+      <div class="col"><p><a class="sp-tagged sp-next-day-link" href="{{ root_path }}/{{ city.slug }}/{{ week.slug }}/">Jour suivant &gt;</a></p></div>
     </div></div>
   {%- endmacro %}
     {{ previous_and_next_links() }}
 
-    <div id="calendar">
+    <div id="sp-fullcalendar">
     </div>
 
     {{ previous_and_next_links() }}
   </div>
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
-    <div class="advertisement">
+    <div class="sp-advertisement">
       <p>Publicité</p>
       <p><img class="img-fluid" src="/ads/160x600-wide-skyscraper.png" /></p>
     </div>
