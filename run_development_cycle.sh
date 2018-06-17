@@ -34,6 +34,8 @@ python3 -m unittest discover --verbose --start-directory tools --pattern "*.py"
 
 fuser -k 4000/tcp >/dev/null 2>/dev/null || true
 
+modernizr --config tools/generator/modernizr-config.json --dest tools/generator/skeleton/lib/modernizr-custom.js
+
 python3 -m tools.generator data docs
 
 git --no-pager diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat docs

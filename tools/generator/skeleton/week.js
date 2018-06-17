@@ -142,8 +142,6 @@ function initialize_week(config) {
   }
 
   $(function() {
-    $(".script").show();
-
     get_display_settings_from_location();
 
     $("#calendar").fullCalendar({

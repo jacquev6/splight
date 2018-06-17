@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" class="mdrn-no-js">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta charset="utf-8">
@@ -12,6 +12,8 @@
 {% endfor %}
 
     <title>Splight</title>
+
+    <script src="/lib/modernizr-custom.js"></script>
   </head>
   <body>
     <div class="container">
@@ -20,14 +22,21 @@
         <p class="lead">Votre agenda culturel {% if city is defined %}à {{ city.name }} et dans sa région{% else %}régional{% endif %}.</p>
       </div>
 
-      <noscript>
+      <div class="sp-noscript">
         <div class="row"><div class="col-md-3"></div><div class="col-md-6" style="border: red solid 3px">
-          <p>Pour accéder à toutes les fonctionnalités de Splight (notamment l'affichage des calendriers filtrés par catégories), vous devez activer JavaScript.</p>
+          <p>Splight utilise JavaScript, qui semble être désactivé dans votre navigateur.</p>
           <p>Voici les <a href="https://www.enable-javascript.com/fr/" target="_blank">instructions pour activer JavaScript dans votre navigateur Web</a>.</p>
         </div><div class="col-md-3"></div></div>
-      </noscript>
+      </div>
 
-      <div>
+      <div class="sp-retro">
+        <div class="row"><div class="col-md-3"></div><div class="col-md-6" style="border: red solid 3px">
+          <p>Splight utilise des fonctionalités des navigateurs récents et ne peut pas être utilisé avec ce navigateur.</p>
+          <p>Vous pouvez metre à jour votre navigateur, ou utiliser <a href="https://www.google.com/chrome/">Google Chrome</a> ou <a href="https://www.mozilla.org/fr/firefox/">Mozzila Firefox</a>.</p>
+        </div><div class="col-md-3"></div></div>
+      </div>
+
+      <div class="sp-modern">
 {% block contents %}
 {% endblock %}
       </div>

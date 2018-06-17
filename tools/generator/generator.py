@@ -2,6 +2,7 @@ import calendar
 import colorsys
 import datetime
 import itertools
+import json
 import os
 import shutil
 
@@ -43,6 +44,14 @@ class Generator:
 class RootGenerator(Generator):
     def __init__(self, *, destination_directory, data, environment):
         today = datetime.date.today()
+        with open(os.path.join(os.path.dirname(__file__), "modernizr-config.json")) as f:
+            feature_names = {
+                "test/es6/collections": "es6collections",
+            }
+            modernizr_features = [
+                feature_names.get(feature, feature.split("/")[-1])
+                for feature in json.load(f)["feature-detects"]
+            ]
         super().__init__(
             parent=None,
             slug=destination_directory,
@@ -51,6 +60,7 @@ class RootGenerator(Generator):
                 # @todo Remove generation date from context:
                 # generate site independently from generation date, and fix it with JavaScript
                 generation=NS(date=today, week=NS(slug=today.strftime("%Y-%W"))),
+                modernizr_features=modernizr_features,
             ),
         )
 

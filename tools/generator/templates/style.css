@@ -29,12 +29,28 @@ a {
     font-size: .8em;
 }
 
-.script {
-    display: none;
-}
-
 .display_checkbox {
     padding: 2px;
     border-radius: 3px;
     border: solid 1px;
+}
+
+.mdrn-js .sp-noscript {
+    display: none;
+}
+
+.mdrn-no-js .sp-retro {
+    display: none;
+}
+
+{% for feature in modernizr_features %}.mdrn-{{ feature }}{% endfor %} .sp-retro {
+    display: none;
+}
+
+.sp-modern {
+    display: none;
+}
+
+{% for feature in modernizr_features %}.mdrn-{{ feature }}{% endfor %} .sp-modern {
+    display: block;
 }

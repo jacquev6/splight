@@ -25,7 +25,7 @@
   <div class="col">
     <h1>Semaine du {{ week.days[0]|format_date }}</h1>
 
-    <div class="script"><div class="row"><div class="col"><form id="display_settings">
+    <div><div class="row"><div class="col"><form id="display_settings">
       <div class="form-group">
         {% for tag in tags %}
         <div class="form-check form-check-inline display_checkbox" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
@@ -87,7 +87,7 @@
       </div>
     </div></div>
 
-    <div class="previous_next_days_links script"><div class="row">
+    <div class="previous_next_days_links"><div class="row">
       <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="{{ root_path }}/{{ city.slug }}/{{ week.slug }}/">&lt; Jour précédent</a></p></div>
       <div class="col"><p><a class="tagged next_day_link" href="{{ root_path }}/{{ city.slug }}/{{ week.slug }}/">Jour suivant &gt;</a></p></div>
     </div></div>
@@ -95,21 +95,6 @@
     {{ previous_and_next_links() }}
 
     <div id="calendar">
-      <noscript><dl>
-  {% for day in week.days %}
-        <dt>{{ day|format_date }}</dt>
-    {% set day_events = events.get(day, []) %}
-    {% if day_events %}
-        <dd><ul>
-      {% for event in day_events %}
-          <li>{{ event.start|format_time }}, {{ event.location }}&nbsp;: {{ event.title }}</li>
-      {% endfor %}
-        </ul></dd>
-    {% else %}
-        <dd>Rien de prévu.</dd>
-    {% endif %}
-  {% endfor %}
-      </dl></noscript>
     </div>
 
     {{ previous_and_next_links() }}
