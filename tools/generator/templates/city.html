@@ -3,7 +3,7 @@
 {% block contents %}
 <div class="row"><div class="col-md-3"></div><div class="col-md-6">
   <p><a href="/{{ city.slug }}/{{ generation.week.slug }}/?{% for tag in tags %}tag={{ tag.slug }}{% if not loop.last %}&{% endif %}{% endfor %}"><img class="img-fluid" src="/actualite-leaderboard.jpg" /></a></p>
-  <p><a href="/{{ city.slug }}/{{ generation.week.slug }}/?{% for tag in tags %}tag={{ tag.slug }}{% if not loop.last %}&{% endif %}{% endfor %}">Toute l'actualité</a></p>
+  <p><a href="/{{ city.slug }}/{{ generation.week.slug }}/?{% for tag in tags %}tag={{ tag.slug }}{% if not loop.last %}&{% endif %}{% endfor %}">Toute l'actualité (old)</a></p>
 </div></div>
 <div class="row"><div class="col">
   <h1>Catégories</h1>
@@ -12,7 +12,7 @@
   {% for tag in tags %}
   <div class="col-6 col-md-3">
     <p><a href="/{{ city.slug }}/{{ generation.week.slug }}/?tag={{ tag.slug }}"><img class="img-fluid" src="/{{ tag.slug }}-rectangle.jpg" /></a></p>
-    <p><a href="/{{ city.slug }}/{{ generation.week.slug }}/?tag={{ tag.slug }}">{{ tag.title }}</a></p>
+    <p><a href="/{{ city.slug }}/{{ generation.week.slug }}/?tag={{ tag.slug }}">{{ tag.title }} (old)</a></p>
   </div>
   {% endfor %}
 </div>

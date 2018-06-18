@@ -154,11 +154,11 @@ class CityGenerator(Generator):
     def run(self):
         self.render(template="city.html")
 
-        for week in self.__make_weeks(self.context.city.events):
-            WeekGenerator(parent=self, week=week).run()
+        for week in self.__make_old_weeks(self.context.city.events):
+            OldWeekGenerator(parent=self, week=week).run()
 
-    def __make_weeks(self, events):
-        weeks = [self.__make_week(start_date) for start_date in self.__generate_start_dates(events)]
+    def __make_old_weeks(self, events):
+        weeks = [self.__make_old_week(start_date) for start_date in self.__generate_old_start_dates(events)]
 
         for i in range(1, len(weeks)):
             # previous and next_week are dict instead of NS. This is fine for now.
@@ -167,7 +167,7 @@ class CityGenerator(Generator):
 
         return [NS(**week) for week in weeks]
 
-    def __make_week(self, start_date):
+    def __make_old_week(self, start_date):
         return dict(
             slug=start_date.strftime("%Y-%W"),
             previous_week=None,
@@ -176,7 +176,7 @@ class CityGenerator(Generator):
             day_after=start_date + datetime.timedelta(days=7),
         )
 
-    def __generate_start_dates(self, events):
+    def __generate_old_start_dates(self, events):
         start_date = dateutils.previous_week_day(events[0].datetime.date(), 0)
         last_day = (
             dateutils.previous_week_day(self.context.generation.date, 0)
@@ -187,12 +187,12 @@ class CityGenerator(Generator):
             start_date += datetime.timedelta(days=7)
 
 
-class WeekGenerator(Generator):
+class OldWeekGenerator(Generator):
     def __init__(self, *, parent, week):
         super().__init__(parent=parent, slug=week.slug, add_to_context=dict(week=week))
 
     def run(self):
-        self.render(template="week.html")
+        self.render(template="old_week.html")
 
 
 def format_date(d):
