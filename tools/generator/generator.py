@@ -9,9 +9,11 @@ import shutil
 import jinja2
 
 from . import dateutils
-from . import data
+from . import data as data_
+from . import templates
 
 
+# BEGIN OF SECTION TO BE REMOVED
 class NS(dict):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -42,16 +44,8 @@ class Generator:
 
 
 class RootGenerator(Generator):
-    def __init__(self, *, destination_directory, data, environment):
-        today = datetime.date.today()
-        with open(os.path.join(os.path.dirname(__file__), "modernizr-config.json")) as f:
-            feature_names = {
-                "test/es6/collections": "es6collections",
-            }
-            modernizr_features = [
-                feature_names.get(feature, feature.split("/")[-1])
-                for feature in json.load(f)["feature-detects"]
-            ]
+    def __init__(self, *, destination_directory, data, environment, generation):
+        self.__generation = generation
         super().__init__(
             parent=None,
             slug=destination_directory,
@@ -59,51 +53,26 @@ class RootGenerator(Generator):
                 cities=data.cities,
                 # @todo Remove generation date from context:
                 # generate site independently from generation date, and fix it with JavaScript
-                generation=NS(date=today, week=NS(slug=today.strftime("%Y-%W"))),
-                modernizr_features=modernizr_features,
-                colors=NS(
-                    primary_very_light="#9AB2E8",
-                    primary_light="#5E81D2",
-                    primary="#3660C1",
-                    primary_dark="#103FAC",
-                    primary_very_dark="#0A2B77",
-                    complement_very_light="#FFDF9F",
-                    complement_light="#FFCB62",
-                    complement="#FFBA31",
-                    complement_dark="#FFAA00",
-                    complement_very_dark="#B17600",
-                ),
+                generation=self.__generation,
             ),
         )
+        self.__data = data
 
         self.environment = environment
 
     def run(self):
-        AdsGenerator(parent=self).run()
-
-        self.render(template="index.html")
-        self.render(template="style.css", destination="style.css")
-
         for city in self.context.cities:
             CityGenerator(parent=self, city=city, weeks_count=5).run()
 
 
-class AdsGenerator(Generator):
-    def __init__(self, *, parent):
-        super().__init__(parent=parent, slug="ads", add_to_context=dict())
-
-    def run(self):
-        self.render(template="ads.html")
-
-
 class CityGenerator(Generator):
     def __init__(self, *, parent, city, weeks_count):
-        tags = {
+        self.__tags = {
             tag.slug: NS(
                 slug=tag.slug,
                 title=tag.title,
-                border_color=self.__make_color(h=i / len(city.tags), s=0.5, v=0.5),
-                background_color=self.__make_color(h=i / len(city.tags), s=0.3, v=0.9),
+                border_color=make_color(h=i / len(city.tags), s=0.5, v=0.5),
+                background_color=make_color(h=i / len(city.tags), s=0.3, v=0.9),
             )
             for (i, tag) in enumerate(city.tags)
         }
@@ -132,7 +101,7 @@ class CityGenerator(Generator):
                     title=title,
                     location=location,
                     start=event.datetime,
-                    tags=[tags[tag.slug] for tag in event.tags],
+                    tags=[self.__tags[tag.slug] for tag in event.tags],
                     **kwds,
                 ))
 
@@ -141,23 +110,13 @@ class CityGenerator(Generator):
             slug=city.slug,
             add_to_context=dict(
                 city=city,
-                tags=[tags[tag.slug] for tag in city.tags],
+                tags=[self.__tags[tag.slug] for tag in city.tags],
                 events=events,
             ),
         )
         self.__weeks_count = weeks_count
 
-    @staticmethod
-    def __make_color(*, h, s, v):
-        return "#{}".format("".join("{:02x}".format(int(0xFF * x)) for x in colorsys.hsv_to_rgb(h, s, v)))
-
     def run(self):
-        self.render(template="city.html")
-
-        for date in self.__generate_dates():
-            if date.weekday() == 0:
-                WeekGenerator(parent=self, start_date=date).run()
-
         for week in self.__make_old_weeks(self.context.city.events):
             OldWeekGenerator(parent=self, week=week).run()
 
@@ -190,16 +149,6 @@ class CityGenerator(Generator):
             yield start_date
             start_date += datetime.timedelta(days=7)
 
-    def __generate_dates(self):
-        date = dateutils.previous_week_day(self.context.city.events[0].datetime.date(), 0)
-        date_after = (
-            dateutils.previous_week_day(self.context.generation.date, 0)
-            + datetime.timedelta(weeks=10)
-        )
-        while date < date_after:
-            yield date
-            date += datetime.timedelta(days=1)
-
 
 class OldWeekGenerator(Generator):
     def __init__(self, *, parent, week):
@@ -209,12 +158,21 @@ class OldWeekGenerator(Generator):
         self.render(template="old_week.html")
 
 
-class WeekGenerator(Generator):
-    def __init__(self, *, parent, start_date):
-        super().__init__(parent=parent, slug=start_date.strftime("%G-W%V"), add_to_context=dict(start_date=start_date))
-
-    def run(self):
-        self.render(template="week.html")
+def generate_old_weeks(destination_directory, data, generation):
+    environment = jinja2.Environment(
+        loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), "templates")),
+        trim_blocks=True,
+        lstrip_blocks=True,
+        undefined=jinja2.StrictUndefined,
+    )
+    environment.filters["format_date"] = format_date
+    RootGenerator(
+        destination_directory=destination_directory,
+        data=data,
+        environment=environment,
+        generation=generation,
+    ).run()
+# END OF SECTION TO BE REMOVED
 
 
 def format_date(d):
@@ -224,14 +182,6 @@ def format_date(d):
     ]
     days = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
     return d.strftime("{} %d {} %Y".format(days[d.weekday()], months[d.month - 1]))
-
-
-def format_time(t):
-    if t.minute:
-        format = "%Hh%M"
-    else:
-        format = "%Hh"
-    return t.strftime(format)
 
 
 def link_tree(src, dst):
@@ -250,17 +200,76 @@ def generate(*, data_directory, destination_directory):
     # link_tree instead of shutil.copytree to be able to edit skeleton files without needing to regenerate the site
     link_tree(os.path.join(os.path.dirname(__file__), "skeleton"), destination_directory)
 
-    environment = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), "templates")),
-        trim_blocks=True,
-        lstrip_blocks=True,
-        undefined=jinja2.StrictUndefined,
-    )
-    environment.filters["format_date"] = format_date
-    environment.filters["format_time"] = format_time
+    today = datetime.date.today()
+    generation = NS(date=today, week=NS(slug=today.strftime("%Y-%W")))
+    data = data_.load(data_directory)
 
-    RootGenerator(
-        destination_directory=destination_directory,
-        data=data.load(data_directory),
-        environment=environment,
-    ).run()
+    generate_old_weeks(destination_directory, data, generation)
+
+    cities = list(make_template_cities(data))
+
+    with open(os.path.join(os.path.dirname(__file__), "modernizr-config.json")) as f:
+        modernizr_features = [
+            {
+                "test/es6/collections": "es6collections",
+            }.get(feature, feature.split("/")[-1])
+            for feature in json.load(f)["feature-detects"]
+        ]
+
+    colors = templates.Colors(
+        primary_very_light="#9AB2E8",
+        primary_light="#5E81D2",
+        primary="#3660C1",
+        primary_dark="#103FAC",
+        primary_very_dark="#0A2B77",
+        complement_very_light="#FFDF9F",
+        complement_light="#FFCB62",
+        complement="#FFBA31",
+        complement_dark="#FFAA00",
+        complement_very_dark="#B17600",
+    )
+
+    templates.IndexHtml(cities=[city for (city, first_day) in cities]).render()
+    templates.AdsHtml().render()
+    templates.StyleCss(modernizr_features=modernizr_features, colors=colors).render()
+
+    for (city, first_day) in cities:
+        templates.CityHtml(city=city, generation=generation).render()
+
+        date = first_day
+        date_after = (
+            dateutils.previous_week_day(generation.date, 0)
+            + datetime.timedelta(weeks=10)
+        )
+
+        while date < date_after:
+            if date.weekday() == 0:
+                week = templates.Week(start_date=date)
+                templates.WeekHtml(city=city, week=week).render()
+            date += datetime.timedelta(days=1)
+
+
+def make_template_cities(data):
+    for city in data.cities:
+        tags = {
+            tag.slug: templates.Tag(
+                slug=tag.slug,
+                title=tag.title,
+                border_color=make_color(h=i / len(city.tags), s=0.5, v=0.5),
+                background_color=make_color(h=i / len(city.tags), s=0.3, v=0.9),
+            )
+            for (i, tag) in enumerate(city.tags)
+        }
+
+        yield (
+            templates.City(
+                slug=city.slug,
+                name=city.name,
+                tags=[tags[tag.slug] for tag in city.tags],
+            ),
+            dateutils.previous_week_day(city.events[0].datetime.date(), 0),
+        )
+
+
+def make_color(*, h, s, v):
+    return "#{}".format("".join("{:02x}".format(int(0xFF * x)) for x in colorsys.hsv_to_rgb(h, s, v)))
