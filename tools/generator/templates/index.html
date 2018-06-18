@@ -4,8 +4,8 @@
 <div class="row">
   {% for city in cities %}
   <div class="col-6 col-md-3">
-    <p><a href="{{ root_path }}/{{ city.slug }}/"><img class="img-fluid" src="/{{ city.slug }}-rectangle.jpg" /></a></p>
-    <p><a href="{{ root_path }}/{{ city.slug }}/">{{ city.name }}</a></p>
+    <p><a href="/{{ city.slug }}/"><img class="img-fluid" src="/{{ city.slug }}-rectangle.jpg" /></a></p>
+    <p><a href="/{{ city.slug }}/">{{ city.name }}</a></p>
   </div>
   {% endfor %}
 </div>

@@ -19,22 +19,38 @@ a {
     color: #3660C1;
 }
 
-.advertisement {
+.sp-advertisement {
     color: gray;
     padding-bottom: 20px;
 }
 
-.advertisement p {
+.sp-advertisement p {
     margin: 0;
     font-size: .8em;
 }
 
-.script {
-    display: none;
-}
-
-.display_checkbox {
+.sp-display-checkbox {
     padding: 2px;
     border-radius: 3px;
     border: solid 1px;
+}
+
+.mdrn-js .sp-noscript {
+    display: none;
+}
+
+.mdrn-no-js .sp-retro {
+    display: none;
+}
+
+.mdrn-arrow.mdrn-es6collections.mdrn-hashchange.mdrn-history .sp-retro {
+    display: none;
+}
+
+.sp-modern {
+    display: none;
+}
+
+.mdrn-arrow.mdrn-es6collections.mdrn-hashchange.mdrn-history .sp-modern {
+    display: block;
 }

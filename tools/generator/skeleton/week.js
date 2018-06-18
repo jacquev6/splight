@@ -10,7 +10,7 @@ function initialize_week(config) {
 
   // Display settings
   var first_day = null;
-  // All other display settings are stored in the #display_settings form.
+  // All other display settings are stored in the #sp-display-settings form.
 
   function next_day_url(url) {
     var uri = new URI(url);
@@ -80,42 +80,42 @@ function initialize_week(config) {
 
   function get_display_settings_from_location() {
     var location = URI.parse(window.location.href);
-    $("#display_settings").deserialize(location.query);
+    $("#sp-display-settings").deserialize(location.query);
     first_day = location.fragment;
   }
 
   function filter_events() {
-    var displayed_tags = new Set($("#display_settings input[name=tag]:checked").map((x, y) => $(y).val()).toArray());
+    var displayed_tags = new Set($("#sp-display-settings input[name=tag]:checked").map((x, y) => $(y).val()).toArray());
     return config.all_events.filter(event => have_intersection(event.tags, displayed_tags));
   }
 
   function apply_display_settings(calendar) {
     var new_uri = URI(window.location.href);
-    new_uri.query($("#display_settings").serialize());  // @todo Remove parameters that have their default value?
+    new_uri.query($("#sp-display-settings").serialize());  // @todo Remove parameters that have their default value?
     new_uri.fragment(first_day);
     History.replaceState(null, window.document.title, new_uri.toString());
 
-    $(".tagged").prop("href", function(index, href) {
-      return URI(href).query($("#display_settings").serialize());
+    $(".sp-tagged").prop("href", function(index, href) {
+      return URI(href).query($("#sp-display-settings").serialize());
     });
 
-    $(".next_day_link").show();
+    $(".sp-next-day-link").show();
     try {
-      $(".next_day_link").prop("href", (index, href) => next_day_url(href));
+      $(".sp-next-day-link").prop("href", (index, href) => next_day_url(href));
     } catch {
-      $(".next_day_link").hide();
+      $(".sp-next-day-link").hide();
     }
 
-    $(".previous_day_link").show();
+    $(".sp-previous-day-link").show();
     try {
-      $(".previous_day_link").prop("href", (index, href) => previous_day_url(href));
+      $(".sp-previous-day-link").prop("href", (index, href) => previous_day_url(href));
     } catch {
-      $(".previous_day_link").hide();
+      $(".sp-previous-day-link").hide();
     }
 
-    var view_type = $("#display_settings input[name=view_type]:checked").val();
+    var view_type = $("#sp-display-settings input[name=vt]:checked").val();
     var view_duration = (function () {
-      switch($("#display_settings input[name=view_duration]:checked").val()) {
+      switch($("#sp-display-settings input[name=vd]:checked").val()) {
         case "1": return "Day"
         case "3": return "ThreeDays"
         default: return "Week"
@@ -123,11 +123,11 @@ function initialize_week(config) {
     })();
     calendar.changeView(view_type + view_duration, config.days[first_day]);
 
-    $("#agenda_settings").toggle(view_type == "agenda");
-    $(".previous_next_days_links").toggle(view_duration != "Week");
-    $(".previous_next_weeks_links").toggle(view_duration == "Week");
+    $("#sp-agenda-settings").toggle(view_type == "agenda");
+    $(".sp-previous-next-days-links").toggle(view_duration != "Week");
+    $(".sp-previous-next-weeks-links").toggle(view_duration == "Week");
 
-    calendar.option("slotEventOverlap", $("#display_settings input[name=overlap]").is(":checked"));
+    calendar.option("slotEventOverlap", $("#sp-display-settings input[name=ov]").is(":checked"));
 
     var events = filter_events();
     calendar.option("minTime", {hour: Math.min(...events.map(e => moment(e.start).hour())) - 1});
@@ -142,11 +142,9 @@ function initialize_week(config) {
   }
 
   $(function() {
-    $(".script").show();
-
     get_display_settings_from_location();
 
-    $("#calendar").fullCalendar({
+    $("#sp-fullcalendar").fullCalendar({
       header: false,
       defaultDate: config.defaultDate,
       defaultView: "agendaWeek",
@@ -170,11 +168,11 @@ function initialize_week(config) {
       },
     });
 
-    var calendar = $('#calendar').fullCalendar('getCalendar');
+    var calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
 
     apply_display_settings(calendar);
 
-    $("#display_settings input").on("change", function() {
+    $("#sp-display-settings input").on("change", function() {
       apply_display_settings(calendar);
     });
     $(window).on("hashchange", function() {

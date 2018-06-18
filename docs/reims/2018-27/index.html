@@ -1,15 +1,17 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" class="mdrn-no-js">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="/lib/bootstrap-4.1.1.min.css">
     <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css">
+    <link rel="stylesheet" href="/lib/fullcalendar-3.9.0.min.css">
 
     <title>Splight</title>
+
+    <script src="/lib/modernizr-custom.js"></script>
   </head>
   <body>
     <div class="container">
@@ -18,17 +20,24 @@
         <p class="lead">Votre agenda culturel à Reims et dans sa région.</p>
       </div>
 
-      <noscript>
+      <div class="sp-noscript">
         <div class="row"><div class="col-md-3"></div><div class="col-md-6" style="border: red solid 3px">
-          <p>Pour accéder à toutes les fonctionnalités de Splight (notamment l'affichage des calendriers filtrés par catégories), vous devez activer JavaScript.</p>
+          <p>Splight utilise JavaScript, qui semble être désactivé dans votre navigateur.</p>
           <p>Voici les <a href="https://www.enable-javascript.com/fr/" target="_blank">instructions pour activer JavaScript dans votre navigateur Web</a>.</p>
         </div><div class="col-md-3"></div></div>
-      </noscript>
+      </div>
 
-      <div>
+      <div class="sp-retro">
+        <div class="row"><div class="col-md-3"></div><div class="col-md-6" style="border: red solid 3px">
+          <p>Splight utilise des fonctionalités des navigateurs récents et ne peut pas être utilisé avec ce navigateur.</p>
+          <p>Vous pouvez metre à jour votre navigateur, ou utiliser <a href="https://www.google.com/chrome/">Google Chrome</a> ou <a href="https://www.mozilla.org/fr/firefox/">Mozzila Firefox</a>.</p>
+        </div><div class="col-md-3"></div></div>
+      </div>
+
+      <div class="sp-modern">
 <div class="row d-lg-none">
   <div class="col">
-    <div class="advertisement">
+    <div class="sp-advertisement">
       <p>Publicité</p>
       <p><img class="img-fluid" src="/ads/468x60-banner.png" /></p>
     </div>
@@ -39,116 +48,89 @@
   <div class="col">
     <h1>Semaine du lundi 02 juillet 2018</h1>
 
-    <div class="script"><div class="row"><div class="col"><form id="display_settings">
+    <div><div class="row"><div class="col"><form id="sp-display-settings">
       <div class="form-group">
-        <div class="form-check form-check-inline display_checkbox" style="border-color: #7f3f3f; background-color: #e5a0a0">
-          <input class="form-check-input" type="checkbox" name="tag" id="tag_musique" value="musique">
-          <label class="form-check-label" for="tag_musique">Musique</label>
+        <div class="form-check form-check-inline sp-display-checkbox" style="border-color: #7f3f3f; background-color: #e5a0a0">
+          <input class="form-check-input" type="checkbox" name="tag" id="sp-tag-musique" value="musique">
+          <label class="form-check-label" for="sp-tag-musique">Musique</label>
         </div>
-        <div class="form-check form-check-inline display_checkbox" style="border-color: #5f7f3f; background-color: #c3e5a0">
-          <input class="form-check-input" type="checkbox" name="tag" id="tag_cinema" value="cinema">
-          <label class="form-check-label" for="tag_cinema">Cinéma</label>
+        <div class="form-check form-check-inline sp-display-checkbox" style="border-color: #5f7f3f; background-color: #c3e5a0">
+          <input class="form-check-input" type="checkbox" name="tag" id="sp-tag-cinema" value="cinema">
+          <label class="form-check-label" for="sp-tag-cinema">Cinéma</label>
         </div>
-        <div class="form-check form-check-inline display_checkbox" style="border-color: #3f7f7f; background-color: #a0e5e5">
-          <input class="form-check-input" type="checkbox" name="tag" id="tag_theatre" value="theatre">
-          <label class="form-check-label" for="tag_theatre">Théâtre</label>
+        <div class="form-check form-check-inline sp-display-checkbox" style="border-color: #3f7f7f; background-color: #a0e5e5">
+          <input class="form-check-input" type="checkbox" name="tag" id="sp-tag-theatre" value="theatre">
+          <label class="form-check-label" for="sp-tag-theatre">Théâtre</label>
         </div>
-        <div class="form-check form-check-inline display_checkbox" style="border-color: #5f3f7f; background-color: #c3a0e5">
-          <input class="form-check-input" type="checkbox" name="tag" id="tag_expositions" value="expositions">
-          <label class="form-check-label" for="tag_expositions">Expositions</label>
+        <div class="form-check form-check-inline sp-display-checkbox" style="border-color: #5f3f7f; background-color: #c3a0e5">
+          <input class="form-check-input" type="checkbox" name="tag" id="sp-tag-expositions" value="expositions">
+          <label class="form-check-label" for="sp-tag-expositions">Expositions</label>
         </div>
       </div>
 
       <div class="form-group">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_7" value="7" checked="checked">
-          <label class="form-check-label" for="view_duration_7">1 semaine</label>
+          <input class="form-check-input" type="radio" name="vd" id="sp-view-duration-7" value="7" checked="checked">
+          <label class="form-check-label" for="sp-view-duration-7">1 semaine</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_3" value="3">
-          <label class="form-check-label" for="view_duration_3">3 jours</label>
+          <input class="form-check-input" type="radio" name="vd" id="sp-view-duration-3" value="3">
+          <label class="form-check-label" for="sp-view-duration-3">3 jours</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_duration" id="view_duration_1" value="1">
-          <label class="form-check-label" for="view_duration_1">1 jour</label>
+          <input class="form-check-input" type="radio" name="vd" id="sp-view-duration-1" value="1">
+          <label class="form-check-label" for="sp-view-duration-1">1 jour</label>
         </div>
       </div>
 
       <div class="form-group">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_type" id="view_type_basic" value="basic" checked="checked">
-          <label class="form-check-label" for="view_type_basic">basique</label>
+          <input class="form-check-input" type="radio" name="vt" id="sp-view-type-basic" value="basic" checked="checked">
+          <label class="form-check-label" for="sp-view-type-basic">basique</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_type" id="view_type_list" value="list">
-          <label class="form-check-label" for="view_type_list">liste</label>
+          <input class="form-check-input" type="radio" name="vt" id="sp-view-type-list" value="list">
+          <label class="form-check-label" for="sp-view-type-list">liste</label>
         </div>
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="view_type" id="view_type_agenda" value="agenda">
-          <label class="form-check-label" for="view_type_agenda">agenda</label>
+          <input class="form-check-input" type="radio" name="vt" id="sp-view-type-agenda" value="agenda">
+          <label class="form-check-label" for="sp-view-type-agenda">agenda</label>
         </div>
       </div>
 
-      <div id="agenda_settings" class="form-group">
+      <div id="sp-agenda-settings" class="form-group">
         <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" name="overlap" id="overlap">
-          <label class="form-check-label" for="overlap">événements se recouvrent</label>
+          <input class="form-check-input" type="checkbox" name="ov" id="sp-overlap">
+          <label class="form-check-label" for="sp-overlap">événements se recouvrent</label>
         </div>
       </div>
     </form></div></div></div>
 
-    <div class="previous_next_weeks_links"><div class="row">
-      <div class="col"><p class="text-right"><a class="tagged" href="/reims/2018-26/">&lt; Semaine précédente</a></p></div>
-      <div class="col"><p><a class="tagged" href="/reims/2018-28/">Semaine suivante &gt;</a></p></div>
+    <div class="sp-previous-next-weeks-links"><div class="row">
+      <div class="col"><p class="text-right"><a class="sp-tagged" href="/reims/2018-26/">&lt; Semaine précédente</a></p></div>
+      <div class="col"><p><a class="sp-tagged" href="/reims/2018-28/">Semaine suivante &gt;</a></p></div>
     </div></div>
 
-    <div class="previous_next_days_links script"><div class="row">
-      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="/reims/2018-27/">&lt; Jour précédent</a></p></div>
-      <div class="col"><p><a class="tagged next_day_link" href="/reims/2018-27/">Jour suivant &gt;</a></p></div>
+    <div class="sp-previous-next-days-links"><div class="row">
+      <div class="col"><p class="text-right"><a class="sp-tagged sp-previous-day-link" href="/reims/2018-27/">&lt; Jour précédent</a></p></div>
+      <div class="col"><p><a class="sp-tagged sp-next-day-link" href="/reims/2018-27/">Jour suivant &gt;</a></p></div>
     </div></div>
 
-    <div id="calendar">
-      <noscript><dl>
-        <dt>lundi 02 juillet 2018</dt>
-        <dd>Rien de prévu.</dd>
-        <dt>mardi 03 juillet 2018</dt>
-        <dd><ul>
-          <li>20h, Lieu de test C&nbsp;: Artiste de test A (Genre Toto)</li>
-        </ul></dd>
-        <dt>mercredi 04 juillet 2018</dt>
-        <dd><ul>
-          <li>19h30, Lieu de test B&nbsp;: Film de test</li>
-        </ul></dd>
-        <dt>jeudi 05 juillet 2018</dt>
-        <dd><ul>
-          <li>20h15, Gaumont&nbsp;: Britannicus (Comédie-Française / Pathé Live)</li>
-        </ul></dd>
-        <dt>vendredi 06 juillet 2018</dt>
-        <dd><ul>
-          <li>19h, Lieu de test A&nbsp;: Artiste de test B (Genre Titi)</li>
-        </ul></dd>
-        <dt>samedi 07 juillet 2018</dt>
-        <dd>Rien de prévu.</dd>
-        <dt>dimanche 08 juillet 2018</dt>
-        <dd><ul>
-          <li>19h30, Lieu de test B&nbsp;: Film de test</li>
-          <li>20h, Lieu de test C&nbsp;: Artiste de test A (Genre Toto)</li>
-        </ul></dd>
-      </dl></noscript>
+    <div id="sp-fullcalendar">
     </div>
 
-    <div class="previous_next_weeks_links"><div class="row">
-      <div class="col"><p class="text-right"><a class="tagged" href="/reims/2018-26/">&lt; Semaine précédente</a></p></div>
-      <div class="col"><p><a class="tagged" href="/reims/2018-28/">Semaine suivante &gt;</a></p></div>
+    <div class="sp-previous-next-weeks-links"><div class="row">
+      <div class="col"><p class="text-right"><a class="sp-tagged" href="/reims/2018-26/">&lt; Semaine précédente</a></p></div>
+      <div class="col"><p><a class="sp-tagged" href="/reims/2018-28/">Semaine suivante &gt;</a></p></div>
     </div></div>
 
-    <div class="previous_next_days_links script"><div class="row">
-      <div class="col"><p class="text-right"><a class="tagged previous_day_link" href="/reims/2018-27/">&lt; Jour précédent</a></p></div>
-      <div class="col"><p><a class="tagged next_day_link" href="/reims/2018-27/">Jour suivant &gt;</a></p></div>
+    <div class="sp-previous-next-days-links"><div class="row">
+      <div class="col"><p class="text-right"><a class="sp-tagged sp-previous-day-link" href="/reims/2018-27/">&lt; Jour précédent</a></p></div>
+      <div class="col"><p><a class="sp-tagged sp-next-day-link" href="/reims/2018-27/">Jour suivant &gt;</a></p></div>
     </div></div>
   </div>
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
-    <div class="advertisement">
+    <div class="sp-advertisement">
       <p>Publicité</p>
       <p><img class="img-fluid" src="/ads/160x600-wide-skyscraper.png" /></p>
     </div>
@@ -159,55 +141,17 @@
       <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018</p>
     </div>
 
-    <div id="debug" style="margin-top: 50px; display: none"><ul>
-      <li>Breakpoint:
-        <span class="d-none d-sm-inline-block">xs</span>
-        <strong class="d-inline-block d-sm-none">xs</strong>
-        &lt; 576px &le;
-        <span class="d-sm-none d-md-inline-block">sm</span>
-        <strong class="d-none d-sm-inline-block d-md-none">sm</strong>
-        &lt; 768px &le;
-        <span class="d-md-none d-lg-inline-block">md</span>
-        <strong class="d-none d-md-inline-block d-lg-none">md</strong>
-        &lt; 992px &le;
-        <span class="d-lg-none d-xl-inline-block">lg</span>
-        <strong class="d-none d-lg-inline-block d-xl-none">lg</strong>
-        &lt; 1200px &le;
-        <span class="d-xl-none">xl</span>
-        <strong class="d-none d-xl-inline-block">xl</strong>
-      </li>
-      <li>Container:
-        <span class="d-inline-block d-sm-none">fluid</span>
-        <span class="d-none d-sm-inline-block d-md-none">540px = 12 * 45px</span>
-        <span class="d-none d-md-inline-block d-lg-none">720px = 12 * 60px</span>
-        <span class="d-none d-lg-inline-block d-xl-none">960px = 12 * 80px</span>
-        <span class="d-none d-xl-inline-block">1140px = 12 * 95px</span>
-      </li>
-      <li><a href="" onclick="location.href='http://www.responsinator.com/?url='+window.location.href; return false">Show in Responsinator</a></li>
-    </ul></div>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/locale/fr.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.19.1/URI.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled/html5/native.history.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js" crossorigin="anonymous"></script>
-    <script src="http://kflorence.github.io/jquery-deserialize/src/jquery.deserialize.js" crossorigin="anonymous"></script>
-    <script src="/week.js" crossorigin="anonymous"></script>
-
-    <script>
-      $(function() {
-        if(window.location.href.includes("?debug")) {
-          $("#debug").show();
-          $("a").each(function(a, b) {
-            $(b).attr("href", $(b).attr("href") + "?debug");
-          });
-        }
-      });
-    </script>
+    <script src="/lib/jquery-3.3.1.slim.min.js"></script>
+    <script src="/lib/popper-1.14.3.min.js"></script>
+    <script src="/lib/bootstrap-4.1.1.min.js"></script>
+    <script src="/lib/moment-2.22.2.min.js"></script>
+    <script src="/lib/fullcalendar-3.9.0.min.js"></script>
+    <script src="/lib/fullcalendar-locale-fr-3.9.0.js"></script>
+    <script src="/lib/URI-1.19.1.min.js"></script>
+    <script src="/lib/native.history-1.8.bundled.html5.js"></script>
+    <script src="/lib/lodash-4.17.10.min.js"></script>
+    <script src="/lib/jquery.deserialize-2.0.0-rc1.js"></script>
+    <script src="/week.js"></script>
 
 <script>
   initialize_week({

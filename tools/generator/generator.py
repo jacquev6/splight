@@ -2,6 +2,7 @@ import calendar
 import colorsys
 import datetime
 import itertools
+import json
 import os
 import shutil
 
@@ -43,6 +44,14 @@ class Generator:
 class RootGenerator(Generator):
     def __init__(self, *, destination_directory, data, environment):
         today = datetime.date.today()
+        with open(os.path.join(os.path.dirname(__file__), "modernizr-config.json")) as f:
+            feature_names = {
+                "test/es6/collections": "es6collections",
+            }
+            modernizr_features = [
+                feature_names.get(feature, feature.split("/")[-1])
+                for feature in json.load(f)["feature-detects"]
+            ]
         super().__init__(
             parent=None,
             slug=destination_directory,
@@ -51,39 +60,9 @@ class RootGenerator(Generator):
                 # @todo Remove generation date from context:
                 # generate site independently from generation date, and fix it with JavaScript
                 generation=NS(date=today, week=NS(slug=today.strftime("%Y-%W"))),
-            ),
-        )
-
-        self.environment = environment
-
-    def run(self):
-        AdsGenerator(parent=self).run()
-
-        for (version, weeks_count) in [("", 5), ("admin", 10)]:
-            VersionGenerator(
-                parent=self,
-                version=version,
-                weeks_count=weeks_count,
-            ).run()
-
-
-class AdsGenerator(Generator):
-    def __init__(self, *, parent):
-        super().__init__(parent=parent, slug="ads", add_to_context=dict(root_path=""))
-
-    def run(self):
-        self.render(template="ads.html")
-
-
-class VersionGenerator(Generator):
-    def __init__(self, *, parent, version, weeks_count):
-        super().__init__(
-            parent=parent,
-            slug=version,
-            add_to_context=dict(
-                root_path="/{}".format(version) if version else "",
+                modernizr_features=modernizr_features,
                 colors=NS(
-                    primary_very_light="#F99" if version else "#9AB2E8",
+                    primary_very_light="#9AB2E8",
                     primary_light="#5E81D2",
                     primary="#3660C1",
                     primary_dark="#103FAC",
@@ -96,14 +75,25 @@ class VersionGenerator(Generator):
                 ),
             ),
         )
-        self.__weeks_count = weeks_count
+
+        self.environment = environment
 
     def run(self):
+        AdsGenerator(parent=self).run()
+
         self.render(template="index.html")
         self.render(template="style.css", destination="style.css")
 
         for city in self.context.cities:
-            CityGenerator(parent=self, city=city, weeks_count=self.__weeks_count).run()
+            CityGenerator(parent=self, city=city, weeks_count=5).run()
+
+
+class AdsGenerator(Generator):
+    def __init__(self, *, parent):
+        super().__init__(parent=parent, slug="ads", add_to_context=dict())
+
+    def run(self):
+        self.render(template="ads.html")
 
 
 class CityGenerator(Generator):

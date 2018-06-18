@@ -1,0 +1,26 @@
+{
+  "minify": false,
+  "classPrefix": "mdrn-",
+  "options": [
+    "domPrefixes",
+    "prefixes",
+    "addTest",
+    "atRule",
+    "hasEvent",
+    "mq",
+    "prefixed",
+    "prefixedCSS",
+    "prefixedCSSValue",
+    "testAllProps",
+    "testProp",
+    "testStyles",
+    "html5shiv",
+    "setClasses"
+  ],
+  "feature-detects": [
+    "test/es6/arrow",
+    "test/es6/collections",
+    "test/hashchange",
+    "test/history"
+  ]
+}
