@@ -174,7 +174,6 @@ def generate_old_weeks(destination_directory, data):
         environment=environment,
         generation=generation,
     ).run()
-# END OF SECTION TO BE REMOVED
 
 
 def format_date(d):
@@ -184,6 +183,7 @@ def format_date(d):
     ]
     days = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
     return d.strftime("{} %d {} %Y".format(days[d.weekday()], months[d.month - 1]))
+# END OF SECTION TO BE REMOVED
 
 
 def link_tree(src, dst):

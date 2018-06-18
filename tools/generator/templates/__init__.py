@@ -264,6 +264,17 @@ class _BaseWithinCityHtml(_BaseHtml):
         )
 
 
+class CityHtml(_BaseWithinCityHtml):
+    template_name = "city.html"
+
+    def __init__(self, *, city):
+        super().__init__(city=city)
+
+    @property
+    def destination(self):
+        return os.path.join(super().destination, "index.html")
+
+
 class WeekHtml(_BaseWithinCityHtml):
     template_name = "week.html"
 
@@ -282,14 +293,3 @@ class WeekHtml(_BaseWithinCityHtml):
             week=self.__week,
             **super().context,
         )
-
-
-class CityHtml(_BaseWithinCityHtml):
-    template_name = "city.html"
-
-    def __init__(self, *, city):
-        super().__init__(city=city)
-
-    @property
-    def destination(self):
-        return os.path.join(super().destination, "index.html")
