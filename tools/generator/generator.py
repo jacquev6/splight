@@ -212,9 +212,21 @@ def format_time(t):
     return t.strftime(format)
 
 
+def link_tree(src, dst):
+    os.makedirs(dst)
+    for name in os.listdir(src):
+        srcname = os.path.join(src, name)
+        dstname = os.path.join(dst, name)
+        if os.path.isdir(srcname):
+            link_tree(srcname, dstname)
+        else:
+            os.link(srcname, dstname)
+
+
 def generate(*, data_directory, destination_directory):
     shutil.rmtree(destination_directory)
-    shutil.copytree(os.path.join(os.path.dirname(__file__), "skeleton"), destination_directory)
+    # link_tree instead of shutil.copytree to be able to edit skeleton files without needing to regenerate the site
+    link_tree(os.path.join(os.path.dirname(__file__), "skeleton"), destination_directory)
 
     environment = jinja2.Environment(
         loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), "templates")),
