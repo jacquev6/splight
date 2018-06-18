@@ -158,7 +158,9 @@ class OldWeekGenerator(Generator):
         self.render(template="old_week.html")
 
 
-def generate_old_weeks(destination_directory, data, generation):
+def generate_old_weeks(destination_directory, data):
+    today = datetime.date.today()
+    generation = NS(date=today, week=NS(slug=today.strftime("%Y-%W")))
     environment = jinja2.Environment(
         loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), "templates")),
         trim_blocks=True,
@@ -200,11 +202,9 @@ def generate(*, data_directory, destination_directory):
     # link_tree instead of shutil.copytree to be able to edit skeleton files without needing to regenerate the site
     link_tree(os.path.join(os.path.dirname(__file__), "skeleton"), destination_directory)
 
-    today = datetime.date.today()
-    generation = NS(date=today, week=NS(slug=today.strftime("%Y-%W")))
     data = data_.load(data_directory)
 
-    generate_old_weeks(destination_directory, data, generation)
+    generate_old_weeks(destination_directory, data)
 
     cities = list(make_template_cities(data))
 
@@ -234,11 +234,11 @@ def generate(*, data_directory, destination_directory):
     templates.StyleCss(modernizr_features=modernizr_features, colors=colors).render()
 
     for (city, first_day) in cities:
-        templates.CityHtml(city=city, generation=generation).render()
+        templates.CityHtml(city=city).render()
 
         date = first_day
         date_after = (
-            dateutils.previous_week_day(generation.date, 0)
+            dateutils.previous_week_day(datetime.date.today(), 0)
             + datetime.timedelta(weeks=10)
         )
 

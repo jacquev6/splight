@@ -287,17 +287,9 @@ class WeekHtml(_BaseWithinCityHtml):
 class CityHtml(_BaseWithinCityHtml):
     template_name = "city.html"
 
-    def __init__(self, *, city, generation):
+    def __init__(self, *, city):
         super().__init__(city=city)
-        self.__generation = generation
 
     @property
     def destination(self):
         return os.path.join(super().destination, "index.html")
-
-    @property
-    def context(self):
-        return dict(
-            generation=self.__generation,  # @todo Remove (when generated files don't depend on generation date anymore)
-            **super().context,
-        )
