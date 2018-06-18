@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+
+{% block jumbo_city %} - <a href="/{{ city.slug }}/">{{ city.name }}</a>{% endblock %}
+
+{% block jumbo_lead %}Votre agenda culturel à {{ city.name }} et dans sa région.{% endblock %}

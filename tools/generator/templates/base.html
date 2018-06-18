@@ -29,8 +29,8 @@
   <body>
     <div class="container">
       <div class="jumbotron">
-        <h1 class="display-4"><a href="/">Splight</a>{% if city is defined %} - <a href="/{{ city.slug }}/">{{ city.name }}</a>{% endif %}</h1>
-        <p class="lead">Votre agenda culturel {% if city is defined %}à {{ city.name }} et dans sa région{% else %}régional{% endif %}.</p>
+        <h1 class="display-4"><a href="/">Splight</a>{% block jumbo_city %}{% endblock %}</h1>
+        <p class="lead">{% block jumbo_lead %}Votre agenda culturel régional.{% endblock %}</p>
       </div>
 
       <div class="sp-noscript">
