@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="stylesheet" href="/lib/bootstrap-4.1.1.min.css">
-    <link rel="stylesheet" href="{{ root_path }}/style.css">
+    <link rel="stylesheet" href="/style.css">
 {% for css in additional_css|default([]) %}
     <link rel="stylesheet" href="{{ css }}">
 {% endfor %}
@@ -18,7 +18,7 @@
   <body>
     <div class="container">
       <div class="jumbotron">
-        <h1 class="display-4"><a href="{{ root_path }}/">Splight</a>{% if city is defined %} - <a href="{{ root_path }}/{{ city.slug }}/">{{ city.name }}</a>{% endif %}</h1>
+        <h1 class="display-4"><a href="/">Splight</a>{% if city is defined %} - <a href="/{{ city.slug }}/">{{ city.name }}</a>{% endif %}</h1>
         <p class="lead">Votre agenda culturel {% if city is defined %}à {{ city.name }} et dans sa région{% else %}régional{% endif %}.</p>
       </div>
 

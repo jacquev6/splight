@@ -77,19 +77,19 @@
     <div class="sp-previous-next-weeks-links"><div class="row">
       <div class="col">
         {%- if week.previous_week -%}
-          <p class="text-right"><a class="sp-tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.previous_week.slug }}/">&lt; Semaine précédente</a></p>
+          <p class="text-right"><a class="sp-tagged" href="/{{ city.slug }}/{{ week.previous_week.slug }}/">&lt; Semaine précédente</a></p>
         {%- endif -%}
       </div>
       <div class="col">
         {%- if week.next_week -%}
-          <p><a class="sp-tagged" href="{{ root_path }}/{{ city.slug }}/{{ week.next_week.slug }}/">Semaine suivante &gt;</a></p>
+          <p><a class="sp-tagged" href="/{{ city.slug }}/{{ week.next_week.slug }}/">Semaine suivante &gt;</a></p>
         {%- endif -%}
       </div>
     </div></div>
 
     <div class="sp-previous-next-days-links"><div class="row">
-      <div class="col"><p class="text-right"><a class="sp-tagged sp-previous-day-link" href="{{ root_path }}/{{ city.slug }}/{{ week.slug }}/">&lt; Jour précédent</a></p></div>
-      <div class="col"><p><a class="sp-tagged sp-next-day-link" href="{{ root_path }}/{{ city.slug }}/{{ week.slug }}/">Jour suivant &gt;</a></p></div>
+      <div class="col"><p class="text-right"><a class="sp-tagged sp-previous-day-link" href="/{{ city.slug }}/{{ week.slug }}/">&lt; Jour précédent</a></p></div>
+      <div class="col"><p><a class="sp-tagged sp-next-day-link" href="/{{ city.slug }}/{{ week.slug }}/">Jour suivant &gt;</a></p></div>
     </div></div>
   {%- endmacro %}
     {{ previous_and_next_links() }}
@@ -149,11 +149,11 @@
     },
     week_paths: {
       {% if week.previous_week %}
-      previous: "{{ root_path }}/{{ city.slug }}/{{ week.previous_week.slug }}/",
+      previous: "/{{ city.slug }}/{{ week.previous_week.slug }}/",
       {% endif %}
-      current: "{{ root_path }}/{{ city.slug }}/{{ week.slug }}/",
+      current: "/{{ city.slug }}/{{ week.slug }}/",
       {% if week.next_week %}
-      next: "{{ root_path }}/{{ city.slug }}/{{ week.next_week.slug }}/",
+      next: "/{{ city.slug }}/{{ week.next_week.slug }}/",
       {% endif %}
     }
   })
