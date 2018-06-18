@@ -18,6 +18,8 @@ Sur le site statique (en HTML, CSS3 en JavaScript) :
 
 - [Bootstrap](http://getbootstrap.com) pour avoir un site adapté à plusieurs tailels d'écran
 - [jQuery](http://jquery.com) comme librairie de base JavaScript
+- [Modernizer](https://modernizr.com/), avec [HTML5 please](http://html5please.com/) et [Can I use](https://caniuse.com/) pour décider quelles parties de HTML5, CSS3 et JavaScript utiliser
+- d'autres bibliothèques JavaScript (@todo list them)
 
 Pour générer le site statique :
 
