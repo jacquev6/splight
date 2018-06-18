@@ -154,6 +154,10 @@ class CityGenerator(Generator):
     def run(self):
         self.render(template="city.html")
 
+        for date in self.__generate_dates():
+            if date.weekday() == 0:
+                WeekGenerator(parent=self, start_date=date).run()
+
         for week in self.__make_old_weeks(self.context.city.events):
             OldWeekGenerator(parent=self, week=week).run()
 
@@ -186,6 +190,16 @@ class CityGenerator(Generator):
             yield start_date
             start_date += datetime.timedelta(days=7)
 
+    def __generate_dates(self):
+        date = dateutils.previous_week_day(self.context.city.events[0].datetime.date(), 0)
+        date_after = (
+            dateutils.previous_week_day(self.context.generation.date, 0)
+            + datetime.timedelta(weeks=10)
+        )
+        while date < date_after:
+            yield date
+            date += datetime.timedelta(days=1)
+
 
 class OldWeekGenerator(Generator):
     def __init__(self, *, parent, week):
@@ -193,6 +207,14 @@ class OldWeekGenerator(Generator):
 
     def run(self):
         self.render(template="old_week.html")
+
+
+class WeekGenerator(Generator):
+    def __init__(self, *, parent, start_date):
+        super().__init__(parent=parent, slug=start_date.strftime("%G-W%V"), add_to_context=dict(start_date=start_date))
+
+    def run(self):
+        self.render(template="week.html")
 
 
 def format_date(d):

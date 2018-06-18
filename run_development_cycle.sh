@@ -48,8 +48,4 @@ show_in_browser "Website" "http://localhost:4000"
 pycodestyle --max-line-length=120 $(git ls-files "*.py")
 
 echo
-
-python3 -m tools.checker docs
-
-echo
 echo "Development cycle OK"
