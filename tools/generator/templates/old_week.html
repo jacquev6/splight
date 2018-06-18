@@ -1,14 +1,16 @@
-{% set additional_css = ["/lib/fullcalendar-3.9.0.min.css"] %}
-{% set additional_js = [
+{% set stylesheets = [
+  "/lib/fullcalendar-3.9.0.min.css",
+] -%}
+
+{%- set scripts = [
   "/lib/moment-2.22.2.min.js",
   "/lib/fullcalendar-3.9.0.min.js",
   "/lib/fullcalendar-locale-fr-3.9.0.js",
-  "/lib/URI-1.19.1.min.js",
   "/lib/native.history-1.8.bundled.html5.js",
-  "/lib/lodash-4.17.10.min.js",
   "/lib/jquery.deserialize-2.0.0-rc1.js",
   "/old_week.js",
-] %}
+] -%}
+
 {% extends "base.html" %}
 
 {% block contents %}

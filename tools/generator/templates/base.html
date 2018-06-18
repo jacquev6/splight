@@ -1,3 +1,16 @@
+{% set stylesheets = [
+  "/lib/bootstrap-4.1.1.min.css",
+  "/style.css",
+] + (stylesheets|default([])) -%}
+
+{%- set scripts = [
+  "/lib/jquery-3.3.1.slim.min.js",
+  "/lib/popper-1.14.3.min.js",
+  "/lib/bootstrap-4.1.1.min.js",
+  "/lib/lodash-4.17.10.min.js",
+  "/lib/URI-1.19.1.min.js",
+] + (scripts|default([])) -%}
+
 <!doctype html>
 <html lang="fr" class="mdrn-no-js">
   <head>
@@ -5,9 +18,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="/lib/bootstrap-4.1.1.min.css">
-    <link rel="stylesheet" href="/style.css">
-{% for css in additional_css|default([]) %}
+{% for css in stylesheets %}
     <link rel="stylesheet" href="{{ css }}">
 {% endfor %}
 
@@ -44,10 +55,7 @@
       <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018</p>
     </div>
 
-    <script src="/lib/jquery-3.3.1.slim.min.js"></script>
-    <script src="/lib/popper-1.14.3.min.js"></script>
-    <script src="/lib/bootstrap-4.1.1.min.js"></script>
-{% for js in additional_js|default([]) %}
+{% for js in scripts %}
     <script src="{{ js }}"></script>
 {% endfor %}
 
