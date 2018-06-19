@@ -7,7 +7,7 @@ var Splight = (function() {
     initialize: function(config) {
       var self = this;
 
-      this.is_admin = Cookies.getJSON("admin");
+      self.is_admin = Cookies.getJSON("admin");
 
       if(config.city) {
         self.city = config.city.slug;
@@ -27,10 +27,10 @@ var Splight = (function() {
       $("#sp-admin-enter").on("click", function() {self.is_admin = true; self.update_browser()});
       $("#sp-admin-quit").on("click", function() {self.is_admin = false; self.update_browser()});
 
-      if(this.displayed_week) {
+      if(self.displayed_week) {
         $("#sp-fullcalendar").fullCalendar({
           header: false,
-          defaultDate: this.displayed_week,
+          defaultDate: self.displayed_week,
           defaultView: "basicWeek",
           locale: "fr",
           allDaySlot: false,
@@ -52,7 +52,7 @@ var Splight = (function() {
           },
         });
 
-        this.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
+        self.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
       }
 
       self.update_browser();
@@ -66,8 +66,10 @@ var Splight = (function() {
     },
 
     fix_admin: function() {
-      Cookies.set("admin", this.is_admin);
-      $("#sp-admin").toggle(this.is_admin);
+      var self = this;
+
+      Cookies.set("admin", self.is_admin);
+      $("#sp-admin").toggle(self.is_admin);
     },
 
     fix_links: function() {
