@@ -34,7 +34,39 @@
       </div>
 
       <div class="sp-modern">
-<h1>Semaine du lundi 21 mai 2018</h1>
+<div class="row d-lg-none">
+  <div class="col">
+    <div class="sp-advertisement">
+      <p>Publicité</p>
+      <p><img class="img-fluid" src="/ads/468x60-banner.png" /></p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <h1>Semaine du lundi 21 mai 2018</h1>
+
+    <div class="row">
+      <div class="col">
+        <p class="text-right"><a class="sp-previous-week-link" href="/">&lt; Semaine précédente</a></p>
+      </div>
+      <div class="col">
+        <p class="text-center"><a class="sp-now-week-link" href="/">Cette semaine</a></p>
+      </div>
+      <div class="col">
+        <p class="text-left"><a class="sp-next-week-link" href="/">Semaine suivante &gt;</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
+    <div class="sp-advertisement">
+      <p>Publicité</p>
+      <p><img class="img-fluid" src="/ads/160x600-wide-skyscraper.png" /></p>
+    </div>
+  </div>
+</div>
       </div>
 
       <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018</p>
@@ -45,6 +77,26 @@
     <script src="/lib/bootstrap-4.1.1.min.js"></script>
     <script src="/lib/lodash-4.17.10.min.js"></script>
     <script src="/lib/URI-1.19.1.min.js"></script>
+    <script src="/lib/moment-2.22.2.min.js"></script>
+    <script src="/main.js"></script>
 
+<script>
+  $(function() {
+    Splight.initialize({
+      city: {
+        slug: "reims",
+      },
+      first_week: {
+        start_date: moment("2018-05-21"),
+      },
+      week_after: {
+        start_date: moment("2018-08-27"),
+      },
+      displayed_week: {
+        start_date: moment("2018-05-21"),
+      },
+    });
+  });
+</script>
   </body>
 </html>

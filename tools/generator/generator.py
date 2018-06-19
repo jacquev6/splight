@@ -206,7 +206,7 @@ def generate(*, data_directory, destination_directory):
 
     generate_old_weeks(destination_directory, data)
 
-    cities = list(make_template_cities(data))
+    cities = list(make_cities(data))
 
     with open(os.path.join(os.path.dirname(__file__), "modernizr-config.json")) as f:
         modernizr_features = [
@@ -229,45 +229,52 @@ def generate(*, data_directory, destination_directory):
         complement_very_dark="#B17600",
     )
 
-    templates.IndexHtml(cities=[city for (city, first_day) in cities]).render()
+    templates.IndexHtml(cities=[city.for_templates for city in cities]).render()
     templates.AdsHtml().render()
     templates.StyleCss(modernizr_features=modernizr_features, colors=colors).render()
 
-    for (city, first_day) in cities:
-        templates.CityHtml(city=city).render()
+    for city in cities:
+        templates.CityHtml(city=city.for_templates).render()
 
-        date = first_day
+        date = city.first_day
         date_after = (
             dateutils.previous_week_day(datetime.date.today(), 0)
             + datetime.timedelta(weeks=10)
         )
+        first_week = templates.Week(start_date=city.first_day)
+        week_after = templates.Week(start_date=date_after)
 
         while date < date_after:
             if date.weekday() == 0:
-                week = templates.Week(start_date=date)
-                templates.WeekHtml(city=city, week=week).render()
+                displayed_week = templates.Week(start_date=date)
+                templates.WeekHtml(
+                    city=city.for_templates,
+                    displayed_week=displayed_week,
+                    first_week=first_week,
+                    week_after=week_after,
+                ).render()
             date += datetime.timedelta(days=1)
 
 
-def make_template_cities(data):
+def make_cities(data):
     for city in data.cities:
-        tags = {
-            tag.slug: templates.Tag(
+        tags = [
+            templates.Tag(
                 slug=tag.slug,
                 title=tag.title,
                 border_color=make_color(h=i / len(city.tags), s=0.5, v=0.5),
                 background_color=make_color(h=i / len(city.tags), s=0.3, v=0.9),
             )
             for (i, tag) in enumerate(city.tags)
-        }
+        ]
 
-        yield (
-            templates.City(
+        yield NS(
+            for_templates=templates.City(
                 slug=city.slug,
                 name=city.name,
-                tags=[tags[tag.slug] for tag in city.tags],
+                tags=tags,
             ),
-            dateutils.previous_week_day(city.events[0].datetime.date(), 0),
+            first_day=dateutils.previous_week_day(city.events[0].datetime.date(), 0),
         )
 
 

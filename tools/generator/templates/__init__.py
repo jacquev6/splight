@@ -133,7 +133,7 @@ class City:
 
 
 class Week:
-    def __init__(self, start_date):
+    def __init__(self, *, start_date):
         assert isinstance(start_date, datetime.date)
         self.__start_date = start_date
 
@@ -278,18 +278,24 @@ class CityHtml(_BaseWithinCityHtml):
 class WeekHtml(_BaseWithinCityHtml):
     template_name = "week.html"
 
-    def __init__(self, *, city, week):
+    def __init__(self, *, city, displayed_week, first_week, week_after):
         super().__init__(city=city)
-        assert isinstance(week, Week)
-        self.__week = week
+        assert isinstance(displayed_week, Week)
+        self.__displayed_week = displayed_week
+        assert isinstance(first_week, Week)
+        self.__first_week = first_week
+        assert isinstance(week_after, Week)
+        self.__week_after = week_after
 
     @property
     def destination(self):
-        return os.path.join(super().destination, self.__week.slug, "index.html")
+        return os.path.join(super().destination, self.__displayed_week.slug, "index.html")
 
     @property
     def context(self):
         return dict(
-            week=self.__week,
+            displayed_week=self.__displayed_week,
+            first_week=self.__first_week,
+            week_after=self.__week_after,
             **super().context,
         )
