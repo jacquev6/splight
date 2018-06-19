@@ -266,15 +266,15 @@ def generate(*, data_directory, destination_directory):
 
 def make_cities(data):
     for city in data.cities:
-        tags = [
-            templates.Tag(
+        tags = {
+            tag.slug: templates.Tag(
                 slug=tag.slug,
                 title=tag.title,
                 border_color=make_color(h=i / len(city.tags), s=0.5, v=0.5),
                 background_color=make_color(h=i / len(city.tags), s=0.3, v=0.9),
             )
             for (i, tag) in enumerate(city.tags)
-        ]
+        }
 
         events = dict()
         for (day, day_events) in itertools.groupby(city.events, key=lambda e: e.datetime.date()):
@@ -287,18 +287,21 @@ def make_cities(data):
                 else:
                     assert False, "Event without title information"
 
+                first_tag = tags[event.tags[0].slug]
                 events[day].append(templates.Event(
                     title=title,
                     start=event.datetime,
                     end=event.datetime + event.duration if event.duration else None,
                     tags=[tag.slug for tag in event.tags],
+                    border_color=first_tag.border_color,
+                    background_color=first_tag.background_color,
                 ))
 
         yield NS(
             for_templates=templates.City(
                 slug=city.slug,
                 name=city.name,
-                tags=tags,
+                tags=[tags[tag.slug] for tag in city.tags],
             ),
             first_day=dateutils.previous_week_day(city.events[0].datetime.date(), 0),
             events=events,

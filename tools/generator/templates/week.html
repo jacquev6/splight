@@ -23,6 +23,17 @@
   <div class="col">
     <h1>Semaine du {{ displayed_week.start_date|format_date }}</h1>
 
+    <div><div class="row"><div class="col"><form id="sp-display-settings">
+      <div class="form-group">
+        {% for tag in city.tags %}
+        <div class="form-check form-check-inline sp-display-checkbox" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
+          <input class="form-check-input" type="checkbox" name="displayed_tags" id="sp-tag-{{ tag.slug }}" value="{{ tag.slug }}" checked="checked">
+          <label class="form-check-label" for="sp-tag-{{ tag.slug }}">{{ tag.title }}</label>
+        </div>
+        {% endfor %}
+      </div>
+    </form></div></div></div>
+
     <div class="row">
       <div class="col">
         <p class="text-right"><a class="sp-previous-week-link" href="/{% if displayed_week.previous.start_date >= first_week.start_date %}{{ city.slug }}/{{ displayed_week.previous.slug }}/{% endif %}">&lt; Semaine précédente</a></p>

@@ -155,7 +155,7 @@ class Week:
 
 
 class Event:
-    def __init__(self, *, title, start, end, tags):
+    def __init__(self, *, title, start, end, tags, border_color, background_color):
         assert isinstance(title, str)
         self.__title = title
         assert isinstance(start, datetime.datetime)
@@ -165,6 +165,10 @@ class Event:
         assert isinstance(tags, list)
         assert all(isinstance(tag, str) for tag in tags)
         self.__tags = tags
+        assert isinstance(border_color, str)
+        self.__border_color = border_color
+        assert isinstance(background_color, str)
+        self.__background_color = background_color
 
     @property
     def title(self):
@@ -182,12 +186,22 @@ class Event:
     def tags(self):
         return self.__tags
 
+    @property
+    def border_color(self):
+        return self.__border_color
+
+    @property
+    def background_color(self):
+        return self.__background_color
+
     def to_json(self):
         return dict(
             title=self.__title,
             start=self.__start.isoformat(),
             end=self.__end.isoformat() if self.__end else None,
-            tags=self.__tags
+            tags=self.__tags,
+            borderColor=self.__border_color,
+            backgroundColor=self.__background_color,
         )
 
 

@@ -1,6 +1,8 @@
 {
  "2018-06-11": [
   {
+   "backgroundColor": "#e5a0a0",
+   "borderColor": "#7f3f3f",
    "end": null,
    "start": "2018-06-11T19:00:00",
    "tags": [
@@ -11,6 +13,8 @@
  ],
  "2018-06-12": [
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T13:23:00",
    "start": "2018-06-12T11:00:00",
    "tags": [
@@ -19,6 +23,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T12:55:00",
    "start": "2018-06-12T11:00:00",
    "tags": [
@@ -27,6 +33,8 @@
    "title": "L'Extraordinaire voyage du Fakir"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T13:05:00",
    "start": "2018-06-12T11:05:00",
    "tags": [
@@ -35,6 +43,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T13:23:00",
    "start": "2018-06-12T11:10:00",
    "tags": [
@@ -43,6 +53,8 @@
    "title": "Champions"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T13:30:00",
    "start": "2018-06-12T11:15:00",
    "tags": [
@@ -51,6 +63,8 @@
    "title": "Deadpool 2"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T12:56:00",
    "start": "2018-06-12T11:15:00",
    "tags": [
@@ -59,6 +73,8 @@
    "title": "Je vais mieux"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T12:59:00",
    "start": "2018-06-12T11:15:00",
    "tags": [
@@ -67,6 +83,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T13:28:00",
    "start": "2018-06-12T11:20:00",
    "tags": [
@@ -75,6 +93,8 @@
    "title": "En Guerre"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T13:43:00",
    "start": "2018-06-12T11:20:00",
    "tags": [
@@ -83,6 +103,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T13:26:00",
    "start": "2018-06-12T11:30:00",
    "tags": [
@@ -91,6 +113,8 @@
    "title": "La F\u00eate des m\u00e8res"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T13:22:00",
    "start": "2018-06-12T11:30:00",
    "tags": [
@@ -99,6 +123,8 @@
    "title": "Le Book Club"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T14:00:00",
    "start": "2018-06-12T11:30:00",
    "tags": [
@@ -107,6 +133,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T14:31:00",
    "start": "2018-06-12T11:40:00",
    "tags": [
@@ -115,6 +143,8 @@
    "title": "Avengers: Infinity War"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T13:12:00",
    "start": "2018-06-12T11:50:00",
    "tags": [
@@ -123,6 +153,8 @@
    "title": "Retour \u00e0 Boll\u00e8ne"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T13:20:00",
    "start": "2018-06-12T11:50:00",
    "tags": [
@@ -131,6 +163,8 @@
    "title": "Senses 5"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T13:56:00",
    "start": "2018-06-12T12:00:00",
    "tags": [
@@ -139,6 +173,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T14:15:00",
    "start": "2018-06-12T12:20:00",
    "tags": [
@@ -147,6 +183,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T15:10:00",
    "start": "2018-06-12T12:40:00",
    "tags": [
@@ -155,6 +193,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T15:09:00",
    "start": "2018-06-12T13:20:00",
    "tags": [
@@ -163,6 +203,8 @@
    "title": "Alberto Giacometti, The Final Portrait"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T15:48:00",
    "start": "2018-06-12T13:25:00",
    "tags": [
@@ -171,6 +213,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T15:14:00",
    "start": "2018-06-12T13:30:00",
    "tags": [
@@ -179,6 +223,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T15:16:00",
    "start": "2018-06-12T13:35:00",
    "tags": [
@@ -187,6 +233,8 @@
    "title": "Je vais mieux"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T16:03:00",
    "start": "2018-06-12T13:40:00",
    "tags": [
@@ -195,6 +243,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T16:03:00",
    "start": "2018-06-12T13:40:00",
    "tags": [
@@ -203,6 +253,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T15:58:00",
    "start": "2018-06-12T13:45:00",
    "tags": [
@@ -211,6 +263,8 @@
    "title": "Champions"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T16:05:00",
    "start": "2018-06-12T13:50:00",
    "tags": [
@@ -219,6 +273,8 @@
    "title": "Deadpool 2"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T15:50:00",
    "start": "2018-06-12T13:55:00",
    "tags": [
@@ -227,6 +283,8 @@
    "title": "Action ou v\u00e9rit\u00e9"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T15:52:00",
    "start": "2018-06-12T14:00:00",
    "tags": [
@@ -235,6 +293,8 @@
    "title": "Le Book Club"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T15:40:00",
    "start": "2018-06-12T14:00:00",
    "tags": [
@@ -243,6 +303,8 @@
    "title": "Una Questione Privata"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T16:10:00",
    "start": "2018-06-12T14:10:00",
    "tags": [
@@ -251,6 +313,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T16:38:00",
    "start": "2018-06-12T14:15:00",
    "tags": [
@@ -259,6 +323,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T16:19:00",
    "start": "2018-06-12T14:15:00",
    "tags": [
@@ -267,6 +333,8 @@
    "title": "Op\u00e9ration Beyrouth"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T16:23:00",
    "start": "2018-06-12T14:20:00",
    "tags": [
@@ -275,6 +343,8 @@
    "title": "Gueule d'ange"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T17:10:00",
    "start": "2018-06-12T14:40:00",
    "tags": [
@@ -283,6 +353,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T17:51:00",
    "start": "2018-06-12T15:00:00",
    "tags": [
@@ -291,6 +363,8 @@
    "title": "Avengers: Infinity War"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T16:59:00",
    "start": "2018-06-12T15:10:00",
    "tags": [
@@ -299,6 +373,8 @@
    "title": "Une ann\u00e9e polaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T17:50:00",
    "start": "2018-06-12T15:20:00",
    "tags": [
@@ -307,6 +383,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T17:21:00",
    "start": "2018-06-12T15:40:00",
    "tags": [
@@ -315,6 +393,8 @@
    "title": "Je vais mieux"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T17:24:00",
    "start": "2018-06-12T15:40:00",
    "tags": [
@@ -323,6 +403,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T17:41:00",
    "start": "2018-06-12T15:45:00",
    "tags": [
@@ -331,6 +413,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T18:37:00",
    "start": "2018-06-12T16:10:00",
    "tags": [
@@ -339,6 +423,8 @@
    "title": "L'Homme qui tua Don Quichotte"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T18:10:00",
    "start": "2018-06-12T16:15:00",
    "tags": [
@@ -347,6 +433,8 @@
    "title": "L'Extraordinaire voyage du Fakir"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T18:28:00",
    "start": "2018-06-12T16:20:00",
    "tags": [
@@ -355,6 +443,8 @@
    "title": "En Guerre"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T18:43:00",
    "start": "2018-06-12T16:20:00",
    "tags": [
@@ -363,6 +453,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T18:43:00",
    "start": "2018-06-12T16:30:00",
    "tags": [
@@ -371,6 +463,8 @@
    "title": "Champions"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T18:45:00",
    "start": "2018-06-12T16:30:00",
    "tags": [
@@ -379,6 +473,8 @@
    "title": "Deadpool 2"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T18:25:00",
    "start": "2018-06-12T16:30:00",
    "tags": [
@@ -387,6 +483,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T18:40:00",
    "start": "2018-06-12T16:40:00",
    "tags": [
@@ -395,6 +493,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T18:52:00",
    "start": "2018-06-12T17:00:00",
    "tags": [
@@ -403,6 +503,8 @@
    "title": "Le Book Club"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T19:37:00",
    "start": "2018-06-12T17:10:00",
    "tags": [
@@ -411,6 +513,8 @@
    "title": "Everybody knows"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T19:53:00",
    "start": "2018-06-12T17:30:00",
    "tags": [
@@ -419,6 +523,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T19:31:00",
    "start": "2018-06-12T17:35:00",
    "tags": [
@@ -427,6 +533,8 @@
    "title": "La F\u00eate des m\u00e8res"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T19:26:00",
    "start": "2018-06-12T17:45:00",
    "tags": [
@@ -435,6 +543,8 @@
    "title": "Je vais mieux"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T19:29:00",
    "start": "2018-06-12T17:45:00",
    "tags": [
@@ -443,6 +553,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T19:34:00",
    "start": "2018-06-12T17:45:00",
    "tags": [
@@ -451,6 +563,8 @@
    "title": "Une ann\u00e9e polaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T20:51:00",
    "start": "2018-06-12T18:00:00",
    "tags": [
@@ -459,6 +573,8 @@
    "title": "Avengers: Infinity War"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T20:51:00",
    "start": "2018-06-12T18:00:00",
    "tags": [
@@ -467,6 +583,8 @@
    "title": "Avengers: Infinity War"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T20:45:00",
    "start": "2018-06-12T18:15:00",
    "tags": [
@@ -475,6 +593,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T20:33:00",
    "start": "2018-06-12T18:30:00",
    "tags": [
@@ -483,6 +603,8 @@
    "title": "Gueule d'ange"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T20:58:00",
    "start": "2018-06-12T18:35:00",
    "tags": [
@@ -491,6 +613,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:03:00",
    "start": "2018-06-12T18:40:00",
    "tags": [
@@ -499,6 +623,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:18:00",
    "start": "2018-06-12T19:05:00",
    "tags": [
@@ -507,6 +633,8 @@
    "title": "Champions"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:10:00",
    "start": "2018-06-12T19:10:00",
    "tags": [
@@ -515,6 +643,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:30:00",
    "start": "2018-06-12T19:15:00",
    "tags": [
@@ -523,6 +653,8 @@
    "title": "Deadpool 2"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:38:00",
    "start": "2018-06-12T19:15:00",
    "tags": [
@@ -531,6 +663,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:25:00",
    "start": "2018-06-12T19:30:00",
    "tags": [
@@ -539,6 +673,8 @@
    "title": "Action ou v\u00e9rit\u00e9"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:32:00",
    "start": "2018-06-12T19:40:00",
    "tags": [
@@ -547,6 +683,8 @@
    "title": "Le Book Club"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:29:00",
    "start": "2018-06-12T19:40:00",
    "tags": [
@@ -555,6 +693,8 @@
    "title": "Alberto Giacometti, The Final Portrait"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:25:00",
    "start": "2018-06-12T19:45:00",
    "tags": [
@@ -563,6 +703,8 @@
    "title": "Una Questione Privata"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:46:00",
    "start": "2018-06-12T19:50:00",
    "tags": [
@@ -571,6 +713,8 @@
    "title": "La F\u00eate des m\u00e8res"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:41:00",
    "start": "2018-06-12T20:00:00",
    "tags": [
@@ -579,6 +723,8 @@
    "title": "Je vais mieux"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T21:44:00",
    "start": "2018-06-12T20:00:00",
    "tags": [
@@ -587,6 +733,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T22:35:00",
    "start": "2018-06-12T20:40:00",
    "tags": [
@@ -595,6 +743,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T23:20:00",
    "start": "2018-06-12T20:50:00",
    "tags": [
@@ -603,6 +753,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T23:23:00",
    "start": "2018-06-12T21:00:00",
    "tags": [
@@ -611,6 +763,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T23:33:00",
    "start": "2018-06-12T21:10:00",
    "tags": [
@@ -619,6 +773,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T00:06:00",
    "start": "2018-06-12T21:15:00",
    "tags": [
@@ -627,6 +783,8 @@
    "title": "Avengers: Infinity War"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T23:50:00",
    "start": "2018-06-12T21:20:00",
    "tags": [
@@ -635,6 +793,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T23:30:00",
    "start": "2018-06-12T21:30:00",
    "tags": [
@@ -643,6 +803,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T23:25:00",
    "start": "2018-06-12T21:30:00",
    "tags": [
@@ -651,6 +813,8 @@
    "title": "L'Extraordinaire voyage du Fakir"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T23:38:00",
    "start": "2018-06-12T21:30:00",
    "tags": [
@@ -659,6 +823,8 @@
    "title": "En Guerre"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T23:26:00",
    "start": "2018-06-12T21:30:00",
    "tags": [
@@ -667,6 +833,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T23:53:00",
    "start": "2018-06-12T21:40:00",
    "tags": [
@@ -675,6 +843,8 @@
    "title": "Champions"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T00:05:00",
    "start": "2018-06-12T21:50:00",
    "tags": [
@@ -683,6 +853,8 @@
    "title": "Deadpool 2"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T00:18:00",
    "start": "2018-06-12T21:55:00",
    "tags": [
@@ -691,6 +863,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T23:52:00",
    "start": "2018-06-12T22:00:00",
    "tags": [
@@ -699,6 +873,8 @@
    "title": "Le Book Club"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T00:09:00",
    "start": "2018-06-12T22:05:00",
    "tags": [
@@ -707,6 +883,8 @@
    "title": "Op\u00e9ration Beyrouth"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T00:05:00",
    "start": "2018-06-12T22:10:00",
    "tags": [
@@ -715,6 +893,8 @@
    "title": "Action ou v\u00e9rit\u00e9"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T00:13:00",
    "start": "2018-06-12T22:10:00",
    "tags": [
@@ -723,6 +903,8 @@
    "title": "Rampage - Hors de contr\u00f4le"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-12T23:59:00",
    "start": "2018-06-12T22:15:00",
    "tags": [
@@ -733,6 +915,8 @@
  ],
  "2018-06-13": [
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T13:23:00",
    "start": "2018-06-13T11:00:00",
    "tags": [
@@ -741,6 +925,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T13:05:00",
    "start": "2018-06-13T11:05:00",
    "tags": [
@@ -749,6 +935,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T13:48:00",
    "start": "2018-06-13T11:25:00",
    "tags": [
@@ -757,6 +945,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T13:55:00",
    "start": "2018-06-13T11:45:00",
    "tags": [
@@ -765,6 +955,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T13:40:00",
    "start": "2018-06-13T11:45:00",
    "tags": [
@@ -773,6 +965,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T14:27:00",
    "start": "2018-06-13T12:00:00",
    "tags": [
@@ -781,6 +975,8 @@
    "title": "Everybody knows"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T14:33:00",
    "start": "2018-06-13T12:10:00",
    "tags": [
@@ -789,6 +985,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T14:19:00",
    "start": "2018-06-13T12:10:00",
    "tags": [
@@ -797,6 +995,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T16:03:00",
    "start": "2018-06-13T13:40:00",
    "tags": [
@@ -805,6 +1005,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T15:24:00",
    "start": "2018-06-13T13:40:00",
    "tags": [
@@ -813,6 +1015,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T15:41:00",
    "start": "2018-06-13T13:45:00",
    "tags": [
@@ -821,6 +1025,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T16:41:00",
    "start": "2018-06-13T13:50:00",
    "tags": [
@@ -829,6 +1035,8 @@
    "title": "Avengers: Infinity War"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T16:09:00",
    "start": "2018-06-13T14:00:00",
    "tags": [
@@ -837,6 +1045,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T16:10:00",
    "start": "2018-06-13T14:10:00",
    "tags": [
@@ -845,6 +1055,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T16:38:00",
    "start": "2018-06-13T14:15:00",
    "tags": [
@@ -853,6 +1065,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T15:52:00",
    "start": "2018-06-13T14:25:00",
    "tags": [
@@ -861,6 +1075,8 @@
    "title": "Dans la for\u00eat enchant\u00e9e de Oukybouky"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T16:53:00",
    "start": "2018-06-13T14:30:00",
    "tags": [
@@ -869,6 +1085,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T17:24:00",
    "start": "2018-06-13T15:40:00",
    "tags": [
@@ -877,6 +1095,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T17:40:00",
    "start": "2018-06-13T15:45:00",
    "tags": [
@@ -885,6 +1105,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T18:07:00",
    "start": "2018-06-13T15:55:00",
    "tags": [
@@ -893,6 +1115,8 @@
    "title": "Sicilian Ghost Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T18:25:00",
    "start": "2018-06-13T16:15:00",
    "tags": [
@@ -901,6 +1125,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T18:48:00",
    "start": "2018-06-13T16:25:00",
    "tags": [
@@ -909,6 +1135,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T18:40:00",
    "start": "2018-06-13T16:40:00",
    "tags": [
@@ -917,6 +1145,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T18:40:00",
    "start": "2018-06-13T17:00:00",
    "tags": [
@@ -925,6 +1155,8 @@
    "title": "Una Questione Privata"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T19:53:00",
    "start": "2018-06-13T17:30:00",
    "tags": [
@@ -933,6 +1165,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T19:29:00",
    "start": "2018-06-13T17:45:00",
    "tags": [
@@ -941,6 +1175,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T19:34:00",
    "start": "2018-06-13T17:45:00",
    "tags": [
@@ -949,6 +1185,8 @@
    "title": "Une ann\u00e9e polaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T20:51:00",
    "start": "2018-06-13T18:15:00",
    "tags": [
@@ -957,6 +1195,8 @@
    "title": "2001 : l'odyss\u00e9e de l'espace"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T20:23:00",
    "start": "2018-06-13T18:15:00",
    "tags": [
@@ -965,6 +1205,8 @@
    "title": "En Guerre"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T20:43:00",
    "start": "2018-06-13T18:20:00",
    "tags": [
@@ -973,6 +1215,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T20:39:00",
    "start": "2018-06-13T18:30:00",
    "tags": [
@@ -981,6 +1225,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T21:08:00",
    "start": "2018-06-13T18:45:00",
    "tags": [
@@ -989,6 +1235,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T21:10:00",
    "start": "2018-06-13T19:10:00",
    "tags": [
@@ -997,6 +1245,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T21:38:00",
    "start": "2018-06-13T19:15:00",
    "tags": [
@@ -1005,6 +1255,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T20:45:00",
    "start": "2018-06-13T19:30:00",
    "tags": [
@@ -1013,6 +1265,8 @@
    "title": "Film de test"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T21:34:00",
    "start": "2018-06-13T19:45:00",
    "tags": [
@@ -1021,6 +1275,8 @@
    "title": "Alberto Giacometti, The Final Portrait"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T21:39:00",
    "start": "2018-06-13T19:55:00",
    "tags": [
@@ -1029,6 +1285,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#a0e5e5",
+   "borderColor": "#3f7f7f",
    "end": null,
    "start": "2018-06-13T20:00:00",
    "tags": [
@@ -1037,6 +1295,8 @@
    "title": "Artiste de test A (Genre Toto)"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T22:47:00",
    "start": "2018-06-13T20:35:00",
    "tags": [
@@ -1045,6 +1305,8 @@
    "title": "Sicilian Ghost Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T22:55:00",
    "start": "2018-06-13T20:45:00",
    "tags": [
@@ -1053,6 +1315,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T23:13:00",
    "start": "2018-06-13T20:50:00",
    "tags": [
@@ -1061,6 +1325,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T23:30:00",
    "start": "2018-06-13T21:00:00",
    "tags": [
@@ -1069,6 +1335,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T23:38:00",
    "start": "2018-06-13T21:15:00",
    "tags": [
@@ -1077,6 +1345,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T23:31:00",
    "start": "2018-06-13T21:35:00",
    "tags": [
@@ -1085,6 +1355,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T00:18:00",
    "start": "2018-06-13T21:55:00",
    "tags": [
@@ -1093,6 +1365,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-13T23:54:00",
    "start": "2018-06-13T22:10:00",
    "tags": [
@@ -1103,6 +1377,8 @@
  ],
  "2018-06-14": [
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T13:23:00",
    "start": "2018-06-14T11:00:00",
    "tags": [
@@ -1111,6 +1387,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T13:05:00",
    "start": "2018-06-14T11:05:00",
    "tags": [
@@ -1119,6 +1397,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T13:48:00",
    "start": "2018-06-14T11:25:00",
    "tags": [
@@ -1127,6 +1407,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T13:54:00",
    "start": "2018-06-14T11:45:00",
    "tags": [
@@ -1135,6 +1417,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T13:41:00",
    "start": "2018-06-14T11:45:00",
    "tags": [
@@ -1143,6 +1427,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T14:27:00",
    "start": "2018-06-14T12:00:00",
    "tags": [
@@ -1151,6 +1437,8 @@
    "title": "L'Homme qui tua Don Quichotte"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T14:12:00",
    "start": "2018-06-14T12:00:00",
    "tags": [
@@ -1159,6 +1447,8 @@
    "title": "Sicilian Ghost Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T14:33:00",
    "start": "2018-06-14T12:10:00",
    "tags": [
@@ -1167,6 +1457,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T16:03:00",
    "start": "2018-06-14T13:40:00",
    "tags": [
@@ -1175,6 +1467,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T15:24:00",
    "start": "2018-06-14T13:40:00",
    "tags": [
@@ -1183,6 +1477,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T15:40:00",
    "start": "2018-06-14T13:45:00",
    "tags": [
@@ -1191,6 +1487,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T16:10:00",
    "start": "2018-06-14T14:00:00",
    "tags": [
@@ -1199,6 +1497,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T16:10:00",
    "start": "2018-06-14T14:10:00",
    "tags": [
@@ -1207,6 +1507,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T16:38:00",
    "start": "2018-06-14T14:15:00",
    "tags": [
@@ -1215,6 +1517,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T16:23:00",
    "start": "2018-06-14T14:20:00",
    "tags": [
@@ -1223,6 +1527,8 @@
    "title": "Gueule d'ange"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T16:53:00",
    "start": "2018-06-14T14:30:00",
    "tags": [
@@ -1231,6 +1537,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T18:21:00",
    "start": "2018-06-14T15:30:00",
    "tags": [
@@ -1239,6 +1547,8 @@
    "title": "Avengers: Infinity War"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T17:24:00",
    "start": "2018-06-14T15:40:00",
    "tags": [
@@ -1247,6 +1557,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T17:41:00",
    "start": "2018-06-14T15:45:00",
    "tags": [
@@ -1255,6 +1567,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T18:24:00",
    "start": "2018-06-14T16:15:00",
    "tags": [
@@ -1263,6 +1577,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T18:48:00",
    "start": "2018-06-14T16:25:00",
    "tags": [
@@ -1271,6 +1587,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T19:04:00",
    "start": "2018-06-14T16:30:00",
    "tags": [
@@ -1279,6 +1597,8 @@
    "title": "Senses 1&2"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T18:40:00",
    "start": "2018-06-14T16:40:00",
    "tags": [
@@ -1287,6 +1607,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T18:40:00",
    "start": "2018-06-14T17:00:00",
    "tags": [
@@ -1295,6 +1617,8 @@
    "title": "Una Questione Privata"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T19:53:00",
    "start": "2018-06-14T17:30:00",
    "tags": [
@@ -1303,6 +1627,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T19:29:00",
    "start": "2018-06-14T17:45:00",
    "tags": [
@@ -1311,6 +1637,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T19:40:00",
    "start": "2018-06-14T17:45:00",
    "tags": [
@@ -1319,6 +1647,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T20:43:00",
    "start": "2018-06-14T18:20:00",
    "tags": [
@@ -1327,6 +1657,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T20:50:00",
    "start": "2018-06-14T18:20:00",
    "tags": [
@@ -1335,6 +1667,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T20:40:00",
    "start": "2018-06-14T18:30:00",
    "tags": [
@@ -1343,6 +1677,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T21:08:00",
    "start": "2018-06-14T18:45:00",
    "tags": [
@@ -1351,6 +1687,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T21:10:00",
    "start": "2018-06-14T19:10:00",
    "tags": [
@@ -1359,6 +1697,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T21:22:00",
    "start": "2018-06-14T19:10:00",
    "tags": [
@@ -1367,6 +1707,8 @@
    "title": "Sicilian Ghost Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T21:38:00",
    "start": "2018-06-14T19:15:00",
    "tags": [
@@ -1375,6 +1717,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T21:34:00",
    "start": "2018-06-14T19:45:00",
    "tags": [
@@ -1383,6 +1727,8 @@
    "title": "Une ann\u00e9e polaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T21:39:00",
    "start": "2018-06-14T19:55:00",
    "tags": [
@@ -1391,6 +1737,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T22:05:00",
    "start": "2018-06-14T20:00:00",
    "tags": [
@@ -1399,6 +1747,8 @@
    "title": "Johnny Hallyday - Olympia 2000 (Path\u00e9 Live)"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T22:54:00",
    "start": "2018-06-14T20:45:00",
    "tags": [
@@ -1407,6 +1757,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T23:36:00",
    "start": "2018-06-14T21:00:00",
    "tags": [
@@ -1415,6 +1767,8 @@
    "title": "2001 : l'odyss\u00e9e de l'espace"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T23:38:00",
    "start": "2018-06-14T21:15:00",
    "tags": [
@@ -1423,6 +1777,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T23:38:00",
    "start": "2018-06-14T21:30:00",
    "tags": [
@@ -1431,6 +1787,8 @@
    "title": "En Guerre"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T23:34:00",
    "start": "2018-06-14T21:45:00",
    "tags": [
@@ -1439,6 +1797,8 @@
    "title": "Alberto Giacometti, The Final Portrait"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T00:18:00",
    "start": "2018-06-14T21:55:00",
    "tags": [
@@ -1447,6 +1807,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-14T23:54:00",
    "start": "2018-06-14T22:10:00",
    "tags": [
@@ -1457,6 +1819,8 @@
  ],
  "2018-06-15": [
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T13:23:00",
    "start": "2018-06-15T11:00:00",
    "tags": [
@@ -1465,6 +1829,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T13:48:00",
    "start": "2018-06-15T11:25:00",
    "tags": [
@@ -1473,6 +1839,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T13:55:00",
    "start": "2018-06-15T11:45:00",
    "tags": [
@@ -1481,6 +1849,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T13:34:00",
    "start": "2018-06-15T11:45:00",
    "tags": [
@@ -1489,6 +1859,8 @@
    "title": "Alberto Giacometti, The Final Portrait"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T14:09:00",
    "start": "2018-06-15T12:00:00",
    "tags": [
@@ -1497,6 +1869,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T14:27:00",
    "start": "2018-06-15T12:00:00",
    "tags": [
@@ -1505,6 +1879,8 @@
    "title": "Everybody knows"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T14:33:00",
    "start": "2018-06-15T12:10:00",
    "tags": [
@@ -1513,6 +1889,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T15:16:00",
    "start": "2018-06-15T12:40:00",
    "tags": [
@@ -1521,6 +1899,8 @@
    "title": "2001 : l'odyss\u00e9e de l'espace"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T15:31:00",
    "start": "2018-06-15T13:35:00",
    "tags": [
@@ -1529,6 +1909,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T16:03:00",
    "start": "2018-06-15T13:40:00",
    "tags": [
@@ -1537,6 +1919,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T15:24:00",
    "start": "2018-06-15T13:40:00",
    "tags": [
@@ -1545,6 +1929,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T16:09:00",
    "start": "2018-06-15T14:00:00",
    "tags": [
@@ -1553,6 +1939,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T16:10:00",
    "start": "2018-06-15T14:10:00",
    "tags": [
@@ -1561,6 +1949,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T16:38:00",
    "start": "2018-06-15T14:15:00",
    "tags": [
@@ -1569,6 +1959,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T16:27:00",
    "start": "2018-06-15T14:15:00",
    "tags": [
@@ -1577,6 +1969,8 @@
    "title": "Sicilian Ghost Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T16:53:00",
    "start": "2018-06-15T14:30:00",
    "tags": [
@@ -1585,6 +1979,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T18:00:00",
    "start": "2018-06-15T15:30:00",
    "tags": [
@@ -1593,6 +1989,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T17:30:00",
    "start": "2018-06-15T15:35:00",
    "tags": [
@@ -1601,6 +1999,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T17:24:00",
    "start": "2018-06-15T15:40:00",
    "tags": [
@@ -1609,6 +2009,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T18:25:00",
    "start": "2018-06-15T16:15:00",
    "tags": [
@@ -1617,6 +2019,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T18:48:00",
    "start": "2018-06-15T16:25:00",
    "tags": [
@@ -1625,6 +2029,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T18:38:00",
    "start": "2018-06-15T16:35:00",
    "tags": [
@@ -1633,6 +2039,8 @@
    "title": "Gueule d'ange"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T18:40:00",
    "start": "2018-06-15T16:40:00",
    "tags": [
@@ -1641,6 +2049,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T18:40:00",
    "start": "2018-06-15T17:00:00",
    "tags": [
@@ -1649,6 +2059,8 @@
    "title": "Una Questione Privata"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T19:53:00",
    "start": "2018-06-15T17:30:00",
    "tags": [
@@ -1657,6 +2069,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T19:31:00",
    "start": "2018-06-15T17:35:00",
    "tags": [
@@ -1665,6 +2079,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T19:29:00",
    "start": "2018-06-15T17:45:00",
    "tags": [
@@ -1673,6 +2089,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T21:01:00",
    "start": "2018-06-15T18:10:00",
    "tags": [
@@ -1681,6 +2099,8 @@
    "title": "Avengers: Infinity War"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T20:43:00",
    "start": "2018-06-15T18:20:00",
    "tags": [
@@ -1689,6 +2109,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T20:39:00",
    "start": "2018-06-15T18:30:00",
    "tags": [
@@ -1697,6 +2119,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T21:08:00",
    "start": "2018-06-15T18:45:00",
    "tags": [
@@ -1705,6 +2129,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T20:25:00",
    "start": "2018-06-15T18:45:00",
    "tags": [
@@ -1713,6 +2139,8 @@
    "title": "Senses 3&4"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T21:10:00",
    "start": "2018-06-15T19:10:00",
    "tags": [
@@ -1721,6 +2149,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T21:38:00",
    "start": "2018-06-15T19:15:00",
    "tags": [
@@ -1729,6 +2159,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T21:24:00",
    "start": "2018-06-15T19:35:00",
    "tags": [
@@ -1737,6 +2169,8 @@
    "title": "Une ann\u00e9e polaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T21:39:00",
    "start": "2018-06-15T19:55:00",
    "tags": [
@@ -1745,6 +2179,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T22:42:00",
    "start": "2018-06-15T20:30:00",
    "tags": [
@@ -1753,6 +2189,8 @@
    "title": "Sicilian Ghost Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T22:55:00",
    "start": "2018-06-15T20:45:00",
    "tags": [
@@ -1761,6 +2199,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T23:13:00",
    "start": "2018-06-15T20:50:00",
    "tags": [
@@ -1769,6 +2209,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T23:30:00",
    "start": "2018-06-15T21:00:00",
    "tags": [
@@ -1777,6 +2219,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T23:38:00",
    "start": "2018-06-15T21:15:00",
    "tags": [
@@ -1785,6 +2229,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T23:30:00",
    "start": "2018-06-15T21:35:00",
    "tags": [
@@ -1793,6 +2239,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T00:18:00",
    "start": "2018-06-15T21:55:00",
    "tags": [
@@ -1801,6 +2249,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-15T23:54:00",
    "start": "2018-06-15T22:10:00",
    "tags": [
@@ -1811,6 +2261,8 @@
  ],
  "2018-06-16": [
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T13:23:00",
    "start": "2018-06-16T11:00:00",
    "tags": [
@@ -1819,6 +2271,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T13:05:00",
    "start": "2018-06-16T11:05:00",
    "tags": [
@@ -1827,6 +2281,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T13:48:00",
    "start": "2018-06-16T11:25:00",
    "tags": [
@@ -1835,6 +2291,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T14:33:00",
    "start": "2018-06-16T12:10:00",
    "tags": [
@@ -1843,6 +2301,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T15:20:00",
    "start": "2018-06-16T12:50:00",
    "tags": [
@@ -1851,6 +2311,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T16:03:00",
    "start": "2018-06-16T13:40:00",
    "tags": [
@@ -1859,6 +2321,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T15:24:00",
    "start": "2018-06-16T13:40:00",
    "tags": [
@@ -1867,6 +2331,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T15:34:00",
    "start": "2018-06-16T13:45:00",
    "tags": [
@@ -1875,6 +2341,8 @@
    "title": "Alberto Giacometti, The Final Portrait"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T15:30:00",
    "start": "2018-06-16T13:50:00",
    "tags": [
@@ -1883,6 +2351,8 @@
    "title": "Senses 3&4"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T16:10:00",
    "start": "2018-06-16T14:00:00",
    "tags": [
@@ -1891,6 +2361,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T16:10:00",
    "start": "2018-06-16T14:10:00",
    "tags": [
@@ -1899,6 +2371,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T16:38:00",
    "start": "2018-06-16T14:15:00",
    "tags": [
@@ -1907,6 +2381,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T16:53:00",
    "start": "2018-06-16T14:30:00",
    "tags": [
@@ -1915,6 +2391,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T18:06:00",
    "start": "2018-06-16T15:30:00",
    "tags": [
@@ -1923,6 +2401,8 @@
    "title": "2001 : l'odyss\u00e9e de l'espace"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T17:02:00",
    "start": "2018-06-16T15:35:00",
    "tags": [
@@ -1931,6 +2411,8 @@
    "title": "Dans la for\u00eat enchant\u00e9e de Oukybouky"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T17:30:00",
    "start": "2018-06-16T15:35:00",
    "tags": [
@@ -1939,6 +2421,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T17:24:00",
    "start": "2018-06-16T15:40:00",
    "tags": [
@@ -1947,6 +2431,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T18:24:00",
    "start": "2018-06-16T16:15:00",
    "tags": [
@@ -1955,6 +2441,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T18:48:00",
    "start": "2018-06-16T16:25:00",
    "tags": [
@@ -1963,6 +2451,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T18:40:00",
    "start": "2018-06-16T16:40:00",
    "tags": [
@@ -1971,6 +2461,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T18:40:00",
    "start": "2018-06-16T17:00:00",
    "tags": [
@@ -1979,6 +2471,8 @@
    "title": "Una Questione Privata"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T19:17:00",
    "start": "2018-06-16T17:05:00",
    "tags": [
@@ -1987,6 +2481,8 @@
    "title": "Sicilian Ghost Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T19:53:00",
    "start": "2018-06-16T17:30:00",
    "tags": [
@@ -1995,6 +2491,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T19:31:00",
    "start": "2018-06-16T17:35:00",
    "tags": [
@@ -2003,6 +2501,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T19:29:00",
    "start": "2018-06-16T17:45:00",
    "tags": [
@@ -2011,6 +2511,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T20:43:00",
    "start": "2018-06-16T18:20:00",
    "tags": [
@@ -2019,6 +2521,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T20:50:00",
    "start": "2018-06-16T18:20:00",
    "tags": [
@@ -2027,6 +2531,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T20:40:00",
    "start": "2018-06-16T18:30:00",
    "tags": [
@@ -2035,6 +2541,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T21:08:00",
    "start": "2018-06-16T18:45:00",
    "tags": [
@@ -2043,6 +2551,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#e5a0a0",
+   "borderColor": "#7f3f3f",
    "end": null,
    "start": "2018-06-16T19:00:00",
    "tags": [
@@ -2051,6 +2561,8 @@
    "title": "Artiste de test B (Genre Titi)"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T21:10:00",
    "start": "2018-06-16T19:10:00",
    "tags": [
@@ -2059,6 +2571,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T21:38:00",
    "start": "2018-06-16T19:15:00",
    "tags": [
@@ -2067,6 +2581,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T20:55:00",
    "start": "2018-06-16T19:25:00",
    "tags": [
@@ -2075,6 +2591,8 @@
    "title": "Senses 5"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T21:30:00",
    "start": "2018-06-16T19:35:00",
    "tags": [
@@ -2083,6 +2601,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T21:39:00",
    "start": "2018-06-16T19:55:00",
    "tags": [
@@ -2091,6 +2611,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T22:54:00",
    "start": "2018-06-16T20:45:00",
    "tags": [
@@ -2099,6 +2621,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T23:13:00",
    "start": "2018-06-16T20:50:00",
    "tags": [
@@ -2107,6 +2631,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T23:51:00",
    "start": "2018-06-16T21:00:00",
    "tags": [
@@ -2115,6 +2641,8 @@
    "title": "Avengers: Infinity War"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T23:12:00",
    "start": "2018-06-16T21:00:00",
    "tags": [
@@ -2123,6 +2651,8 @@
    "title": "Sicilian Ghost Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T23:38:00",
    "start": "2018-06-16T21:15:00",
    "tags": [
@@ -2131,6 +2661,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T23:31:00",
    "start": "2018-06-16T21:35:00",
    "tags": [
@@ -2139,6 +2671,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T00:18:00",
    "start": "2018-06-16T21:55:00",
    "tags": [
@@ -2147,6 +2681,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-16T23:54:00",
    "start": "2018-06-16T22:10:00",
    "tags": [
@@ -2157,6 +2693,8 @@
  ],
  "2018-06-17": [
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T12:57:00",
    "start": "2018-06-17T10:30:00",
    "tags": [
@@ -2165,6 +2703,8 @@
    "title": "Everybody knows"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T12:36:00",
    "start": "2018-06-17T10:40:00",
    "tags": [
@@ -2173,6 +2713,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T12:55:00",
    "start": "2018-06-17T10:45:00",
    "tags": [
@@ -2181,6 +2723,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T12:12:00",
    "start": "2018-06-17T10:45:00",
    "tags": [
@@ -2189,6 +2733,8 @@
    "title": "Dans la for\u00eat enchant\u00e9e de Oukybouky"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T12:12:00",
    "start": "2018-06-17T10:50:00",
    "tags": [
@@ -2197,6 +2743,8 @@
    "title": "Retour \u00e0 Boll\u00e8ne"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T13:23:00",
    "start": "2018-06-17T11:00:00",
    "tags": [
@@ -2205,6 +2753,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T13:05:00",
    "start": "2018-06-17T11:05:00",
    "tags": [
@@ -2213,6 +2763,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T13:48:00",
    "start": "2018-06-17T11:25:00",
    "tags": [
@@ -2221,6 +2773,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T14:33:00",
    "start": "2018-06-17T12:10:00",
    "tags": [
@@ -2229,6 +2783,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T15:31:00",
    "start": "2018-06-17T12:40:00",
    "tags": [
@@ -2237,6 +2793,8 @@
    "title": "Avengers: Infinity War"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T16:03:00",
    "start": "2018-06-17T13:40:00",
    "tags": [
@@ -2245,6 +2803,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T15:24:00",
    "start": "2018-06-17T13:40:00",
    "tags": [
@@ -2253,6 +2813,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T15:34:00",
    "start": "2018-06-17T13:45:00",
    "tags": [
@@ -2261,6 +2823,8 @@
    "title": "Une ann\u00e9e polaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T16:09:00",
    "start": "2018-06-17T14:00:00",
    "tags": [
@@ -2269,6 +2833,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T16:10:00",
    "start": "2018-06-17T14:10:00",
    "tags": [
@@ -2277,6 +2843,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T15:37:00",
    "start": "2018-06-17T14:10:00",
    "tags": [
@@ -2285,6 +2853,8 @@
    "title": "Dans la for\u00eat enchant\u00e9e de Oukybouky"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T16:38:00",
    "start": "2018-06-17T14:15:00",
    "tags": [
@@ -2293,6 +2863,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T16:53:00",
    "start": "2018-06-17T14:30:00",
    "tags": [
@@ -2301,6 +2873,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T18:00:00",
    "start": "2018-06-17T15:30:00",
    "tags": [
@@ -2309,6 +2883,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T17:24:00",
    "start": "2018-06-17T15:40:00",
    "tags": [
@@ -2317,6 +2893,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T17:52:00",
    "start": "2018-06-17T15:40:00",
    "tags": [
@@ -2325,6 +2903,8 @@
    "title": "Sicilian Ghost Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T17:34:00",
    "start": "2018-06-17T15:45:00",
    "tags": [
@@ -2333,6 +2913,8 @@
    "title": "Alberto Giacometti, The Final Portrait"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T18:25:00",
    "start": "2018-06-17T16:15:00",
    "tags": [
@@ -2341,6 +2923,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T18:48:00",
    "start": "2018-06-17T16:25:00",
    "tags": [
@@ -2349,6 +2933,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T18:40:00",
    "start": "2018-06-17T16:40:00",
    "tags": [
@@ -2357,6 +2943,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T18:40:00",
    "start": "2018-06-17T17:00:00",
    "tags": [
@@ -2365,6 +2953,8 @@
    "title": "Una Questione Privata"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T19:53:00",
    "start": "2018-06-17T17:30:00",
    "tags": [
@@ -2373,6 +2963,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T19:30:00",
    "start": "2018-06-17T17:35:00",
    "tags": [
@@ -2381,6 +2973,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T19:29:00",
    "start": "2018-06-17T17:45:00",
    "tags": [
@@ -2389,6 +2983,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T20:34:00",
    "start": "2018-06-17T18:00:00",
    "tags": [
@@ -2397,6 +2993,8 @@
    "title": "Senses 1&2"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T20:46:00",
    "start": "2018-06-17T18:10:00",
    "tags": [
@@ -2405,6 +3003,8 @@
    "title": "2001 : l'odyss\u00e9e de l'espace"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T20:43:00",
    "start": "2018-06-17T18:20:00",
    "tags": [
@@ -2413,6 +3013,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T20:39:00",
    "start": "2018-06-17T18:30:00",
    "tags": [
@@ -2421,6 +3023,8 @@
    "title": "D\u00e9sob\u00e9issance"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T21:08:00",
    "start": "2018-06-17T18:45:00",
    "tags": [
@@ -2429,6 +3033,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T21:10:00",
    "start": "2018-06-17T19:10:00",
    "tags": [
@@ -2437,6 +3043,8 @@
    "title": "Demi-s\u0153urs"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T21:38:00",
    "start": "2018-06-17T19:15:00",
    "tags": [
@@ -2445,6 +3053,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T21:31:00",
    "start": "2018-06-17T19:35:00",
    "tags": [
@@ -2453,6 +3063,8 @@
    "title": "Volontaire"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T21:39:00",
    "start": "2018-06-17T19:55:00",
    "tags": [
@@ -2461,6 +3073,8 @@
    "title": "Mon Ket"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T22:52:00",
    "start": "2018-06-17T20:40:00",
    "tags": [
@@ -2469,6 +3083,8 @@
    "title": "Sicilian Ghost Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T22:55:00",
    "start": "2018-06-17T20:45:00",
    "tags": [
@@ -2477,6 +3093,8 @@
    "title": "3 jours \u00e0 Quiberon"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T23:13:00",
    "start": "2018-06-17T20:50:00",
    "tags": [
@@ -2485,6 +3103,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T23:30:00",
    "start": "2018-06-17T21:00:00",
    "tags": [
@@ -2493,6 +3113,8 @@
    "title": "Solo: A Star Wars Story"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T23:38:00",
    "start": "2018-06-17T21:15:00",
    "tags": [
@@ -2501,6 +3123,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T23:30:00",
    "start": "2018-06-17T21:35:00",
    "tags": [
@@ -2509,6 +3133,8 @@
    "title": "Trois visages"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-18T00:18:00",
    "start": "2018-06-17T21:55:00",
    "tags": [
@@ -2517,6 +3143,8 @@
    "title": "Jurassic World: Fallen Kingdom"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-06-17T23:54:00",
    "start": "2018-06-17T22:10:00",
    "tags": [

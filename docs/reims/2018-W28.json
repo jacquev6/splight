@@ -3,6 +3,8 @@
  "2018-07-10": [],
  "2018-07-11": [
   {
+   "backgroundColor": "#e5a0a0",
+   "borderColor": "#7f3f3f",
    "end": null,
    "start": "2018-07-11T19:00:00",
    "tags": [
@@ -13,6 +15,8 @@
  ],
  "2018-07-12": [
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-07-12T20:45:00",
    "start": "2018-07-12T19:30:00",
    "tags": [
@@ -21,6 +25,8 @@
    "title": "Film de test"
   },
   {
+   "backgroundColor": "#c3e5a0",
+   "borderColor": "#5f7f3f",
    "end": "2018-07-12T21:45:00",
    "start": "2018-07-12T20:00:00",
    "tags": [
@@ -31,6 +37,8 @@
  ],
  "2018-07-13": [
   {
+   "backgroundColor": "#a0e5e5",
+   "borderColor": "#3f7f7f",
    "end": null,
    "start": "2018-07-13T20:00:00",
    "tags": [
