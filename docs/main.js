@@ -27,7 +27,12 @@ var Splight = (function() {
               function(data) {
                 keys_to_fetch.delete(k);
                 for(day in data) {
-                  self.days[day] = data[day];
+                  day_data = data[day];
+                  if(day_data.encrypted) {
+                    day_data = JSON.parse(CryptoJS.AES.decrypt(day_data.encrypted, "Sixteen byte key").toString(CryptoJS.enc.Utf8));
+                    day_data.forEach(e => e.admin_only = true);
+                  }
+                  self.days[day] = day_data;
                 }
                 if(keys_to_fetch.size == 0) {
                   self.call(required_keys, callback);
@@ -107,7 +112,10 @@ var Splight = (function() {
           height: "auto",
           events: function(start, end, timezone, callback) {
             self.events_cache.get(start, end, function(events) {
-              callback(events.filter(e => e.tags.some(t => self.displayed_tags.has(t))));
+              events = events.filter(e => e.tags.some(t => self.displayed_tags.has(t)));
+              events = events.filter(e => self.is_admin || !e.admin_only);
+              $("#sp-fullcalendar").toggleClass("sp-admin-only", events.some(e => e.admin_only))
+              callback(events);
             });
           },
           views: {

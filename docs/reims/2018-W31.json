@@ -1,63 +1,23 @@
 {
- "2018-07-30": [],
- "2018-07-31": [
-  {
-   "backgroundColor": "#e5a0a0",
-   "borderColor": "#7f3f3f",
-   "end": null,
-   "start": "2018-07-31T19:00:00",
-   "tags": [
-    "musique"
-   ],
-   "title": "Artiste de test B (Genre Titi)"
-  }
- ],
- "2018-08-01": [
-  {
-   "backgroundColor": "#c3e5a0",
-   "borderColor": "#5f7f3f",
-   "end": "2018-08-01T20:45:00",
-   "start": "2018-08-01T19:30:00",
-   "tags": [
-    "cinema"
-   ],
-   "title": "Film de test"
-  }
- ],
- "2018-08-02": [
-  {
-   "backgroundColor": "#a0e5e5",
-   "borderColor": "#3f7f7f",
-   "end": null,
-   "start": "2018-08-02T20:00:00",
-   "tags": [
-    "theatre"
-   ],
-   "title": "Artiste de test A (Genre Toto)"
-  }
- ],
- "2018-08-03": [],
- "2018-08-04": [],
- "2018-08-05": [
-  {
-   "backgroundColor": "#e5a0a0",
-   "borderColor": "#7f3f3f",
-   "end": null,
-   "start": "2018-08-05T19:00:00",
-   "tags": [
-    "musique"
-   ],
-   "title": "Artiste de test B (Genre Titi)"
-  },
-  {
-   "backgroundColor": "#c3e5a0",
-   "borderColor": "#5f7f3f",
-   "end": "2018-08-05T20:45:00",
-   "start": "2018-08-05T19:30:00",
-   "tags": [
-    "cinema"
-   ],
-   "title": "Film de test"
-  }
- ]
+ "2018-07-30": {
+  "encrypted": "U2FsdGVkX18BI0VniQAAANPHNusPa2gURsg5Yqb+YDc="
+ },
+ "2018-07-31": {
+  "encrypted": "U2FsdGVkX18BI0VniQAAABU81czUba1F2Rrx5HU+kzJnjkcsRI1sGn4TrnPd4opQwkqQjTpV04ql8Qdvx2DtG2aipSVQWvK/4TFOA9agut1m2904fB/KfOVfom1zowKLH+It0uI2tsjw4B2e9+HDAA0y34aYSo8qkanAiEOKf+e/6Kh7sGeeZGXvouvhSE20rtCZ+G4kK5xMPe7+3u5/1rKG0RSSoTm+T6gxs6wYd18="
+ },
+ "2018-08-01": {
+  "encrypted": "U2FsdGVkX18BI0VniQAAAIasQxIiVnT7VnPzSXbRiLGvvZamRAe9YPC/dLB7vmIFGa0fY7lTaum3bX6Xppr2q5K6FA1BjTzAz0/3ww7cavWw1hxc9n3NKfv/Ixzf4K4d6uPxk0jOXAPjlNAcUhCp2vXayq1/SnzDnNEtTbaftiHHNlOwBwRkUiO5Mqpq8IMuP7n8Yw0EDoqlBK7UMjAE8qqBBlc8ybf+PoLnF986LY8="
+ },
+ "2018-08-02": {
+  "encrypted": "U2FsdGVkX18BI0VniQAAABU81czUba1F2Rrx5HU+kzIEgp9jmFM66QOTebRwmSlN0kYANZpIXrpBC9W1+YIWHACBkLsTBsR38+f/vRc5UKm0C5xQzK6tcU51rdMFImWBb81n7mXOWT92OkcQqwhuXJbmlxWcsmop9nemSZc8yMRqaO4fVeheG9nkTSD5Lf0ccy5n7tLZErf8ziddzaB4jd4IJ+i+ue4BoIw9P1XBeZc="
+ },
+ "2018-08-03": {
+  "encrypted": "U2FsdGVkX18BI0VniQAAANPHNusPa2gURsg5Yqb+YDc="
+ },
+ "2018-08-04": {
+  "encrypted": "U2FsdGVkX18BI0VniQAAANPHNusPa2gURsg5Yqb+YDc="
+ },
+ "2018-08-05": {
+  "encrypted": "U2FsdGVkX18BI0VniQAAABU81czUba1F2Rrx5HU+kzJnjkcsRI1sGn4TrnPd4opQwkqQjTpV04ql8Qdvx2DtG0j1xhlNn6nQTEykCacNjthWTUGiCViiEZ/p3Kzu8mO75sIR0WNsPZQFSGPv7WBaHJZHTdNMg8c9/pPgeJgiouDv7PUkcHzIS7ANQip0rbnXrMsJjwUeaV1sbZ0gzKfP4edZYxh7DakZqFtNTEzRePMwPDMnUex2I6ttY52rMVh9j0npW9uBdicBfz+wNewunsl50j/H1Z///L+Ri2NewzjeNPEOXsTPOlsmHgVTLILarWoB3IR1UO1gg4IlFLfXP3ZGTbZt4PpDF2AH7uCBURhWuft2rznSglkrcVZJoVWak/keHE8sfwmJ7d021dhHC1BdZoR6pzEfP3FhqnOmiDia436zqoeHDnJKKzgjf2JX"
+ }
 }
