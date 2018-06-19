@@ -54,3 +54,17 @@ a {
 {% for feature in modernizr_features %}.mdrn-{{ feature }}{% endfor %} .sp-modern {
     display: block;
 }
+
+#sp-admin {
+    display: none;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    border: red 3px solid;
+    background-color: #faa;
+}
+
+.sp-admin-only {
+    border: red 1px solid;
+    background-color: #faa;
+}

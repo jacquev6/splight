@@ -9,6 +9,9 @@
   "/lib/bootstrap-4.1.1.min.js",
   "/lib/lodash-4.17.10.min.js",
   "/lib/URI-1.19.1.min.js",
+  "/lib/moment-2.22.2.min.js",
+  "/lib/js.cookie-2.2.0.js",
+  "/main.js",
 ] + (scripts|default([])) -%}
 
 <!doctype html>
@@ -48,18 +51,30 @@
       </div>
 
       <div class="sp-modern">
-{% block contents %}
-{% endblock %}
+        {% block contents %}{% endblock %}
       </div>
 
-      <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018</p>
+      <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018<span id="sp-admin-enter">.</span></p>
     </div>
 
-{% for js in scripts %}
-    <script src="{{ js }}"></script>
-{% endfor %}
+    <div id="sp-admin">
+      <p>Mode administrateur</p>
+      <input id="sp-admin-quit" type="button" value="Quitter" />
+      {% block admin %}{% endblock %}
+    </div>
 
-{% block script %}
-{% endblock %}
+    {% for js in scripts %}
+    <script src="{{ js }}"></script>
+    {% endfor %}
+
+    {% block script %}{% endblock %}
+
+    <script>
+      $(function() {
+        Splight.initialize({
+          {% block splight_parameters %}{% endblock %}
+        });
+      });
+    </script>
   </body>
 </html>

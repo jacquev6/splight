@@ -138,7 +138,12 @@
 </div>
       </div>
 
-      <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018</p>
+      <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018<span id="sp-admin-enter">.</span></p>
+    </div>
+
+    <div id="sp-admin">
+      <p>Mode administrateur</p>
+      <input id="sp-admin-quit" type="button" value="Quitter" />
     </div>
 
     <script src="/lib/jquery-3.3.1.slim.min.js"></script>
@@ -146,6 +151,9 @@
     <script src="/lib/bootstrap-4.1.1.min.js"></script>
     <script src="/lib/lodash-4.17.10.min.js"></script>
     <script src="/lib/URI-1.19.1.min.js"></script>
+    <script src="/lib/moment-2.22.2.min.js"></script>
+    <script src="/lib/js.cookie-2.2.0.js"></script>
+    <script src="/main.js"></script>
     <script src="/lib/moment-2.22.2.min.js"></script>
     <script src="/lib/fullcalendar-3.9.0.min.js"></script>
     <script src="/lib/fullcalendar-locale-fr-3.9.0.js"></script>
@@ -262,5 +270,12 @@
     }
   })
 </script>
+
+    <script>
+      $(function() {
+        Splight.initialize({
+        });
+      });
+    </script>
   </body>
 </html>

@@ -5,60 +5,88 @@ var Splight = (function() {
 
   return {
     initialize: function(config) {
-      this.city = config.city.slug;
-      if(config.displayed_week) {
-        this.displayed_week = config.displayed_week.start_date;
-        this.first_week = config.first_week.start_date;
-        this.week_after = config.week_after.start_date;
+      var self = this;
+
+      this.is_admin = Cookies.getJSON("admin");
+
+      if(config.city) {
+        self.city = config.city.slug;
       } else {
-        this.displayed_week = null;
+        self.city = null;
       }
 
-      this.fix_links();
+      if(config.displayed_week) {
+        self.displayed_week = config.displayed_week.start_date;
+        self.first_week = config.first_week.start_date;
+        self.week_after = config.week_after.start_date;
+      } else {
+        self.displayed_week = null;
+      }
+
+      // @todo Password-protect admin mode
+      $("#sp-admin-enter").on("click", function() {self.is_admin = true; self.update_browser()});
+      $("#sp-admin-quit").on("click", function() {self.is_admin = false; self.update_browser()});
+
+      self.update_browser();
+    },
+
+    update_browser: function() {
+      var self = this;
+
+      self.fix_admin();
+      self.fix_links();
+    },
+
+    fix_admin: function() {
+      Cookies.set("admin", this.is_admin);
+      $("#sp-admin").toggle(this.is_admin);
     },
 
     fix_links: function() {
       var self = this;
 
-      function make_week_path(m) {
-        return "/" + self.city + m.format("/GGGG-[W]WW/");
-      }
-
-      function fix_link_class(kwds) {
-        var links = $(kwds.selector);
-        if(kwds.condition === undefined || kwds.condition) {
-          var new_path = make_week_path(kwds.week);
-          links.show();
+      if(self.city) {
+        function fix_link_class(kwds) {
+          var links = $(kwds.selector);
+          var new_path = "/" + self.city + kwds.week.format("/GGGG-[W]WW/");
           links.prop("href", function(index, href) {
             return URI(href).path(new_path).toString();
           });
-        } else {
-          links.hide();
+          if(kwds.global_condition && kwds.non_admin_condition) {
+            links.show();
+            links.removeClass("sp-admin-only");
+          } else if(kwds.global_condition && self.is_admin) {
+            links.show();
+            links.addClass("sp-admin-only");
+          } else {
+            links.hide();
+          }
         }
-      }
 
-      fix_link_class({selector: ".sp-now-week-link", week: moment()});
-
-      if(self.displayed_week) {
-        var previous_week = self.displayed_week.clone().subtract(1, "week");
         fix_link_class({
-          selector: ".sp-previous-week-link",
-          week: previous_week,
-          condition: (
-            previous_week >= self.first_week
-            && !moment().isSame(self.displayed_week, "isoWeek")
-          ),
+          selector: ".sp-now-week-link",
+          week: moment(),
+          global_condition: true,
+          non_admin_condition: true,
         });
 
-        var next_week = self.displayed_week.clone().add(1, "week");
-        fix_link_class({
-          selector: ".sp-next-week-link",
-          week: next_week,
-          condition: (
-            next_week < self.week_after
-            && !moment().add(4, "weeks").isSame(self.displayed_week, "isoWeek")
-          ),
-        });
+        if(self.displayed_week) {
+          var previous_week = self.displayed_week.clone().subtract(1, "week");
+          fix_link_class({
+            selector: ".sp-previous-week-link",
+            week: previous_week,
+            global_condition: previous_week >= self.first_week,
+            non_admin_condition: !moment().isSame(self.displayed_week, "isoWeek"),
+          });
+
+          var next_week = self.displayed_week.clone().add(1, "week");
+          fix_link_class({
+            selector: ".sp-next-week-link",
+            week: next_week,
+            global_condition: next_week < self.week_after,
+            non_admin_condition: !moment().add(4, "weeks").isSame(self.displayed_week, "isoWeek"),
+          });
+        }
       }
     },
   }
