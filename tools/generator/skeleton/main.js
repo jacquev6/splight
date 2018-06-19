@@ -54,7 +54,7 @@ var Splight = (function() {
       var self = this;
 
       self.decrypt_key_sha = config.decrypt_key_sha;
-      self.decrypt_key = Cookies.get("sp-decrypt-key");
+      self.try_decrypt_key(Cookies.get("sp-decrypt-key"));
 
       self.is_admin = Cookies.getJSON("sp-is-admin");
 
@@ -90,14 +90,9 @@ var Splight = (function() {
         self.update_browser();
       });
       $("#sp-admin-decrypt-key").on("change", function() {
-        var decrypt_key = $(this).val();
-        if(CryptoJS.SHA1(decrypt_key).toString() == self.decrypt_key_sha) {
-          self.decrypt_key = decrypt_key;
-        } else {
-          self.decrypt_key = undefined;
-        }
+        self.try_decrypt_key($(this).val());
         self.update_browser();
-      })
+      });
       $("input[name=displayed_tags]").on("change", function() {
         self.displayed_tags = new Set($("input[name=displayed_tags]:checked").map((x, y) => $(y).val()).toArray());
         self.display_all_tags = $("input[name=displayed_tags]:not(:checked)").length == 0;
@@ -152,6 +147,16 @@ var Splight = (function() {
       }
 
       self.update_browser(true);
+    },
+
+    try_decrypt_key: function(decrypt_key) {
+      var self = this;
+
+      if(CryptoJS.SHA1(decrypt_key).toString() == self.decrypt_key_sha) {
+        self.decrypt_key = decrypt_key;
+      } else {
+        self.decrypt_key = undefined;
+      }
     },
 
     update_browser: function(initial) {
