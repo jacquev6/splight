@@ -273,14 +273,24 @@ class StyleCss(_Template):
 
 
 class _BaseHtml(_Template):
-    pass
+    def __init__(self, *, decrypt_key_sha):
+        super().__init__()
+        assert isinstance(decrypt_key_sha, str)
+        self.__decrypt_key_sha = decrypt_key_sha
+
+    @property
+    def context(self):
+        return dict(
+            decrypt_key_sha=self.__decrypt_key_sha,
+            **super().context,
+        )
 
 
 class IndexHtml(_BaseHtml):
     template_name = "index.html"
 
-    def __init__(self, *, cities):
-        super().__init__()
+    def __init__(self, *, decrypt_key_sha, cities):
+        super().__init__(decrypt_key_sha=decrypt_key_sha)
         assert isinstance(cities, list)
         assert all(isinstance(city, City) for city in cities)
         self.__cities = cities
@@ -306,8 +316,8 @@ class AdsHtml(_BaseHtml):
 
 
 class _BaseWithinCityHtml(_BaseHtml):
-    def __init__(self, *, city):
-        super().__init__()
+    def __init__(self, *, decrypt_key_sha, city):
+        super().__init__(decrypt_key_sha=decrypt_key_sha)
         assert isinstance(city, City)
         self.__city = city
 
@@ -326,8 +336,8 @@ class _BaseWithinCityHtml(_BaseHtml):
 class CityHtml(_BaseWithinCityHtml):
     template_name = "city.html"
 
-    def __init__(self, *, city, first_week):
-        super().__init__(city=city)
+    def __init__(self, *, decrypt_key_sha, city, first_week):
+        super().__init__(decrypt_key_sha=decrypt_key_sha, city=city)
         assert isinstance(first_week, Week)
         self.__first_week = first_week
 
@@ -346,8 +356,8 @@ class CityHtml(_BaseWithinCityHtml):
 class WeekHtml(_BaseWithinCityHtml):
     template_name = "week.html"
 
-    def __init__(self, *, city, displayed_week, first_week, week_after):
-        super().__init__(city=city)
+    def __init__(self, *, decrypt_key_sha, city, displayed_week, first_week, week_after):
+        super().__init__(decrypt_key_sha=decrypt_key_sha, city=city)
         assert isinstance(displayed_week, Week)
         self.__displayed_week = displayed_week
         assert isinstance(first_week, Week)

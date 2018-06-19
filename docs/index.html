@@ -47,6 +47,7 @@
 
     <div id="sp-admin">
       <p>Mode administrateur</p>
+      <input id="sp-admin-decrypt-key" type="text" />
       <input id="sp-admin-quit" type="button" value="Quitter" />
     </div>
 
@@ -64,6 +65,7 @@
     <script>
       $(function() {
         Splight.initialize({
+          decrypt_key_sha: "cc76c7c9eac338243c2fff4bac3836439cf353ef",
         });
       });
     </script>

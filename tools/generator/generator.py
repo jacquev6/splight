@@ -2,6 +2,7 @@ import base64
 import calendar
 import colorsys
 import datetime
+import hashlib
 import itertools
 import json
 import os
@@ -56,6 +57,7 @@ class RootGenerator(Generator):
                 # @todo Remove generation date from context:
                 # generate site independently from generation date, and fix it with JavaScript
                 generation=self.__generation,
+                decrypt_key_sha="nope",
             ),
         )
         self.__data = data
@@ -231,8 +233,11 @@ def generate(*, data_directory, destination_directory):
         complement_very_dark="#B17600",
     )
 
-    templates.IndexHtml(cities=[city.for_templates for city in cities]).render()
-    templates.AdsHtml().render()
+    encrypt_key = os.environ["SPLIGHT_ENCRYPT_KEY"]
+    decrypt_key_sha = hashlib.sha1(encrypt_key.encode("utf-8")).hexdigest()
+
+    templates.IndexHtml(decrypt_key_sha=decrypt_key_sha, cities=[city.for_templates for city in cities]).render()
+    templates.AdsHtml(decrypt_key_sha=decrypt_key_sha).render()
     templates.StyleCss(modernizr_features=modernizr_features, colors=colors).render()
 
     for city in cities:
@@ -248,12 +253,13 @@ def generate(*, data_directory, destination_directory):
         first_week = templates.Week(start_date=city.first_day)
         week_after = templates.Week(start_date=date_after)
 
-        templates.CityHtml(city=city.for_templates, first_week=first_week).render()
+        templates.CityHtml(decrypt_key_sha=decrypt_key_sha, city=city.for_templates, first_week=first_week).render()
 
         while date < date_after:
             if date.weekday() == 0:
                 displayed_week = templates.Week(start_date=date)
                 templates.WeekHtml(
+                    decrypt_key_sha=decrypt_key_sha,
                     city=city.for_templates,
                     displayed_week=displayed_week,
                     first_week=first_week,
@@ -269,7 +275,13 @@ def generate(*, data_directory, destination_directory):
                         # We're even encrypting with fixed salt to produce deterministic files to be stored in git.
                         events = dict(
                             encrypted=base64.b64encode(subprocess.run(
-                                ["openssl", "enc", "-e", "-aes-256-cbc", "-S", "0123456789", "-k", "Sixteen byte key"],
+                                [
+                                    "openssl", "enc",
+                                    "-e",
+                                    "-aes-256-cbc",
+                                    "-S", "0123456789",
+                                    "-k", encrypt_key,
+                                ],
                                 input=json.dumps(
                                     events, separators=(',', ':'), default=templates.Event.to_json
                                 ).encode("utf-8"),

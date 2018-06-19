@@ -27,11 +27,7 @@ var Splight = (function() {
               function(data) {
                 keys_to_fetch.delete(k);
                 for(day in data) {
-                  day_data = data[day];
-                  if(day_data.encrypted) {
-                    day_data = JSON.parse(CryptoJS.AES.decrypt(day_data.encrypted, "Sixteen byte key").toString(CryptoJS.enc.Utf8));
-                    day_data.forEach(e => e.admin_only = true);
-                  }
+                  var day_data = data[day];
                   self.days[day] = day_data;
                 }
                 if(keys_to_fetch.size == 0) {
@@ -48,13 +44,7 @@ var Splight = (function() {
       call: function(required_keys, callback) {
         var self = this;
 
-        var events = [];
-        required_keys.forEach(function(key) {
-          var new_events = self.days[key];
-          events = events.concat(new_events);
-        });
-
-        callback(events);
+        callback(required_keys.map(key => self.days[key]));
       }
     };
   }
@@ -63,7 +53,10 @@ var Splight = (function() {
     initialize: function(config) {
       var self = this;
 
-      self.is_admin = Cookies.getJSON("admin");
+      self.decrypt_key_sha = config.decrypt_key_sha;
+      self.decrypt_key = Cookies.get("sp-decrypt-key");
+
+      self.is_admin = Cookies.getJSON("sp-is-admin");
 
       if(config.city) {
         self.city = config.city.slug;
@@ -75,7 +68,7 @@ var Splight = (function() {
         self.displayed_week = config.displayed_week.start_date;
         self.first_week = config.first_week.start_date;
         self.week_after = config.week_after.start_date;
-        self.events_cache = make_events_cache();
+        self.events_cache = make_events_cache(self);
         var query = URI.parseQuery(URI.parse(window.location.href).query);
         self.display_all_tags = false;
         self.displayed_tags = new Set(Object.keys(query));
@@ -96,6 +89,15 @@ var Splight = (function() {
         self.is_admin = false;
         self.update_browser();
       });
+      $("#sp-admin-decrypt-key").on("change", function() {
+        var decrypt_key = $(this).val();
+        if(CryptoJS.SHA1(decrypt_key).toString() == self.decrypt_key_sha) {
+          self.decrypt_key = decrypt_key;
+        } else {
+          self.decrypt_key = undefined;
+        }
+        self.update_browser();
+      })
       $("input[name=displayed_tags]").on("change", function() {
         self.displayed_tags = new Set($("input[name=displayed_tags]:checked").map((x, y) => $(y).val()).toArray());
         self.display_all_tags = $("input[name=displayed_tags]:not(:checked)").length == 0;
@@ -111,11 +113,23 @@ var Splight = (function() {
           allDaySlot: false,
           height: "auto",
           events: function(start, end, timezone, callback) {
-            self.events_cache.get(start, end, function(events) {
-              events = events.filter(e => e.tags.some(t => self.displayed_tags.has(t)));
-              events = events.filter(e => self.is_admin || !e.admin_only);
-              $("#sp-fullcalendar").toggleClass("sp-admin-only", events.some(e => e.admin_only))
-              callback(events);
+            self.events_cache.get(start, end, function(eventss) {
+              var events = [];
+              var admin_only = false;
+              for(var i = 0; i != eventss.length; ++i) {
+                var day_data = eventss[i];
+                if(day_data.encrypted) {
+                  if(self.is_admin && self.decrypt_key) {
+                    day_data = JSON.parse(CryptoJS.AES.decrypt(day_data.encrypted, self.decrypt_key).toString(CryptoJS.enc.Utf8));
+                    admin_only = true;
+                  } else {
+                    day_data = [];
+                  }
+                }
+                events = events.concat(day_data);
+              }
+              $("#sp-fullcalendar").toggleClass("sp-admin-only", admin_only);
+              callback(events.filter(e => e.tags.some(t => self.displayed_tags.has(t))));
             });
           },
           views: {
@@ -152,8 +166,15 @@ var Splight = (function() {
     update_admin: function() {
       var self = this;
 
-      Cookies.set("admin", self.is_admin);
+      Cookies.set("sp-is-admin", self.is_admin);
       $("#sp-admin").toggle(self.is_admin);
+      if(self.decrypt_key) {
+        Cookies.set("sp-decrypt-key", self.decrypt_key);
+        $("#sp-admin-decrypt-key").val(self.decrypt_key);
+      } else {
+        Cookies.remove("sp-decrypt-key");
+        $("#sp-admin-decrypt-key").val("");
+      }
     },
 
     update_display_settings: function() {
