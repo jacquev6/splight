@@ -1,0 +1,53 @@
+{
+ "2018-07-16": [
+  {
+   "end": null,
+   "start": "2018-07-16T19:00:00",
+   "tags": [
+    "musique"
+   ],
+   "title": "Artiste de test B (Genre Titi)"
+  },
+  {
+   "end": "2018-07-16T20:45:00",
+   "start": "2018-07-16T19:30:00",
+   "tags": [
+    "cinema"
+   ],
+   "title": "Film de test"
+  }
+ ],
+ "2018-07-17": [],
+ "2018-07-18": [
+  {
+   "end": null,
+   "start": "2018-07-18T20:00:00",
+   "tags": [
+    "theatre"
+   ],
+   "title": "Artiste de test A (Genre Toto)"
+  }
+ ],
+ "2018-07-19": [],
+ "2018-07-20": [
+  {
+   "end": "2018-07-20T20:45:00",
+   "start": "2018-07-20T19:30:00",
+   "tags": [
+    "cinema"
+   ],
+   "title": "Film de test"
+  }
+ ],
+ "2018-07-21": [
+  {
+   "end": null,
+   "start": "2018-07-21T19:00:00",
+   "tags": [
+    "musique"
+   ],
+   "title": "Artiste de test B (Genre Titi)"
+  }
+ ],
+ "2018-07-22": []
+}

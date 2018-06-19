@@ -1,6 +1,63 @@
 var Splight = (function() {
   function make_event_source() {
-    return [];
+    var cache = {
+      days: {},
+
+      get: function(start, end, callback) {
+        var self = this;
+
+        var required_keys = [];
+        for(var d = start; d.isBefore(end); d.add(1, "day")) {
+          required_keys.push(d.format("YYYY-MM-DD"));
+        }
+
+        var keys_to_fetch = new Set();
+        for(var i = 0; i != required_keys.length; ++i) {
+          var key = required_keys[i];
+          if(!self.days.hasOwnProperty(key)) {
+            keys_to_fetch.add(moment(key).startOf("isoWeek").format("GGGG-[W]WW"));
+          }
+        }
+
+        if(keys_to_fetch.size > 0) {
+          console.log("Cache misses:", keys_to_fetch);
+          keys_to_fetch.forEach(function(k) {
+            $.getJSON(
+              "/reims/" + k + ".json",
+              null,
+              function(data) {
+                keys_to_fetch.delete(k);
+                for(day in data) {
+                  self.days[day] = data[day];
+                }
+                if(keys_to_fetch.size == 0) {
+                  self.call(required_keys, callback);
+                }
+              },
+            )
+          });
+        } else {
+          console.log("Full cache hit");
+          self.call(required_keys, callback);
+        }
+      },
+
+      call: function(required_keys, callback) {
+        var self = this;
+
+        var events = [];
+        required_keys.forEach(function(key) {
+          var new_events = self.days[key];
+          events = events.concat(new_events);
+        });
+
+        callback(events);
+      }
+    };
+
+    return function(start, end, timezone, callback ) {
+      cache.get(start, end, callback);
+    };
   }
 
   return {
@@ -55,13 +112,14 @@ var Splight = (function() {
         self.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
       }
 
-      self.update_browser();
+      self.update_browser(true);
     },
 
-    update_browser: function() {
+    update_browser: function(initial) {
       var self = this;
 
       self.fix_admin();
+      if(!initial) self.update_calendar();
       self.fix_links();
     },
 
@@ -70,6 +128,12 @@ var Splight = (function() {
 
       Cookies.set("admin", self.is_admin);
       $("#sp-admin").toggle(self.is_admin);
+    },
+
+    update_calendar: function() {
+      var self = this;
+
+      self.calendar.refetchEvents();
     },
 
     fix_links: function() {

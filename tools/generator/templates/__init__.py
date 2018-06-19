@@ -154,6 +154,43 @@ class Week:
         return Week(start_date=self.__start_date + datetime.timedelta(days=7))
 
 
+class Event:
+    def __init__(self, *, title, start, end, tags):
+        assert isinstance(title, str)
+        self.__title = title
+        assert isinstance(start, datetime.datetime)
+        self.__start = start
+        assert end is None or isinstance(end, datetime.datetime)
+        self.__end = end
+        assert isinstance(tags, list)
+        assert all(isinstance(tag, str) for tag in tags)
+        self.__tags = tags
+
+    @property
+    def title(self):
+        return self.__title
+
+    @property
+    def start(self):
+        return self.__start
+
+    @property
+    def end(self):
+        return self.__end
+
+    @property
+    def tags(self):
+        return self.__tags
+
+    def to_json(self):
+        return dict(
+            title=self.__title,
+            start=self.__start.isoformat(),
+            end=self.__end.isoformat() if self.__end else None,
+            tags=self.__tags
+        )
+
+
 def _format_date(d):
     months = [
         "janvier", "février", "mars", "avril", "mai", "juin",

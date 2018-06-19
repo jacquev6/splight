@@ -1,0 +1,62 @@
+{
+ "2018-07-02": [],
+ "2018-07-03": [
+  {
+   "end": null,
+   "start": "2018-07-03T20:00:00",
+   "tags": [
+    "theatre"
+   ],
+   "title": "Artiste de test A (Genre Toto)"
+  }
+ ],
+ "2018-07-04": [
+  {
+   "end": "2018-07-04T20:45:00",
+   "start": "2018-07-04T19:30:00",
+   "tags": [
+    "cinema"
+   ],
+   "title": "Film de test"
+  }
+ ],
+ "2018-07-05": [
+  {
+   "end": "2018-07-05T22:30:00",
+   "start": "2018-07-05T20:15:00",
+   "tags": [
+    "cinema"
+   ],
+   "title": "Britannicus (Com\u00e9die-Fran\u00e7aise / Path\u00e9 Live)"
+  }
+ ],
+ "2018-07-06": [
+  {
+   "end": null,
+   "start": "2018-07-06T19:00:00",
+   "tags": [
+    "musique"
+   ],
+   "title": "Artiste de test B (Genre Titi)"
+  }
+ ],
+ "2018-07-07": [],
+ "2018-07-08": [
+  {
+   "end": "2018-07-08T20:45:00",
+   "start": "2018-07-08T19:30:00",
+   "tags": [
+    "cinema"
+   ],
+   "title": "Film de test"
+  },
+  {
+   "end": null,
+   "start": "2018-07-08T20:00:00",
+   "tags": [
+    "theatre"
+   ],
+   "title": "Artiste de test A (Genre Toto)"
+  }
+ ]
+}

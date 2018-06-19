@@ -253,6 +253,14 @@ def generate(*, data_directory, destination_directory):
                     first_week=first_week,
                     week_after=week_after,
                 ).render()
+
+                events = {
+                    d.isoformat(): city.events.get(d, [])
+                    for d in (date + datetime.timedelta(days=i) for i in range(7))
+                }
+                with open("docs/{}/{}.json".format(city.for_templates.slug, displayed_week.slug), "w") as f:
+                    json.dump(events, f, sort_keys=True, indent=1, default=templates.Event.to_json)
+
             date += datetime.timedelta(days=1)
 
 
@@ -268,6 +276,24 @@ def make_cities(data):
             for (i, tag) in enumerate(city.tags)
         ]
 
+        events = dict()
+        for (day, day_events) in itertools.groupby(city.events, key=lambda e: e.datetime.date()):
+            events[day] = []
+            for event in day_events:
+                if event.title:
+                    title = event.title
+                elif event.artist:
+                    title = "{} ({})".format(event.artist.name, event.artist.genre)
+                else:
+                    assert False, "Event without title information"
+
+                events[day].append(templates.Event(
+                    title=title,
+                    start=event.datetime,
+                    end=event.datetime + event.duration if event.duration else None,
+                    tags=[tag.slug for tag in event.tags],
+                ))
+
         yield NS(
             for_templates=templates.City(
                 slug=city.slug,
@@ -275,6 +301,7 @@ def make_cities(data):
                 tags=tags,
             ),
             first_day=dateutils.previous_week_day(city.events[0].datetime.date(), 0),
+            events=events,
         )
 
 
