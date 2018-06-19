@@ -27,6 +27,34 @@ var Splight = (function() {
       $("#sp-admin-enter").on("click", function() {self.is_admin = true; self.update_browser()});
       $("#sp-admin-quit").on("click", function() {self.is_admin = false; self.update_browser()});
 
+      if(this.displayed_week) {
+        $("#sp-fullcalendar").fullCalendar({
+          header: false,
+          defaultDate: this.displayed_week,
+          defaultView: "basicWeek",
+          locale: "fr",
+          allDaySlot: false,
+          height: "auto",
+          events: make_event_source(),
+          views: {
+            agendaThreeDays: {
+              type: "agenda",
+              duration: {days: 3},
+            },
+            listThreeDays: {
+              type: "list",
+              duration: {days: 3},
+            },
+            basicThreeDays: {
+              type: "basic",
+              duration: {days: 3},
+            },
+          },
+        });
+
+        this.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
+      }
+
       self.update_browser();
     },
 

@@ -1,3 +1,12 @@
+{% set stylesheets = [
+  "/lib/fullcalendar-3.9.0.min.css",
+] -%}
+
+{% set scripts = [
+  "/lib/fullcalendar-3.9.0.min.js",
+  "/lib/fullcalendar-locale-fr-3.9.0.js",
+] -%}
+
 {% extends "base_within_city.html" %}
 
 {% block contents %}
@@ -25,6 +34,8 @@
         <p class="text-left"><a class="sp-next-week-link" href="/{% if displayed_week.next.start_date < week_after.start_date %}{{ city.slug }}/{{ displayed_week.next.slug }}/{% endif %}">Semaine suivante &gt;</a></p>
       </div>
     </div>
+
+    <div id="sp-fullcalendar"></div>
   </div>
 
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
