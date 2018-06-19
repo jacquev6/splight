@@ -145,6 +145,14 @@ class Week:
     def start_date(self):
         return self.__start_date
 
+    @property
+    def previous(self):
+        return Week(start_date=self.__start_date - datetime.timedelta(days=7))
+
+    @property
+    def next(self):
+        return Week(start_date=self.__start_date + datetime.timedelta(days=7))
+
 
 def _format_date(d):
     months = [
@@ -267,12 +275,21 @@ class _BaseWithinCityHtml(_BaseHtml):
 class CityHtml(_BaseWithinCityHtml):
     template_name = "city.html"
 
-    def __init__(self, *, city):
+    def __init__(self, *, city, first_week):
         super().__init__(city=city)
+        assert isinstance(first_week, Week)
+        self.__first_week = first_week
 
     @property
     def destination(self):
         return os.path.join(super().destination, "index.html")
+
+    @property
+    def context(self):
+        return dict(
+            first_week=self.__first_week,
+            **super().context,
+        )
 
 
 class WeekHtml(_BaseWithinCityHtml):

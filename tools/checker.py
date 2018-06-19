@@ -48,7 +48,6 @@ def check_local_links(root_dir_name, all_files):
     aux("/")
     aux("/reims/2018-21/")
     for w in range(21, 52):
-        aux("/reims/2018-W{}/".format(w))
         reacheable.add("/reims/2018-W{}.json".format(w))
 
     for url in served_urls - reacheable:

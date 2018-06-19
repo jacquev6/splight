@@ -234,8 +234,6 @@ def generate(*, data_directory, destination_directory):
     templates.StyleCss(modernizr_features=modernizr_features, colors=colors).render()
 
     for city in cities:
-        templates.CityHtml(city=city.for_templates).render()
-
         date = city.first_day
         date_after = (
             dateutils.previous_week_day(datetime.date.today(), 0)
@@ -243,6 +241,8 @@ def generate(*, data_directory, destination_directory):
         )
         first_week = templates.Week(start_date=city.first_day)
         week_after = templates.Week(start_date=date_after)
+
+        templates.CityHtml(city=city.for_templates, first_week=first_week).render()
 
         while date < date_after:
             if date.weekday() == 0:

@@ -7,8 +7,8 @@
 
 {% block contents %}
 <div class="row"><div class="col-md-3"></div><div class="col-md-6">
-  <p><a class="sp-now-week-link" href="/"><img class="img-fluid" src="/actualite-leaderboard.jpg" /></a></p>
-  <p><a class="sp-now-week-link" href="/">Toute l'actualité</a></p>
+  <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/"><img class="img-fluid" src="/actualite-leaderboard.jpg" /></a></p>
+  <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/">Toute l'actualité</a></p>
 </div></div>
 <div class="row"><div class="col">
   <h1>Catégories</h1>
@@ -16,8 +16,8 @@
 <div class="row">
   {% for tag in city.tags %}
   <div class="col-6 col-md-3">
-    <p><a class="sp-now-week-link" href="/?{{ tag.slug }}"><img class="img-fluid" src="/{{ tag.slug }}-rectangle.jpg" /></a></p>
-    <p><a class="sp-now-week-link" href="/?{{ tag.slug }}">{{ tag.title }}</a></p>
+    <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/?{{ tag.slug }}"><img class="img-fluid" src="/{{ tag.slug }}-rectangle.jpg" /></a></p>
+    <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/?{{ tag.slug }}">{{ tag.title }}</a></p>
   </div>
   {% endfor %}
 </div>
