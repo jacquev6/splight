@@ -271,16 +271,6 @@ var Splight = (function() {
       self.update_browser(true);
     },
 
-    try_decrypt_key: function(decrypt_key) {
-      var self = this;
-
-      if(CryptoJS.SHA1(decrypt_key).toString() == self.decrypt_key_sha) {
-        self.decrypt_key = decrypt_key;
-      } else {
-        self.decrypt_key = undefined;
-      }
-    },
-
     update_browser: function(initial) {
       var self = this;
 
