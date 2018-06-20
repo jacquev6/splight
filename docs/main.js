@@ -1,3 +1,5 @@
+"use strict";
+
 var Splight = (function() {
   function make_events_cache() {
     return {
@@ -19,6 +21,7 @@ var Splight = (function() {
           }
         }
 
+        // @todo Display animated icon while waiting for responses
         if(keys_to_fetch.size > 0) {
           keys_to_fetch.forEach(function(k) {
             $.getJSON(
@@ -26,7 +29,7 @@ var Splight = (function() {
               null,
               function(data) {
                 keys_to_fetch.delete(k);
-                for(day in data) {
+                for(var day in data) {
                   var day_data = data[day];
                   self.days[day] = day_data;
                 }
