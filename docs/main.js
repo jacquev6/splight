@@ -54,10 +54,10 @@ var Splight = (function() {
     }
   };
 
-  function AdminMode(config, update_browser_callback) {
+  function AdminMode({decrypt_key_sha, update_browser_callback}) {
     var self = this;
 
-    self._decrypt_key_sha = config.decrypt_key_sha;
+    self._decrypt_key_sha = decrypt_key_sha;
 
     var cookie = Cookies.getJSON("sp-admin-mode") || {};
     self._try_enable(cookie.decrypt_key, cookie.is_active);
@@ -146,7 +146,7 @@ var Splight = (function() {
     },
   };
 
-  function TagFilter(config, update_browser_callback) {
+  function TagFilter({update_browser_callback}) {
     var self = this;
 
     var query = URI.parseQuery(URI.parse(window.location.href).query);
@@ -199,7 +199,10 @@ var Splight = (function() {
     initialize: function(config) {
       var self = this;
 
-      self.admin_mode = new AdminMode(config, () => self.update_browser());
+      self.admin_mode = new AdminMode({
+        decrypt_key_sha: config.decrypt_key_sha,
+        update_browser_callback: () => self.update_browser(),
+      });
 
       if(config.city) {
         self.city = config.city.slug;
@@ -213,7 +216,9 @@ var Splight = (function() {
         self.week_after = config.week_after.start_date;
         self.events_cache = new EventsCache();
 
-        self.tag_filter = new TagFilter(config, () => self.update_browser());
+        self.tag_filter = new TagFilter({
+          update_browser_callback: () => self.update_browser(),
+        });
       } else {
         self.displayed_week = null;
       }
