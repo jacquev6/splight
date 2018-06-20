@@ -55,16 +55,14 @@ a {
     display: block;
 }
 
-#sp-admin {
+#sp-admin-mode-dashboard {
     display: none;
     position: fixed;
-    top: 10px;
-    right: 10px;
-    border: red 3px solid;
-    background-color: #faa;
+    top: 0;
+    right: 25px;
 }
 
-.sp-admin-only {
-    border: red 1px solid;
+.sp-admin-mode-only {
+    border: red 3px solid;
     background-color: #faa;
 }

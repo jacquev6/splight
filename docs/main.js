@@ -49,14 +49,103 @@ var Splight = (function() {
     };
   }
 
+  var AdminMode = {
+    initialize: function(config, update_browser_callback) {
+      var self = this;
+
+      self._decrypt_key_sha = config.decrypt_key_sha;
+
+      var cookie = Cookies.getJSON("sp-admin-mode") || {};
+      self._try_enable(cookie.decrypt_key, cookie.is_active);
+
+      $("#sp-admin-mode-show-activation-modal").on("click", function() {
+        if(self._decrypt_key) {
+          self._is_active = !self._is_active;
+          update_browser_callback();
+        } else {
+          $("#sp-admin-mode-activation-wrong-key").hide();
+          $("#sp-admin-mode-activation-modal").modal("show");
+        }
+      });
+
+      $("#sp-admin-mode-show-activation-modal").on("dblclick", function() {
+        self._try_enable();
+        update_browser_callback();
+      });
+
+      $("#sp-admin-mode-enable").on("click", function() {
+        if(self._try_enable($("#sp-admin-mode-decrypt-key").val(), true)) {
+          $("#sp-admin-mode-activation-modal").modal("hide");
+          update_browser_callback();
+        } else {
+          $("#sp-admin-mode-activation-wrong-key").show();
+        }
+      });
+
+      $("#sp-admin-mode-deactivate").on("click", function() {
+        self._is_active = false;
+        update_browser_callback();
+      });
+    },
+
+    _try_enable: function(decrypt_key, is_active) {
+      var self = this;
+
+      var decrypt_key_is_valid = CryptoJS.SHA1(decrypt_key).toString() == self._decrypt_key_sha;
+
+      if(decrypt_key_is_valid) {
+        self._decrypt_key = decrypt_key;
+        self._is_active = !!is_active;
+      } else {
+        self._decrypt_key = null;
+        self._is_active = false;
+      }
+
+      return decrypt_key_is_valid;
+    },
+
+    update_browser: function() {
+      var self = this;
+
+      if(self._decrypt_key) {
+        Cookies.set("sp-admin-mode", {decrypt_key: self._decrypt_key, is_active: self._is_active});
+      } else {
+        Cookies.remove("sp-admin-mode");
+      }
+
+      $("#sp-admin-mode-dashboard").toggle(self._is_active);
+    },
+
+    decrypt_json: function(message, default_value) {
+      var self = this;
+
+      if(self._is_active) {
+        return JSON.parse(CryptoJS.AES.decrypt(message, self._decrypt_key).toString(CryptoJS.enc.Utf8));
+      } else {
+        return default_value;
+      }
+    },
+
+    decorate: function(q, show_if_inactive) {
+      var self = this;
+
+      q.toggle(show_if_inactive || self._is_active);
+      q.toggleClass("sp-admin-mode-only", self._is_active);
+    },
+
+    undecorate: function(q) {
+      var self = this;
+
+      q.show();
+      q.removeClass("sp-admin-mode-only");
+    },
+  };
+
   return {
     initialize: function(config) {
       var self = this;
 
-      self.decrypt_key_sha = config.decrypt_key_sha;
-      self.try_decrypt_key(Cookies.get("sp-decrypt-key"));
-
-      self.is_admin = Cookies.getJSON("sp-is-admin");
+      AdminMode.initialize(config, () => self.update_browser());
 
       if(config.city) {
         self.city = config.city.slug;
@@ -80,19 +169,6 @@ var Splight = (function() {
         self.displayed_week = null;
       }
 
-      $("#sp-admin-enter").on("click", function() {
-        // @todo Password-protect admin mode
-        self.is_admin = true;
-        self.update_browser();
-      });
-      $("#sp-admin-quit").on("click", function() {
-        self.is_admin = false;
-        self.update_browser();
-      });
-      $("#sp-admin-decrypt-key").on("change", function() {
-        self.try_decrypt_key($(this).val());
-        self.update_browser();
-      });
       $("input[name=displayed_tags]").on("change", function() {
         self.displayed_tags = new Set($("input[name=displayed_tags]:checked").map((x, y) => $(y).val()).toArray());
         self.display_all_tags = $("input[name=displayed_tags]:not(:checked)").length == 0;
@@ -110,20 +186,18 @@ var Splight = (function() {
           events: function(start, end, timezone, callback) {
             self.events_cache.get(start, end, function(eventss) {
               var events = [];
-              var admin_only = false;
+              var data_for_admin_only = false;
               for(var i = 0; i != eventss.length; ++i) {
                 var day_data = eventss[i];
                 if(day_data.encrypted) {
-                  if(self.is_admin && self.decrypt_key) {
-                    day_data = JSON.parse(CryptoJS.AES.decrypt(day_data.encrypted, self.decrypt_key).toString(CryptoJS.enc.Utf8));
-                    admin_only = true;
-                  } else {
-                    day_data = [];
-                  }
+                  day_data = AdminMode.decrypt_json(day_data.encrypted, []);
+                  data_for_admin_only = true;
                 }
                 events = events.concat(day_data);
               }
-              $("#sp-fullcalendar").toggleClass("sp-admin-only", admin_only);
+              if(data_for_admin_only) {
+                AdminMode.decorate($("#sp-fullcalendar"), true);
+              }
               callback(events.filter(e => e.tags.some(t => self.displayed_tags.has(t))));
             });
           },
@@ -162,24 +236,10 @@ var Splight = (function() {
     update_browser: function(initial) {
       var self = this;
 
-      self.update_admin();
+      AdminMode.update_browser();
       self.update_display_settings();
       if(!initial) self.update_calendar();
       self.update_links();
-    },
-
-    update_admin: function() {
-      var self = this;
-
-      Cookies.set("sp-is-admin", self.is_admin);
-      $("#sp-admin").toggle(self.is_admin);
-      if(self.decrypt_key) {
-        Cookies.set("sp-decrypt-key", self.decrypt_key);
-        $("#sp-admin-decrypt-key").val(self.decrypt_key);
-      } else {
-        Cookies.remove("sp-decrypt-key");
-        $("#sp-admin-decrypt-key").val("");
-      }
     },
 
     update_display_settings: function() {
@@ -194,7 +254,9 @@ var Splight = (function() {
     update_calendar: function() {
       var self = this;
 
-      self.calendar.refetchEvents();
+      if(self.displayed_week) {
+        self.calendar.refetchEvents();
+      }
     },
 
     update_links: function() {
@@ -216,12 +278,12 @@ var Splight = (function() {
             if(self.displayed_week) uri.query(new_query);
             return uri.toString();
           });
-          if(kwds.global_condition && kwds.non_admin_condition) {
-            links.show();
-            links.removeClass("sp-admin-only");
-          } else if(kwds.global_condition && self.is_admin) {
-            links.show();
-            links.addClass("sp-admin-only");
+          if(kwds.global_condition) {
+            if(kwds.non_admin_condition) {
+              AdminMode.undecorate(links);
+            } else {
+              AdminMode.decorate(links, false);
+            }
           } else {
             links.hide();
           }
