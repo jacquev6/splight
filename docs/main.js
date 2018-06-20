@@ -8,7 +8,7 @@ var Splight = (function() {
   };
 
   EventsCache.prototype = {
-    get: function(start, end, callback) {
+    get: function({start, end, callback}) {
       var self = this;
 
       var required_keys = [];
@@ -24,34 +24,32 @@ var Splight = (function() {
         }
       }
 
+      function call_callback() {
+        callback(required_keys.map(key => self._days[key]));
+      }
+
       // @todo Display animated icon while waiting for responses
       if(keys_to_fetch.size > 0) {
-        keys_to_fetch.forEach(function(k) {
+        keys_to_fetch.forEach(function(key) {
           $.getJSON(
-            "/reims/" + k + ".json",
+            "/reims/" + key + ".json",
             null,
             function(data) {
-              keys_to_fetch.delete(k);
+              keys_to_fetch.delete(key);
               for(var day in data) {
                 var day_data = data[day];
                 self._days[day] = day_data;
               }
               if(keys_to_fetch.size == 0) {
-                self._callback(required_keys, callback);
+                call_callback();
               }
             },
-          )
+          );
         });
       } else {
-        self._callback(required_keys, callback);
+        call_callback();
       }
     },
-
-    _callback: function(required_keys, callback) {
-      var self = this;
-
-      callback(required_keys.map(key => self._days[key]));
-    }
   };
 
   function AdminMode({decrypt_key_sha, update_browser_callback}) {
@@ -59,8 +57,22 @@ var Splight = (function() {
 
     self._decrypt_key_sha = decrypt_key_sha;
 
+    function try_enable(decrypt_key, is_active) {
+      var decrypt_key_is_valid = CryptoJS.SHA1(decrypt_key).toString() == self._decrypt_key_sha;
+
+      if(decrypt_key_is_valid) {
+        self._decrypt_key = decrypt_key;
+        self._is_active = !!is_active;
+      } else {
+        self._decrypt_key = null;
+        self._is_active = false;
+      }
+
+      return decrypt_key_is_valid;
+    }
+
     var cookie = Cookies.getJSON("sp-admin-mode") || {};
-    self._try_enable(cookie.decrypt_key, cookie.is_active);
+    try_enable(cookie.decrypt_key, cookie.is_active);
 
     $("#sp-admin-mode-show-activation-modal").on("click", function() {
       if(self._decrypt_key) {
@@ -73,12 +85,12 @@ var Splight = (function() {
     });
 
     $("#sp-admin-mode-show-activation-modal").on("dblclick", function() {
-      self._try_enable();
+      try_enable();
       update_browser_callback();
     });
 
     $("#sp-admin-mode-enable").on("click", function() {
-      if(self._try_enable($("#sp-admin-mode-decrypt-key").val(), true)) {
+      if(try_enable($("#sp-admin-mode-decrypt-key").val(), true)) {
         $("#sp-admin-mode-activation-modal").modal("hide");
         update_browser_callback();
       } else {
@@ -93,22 +105,6 @@ var Splight = (function() {
   };
 
   AdminMode.prototype = {
-    _try_enable: function(decrypt_key, is_active) {
-      var self = this;
-
-      var decrypt_key_is_valid = CryptoJS.SHA1(decrypt_key).toString() == self._decrypt_key_sha;
-
-      if(decrypt_key_is_valid) {
-        self._decrypt_key = decrypt_key;
-        self._is_active = !!is_active;
-      } else {
-        self._decrypt_key = null;
-        self._is_active = false;
-      }
-
-      return decrypt_key_is_valid;
-    },
-
     update_browser: function() {
       var self = this;
 
@@ -121,7 +117,7 @@ var Splight = (function() {
       $("#sp-admin-mode-dashboard").toggle(self._is_active);
     },
 
-    decrypt_json: function(message, default_value) {
+    decrypt_json: function({message, default_value}) {
       var self = this;
 
       if(self._is_active) {
@@ -131,7 +127,7 @@ var Splight = (function() {
       }
     },
 
-    decorate: function(q, show_if_inactive) {
+    decorate: function(q, {show_if_inactive}) {
       var self = this;
 
       q.toggle(show_if_inactive || self._is_active);
@@ -195,161 +191,166 @@ var Splight = (function() {
     },
   };
 
-  function Splight(config) {
+  function make_city_week_path({city, week}) {
+    return "/" + city + week.format("/GGGG-[W]WW/");
+  }
+
+  function update_city_week_links({links, city, week}) {
+    var new_path = make_city_week_path({city: city, week: week});
+    links.prop("href", function(index, href) {
+      return URI(href).path(new_path).toString();
+    });
+  }
+
+  function DisplayedWeek({displayed_week: {start_date, first_week, week_after}, city_slug, admin_mode, update_browser_callback}) {
     var self = this;
 
-    self.admin_mode = new AdminMode({
-      decrypt_key_sha: config.decrypt_key_sha,
-      update_browser_callback: () => self.update_browser(),
+    self.city_slug = city_slug
+    self.admin_mode = admin_mode;
+
+    self.start_date = start_date;
+    self.first_week = first_week.start_date;
+    self.week_after = week_after.start_date;
+    self.events_cache = new EventsCache();
+
+    self.tag_filter = new TagFilter({
+      update_browser_callback: update_browser_callback,
     });
 
-    if(config.city) {
-      self.city = config.city.slug;
-    } else {
-      self.city = null;
-    }
-
-    if(config.displayed_week) {
-      self.displayed_week = config.displayed_week.start_date;
-      self.first_week = config.first_week.start_date;
-      self.week_after = config.week_after.start_date;
-      self.events_cache = new EventsCache();
-
-      self.tag_filter = new TagFilter({
-        update_browser_callback: () => self.update_browser(),
-      });
-    } else {
-      self.displayed_week = null;
-    }
-
-    if(self.displayed_week) {
-      $("#sp-fullcalendar").fullCalendar({
-        header: false,
-        defaultDate: self.displayed_week,
-        defaultView: "basicWeek",
-        locale: "fr",
-        allDaySlot: false,
-        height: "auto",
-        events: function(start, end, timezone, callback) {
-          self.events_cache.get(start, end, function(eventss) {
+    $("#sp-fullcalendar").fullCalendar({
+      header: false,
+      defaultDate: self.start_date,
+      defaultView: "basicWeek",
+      locale: "fr",
+      allDaySlot: false,
+      height: "auto",
+      events: function(start, end, timezone, callback) {
+        self.events_cache.get({
+          start: start,
+          end: end,
+          callback: function(eventss) {
             var events = [];
             var data_for_admin_only = false;
             for(var i = 0; i != eventss.length; ++i) {
               var day_data = eventss[i];
               if(day_data.encrypted) {
-                day_data = self.admin_mode.decrypt_json(day_data.encrypted, []);
+                day_data = self.admin_mode.decrypt_json({message: day_data.encrypted, default_value: []});
                 data_for_admin_only = true;
               }
               events = events.concat(day_data);
             }
             if(data_for_admin_only) {
-              self.admin_mode.decorate($("#sp-fullcalendar"), true);
+              self.admin_mode.decorate($("#sp-fullcalendar"), {show_if_inactive: true});
             }
             callback(self.tag_filter.filter(events));
-          });
+          },
+        });
+      },
+      views: {
+        agendaThreeDays: {
+          type: "agenda",
+          duration: {days: 3},
         },
-        views: {
-          agendaThreeDays: {
-            type: "agenda",
-            duration: {days: 3},
-          },
-          listThreeDays: {
-            type: "list",
-            duration: {days: 3},
-          },
-          basicThreeDays: {
-            type: "basic",
-            duration: {days: 3},
-          },
+        listThreeDays: {
+          type: "list",
+          duration: {days: 3},
         },
-      });
+        basicThreeDays: {
+          type: "basic",
+          duration: {days: 3},
+        },
+      },
+    });
 
-      self.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
-    }
-
-    self.update_browser(true);
+    self.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
   };
 
-  Splight.prototype = {
-    update_browser: function(initial) {
+  DisplayedWeek.prototype = {
+    update_browser: function() {
       var self = this;
 
-      self.admin_mode.update_browser();
-      self.tag_filter && self.tag_filter.update_browser();
-      if(!initial) {
-        self.update_calendar();
-      }
-      self.update_links();
-    },
+      self.calendar.refetchEvents();
 
-    update_calendar: function() {
-      var self = this;
+      self.tag_filter.update_browser();
 
-      if(self.displayed_week) {
-        self.calendar.refetchEvents();
-      }
-    },
+      history.replaceState(null, window.document.title, URI(window.location).path(make_city_week_path({city: self.city_slug, week: self.start_date})).toString());
 
-    update_links: function() {
-      var self = this;
-
-      if(self.city) {
-        function make_new_path(week) {
-          return "/" + self.city + week.format("/GGGG-[W]WW/");
-        }
-
-        function update_link_class(kwds) {
-          var links = $(kwds.selector);
-          var new_path = make_new_path(kwds.week);
-          links.prop("href", function(index, href) {
-            var uri = URI(href);
-            uri.path(new_path)
-            return uri.toString();
-          });
-          if(kwds.global_condition) {
-            if(kwds.non_admin_condition) {
-              self.admin_mode.undecorate(links);
-            } else {
-              self.admin_mode.decorate(links, false);
-            }
+      function update_links({links, week, global_condition, non_admin_condition}) {
+        update_city_week_links({links: links, city: self.city_slug, week: week});
+        if(global_condition) {
+          if(non_admin_condition) {
+            self.admin_mode.undecorate(links);
           } else {
-            links.hide();
+            self.admin_mode.decorate(links, {show_if_inactive: false});
           }
-        }
-
-        update_link_class({
-          selector: ".sp-now-week-link",
-          week: moment(),
-          global_condition: true,
-          non_admin_condition: true,
-        });
-
-        if(self.displayed_week) {
-          history.replaceState(null, window.document.title, URI(window.location).path(make_new_path(self.displayed_week)).toString());
-
-          var previous_week = self.displayed_week.clone().subtract(1, "week");
-          update_link_class({
-            selector: ".sp-previous-week-link",
-            week: previous_week,
-            global_condition: previous_week >= self.first_week,
-            non_admin_condition: !moment().isSame(self.displayed_week, "isoWeek"),
-          });
-
-          var next_week = self.displayed_week.clone().add(1, "week");
-          update_link_class({
-            selector: ".sp-next-week-link",
-            week: next_week,
-            global_condition: next_week < self.week_after,
-            non_admin_condition: !moment().add(4, "weeks").isSame(self.displayed_week, "isoWeek"),
-          });
+        } else {
+          links.hide();
         }
       }
+
+      var previous_week = self.start_date.clone().subtract(1, "week");
+      update_links({
+        links: $(".sp-previous-week-link"),
+        week: previous_week,
+        global_condition: previous_week >= self.first_week,
+        non_admin_condition: !moment().isSame(self.start_date, "isoWeek"),
+      });
+
+      var next_week = self.start_date.clone().add(1, "week");
+      update_links({
+        links: $(".sp-next-week-link"),
+        week: next_week,
+        global_condition: next_week < self.week_after,
+        non_admin_condition: !moment().add(4, "weeks").isSame(self.start_date, "isoWeek"),
+      });
     },
-  }
+  };
+
+  function City({city: {slug, displayed_week}, admin_mode, update_browser_callback}) {
+    var self = this;
+
+    self.slug = slug;
+    if(displayed_week) {
+      self.displayed_week = new DisplayedWeek(
+        {
+          displayed_week: displayed_week,
+          city_slug: self.slug,
+          admin_mode: admin_mode,
+          update_browser_callback: update_browser_callback,
+        },
+      );
+    }
+  };
+
+  City.prototype = {
+    update_browser: function() {
+      var self = this;
+
+      update_city_week_links({links: $(".sp-now-week-link"), city: self.slug, week: moment()});
+
+      self.displayed_week && self.displayed_week.update_browser();
+    },
+  };
 
   return {
-    initialize: function(config) {
-      var splight = new Splight(config);
+    initialize: function({decrypt_key_sha, city}) {
+      var self = {};
+
+      function update_browser() {
+        self.admin_mode.update_browser();
+        self.city && self.city.update_browser();
+      };
+
+      self.admin_mode = new AdminMode({
+        decrypt_key_sha: decrypt_key_sha,
+        update_browser_callback: update_browser,
+      });
+
+      if(city) {
+        self.city = new City({city: city, admin_mode: self.admin_mode, update_browser_callback: update_browser})
+      }
+
+      update_browser(true);
     },
   }
 })();

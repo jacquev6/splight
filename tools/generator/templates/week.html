@@ -58,14 +58,14 @@
 {% block splight_parameters %}
           city: {
             slug: "{{ city.slug }}",
-          },
-          first_week: {
-            start_date: moment("{{ first_week.start_date }}"),
-          },
-          week_after: {
-            start_date: moment("{{ week_after.start_date }}"),
-          },
-          displayed_week: {
-            start_date: moment("{{ displayed_week.start_date }}"),
+            displayed_week: {
+              start_date: moment("{{ displayed_week.start_date }}"),
+              first_week: {
+                start_date: moment("{{ first_week.start_date }}"),
+              },
+              week_after: {
+                start_date: moment("{{ week_after.start_date }}"),
+              },
+            },
           },
 {% endblock %}
