@@ -1,56 +1,58 @@
 "use strict";
 
 var Splight = (function() {
-  function make_events_cache() {
-    return {
-      days: {},
+  function EventsCache() {
+    var self = this;
 
-      get: function(start, end, callback) {
-        var self = this;
+    self._days = {};
+  };
 
-        var required_keys = [];
-        for(var d = start; d.isBefore(end); d.add(1, "day")) {
-          required_keys.push(d.format("YYYY-MM-DD"));
-        }
+  EventsCache.prototype = {
+    get: function(start, end, callback) {
+      var self = this;
 
-        var keys_to_fetch = new Set();
-        for(var i = 0; i != required_keys.length; ++i) {
-          var key = required_keys[i];
-          if(!self.days.hasOwnProperty(key)) {
-            keys_to_fetch.add(moment(key).startOf("isoWeek").format("GGGG-[W]WW"));
-          }
-        }
-
-        // @todo Display animated icon while waiting for responses
-        if(keys_to_fetch.size > 0) {
-          keys_to_fetch.forEach(function(k) {
-            $.getJSON(
-              "/reims/" + k + ".json",
-              null,
-              function(data) {
-                keys_to_fetch.delete(k);
-                for(var day in data) {
-                  var day_data = data[day];
-                  self.days[day] = day_data;
-                }
-                if(keys_to_fetch.size == 0) {
-                  self.call(required_keys, callback);
-                }
-              },
-            )
-          });
-        } else {
-          self.call(required_keys, callback);
-        }
-      },
-
-      call: function(required_keys, callback) {
-        var self = this;
-
-        callback(required_keys.map(key => self.days[key]));
+      var required_keys = [];
+      for(var d = start; d.isBefore(end); d.add(1, "day")) {
+        required_keys.push(d.format("YYYY-MM-DD"));
       }
-    };
-  }
+
+      var keys_to_fetch = new Set();
+      for(var i = 0; i != required_keys.length; ++i) {
+        var key = required_keys[i];
+        if(!self._days.hasOwnProperty(key)) {
+          keys_to_fetch.add(moment(key).startOf("isoWeek").format("GGGG-[W]WW"));
+        }
+      }
+
+      // @todo Display animated icon while waiting for responses
+      if(keys_to_fetch.size > 0) {
+        keys_to_fetch.forEach(function(k) {
+          $.getJSON(
+            "/reims/" + k + ".json",
+            null,
+            function(data) {
+              keys_to_fetch.delete(k);
+              for(var day in data) {
+                var day_data = data[day];
+                self._days[day] = day_data;
+              }
+              if(keys_to_fetch.size == 0) {
+                self._callback(required_keys, callback);
+              }
+            },
+          )
+        });
+      } else {
+        self._callback(required_keys, callback);
+      }
+    },
+
+    _callback: function(required_keys, callback) {
+      var self = this;
+
+      callback(required_keys.map(key => self._days[key]));
+    }
+  };
 
   function AdminMode(config, update_browser_callback) {
     var self = this;
@@ -209,7 +211,7 @@ var Splight = (function() {
         self.displayed_week = config.displayed_week.start_date;
         self.first_week = config.first_week.start_date;
         self.week_after = config.week_after.start_date;
-        self.events_cache = make_events_cache(self);
+        self.events_cache = new EventsCache();
 
         self.tag_filter = new TagFilter(config, () => self.update_browser());
       } else {
