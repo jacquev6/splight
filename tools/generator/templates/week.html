@@ -23,26 +23,23 @@
   <div class="col">
     <h1>Semaine du {{ displayed_week.start_date|format_date }}</h1>
 
-    <div><div class="row"><div class="col"><form id="sp-display-settings">
-      <div class="form-group">
-        {% for tag in city.tags %}
-        <div class="form-check form-check-inline sp-display-checkbox" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
-          <input class="form-check-input" type="checkbox" name="displayed_tags" id="sp-tag-{{ tag.slug }}" value="{{ tag.slug }}" checked="checked">
-          <label class="form-check-label" for="sp-tag-{{ tag.slug }}">{{ tag.title }}</label>
-        </div>
-        {% endfor %}
+    <div class="row"><div class="col"><div id="sp-tag-filtering" class="form-group">
+      {% for tag in city.tags %}
+      <div class="form-check form-check-inline" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
+        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="{{ tag.slug }}" />{{ tag.title }}</label>
       </div>
-    </form></div></div></div>
+      {% endfor %}
+    </div></div></div>
 
     <div class="row">
       <div class="col">
-        <p class="text-right"><a class="sp-previous-week-link" href="/{% if displayed_week.previous.start_date >= first_week.start_date %}{{ city.slug }}/{{ displayed_week.previous.slug }}/{% endif %}">&lt; Semaine précédente</a></p>
+        <p class="text-right"><a class="sp-previous-week-link sp-tag-filtering-tagged-link" href="/{% if displayed_week.previous.start_date >= first_week.start_date %}{{ city.slug }}/{{ displayed_week.previous.slug }}/{% endif %}">&lt; Semaine précédente</a></p>
       </div>
       <div class="col">
-        <p class="text-center"><a class="sp-now-week-link" href="/">Cette semaine</a></p>
+        <p class="text-center"><a class="sp-now-week-link sp-tag-filtering-tagged-link" href="/">Cette semaine</a></p>
       </div>
       <div class="col">
-        <p class="text-left"><a class="sp-next-week-link" href="/{% if displayed_week.next.start_date < week_after.start_date %}{{ city.slug }}/{{ displayed_week.next.slug }}/{% endif %}">Semaine suivante &gt;</a></p>
+        <p class="text-left"><a class="sp-next-week-link sp-tag-filtering-tagged-link" href="/{% if displayed_week.next.start_date < week_after.start_date %}{{ city.slug }}/{{ displayed_week.next.slug }}/{% endif %}">Semaine suivante &gt;</a></p>
       </div>
     </div>
 

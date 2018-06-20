@@ -144,6 +144,55 @@ var Splight = (function() {
     },
   };
 
+  var TagFiltering = {
+    initialize: function(config, update_browser_callback) {
+      var self = this;
+
+      var query = URI.parseQuery(URI.parse(window.location.href).query);
+      var all_tags = new Set($("#sp-tag-filtering input").map((index, input) => $(input).val()).toArray());
+
+      self._display_all_tags = false;
+      self._displayed_tags = new Set(Object.keys(query).filter(tag => all_tags.has(tag)));
+      if(self._displayed_tags.size == 0) {
+        self._display_all_tags = true;
+        self._displayed_tags = new Set($("#sp-tag-filtering input").map((x, y) => $(y).val()).toArray());
+      }
+
+      $("#sp-tag-filtering input").on("change", function() {
+        self._displayed_tags = new Set($("#sp-tag-filtering input:checked").map((x, y) => $(y).val()).toArray());
+        self._display_all_tags = $("#sp-tag-filtering input:not(:checked)").length == 0;
+        update_browser_callback();
+      });
+    },
+
+    update_browser: function() {
+      var self = this;
+
+      $("#sp-tag-filtering input").each(function(index, input) {
+        var input = $(input);
+        input.prop("checked", self._display_all_tags || self._displayed_tags.has(input.val()));
+      });
+
+      var new_query = self._display_all_tags ? "" : Array.from(self._displayed_tags).join("&");
+
+      $(".sp-tag-filtering-tagged-link").prop("href", function(index, href) {
+        return URI(href).query(new_query).toString();
+      })
+
+      history.replaceState(null, window.document.title, URI(window.location).query(new_query).toString());
+    },
+
+    filter: function(events) {
+      var self = this;
+
+      if(self._display_all_tags) {
+        return events;
+      } else {
+        return events.filter(e => e.tags.some(t => self._displayed_tags.has(t)));
+      }
+    },
+  };
+
   return {
     initialize: function(config) {
       var self = this;
@@ -161,22 +210,11 @@ var Splight = (function() {
         self.first_week = config.first_week.start_date;
         self.week_after = config.week_after.start_date;
         self.events_cache = make_events_cache(self);
-        var query = URI.parseQuery(URI.parse(window.location.href).query);
-        self.display_all_tags = false;
-        self.displayed_tags = new Set(Object.keys(query));
-        if(self.displayed_tags.size == 0) {
-          self.display_all_tags = true;
-          self.displayed_tags = new Set($("input[name=displayed_tags]").map((x, y) => $(y).val()).toArray());
-        }
+
+        TagFiltering.initialize(config, () => self.update_browser());
       } else {
         self.displayed_week = null;
       }
-
-      $("input[name=displayed_tags]").on("change", function() {
-        self.displayed_tags = new Set($("input[name=displayed_tags]:checked").map((x, y) => $(y).val()).toArray());
-        self.display_all_tags = $("input[name=displayed_tags]:not(:checked)").length == 0;
-        self.update_browser();
-      });
 
       if(self.displayed_week) {
         $("#sp-fullcalendar").fullCalendar({
@@ -201,7 +239,7 @@ var Splight = (function() {
               if(data_for_admin_only) {
                 AdminMode.decorate($("#sp-fullcalendar"), true);
               }
-              callback(events.filter(e => e.tags.some(t => self.displayed_tags.has(t))));
+              callback(TagFiltering.filter(events));
             });
           },
           views: {
@@ -240,18 +278,13 @@ var Splight = (function() {
       var self = this;
 
       AdminMode.update_browser();
-      self.update_display_settings();
-      if(!initial) self.update_calendar();
+      if(self.displayed_week) {
+        TagFiltering.update_browser();
+      }
+      if(!initial) {
+        self.update_calendar();
+      }
       self.update_links();
-    },
-
-    update_display_settings: function() {
-      var self = this;
-
-      $("input[name=displayed_tags]").each(function(index, input) {
-        var input = $(input);
-        input.prop("checked", self.display_all_tags || self.displayed_tags.has(input.val()));
-      });
     },
 
     update_calendar: function() {
@@ -266,8 +299,6 @@ var Splight = (function() {
       var self = this;
 
       if(self.city) {
-        var new_query = self.displayed_week ? (self.display_all_tags ? "" : Array.from(self.displayed_tags).join("&")) : undefined;
-
         function make_new_path(week) {
           return "/" + self.city + week.format("/GGGG-[W]WW/");
         }
@@ -278,7 +309,6 @@ var Splight = (function() {
           links.prop("href", function(index, href) {
             var uri = URI(href);
             uri.path(new_path)
-            if(self.displayed_week) uri.query(new_query);
             return uri.toString();
           });
           if(kwds.global_condition) {
@@ -300,7 +330,7 @@ var Splight = (function() {
         });
 
         if(self.displayed_week) {
-          history.replaceState(null, window.document.title, URI(window.location).path(make_new_path(self.displayed_week)).query(new_query).toString());
+          history.replaceState(null, window.document.title, URI(window.location).path(make_new_path(self.displayed_week)).toString());
 
           var previous_week = self.displayed_week.clone().subtract(1, "week");
           update_link_class({
