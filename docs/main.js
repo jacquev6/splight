@@ -195,82 +195,82 @@ var Splight = (function() {
     },
   };
 
-  return {
-    initialize: function(config) {
-      var self = this;
+  function Splight(config) {
+    var self = this;
 
-      self.admin_mode = new AdminMode({
-        decrypt_key_sha: config.decrypt_key_sha,
+    self.admin_mode = new AdminMode({
+      decrypt_key_sha: config.decrypt_key_sha,
+      update_browser_callback: () => self.update_browser(),
+    });
+
+    if(config.city) {
+      self.city = config.city.slug;
+    } else {
+      self.city = null;
+    }
+
+    if(config.displayed_week) {
+      self.displayed_week = config.displayed_week.start_date;
+      self.first_week = config.first_week.start_date;
+      self.week_after = config.week_after.start_date;
+      self.events_cache = new EventsCache();
+
+      self.tag_filter = new TagFilter({
         update_browser_callback: () => self.update_browser(),
       });
+    } else {
+      self.displayed_week = null;
+    }
 
-      if(config.city) {
-        self.city = config.city.slug;
-      } else {
-        self.city = null;
-      }
-
-      if(config.displayed_week) {
-        self.displayed_week = config.displayed_week.start_date;
-        self.first_week = config.first_week.start_date;
-        self.week_after = config.week_after.start_date;
-        self.events_cache = new EventsCache();
-
-        self.tag_filter = new TagFilter({
-          update_browser_callback: () => self.update_browser(),
-        });
-      } else {
-        self.displayed_week = null;
-      }
-
-      if(self.displayed_week) {
-        $("#sp-fullcalendar").fullCalendar({
-          header: false,
-          defaultDate: self.displayed_week,
-          defaultView: "basicWeek",
-          locale: "fr",
-          allDaySlot: false,
-          height: "auto",
-          events: function(start, end, timezone, callback) {
-            self.events_cache.get(start, end, function(eventss) {
-              var events = [];
-              var data_for_admin_only = false;
-              for(var i = 0; i != eventss.length; ++i) {
-                var day_data = eventss[i];
-                if(day_data.encrypted) {
-                  day_data = self.admin_mode.decrypt_json(day_data.encrypted, []);
-                  data_for_admin_only = true;
-                }
-                events = events.concat(day_data);
+    if(self.displayed_week) {
+      $("#sp-fullcalendar").fullCalendar({
+        header: false,
+        defaultDate: self.displayed_week,
+        defaultView: "basicWeek",
+        locale: "fr",
+        allDaySlot: false,
+        height: "auto",
+        events: function(start, end, timezone, callback) {
+          self.events_cache.get(start, end, function(eventss) {
+            var events = [];
+            var data_for_admin_only = false;
+            for(var i = 0; i != eventss.length; ++i) {
+              var day_data = eventss[i];
+              if(day_data.encrypted) {
+                day_data = self.admin_mode.decrypt_json(day_data.encrypted, []);
+                data_for_admin_only = true;
               }
-              if(data_for_admin_only) {
-                self.admin_mode.decorate($("#sp-fullcalendar"), true);
-              }
-              callback(self.tag_filter.filter(events));
-            });
+              events = events.concat(day_data);
+            }
+            if(data_for_admin_only) {
+              self.admin_mode.decorate($("#sp-fullcalendar"), true);
+            }
+            callback(self.tag_filter.filter(events));
+          });
+        },
+        views: {
+          agendaThreeDays: {
+            type: "agenda",
+            duration: {days: 3},
           },
-          views: {
-            agendaThreeDays: {
-              type: "agenda",
-              duration: {days: 3},
-            },
-            listThreeDays: {
-              type: "list",
-              duration: {days: 3},
-            },
-            basicThreeDays: {
-              type: "basic",
-              duration: {days: 3},
-            },
+          listThreeDays: {
+            type: "list",
+            duration: {days: 3},
           },
-        });
+          basicThreeDays: {
+            type: "basic",
+            duration: {days: 3},
+          },
+        },
+      });
 
-        self.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
-      }
+      self.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
+    }
 
-      self.update_browser(true);
-    },
+    self.update_browser(true);
+  };
 
+  Splight.prototype = {
     update_browser: function(initial) {
       var self = this;
 
@@ -344,6 +344,12 @@ var Splight = (function() {
           });
         }
       }
+    },
+  }
+
+  return {
+    initialize: function(config) {
+      var splight = new Splight(config);
     },
   }
 })();
