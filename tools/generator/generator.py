@@ -83,14 +83,23 @@ def generate(*, data_directory, destination_directory):
         ).render()
 
         while date < date_after:
+            templates.CityTimespanHtml(
+                decrypt_key_sha=decrypt_key_sha,
+                city=city.for_templates,
+                first_week=first_week,
+                week_after=week_after,
+                displayed_week=None,
+                displayed_day=templates.Day(date=date),
+            ).render()
             if date.weekday() == 0:
                 displayed_week = templates.Week(start_date=date)
-                templates.CityWeekHtml(
+                templates.CityTimespanHtml(
                     decrypt_key_sha=decrypt_key_sha,
                     city=city.for_templates,
-                    displayed_week=displayed_week,
                     first_week=first_week,
                     week_after=week_after,
+                    displayed_week=displayed_week,
+                    displayed_day=None,
                 ).render()
 
                 def make_events(d):

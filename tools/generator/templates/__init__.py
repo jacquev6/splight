@@ -154,6 +154,28 @@ class Week:
         return Week(start_date=self.__start_date + datetime.timedelta(days=7))
 
 
+class Day:
+    def __init__(self, *, date):
+        assert isinstance(date, datetime.date)
+        self.__date = date
+
+    @property
+    def slug(self):
+        return self.__date.strftime("%Y-%m-%d")
+
+    @property
+    def date(self):
+        return self.__date
+
+    @property
+    def previous(self):
+        return Day(date=self.__date - datetime.timedelta(days=1))
+
+    @property
+    def next(self):
+        return Day(date=self.__date + datetime.timedelta(days=1))
+
+
 class Event:
     def __init__(self, *, title, start, end, tags, border_color, background_color):
         assert isinstance(title, str)
@@ -350,21 +372,25 @@ class CityIndexHtml(CityBaseHtml):
         return os.path.join(super().destination, "index.html")
 
 
-class CityWeekHtml(CityBaseHtml):
-    template_name = "city/week.html"
+class CityTimespanHtml(CityBaseHtml):
+    template_name = "city/timespan.html"
 
-    def __init__(self, *, decrypt_key_sha, city, first_week, week_after, displayed_week):
+    def __init__(self, *, decrypt_key_sha, city, first_week, week_after, displayed_week, displayed_day):
         super().__init__(decrypt_key_sha=decrypt_key_sha, city=city, first_week=first_week, week_after=week_after)
-        assert isinstance(displayed_week, Week)
+        assert displayed_week is None or isinstance(displayed_week, Week)
         self.__displayed_week = displayed_week
+        assert displayed_day is None or isinstance(displayed_day, Day)
+        self.__displayed_day = displayed_day
+        assert bool(displayed_week) ^ bool(displayed_day)
 
     @property
     def destination(self):
-        return os.path.join(super().destination, self.__displayed_week.slug, "index.html")
+        return os.path.join(super().destination, (self.__displayed_week or self.__displayed_day).slug, "index.html")
 
     @property
     def context(self):
         return dict(
             displayed_week=self.__displayed_week,
+            displayed_day=self.__displayed_day,
             **super().context,
         )

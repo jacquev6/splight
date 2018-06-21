@@ -239,12 +239,27 @@ var Splight = (function() {
     });
   }
 
-  function DisplayedWeek({displayed_week: {start_date}, first_monday, monday_after, admin_mode, update_browser_callback}) {
+  function set_url_day(url, day) {
+    var uri = new URI(url);
+    var path_parts = uri.path().split("/");
+    path_parts[2] = day.format("YYYY-MM-DD");
+    uri.path(path_parts.join("/"));
+    return uri.toString();
+  }
+
+  function update_city_day_links({links, day}) {
+    links.prop("href", function(index, href) {
+      return set_url_day(href, day);
+    });
+  }
+
+  function DisplayedTimespan({displayed_week, displayed_day, first_monday, monday_after, admin_mode, update_browser_callback}) {
     var self = this;
 
     self.admin_mode = admin_mode;
 
-    self.start_date = start_date;
+    self.start_date = displayed_week ? displayed_week.start_date : displayed_day.date;
+    self.duration = displayed_week ? "Week" : "Day";
     self.first_monday = first_monday;
     self.monday_after = monday_after;
     self.events_cache = new EventsCache();
@@ -256,7 +271,7 @@ var Splight = (function() {
     $("#sp-fullcalendar").fullCalendar({
       header: false,
       defaultDate: self.start_date,
-      defaultView: "basicWeek",
+      defaultView: "basic" + self.duration,
       locale: "fr",
       allDaySlot: false,
       height: "auto",
@@ -322,19 +337,23 @@ var Splight = (function() {
     self.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
   };
 
-  DisplayedWeek.prototype = {
+  DisplayedTimespan.prototype = {
     update_browser: function() {
       var self = this;
 
-      self.calendar.changeView(self.admin_mode.get_view_type() + "Week", self.start_date);
+      self.calendar.changeView(self.admin_mode.get_view_type() + self.duration, self.start_date);
       self.calendar.option("slotEventOverlap", self.admin_mode.get_events_overlap())
       self.calendar.refetchEvents();
 
       self.tag_filter.update_browser();
 
-      history.replaceState(null, window.document.title, set_url_week(window.location, self.start_date));
+      if(self.duration == "Week") {
+        history.replaceState(null, window.document.title, set_url_week(window.location, self.start_date));
+      } else {
+        history.replaceState(null, window.document.title, set_url_day(window.location, self.start_date));
+      }
 
-      function update_links({links, week, global_condition, non_admin_condition}) {
+      function update_week_links({links, week, global_condition, non_admin_condition}) {
         update_city_week_links({links: links, week: week});
         if(global_condition) {
           if(non_admin_condition) {
@@ -348,30 +367,60 @@ var Splight = (function() {
       }
 
       var previous_week = self.start_date.clone().subtract(1, "week");
-      update_links({
+      update_week_links({
         links: $(".sp-previous-week-link"),
         week: previous_week,
-        global_condition: previous_week >= self.first_monday,
+        global_condition: self.duration == "Week" && previous_week >= self.first_monday,
         non_admin_condition: !moment().isSame(self.start_date, "isoWeek"),
       });
 
       var next_week = self.start_date.clone().add(1, "week");
-      update_links({
+      update_week_links({
         links: $(".sp-next-week-link"),
         week: next_week,
-        global_condition: next_week < self.monday_after,
+        global_condition: self.duration == "Week" && next_week < self.monday_after,
         non_admin_condition: !moment().add(4, "weeks").isSame(self.start_date, "isoWeek"),
+      });
+
+      function update_day_links({links, day, global_condition, non_admin_condition}) {
+        update_city_day_links({links: links, day: day});
+        if(global_condition) {
+          if(non_admin_condition) {
+            self.admin_mode.undecorate(links);
+          } else {
+            self.admin_mode.decorate(links, {show_if_inactive: false});
+          }
+        } else {
+          links.hide();
+        }
+      }
+
+      var previous_day = self.start_date.clone().subtract(1, "day");
+      update_day_links({
+        links: $(".sp-previous-day-link"),
+        day: previous_day,
+        global_condition: self.duration == "Day" && previous_day >= self.first_monday,
+        non_admin_condition: !moment().isSame(self.start_date, "day"),
+      });
+
+      var next_day = self.start_date.clone().add(1, "day");
+      update_day_links({
+        links: $(".sp-next-day-link"),
+        day: next_day,
+        global_condition: self.duration == "Day" && next_day < self.monday_after,
+        non_admin_condition: !moment().startOf("week").add(34, "days").isSame(self.start_date, "day"),
       });
     },
   };
 
-  function City({city: {first_week, week_after, displayed_week}, admin_mode, update_browser_callback}) {
+  function City({city: {first_week, week_after, displayed_week, displayed_day}, admin_mode, update_browser_callback}) {
     var self = this;
 
-    if(displayed_week) {
-      self.displayed_week = new DisplayedWeek(
+    if(displayed_week || displayed_day) {
+      self.displayed_timespan = new DisplayedTimespan(
         {
           displayed_week: displayed_week,
+          displayed_day: displayed_day,
           first_monday: first_week.start_date,
           monday_after: week_after.start_date,
           admin_mode: admin_mode,
@@ -386,8 +435,9 @@ var Splight = (function() {
       var self = this;
 
       update_city_week_links({links: $(".sp-now-week-link"), week: moment()});
+      update_city_day_links({links: $(".sp-now-day-link"), day: moment()});
 
-      self.displayed_week && self.displayed_week.update_browser();
+      self.displayed_timespan && self.displayed_timespan.update_browser();
     },
   };
 

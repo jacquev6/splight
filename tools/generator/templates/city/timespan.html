@@ -21,7 +21,7 @@
 
 <div class="row">
   <div class="col">
-    <h1>Semaine du {{ displayed_week.start_date|format_date }}</h1>
+    <h1>{% if displayed_week %}Semaine du {{ displayed_week.start_date|format_date }}{% else %}Journée du {{ displayed_day.date|format_date }}{% endif %}</h1>
 
     <div class="row"><div class="col"><div id="sp-tag-filtering" class="form-group">
       {% for tag in city.tags %}
@@ -33,13 +33,16 @@
 
     <div class="row">
       <div class="col">
-        <p class="text-right"><a class="sp-previous-week-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_week.previous.start_date >= first_week.start_date %}{{ displayed_week.previous.slug }}{% endif %}/">&lt; Semaine précédente</a></p>
+        <p class="text-right">&nbsp;<a class="sp-previous-week-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_week and displayed_week.previous.start_date >= first_week.start_date %}{{ displayed_week.previous.slug }}{% endif %}/">&lt; Semaine précédente</a></p>
+        <p class="text-right">&nbsp;<a class="sp-previous-day-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_day and displayed_day.previous.date >= first_week.start_date %}{{ displayed_day.previous.slug }}{% endif %}/">&lt; Jour précédent</a></p>
       </div>
       <div class="col">
         <p class="text-center"><a class="sp-now-week-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}//">Cette semaine</a></p>
+        <p class="text-center"><a class="sp-now-day-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}//">Aujourd'hui</a></p>
       </div>
       <div class="col">
-        <p class="text-left"><a class="sp-next-week-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_week.next.start_date < week_after.start_date %}{{ displayed_week.next.slug }}{% endif %}/">Semaine suivante &gt;</a></p>
+        <p class="text-left"><a class="sp-next-week-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_week and displayed_week.next.start_date < week_after.start_date %}{{ displayed_week.next.slug }}{% endif %}/">Semaine suivante &gt;</a>&nbsp;</p>
+        <p class="text-left"><a class="sp-next-day-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_day and displayed_day.next.date < week_after.start_date %}{{ displayed_day.next.slug }}{% endif %}/">Jour suivant &gt;</a>&nbsp;</p>
       </div>
     </div>
 
@@ -56,7 +59,13 @@
 {% endblock %}
 
 {% block city_base_splight_parameters %}
+  {% if displayed_week %}
             displayed_week: {
               start_date: moment("{{ displayed_week.start_date }}"),
             },
+  {% else %}
+            displayed_day: {
+              date: moment("{{ displayed_day.date }}"),
+            },
+  {% endif %}
 {% endblock %}
