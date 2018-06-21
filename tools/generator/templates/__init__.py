@@ -334,7 +334,7 @@ class _BaseWithinCityHtml(_BaseHtml):
 
 
 class CityHtml(_BaseWithinCityHtml):
-    template_name = "city.html"
+    template_name = "city/index.html"
 
     def __init__(self, *, decrypt_key_sha, city, first_week):
         super().__init__(decrypt_key_sha=decrypt_key_sha, city=city)
@@ -354,7 +354,7 @@ class CityHtml(_BaseWithinCityHtml):
 
 
 class WeekHtml(_BaseWithinCityHtml):
-    template_name = "week.html"
+    template_name = "city/week.html"
 
     def __init__(self, *, decrypt_key_sha, city, displayed_week, first_week, week_after):
         super().__init__(decrypt_key_sha=decrypt_key_sha, city=city)

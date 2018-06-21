@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block base_jumbo_title %} - <a href="/{{ city.slug }}/">{{ city.name }}</a>{% endblock %}
+
+{% block base_jumbo_lead %}Votre agenda culturel à {{ city.name }} et dans sa région.{% endblock %}
+
+{% block base_content %}{% block city_base_content %}{% endblock %}{% endblock %}
+
+{% block base_splight_parameters %}
+          city: {
+            slug: "{{ city.slug }}",
+            {% block city_base_splight_parameters %}{% endblock %}
+          },
+{% endblock %}

@@ -1,6 +1,6 @@
-{% extends "base_within_city.html" %}
+{% extends "city/base.html" %}
 
-{% block contents %}
+{% block city_base_content %}
 <div class="row"><div class="col-md-3"></div><div class="col-md-6">
   <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/"><img class="img-fluid" src="/actualite-leaderboard.jpg" /></a></p>
   <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/">Toute l'actualité</a></p>
@@ -16,10 +16,4 @@
   </div>
   {% endfor %}
 </div>
-{% endblock %}
-
-{% block splight_parameters %}
-          city: {
-            slug: "{{ city.slug }}",
-          },
 {% endblock %}

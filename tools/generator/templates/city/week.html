@@ -7,9 +7,9 @@
   "/lib/fullcalendar-locale-fr-3.9.0.js",
 ] -%}
 
-{% extends "base_within_city.html" %}
+{% extends "city/base.html" %}
 
-{% block contents %}
+{% block city_base_content %}
 <div class="row d-lg-none">
   <div class="col">
     <div class="sp-advertisement">
@@ -55,9 +55,7 @@
 </div>
 {% endblock %}
 
-{% block splight_parameters %}
-          city: {
-            slug: "{{ city.slug }}",
+{% block city_base_splight_parameters %}
             displayed_week: {
               start_date: moment("{{ displayed_week.start_date }}"),
               first_week: {
@@ -67,5 +65,4 @@
                 start_date: moment("{{ week_after.start_date }}"),
               },
             },
-          },
 {% endblock %}
