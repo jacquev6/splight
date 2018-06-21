@@ -225,21 +225,23 @@ var Splight = (function() {
     },
   };
 
-  function make_city_week_path({city, week}) {
-    return "/" + city + week.format("/GGGG-[W]WW/");
+  function set_url_week(url, week) {
+    var uri = new URI(url);
+    var path_parts = uri.path().split("/");
+    path_parts[2] = week.format("GGGG-[W]WW");
+    uri.path(path_parts.join("/"));
+    return uri.toString();
   }
 
-  function update_city_week_links({links, city, week}) {
-    var new_path = make_city_week_path({city: city, week: week});
+  function update_city_week_links({links, week}) {
     links.prop("href", function(index, href) {
-      return URI(href).path(new_path).toString();
+      return set_url_week(href, week);
     });
   }
 
-  function DisplayedWeek({displayed_week: {start_date}, first_monday, monday_after, city_slug, admin_mode, update_browser_callback}) {
+  function DisplayedWeek({displayed_week: {start_date}, first_monday, monday_after, admin_mode, update_browser_callback}) {
     var self = this;
 
-    self.city_slug = city_slug
     self.admin_mode = admin_mode;
 
     self.start_date = start_date;
@@ -330,10 +332,10 @@ var Splight = (function() {
 
       self.tag_filter.update_browser();
 
-      history.replaceState(null, window.document.title, URI(window.location).path(make_city_week_path({city: self.city_slug, week: self.start_date})).toString());
+      history.replaceState(null, window.document.title, set_url_week(window.location, self.start_date));
 
       function update_links({links, week, global_condition, non_admin_condition}) {
-        update_city_week_links({links: links, city: self.city_slug, week: week});
+        update_city_week_links({links: links, week: week});
         if(global_condition) {
           if(non_admin_condition) {
             self.admin_mode.undecorate(links);
@@ -363,17 +365,15 @@ var Splight = (function() {
     },
   };
 
-  function City({city: {slug, first_week, week_after, displayed_week}, admin_mode, update_browser_callback}) {
+  function City({city: {first_week, week_after, displayed_week}, admin_mode, update_browser_callback}) {
     var self = this;
 
-    self.slug = slug;
     if(displayed_week) {
       self.displayed_week = new DisplayedWeek(
         {
           displayed_week: displayed_week,
           first_monday: first_week.start_date,
           monday_after: week_after.start_date,
-          city_slug: self.slug,
           admin_mode: admin_mode,
           update_browser_callback: update_browser_callback,
         },
@@ -385,7 +385,7 @@ var Splight = (function() {
     update_browser: function() {
       var self = this;
 
-      update_city_week_links({links: $(".sp-now-week-link"), city: self.slug, week: moment()});
+      update_city_week_links({links: $(".sp-now-week-link"), week: moment()});
 
       self.displayed_week && self.displayed_week.update_browser();
     },

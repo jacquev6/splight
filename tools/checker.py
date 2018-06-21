@@ -81,7 +81,7 @@ def keep_interesting_links(file_name, links):
             continue
         if not link.startswith("/"):
             link = "{}{}".format(make_url(file_name), link)
-        yield link
+        yield link.replace("//", "/")
 
 
 if __name__ == "__main__":
