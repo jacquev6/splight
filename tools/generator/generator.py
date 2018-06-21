@@ -1,5 +1,4 @@
 import base64
-import calendar
 import colorsys
 import datetime
 import hashlib
@@ -8,186 +7,11 @@ import json
 import os
 import shutil
 import subprocess
-
-import jinja2
+import types
 
 from . import dateutils
 from . import data as data_
 from . import templates
-
-
-# BEGIN OF SECTION TO BE REMOVED
-class NS(dict):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.__dict__.update(kwargs)
-
-
-class Generator:
-    def __init__(self, *, parent, slug, add_to_context):
-        self.__parent = parent
-        self.__destination = os.path.join(parent.__destination, slug) if parent else slug
-        context = dict(parent.context) if parent else dict()
-        context.update(add_to_context)
-        self.context = NS(**context)
-
-    def render(self, *, template, destination="index.html"):
-        destination = os.path.join(self.__destination, destination)
-        # print("Rendering", destination, "with", self.context.keys())
-        os.makedirs(os.path.dirname(destination), exist_ok=True)
-        with open(destination, "w") as f:
-            f.write(self.__root_environment().get_template(template).render(self.context))
-            f.write("\n")
-
-    def __root_environment(self):
-        if self.__parent:
-            return self.__parent.__root_environment()
-        else:
-            return self.environment
-
-
-class RootGenerator(Generator):
-    def __init__(self, *, destination_directory, data, environment, generation):
-        self.__generation = generation
-        super().__init__(
-            parent=None,
-            slug=destination_directory,
-            add_to_context=dict(
-                cities=data.cities,
-                # @todo Remove generation date from context:
-                # generate site independently from generation date, and fix it with JavaScript
-                generation=self.__generation,
-                decrypt_key_sha="nope",
-            ),
-        )
-        self.__data = data
-
-        self.environment = environment
-
-    def run(self):
-        for city in self.context.cities:
-            CityGenerator(parent=self, city=city, weeks_count=5).run()
-
-
-class CityGenerator(Generator):
-    def __init__(self, *, parent, city, weeks_count):
-        self.__tags = {
-            tag.slug: NS(
-                slug=tag.slug,
-                title=tag.title,
-                border_color=make_color(h=i / len(city.tags), s=0.5, v=0.5),
-                background_color=make_color(h=i / len(city.tags), s=0.3, v=0.9),
-            )
-            for (i, tag) in enumerate(city.tags)
-        }
-
-        events = dict()
-        for (day, day_events) in itertools.groupby(city.events, key=lambda e: e.datetime.date()):
-            events[day] = []
-            for event in day_events:
-                location = ""
-                if event.location:
-                    location = event.location.name
-
-                if event.title:
-                    title = event.title
-                elif event.artist:
-                    title = "{} ({})".format(event.artist.name, event.artist.genre)
-                else:
-                    assert False, "Event without title information"
-
-                kwds = dict()
-
-                if event.duration:
-                    kwds["end"] = event.datetime + event.duration
-
-                events[day].append(NS(
-                    title=title,
-                    location=location,
-                    start=event.datetime,
-                    tags=[self.__tags[tag.slug] for tag in event.tags],
-                    **kwds,
-                ))
-
-        super().__init__(
-            parent=parent,
-            slug=city.slug,
-            add_to_context=dict(
-                city=city,
-                tags=[self.__tags[tag.slug] for tag in city.tags],
-                events=events,
-            ),
-        )
-        self.__weeks_count = weeks_count
-
-    def run(self):
-        for week in self.__make_old_weeks(self.context.city.events):
-            OldWeekGenerator(parent=self, week=week).run()
-
-    def __make_old_weeks(self, events):
-        weeks = [self.__make_old_week(start_date) for start_date in self.__generate_old_start_dates(events)]
-
-        for i in range(1, len(weeks)):
-            # previous and next_week are dict instead of NS. This is fine for now.
-            weeks[i]["previous_week"] = weeks[i - 1]
-            weeks[i - 1]["next_week"] = weeks[i]
-
-        return [NS(**week) for week in weeks]
-
-    def __make_old_week(self, start_date):
-        return dict(
-            slug=start_date.strftime("%Y-%W"),
-            previous_week=None,
-            next_week=None,
-            days=[start_date + datetime.timedelta(days=i) for i in range(7)],
-            day_after=start_date + datetime.timedelta(days=7),
-        )
-
-    def __generate_old_start_dates(self, events):
-        start_date = dateutils.previous_week_day(events[0].datetime.date(), 0)
-        last_day = (
-            dateutils.previous_week_day(self.context.generation.date, 0)
-            + datetime.timedelta(weeks=self.__weeks_count)
-        )
-        while start_date < last_day:
-            yield start_date
-            start_date += datetime.timedelta(days=7)
-
-
-class OldWeekGenerator(Generator):
-    def __init__(self, *, parent, week):
-        super().__init__(parent=parent, slug=week.slug, add_to_context=dict(week=week))
-
-    def run(self):
-        self.render(template="old_week.html")
-
-
-def generate_old_weeks(destination_directory, data):
-    today = datetime.date.today()
-    generation = NS(date=today, week=NS(slug=today.strftime("%Y-%W")))
-    environment = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), "templates")),
-        trim_blocks=True,
-        lstrip_blocks=True,
-        undefined=jinja2.StrictUndefined,
-    )
-    environment.filters["format_date"] = format_date
-    RootGenerator(
-        destination_directory=destination_directory,
-        data=data,
-        environment=environment,
-        generation=generation,
-    ).run()
-
-
-def format_date(d):
-    months = [
-        "janvier", "février", "mars", "avril", "mai", "juin",
-        "juillet", "août", "septembre", "octobre", "novembre", "décembre",
-    ]
-    days = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
-    return d.strftime("{} %d {} %Y".format(days[d.weekday()], months[d.month - 1]))
-# END OF SECTION TO BE REMOVED
 
 
 def link_tree(src, dst):
@@ -207,8 +31,6 @@ def generate(*, data_directory, destination_directory):
     link_tree(os.path.join(os.path.dirname(__file__), "skeleton"), destination_directory)
 
     data = data_.load(data_directory)
-
-    generate_old_weeks(destination_directory, data)
 
     cities = list(make_cities(data))
 
@@ -333,7 +155,7 @@ def make_cities(data):
                     background_color=first_tag.background_color,
                 ))
 
-        yield NS(
+        yield types.SimpleNamespace(
             for_templates=templates.City(
                 slug=city.slug,
                 name=city.name,
