@@ -29,6 +29,7 @@ var Splight = (function() {
       }
 
       // @todo Display animated icon while waiting for responses
+      // @todo Undertand why we request each .json file twice. Request only once.
       if(keys_to_fetch.size > 0) {
         keys_to_fetch.forEach(function(key) {
           $.getJSON(
@@ -335,6 +336,44 @@ var Splight = (function() {
     });
 
     self.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
+
+    $(".sp-next-week-link").on("click", function() {
+      self.start_date.add(1, "week");
+      update_browser_callback();
+      return false;
+    });
+
+    $(".sp-previous-week-link").on("click", function() {
+      self.start_date.subtract(1, "week");
+      update_browser_callback();
+      return false;
+    });
+
+    $(".sp-now-week-link").on("click", function() {
+      self.start_date = moment().startOf("week");
+      self.duration = "Week";
+      update_browser_callback();
+      return false;
+    });
+
+    $(".sp-next-day-link").on("click", function() {
+      self.start_date.add(1, "day");
+      update_browser_callback();
+      return false;
+    });
+
+    $(".sp-previous-day-link").on("click", function() {
+      self.start_date.subtract(1, "day");
+      update_browser_callback();
+      return false;
+    });
+
+    $(".sp-now-day-link").on("click", function() {
+      self.start_date = moment().startOf("day");
+      self.duration = "Day";
+      update_browser_callback();
+      return false;
+    });
   };
 
   DisplayedTimespan.prototype = {
@@ -348,8 +387,10 @@ var Splight = (function() {
       self.tag_filter.update_browser();
 
       if(self.duration == "Week") {
+        $("#sp-timespan-title").text("Semaine du " + self.start_date.format("dddd Do MMMM YYYY"));
         history.replaceState(null, window.document.title, set_url_week(window.location, self.start_date));
       } else {
+        $("#sp-timespan-title").text("Journée du " + self.start_date.format("dddd Do MMMM YYYY"));
         history.replaceState(null, window.document.title, set_url_day(window.location, self.start_date));
       }
 
