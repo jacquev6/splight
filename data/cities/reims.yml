@@ -50,6 +50,10 @@ events:
         - datetime: 2018/08/02 20:00
         - datetime: 2018/08/07 20:00
         - datetime: 2018/08/11 20:00
+    - artist: artist-c
+      location: lieu-a
+      duration: 02:57
+      datetime: 2018/06/21 21:30
   cinema:
     - title: Film de test
       location: lieu-b
