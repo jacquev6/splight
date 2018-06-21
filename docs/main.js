@@ -236,15 +236,15 @@ var Splight = (function() {
     });
   }
 
-  function DisplayedWeek({displayed_week: {start_date, first_week, week_after}, city_slug, admin_mode, update_browser_callback}) {
+  function DisplayedWeek({displayed_week: {start_date}, first_monday, monday_after, city_slug, admin_mode, update_browser_callback}) {
     var self = this;
 
     self.city_slug = city_slug
     self.admin_mode = admin_mode;
 
     self.start_date = start_date;
-    self.first_week = first_week.start_date;
-    self.week_after = week_after.start_date;
+    self.first_monday = first_monday;
+    self.monday_after = monday_after;
     self.events_cache = new EventsCache();
 
     self.tag_filter = new TagFilter({
@@ -349,7 +349,7 @@ var Splight = (function() {
       update_links({
         links: $(".sp-previous-week-link"),
         week: previous_week,
-        global_condition: previous_week >= self.first_week,
+        global_condition: previous_week >= self.first_monday,
         non_admin_condition: !moment().isSame(self.start_date, "isoWeek"),
       });
 
@@ -357,13 +357,13 @@ var Splight = (function() {
       update_links({
         links: $(".sp-next-week-link"),
         week: next_week,
-        global_condition: next_week < self.week_after,
+        global_condition: next_week < self.monday_after,
         non_admin_condition: !moment().add(4, "weeks").isSame(self.start_date, "isoWeek"),
       });
     },
   };
 
-  function City({city: {slug, displayed_week}, admin_mode, update_browser_callback}) {
+  function City({city: {slug, first_week, week_after, displayed_week}, admin_mode, update_browser_callback}) {
     var self = this;
 
     self.slug = slug;
@@ -371,6 +371,8 @@ var Splight = (function() {
       self.displayed_week = new DisplayedWeek(
         {
           displayed_week: displayed_week,
+          first_monday: first_week.start_date,
+          monday_after: week_after.start_date,
           city_slug: self.slug,
           admin_mode: admin_mode,
           update_browser_callback: update_browser_callback,

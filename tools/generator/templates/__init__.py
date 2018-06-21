@@ -315,11 +315,15 @@ class AdsHtml(_BaseHtml):
         return os.path.join(super().destination, "ads", "index.html")
 
 
-class _BaseWithinCityHtml(_BaseHtml):
-    def __init__(self, *, decrypt_key_sha, city):
+class CityBaseHtml(_BaseHtml):
+    def __init__(self, *, decrypt_key_sha, city, first_week, week_after):
         super().__init__(decrypt_key_sha=decrypt_key_sha)
         assert isinstance(city, City)
         self.__city = city
+        assert isinstance(first_week, Week)
+        self.__first_week = first_week
+        assert isinstance(week_after, Week)
+        self.__week_after = week_after
 
     @property
     def destination(self):
@@ -329,41 +333,30 @@ class _BaseWithinCityHtml(_BaseHtml):
     def context(self):
         return dict(
             city=self.__city,
+            first_week=self.__first_week,
+            week_after=self.__week_after,
             **super().context,
         )
 
 
-class CityHtml(_BaseWithinCityHtml):
+class CityIndexHtml(CityBaseHtml):
     template_name = "city/index.html"
 
-    def __init__(self, *, decrypt_key_sha, city, first_week):
-        super().__init__(decrypt_key_sha=decrypt_key_sha, city=city)
-        assert isinstance(first_week, Week)
-        self.__first_week = first_week
+    def __init__(self, *, decrypt_key_sha, city, first_week, week_after):
+        super().__init__(decrypt_key_sha=decrypt_key_sha, city=city, first_week=first_week, week_after=week_after)
 
     @property
     def destination(self):
         return os.path.join(super().destination, "index.html")
 
-    @property
-    def context(self):
-        return dict(
-            first_week=self.__first_week,
-            **super().context,
-        )
 
-
-class WeekHtml(_BaseWithinCityHtml):
+class CityWeekHtml(CityBaseHtml):
     template_name = "city/week.html"
 
-    def __init__(self, *, decrypt_key_sha, city, displayed_week, first_week, week_after):
-        super().__init__(decrypt_key_sha=decrypt_key_sha, city=city)
+    def __init__(self, *, decrypt_key_sha, city, first_week, week_after, displayed_week):
+        super().__init__(decrypt_key_sha=decrypt_key_sha, city=city, first_week=first_week, week_after=week_after)
         assert isinstance(displayed_week, Week)
         self.__displayed_week = displayed_week
-        assert isinstance(first_week, Week)
-        self.__first_week = first_week
-        assert isinstance(week_after, Week)
-        self.__week_after = week_after
 
     @property
     def destination(self):
@@ -373,7 +366,5 @@ class WeekHtml(_BaseWithinCityHtml):
     def context(self):
         return dict(
             displayed_week=self.__displayed_week,
-            first_week=self.__first_week,
-            week_after=self.__week_after,
             **super().context,
         )

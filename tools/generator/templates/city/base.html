@@ -9,6 +9,12 @@
 {% block base_splight_parameters %}
           city: {
             slug: "{{ city.slug }}",
+            first_week: {
+              start_date: moment("{{ first_week.start_date }}"),
+            },
+            week_after: {
+              start_date: moment("{{ week_after.start_date }}"),
+            },
             {% block city_base_splight_parameters %}{% endblock %}
           },
 {% endblock %}

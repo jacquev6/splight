@@ -75,12 +75,17 @@ def generate(*, data_directory, destination_directory):
         first_week = templates.Week(start_date=city.first_day)
         week_after = templates.Week(start_date=date_after)
 
-        templates.CityHtml(decrypt_key_sha=decrypt_key_sha, city=city.for_templates, first_week=first_week).render()
+        templates.CityIndexHtml(
+            decrypt_key_sha=decrypt_key_sha,
+            city=city.for_templates,
+            first_week=first_week,
+            week_after=week_after,
+        ).render()
 
         while date < date_after:
             if date.weekday() == 0:
                 displayed_week = templates.Week(start_date=date)
-                templates.WeekHtml(
+                templates.CityWeekHtml(
                     decrypt_key_sha=decrypt_key_sha,
                     city=city.for_templates,
                     displayed_week=displayed_week,
