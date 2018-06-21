@@ -12,7 +12,7 @@ var Splight = (function() {
       var self = this;
 
       var required_keys = [];
-      for(var d = start; d.isBefore(end); d.add(1, "day")) {
+      for(var d = start.clone(); d.isBefore(end); d.add(1, "day")) {
         required_keys.push(d.format("YYYY-MM-DD"));
       }
 
@@ -24,32 +24,16 @@ var Splight = (function() {
         }
       }
 
-      function call_callback() {
-        callback(required_keys.map(key => self._days[key]));
-      }
+      // console.log("EventsCache.get(" + start.format() + ", " + end.format() + ") -> fetch " + Array.from(keys_to_fetch).join(", "));
 
       // @todo Display animated icon while waiting for responses
-      // @todo Undertand why we request each .json file twice. Request only once.
-      if(keys_to_fetch.size > 0) {
-        keys_to_fetch.forEach(function(key) {
-          $.getJSON(
-            "/reims/" + key + ".json",
-            null,
-            function(data) {
-              keys_to_fetch.delete(key);
-              for(var day in data) {
-                var day_data = data[day];
-                self._days[day] = day_data;
-              }
-              if(keys_to_fetch.size == 0) {
-                call_callback();
-              }
-            },
-          );
-        });
-      } else {
-        call_callback();
-      }
+      $.when(
+        ...Array.from(keys_to_fetch).map(
+          key => $.getJSON("/reims/" + key + ".json", null, data => Object.assign(self._days, data))
+        )
+      ).then(
+        () => callback(required_keys.map(key => self._days[key]))
+      );
     },
   };
 
@@ -277,6 +261,7 @@ var Splight = (function() {
       allDaySlot: false,
       height: "auto",
       events: function(start, end, timezone, callback) {
+        // @todo Undertand why fullCalendar refetches events twice on initialization and on update. Refetch only once.
         self.events_cache.get({
           start: start,
           end: end,
