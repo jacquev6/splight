@@ -72,6 +72,8 @@ var Splight = (function() {
     }
 
     var cookie = Cookies.getJSON("sp-admin-mode") || {};
+    self._view_type = cookie.view_type || "basic";
+    self._events_overlap = cookie.events_overlap || false;
     try_enable(cookie.decrypt_key, cookie.is_active);
 
     $("#sp-admin-mode-show-activation-modal").on("click", function() {
@@ -102,6 +104,16 @@ var Splight = (function() {
       self._is_active = false;
       update_browser_callback();
     });
+
+    $("#sp-admin-mode-view-type").on("change", function() {
+      self._view_type = $(this).val();
+      update_browser_callback();
+    });
+
+    $("#sp-admin-mode-agenda-view-overlap").on("change", function() {
+      self._events_overlap = $(this).prop("checked");
+      update_browser_callback();
+    });
   };
 
   AdminMode.prototype = {
@@ -109,12 +121,22 @@ var Splight = (function() {
       var self = this;
 
       if(self._decrypt_key) {
-        Cookies.set("sp-admin-mode", {decrypt_key: self._decrypt_key, is_active: self._is_active});
+        Cookies.set("sp-admin-mode", {
+          decrypt_key: self._decrypt_key,
+          is_active: self._is_active,
+          view_type: self._view_type,
+          events_overlap: self._events_overlap
+        });
       } else {
         Cookies.remove("sp-admin-mode");
       }
 
       $("#sp-admin-mode-dashboard").toggle(self._is_active);
+
+      $("#sp-admin-mode-view-type").val(self._view_type);
+
+      $("#sp-admin-mode-agenda-view-settings").toggle(self._view_type == "agenda");
+      $("#sp-admin-mode-agenda-view-overlap").prop("checked", self._events_overlap);
     },
 
     decrypt_json: function({message, default_value}) {
@@ -139,6 +161,18 @@ var Splight = (function() {
 
       q.show();
       q.removeClass("sp-admin-mode-only");
+    },
+
+    get_view_type: function() {
+      var self = this;
+
+      return self._view_type;
+    },
+
+    get_events_overlap: function() {
+      var self = this;
+
+      return self._events_overlap;
     },
   };
 
@@ -246,7 +280,7 @@ var Splight = (function() {
           },
         });
       },
-      views: {
+      /*views: {
         agendaThreeDays: {
           type: "agenda",
           duration: {days: 3},
@@ -259,7 +293,7 @@ var Splight = (function() {
           type: "basic",
           duration: {days: 3},
         },
-      },
+      },*/
     });
 
     self.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
@@ -269,6 +303,8 @@ var Splight = (function() {
     update_browser: function() {
       var self = this;
 
+      self.calendar.changeView(self.admin_mode.get_view_type() + "Week", self.start_date);
+      self.calendar.option("slotEventOverlap", self.admin_mode.get_events_overlap())
       self.calendar.refetchEvents();
 
       self.tag_filter.update_browser();

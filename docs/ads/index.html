@@ -94,6 +94,19 @@
         </div>
         <div class="modal-body">
           <p>Les éléments cachés aux visiteurs sont <span class="sp-admin-mode-only">en rouge</span>.</p>
+          <div class="form-group">
+            <label>Type de vue&nbsp;:
+            <select id="sp-admin-mode-view-type">
+              <option value="basic">Basique</option>
+              <option value="list">Liste</option>
+              <option value="agenda">Agenda</option>
+            </select></label>
+            <div id="sp-admin-mode-agenda-view-settings">
+              <div class="form-check form-check-inline">
+                <label class="form-check-label"><input id="sp-admin-mode-agenda-view-overlap" class="form-check-input" type="checkbox" />Les événements se chevauchent</label>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button id="sp-admin-mode-deactivate" type="button" class="btn btn-primary">Désactiver</button>

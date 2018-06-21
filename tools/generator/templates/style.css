@@ -54,6 +54,7 @@ a {
     position: fixed;
     top: 0;
     right: 25px;
+    z-index: 100000;
 }
 
 .sp-admin-mode-only {
