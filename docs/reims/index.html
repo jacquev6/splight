@@ -35,38 +35,106 @@
 
       <div class="sp-modern">
 <div class="row"><div class="col-md-3"></div><div class="col-md-6">
-  <p><a href="/reims/2018-25/?tag=musique&tag=cinema&tag=theatre&tag=expositions"><img class="img-fluid" src="/actualite-leaderboard.jpg" /></a></p>
-  <p><a href="/reims/2018-25/?tag=musique&tag=cinema&tag=theatre&tag=expositions">Toute l'actualité</a></p>
+  <p><a class="sp-now-week-link" href="/reims/2018-W21/"><img class="img-fluid" src="/actualite-leaderboard.jpg" /></a></p>
+  <p><a class="sp-now-week-link" href="/reims/2018-W21/">Toute l'actualité</a></p>
 </div></div>
 <div class="row"><div class="col">
   <h1>Catégories</h1>
 </div></div>
 <div class="row">
   <div class="col-6 col-md-3">
-    <p><a href="/reims/2018-25/?tag=musique"><img class="img-fluid" src="/musique-rectangle.jpg" /></a></p>
-    <p><a href="/reims/2018-25/?tag=musique">Musique</a></p>
+    <p><a class="sp-now-week-link" href="/reims/2018-W21/?musique"><img class="img-fluid" src="/musique-rectangle.jpg" /></a></p>
+    <p><a class="sp-now-week-link" href="/reims/2018-W21/?musique">Musique</a></p>
   </div>
   <div class="col-6 col-md-3">
-    <p><a href="/reims/2018-25/?tag=cinema"><img class="img-fluid" src="/cinema-rectangle.jpg" /></a></p>
-    <p><a href="/reims/2018-25/?tag=cinema">Cinéma</a></p>
+    <p><a class="sp-now-week-link" href="/reims/2018-W21/?cinema"><img class="img-fluid" src="/cinema-rectangle.jpg" /></a></p>
+    <p><a class="sp-now-week-link" href="/reims/2018-W21/?cinema">Cinéma</a></p>
   </div>
   <div class="col-6 col-md-3">
-    <p><a href="/reims/2018-25/?tag=theatre"><img class="img-fluid" src="/theatre-rectangle.jpg" /></a></p>
-    <p><a href="/reims/2018-25/?tag=theatre">Théâtre</a></p>
+    <p><a class="sp-now-week-link" href="/reims/2018-W21/?theatre"><img class="img-fluid" src="/theatre-rectangle.jpg" /></a></p>
+    <p><a class="sp-now-week-link" href="/reims/2018-W21/?theatre">Théâtre</a></p>
   </div>
   <div class="col-6 col-md-3">
-    <p><a href="/reims/2018-25/?tag=expositions"><img class="img-fluid" src="/expositions-rectangle.jpg" /></a></p>
-    <p><a href="/reims/2018-25/?tag=expositions">Expositions</a></p>
+    <p><a class="sp-now-week-link" href="/reims/2018-W21/?expositions"><img class="img-fluid" src="/expositions-rectangle.jpg" /></a></p>
+    <p><a class="sp-now-week-link" href="/reims/2018-W21/?expositions">Expositions</a></p>
   </div>
 </div>
       </div>
 
-      <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018</p>
+      <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018<span id="sp-admin-mode-show-activation-modal">.</span></p>
     </div>
 
-    <script src="/lib/jquery-3.3.1.slim.min.js"></script>
+    <div class="modal" id="sp-admin-mode-activation-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Mode administrateur</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="sp-admin-mode-decrypt-key">Clé&nbsp;:</label>
+              <input id="sp-admin-mode-decrypt-key" type="text" />
+            </div>
+            <div class="alert alert-danger" id="sp-admin-mode-activation-wrong-key"><p>Clé incorrecte.</p></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+            <button id="sp-admin-mode-enable" type="button" class="btn btn-primary">Activer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sp-admin-mode-dashboard" class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Mode administrateur</h5>
+        </div>
+        <div class="modal-body">
+          <p>Les éléments cachés aux visiteurs sont <span class="sp-admin-mode-only">en rouge</span>.</p>
+          <div class="form-group">
+            <label>Type de vue&nbsp;:
+            <select id="sp-admin-mode-view-type">
+              <option value="basic">Basique</option>
+              <option value="list">Liste</option>
+              <option value="agenda">Agenda</option>
+            </select></label>
+            <div id="sp-admin-mode-agenda-view-settings">
+              <div class="form-check form-check-inline">
+                <label class="form-check-label"><input id="sp-admin-mode-agenda-view-overlap" class="form-check-input" type="checkbox" />Les événements se chevauchent</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="sp-admin-mode-deactivate" type="button" class="btn btn-primary">Désactiver</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/lib/jquery-3.3.1.min.js"></script>
     <script src="/lib/popper-1.14.3.min.js"></script>
     <script src="/lib/bootstrap-4.1.1.min.js"></script>
+    <script src="/lib/lodash-4.17.10.min.js"></script>
+    <script src="/lib/URI-1.19.1.min.js"></script>
+    <script src="/lib/moment-2.22.2.min.js"></script>
+    <script src="/lib/js.cookie-2.2.0.js"></script>
+    <script src="/lib/crypto-js-3.1.9-1.min.js"></script>
+    <script src="/main.js"></script>
 
+
+    <script>
+      $(function() {
+        Splight.initialize({
+          decrypt_key_sha: "f722f20fc568981ad1702f8075048e08a766bfa0",
+          city: {
+            slug: "reims",
+          },
+        });
+      });
+    </script>
   </body>
 </html>

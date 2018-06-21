@@ -285,3 +285,17 @@ dans le navigateur des visiteurs. C'est trop tard dans le cycle de vie du site.
 
 Tests automatiques. Peut-être utilisant https://github.com/jsdom/jsdom dans Node.js?
 Ça devrait permettre de valider les manipulations du DOM.
+
+
+En tant que développeur, je veux que le site soit accessible aux moteurs de recherche
+------------------------------------------------------------------------------------
+
+### Problème
+
+Les moteurs de recherche n’exécutent pas le JavaScript. Le site est majoritairement affiché par du JavaScript.
+
+### Solution(s)
+
+Utiliser des <meta>.
+Faire une version statique du site, très rudimentaire mais affichant les même informations.
+Ajouter un fichier /robot.txt

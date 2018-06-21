@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr" class="mdrn-no-js">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="/lib/bootstrap-4.1.1.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/lib/fullcalendar-3.9.0.min.css">
+
+    <title>Splight</title>
+
+    <script src="/lib/modernizr-custom.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1 class="display-4"><a href="/">Splight</a> - <a href="/reims/">Reims</a></h1>
+        <p class="lead">Votre agenda culturel à Reims et dans sa région.</p>
+      </div>
+
+      <div class="sp-noscript">
+        <div class="row"><div class="col-md-3"></div><div class="col-md-6" style="border: red solid 3px">
+          <p>Splight utilise JavaScript, qui semble être désactivé dans votre navigateur.</p>
+          <p>Voici les <a href="https://www.enable-javascript.com/fr/" target="_blank">instructions pour activer JavaScript dans votre navigateur Web</a>.</p>
+        </div><div class="col-md-3"></div></div>
+      </div>
+
+      <div class="sp-retro">
+        <div class="row"><div class="col-md-3"></div><div class="col-md-6" style="border: red solid 3px">
+          <p>Splight utilise des fonctionalités des navigateurs récents et ne peut pas être utilisé avec ce navigateur.</p>
+          <p>Vous pouvez metre à jour votre navigateur, ou utiliser <a href="https://www.google.com/chrome/">Google Chrome</a> ou <a href="https://www.mozilla.org/fr/firefox/">Mozzila Firefox</a>.</p>
+        </div><div class="col-md-3"></div></div>
+      </div>
+
+      <div class="sp-modern">
+<div class="row d-lg-none">
+  <div class="col">
+    <div class="sp-advertisement">
+      <p>Publicité</p>
+      <p><img class="img-fluid" src="/ads/468x60-banner.png" /></p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <h1>Semaine du lundi 13 août 2018</h1>
+
+    <div class="row"><div class="col"><div id="sp-tag-filtering" class="form-group">
+      <div class="form-check form-check-inline" style="border-color: #7f3f3f; background-color: #e5a0a0">
+        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="musique" />Musique</label>
+      </div>
+      <div class="form-check form-check-inline" style="border-color: #5f7f3f; background-color: #c3e5a0">
+        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="cinema" />Cinéma</label>
+      </div>
+      <div class="form-check form-check-inline" style="border-color: #3f7f7f; background-color: #a0e5e5">
+        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="theatre" />Théâtre</label>
+      </div>
+      <div class="form-check form-check-inline" style="border-color: #5f3f7f; background-color: #c3a0e5">
+        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="expositions" />Expositions</label>
+      </div>
+    </div></div></div>
+
+    <div class="row">
+      <div class="col">
+        <p class="text-right"><a class="sp-previous-week-link sp-tag-filtering-tagged-link" href="/reims/2018-W32/">&lt; Semaine précédente</a></p>
+      </div>
+      <div class="col">
+        <p class="text-center"><a class="sp-now-week-link sp-tag-filtering-tagged-link" href="/">Cette semaine</a></p>
+      </div>
+      <div class="col">
+        <p class="text-left"><a class="sp-next-week-link sp-tag-filtering-tagged-link" href="/reims/2018-W34/">Semaine suivante &gt;</a></p>
+      </div>
+    </div>
+
+    <div id="sp-fullcalendar"></div>
+  </div>
+
+  <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
+    <div class="sp-advertisement">
+      <p>Publicité</p>
+      <p><img class="img-fluid" src="/ads/160x600-wide-skyscraper.png" /></p>
+    </div>
+  </div>
+</div>
+      </div>
+
+      <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018<span id="sp-admin-mode-show-activation-modal">.</span></p>
+    </div>
+
+    <div class="modal" id="sp-admin-mode-activation-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Mode administrateur</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="sp-admin-mode-decrypt-key">Clé&nbsp;:</label>
+              <input id="sp-admin-mode-decrypt-key" type="text" />
+            </div>
+            <div class="alert alert-danger" id="sp-admin-mode-activation-wrong-key"><p>Clé incorrecte.</p></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+            <button id="sp-admin-mode-enable" type="button" class="btn btn-primary">Activer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sp-admin-mode-dashboard" class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Mode administrateur</h5>
+        </div>
+        <div class="modal-body">
+          <p>Les éléments cachés aux visiteurs sont <span class="sp-admin-mode-only">en rouge</span>.</p>
+          <div class="form-group">
+            <label>Type de vue&nbsp;:
+            <select id="sp-admin-mode-view-type">
+              <option value="basic">Basique</option>
+              <option value="list">Liste</option>
+              <option value="agenda">Agenda</option>
+            </select></label>
+            <div id="sp-admin-mode-agenda-view-settings">
+              <div class="form-check form-check-inline">
+                <label class="form-check-label"><input id="sp-admin-mode-agenda-view-overlap" class="form-check-input" type="checkbox" />Les événements se chevauchent</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="sp-admin-mode-deactivate" type="button" class="btn btn-primary">Désactiver</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/lib/jquery-3.3.1.min.js"></script>
+    <script src="/lib/popper-1.14.3.min.js"></script>
+    <script src="/lib/bootstrap-4.1.1.min.js"></script>
+    <script src="/lib/lodash-4.17.10.min.js"></script>
+    <script src="/lib/URI-1.19.1.min.js"></script>
+    <script src="/lib/moment-2.22.2.min.js"></script>
+    <script src="/lib/js.cookie-2.2.0.js"></script>
+    <script src="/lib/crypto-js-3.1.9-1.min.js"></script>
+    <script src="/main.js"></script>
+    <script src="/lib/fullcalendar-3.9.0.min.js"></script>
+    <script src="/lib/fullcalendar-locale-fr-3.9.0.js"></script>
+
+
+    <script>
+      $(function() {
+        Splight.initialize({
+          decrypt_key_sha: "f722f20fc568981ad1702f8075048e08a766bfa0",
+          city: {
+            slug: "reims",
+            displayed_week: {
+              start_date: moment("2018-08-13"),
+              first_week: {
+                start_date: moment("2018-05-21"),
+              },
+              week_after: {
+                start_date: moment("2018-08-27"),
+              },
+            },
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

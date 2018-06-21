@@ -1,15 +1,13 @@
-{% set additional_css = ["/lib/fullcalendar-3.9.0.min.css"] %}
-{% set additional_js = [
-  "/lib/moment-2.22.2.min.js",
+{% set stylesheets = [
+  "/lib/fullcalendar-3.9.0.min.css",
+] -%}
+
+{% set scripts = [
   "/lib/fullcalendar-3.9.0.min.js",
   "/lib/fullcalendar-locale-fr-3.9.0.js",
-  "/lib/URI-1.19.1.min.js",
-  "/lib/native.history-1.8.bundled.html5.js",
-  "/lib/lodash-4.17.10.min.js",
-  "/lib/jquery.deserialize-2.0.0-rc1.js",
-  "/week.js",
-] %}
-{% extends "base.html" %}
+] -%}
+
+{% extends "base_within_city.html" %}
 
 {% block contents %}
 <div class="row d-lg-none">
@@ -23,82 +21,31 @@
 
 <div class="row">
   <div class="col">
-    <h1>Semaine du {{ week.days[0]|format_date }}</h1>
+    <h1>Semaine du {{ displayed_week.start_date|format_date }}</h1>
 
-    <div><div class="row"><div class="col"><form id="sp-display-settings">
-      <div class="form-group">
-        {% for tag in tags %}
-        <div class="form-check form-check-inline sp-display-checkbox" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
-          <input class="form-check-input" type="checkbox" name="tag" id="sp-tag-{{ tag.slug }}" value="{{ tag.slug }}">
-          <label class="form-check-label" for="sp-tag-{{ tag.slug }}">{{ tag.title }}</label>
-        </div>
-        {% endfor %}
+    <div class="row"><div class="col"><div id="sp-tag-filtering" class="form-group">
+      {% for tag in city.tags %}
+      <div class="form-check form-check-inline" style="border-color: {{ tag.border_color }}; background-color: {{ tag.background_color }}">
+        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="{{ tag.slug }}" />{{ tag.title }}</label>
       </div>
+      {% endfor %}
+    </div></div></div>
 
-      <div class="form-group">
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="vd" id="sp-view-duration-7" value="7" checked="checked">
-          <label class="form-check-label" for="sp-view-duration-7">1 semaine</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="vd" id="sp-view-duration-3" value="3">
-          <label class="form-check-label" for="sp-view-duration-3">3 jours</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="vd" id="sp-view-duration-1" value="1">
-          <label class="form-check-label" for="sp-view-duration-1">1 jour</label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="vt" id="sp-view-type-basic" value="basic" checked="checked">
-          <label class="form-check-label" for="sp-view-type-basic">basique</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="vt" id="sp-view-type-list" value="list">
-          <label class="form-check-label" for="sp-view-type-list">liste</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="vt" id="sp-view-type-agenda" value="agenda">
-          <label class="form-check-label" for="sp-view-type-agenda">agenda</label>
-        </div>
-      </div>
-
-      <div id="sp-agenda-settings" class="form-group">
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="checkbox" name="ov" id="sp-overlap">
-          <label class="form-check-label" for="sp-overlap">événements se recouvrent</label>
-        </div>
-      </div>
-    </form></div></div></div>
-
-  {% macro previous_and_next_links() -%}
-    <div class="sp-previous-next-weeks-links"><div class="row">
+    <div class="row">
       <div class="col">
-        {%- if week.previous_week -%}
-          <p class="text-right"><a class="sp-tagged" href="/{{ city.slug }}/{{ week.previous_week.slug }}/">&lt; Semaine précédente</a></p>
-        {%- endif -%}
+        <p class="text-right"><a class="sp-previous-week-link sp-tag-filtering-tagged-link" href="/{% if displayed_week.previous.start_date >= first_week.start_date %}{{ city.slug }}/{{ displayed_week.previous.slug }}/{% endif %}">&lt; Semaine précédente</a></p>
       </div>
       <div class="col">
-        {%- if week.next_week -%}
-          <p><a class="sp-tagged" href="/{{ city.slug }}/{{ week.next_week.slug }}/">Semaine suivante &gt;</a></p>
-        {%- endif -%}
+        <p class="text-center"><a class="sp-now-week-link sp-tag-filtering-tagged-link" href="/">Cette semaine</a></p>
       </div>
-    </div></div>
-
-    <div class="sp-previous-next-days-links"><div class="row">
-      <div class="col"><p class="text-right"><a class="sp-tagged sp-previous-day-link" href="/{{ city.slug }}/{{ week.slug }}/">&lt; Jour précédent</a></p></div>
-      <div class="col"><p><a class="sp-tagged sp-next-day-link" href="/{{ city.slug }}/{{ week.slug }}/">Jour suivant &gt;</a></p></div>
-    </div></div>
-  {%- endmacro %}
-    {{ previous_and_next_links() }}
-
-    <div id="sp-fullcalendar">
+      <div class="col">
+        <p class="text-left"><a class="sp-next-week-link sp-tag-filtering-tagged-link" href="/{% if displayed_week.next.start_date < week_after.start_date %}{{ city.slug }}/{{ displayed_week.next.slug }}/{% endif %}">Semaine suivante &gt;</a></p>
+      </div>
     </div>
 
-    {{ previous_and_next_links() }}
+    <div id="sp-fullcalendar"></div>
   </div>
+
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
     <div class="sp-advertisement">
       <p>Publicité</p>
@@ -108,54 +55,17 @@
 </div>
 {% endblock %}
 
-{% block script %}
-<script>
-  initialize_week({
-    defaultDate: "{{ week.days[0] }}",
-    all_events: [
-      {% if week.next_week %}
-        {% set days = week.days + week.next_week.days %}
-      {% else %}
-        {% set days = week.days %}
-      {% endif %}
-      {% for day in days %}
-        {% for event in events.get(day, []) %}
-        {
-          title: "{{ event.location }}: {{ event.title }}",
-          start: "{{ event.start }}",
-          {% if event.end is defined %}
-          end: "{{ event.end }}",
-          {% endif %}
-          tags: new Set([{% for tag in event.tags %}"{{ tag.slug }}"{% if not loop.last %}, {% endif %}{% endfor %}]),
-          backgroundColor: "{{ event.tags[0].background_color }}",
-          borderColor: "{{ event.tags[0].border_color }}",
-        },
-        {% endfor %}
-      {% endfor %}
-    ],
-    days: {
-      lundi: "{{ week.days[0] }}",
-      mardi: "{{ week.days[1] }}",
-      mercredi: "{{ week.days[2] }}",
-      jeudi: "{{ week.days[3] }}",
-      vendredi: "{{ week.days[4] }}",
-      samedi: "{{ week.days[5] }}",
-      dimanche: "{{ week.days[6] }}",
-    },
-    tag_names: {
-    {% for tag in tags %}
-      {{ tag.slug }}: "{{ tag.title|lower }}",
-    {% endfor %}
-    },
-    week_paths: {
-      {% if week.previous_week %}
-      previous: "/{{ city.slug }}/{{ week.previous_week.slug }}/",
-      {% endif %}
-      current: "/{{ city.slug }}/{{ week.slug }}/",
-      {% if week.next_week %}
-      next: "/{{ city.slug }}/{{ week.next_week.slug }}/",
-      {% endif %}
-    }
-  })
-</script>
+{% block splight_parameters %}
+          city: {
+            slug: "{{ city.slug }}",
+            displayed_week: {
+              start_date: moment("{{ displayed_week.start_date }}"),
+              first_week: {
+                start_date: moment("{{ first_week.start_date }}"),
+              },
+              week_after: {
+                start_date: moment("{{ week_after.start_date }}"),
+              },
+            },
+          },
 {% endblock %}

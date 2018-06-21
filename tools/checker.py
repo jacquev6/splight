@@ -46,7 +46,9 @@ def check_local_links(root_dir_name, all_files):
     aux("/CNAME")
     aux("/.nojekyll")
     aux("/")
-    aux("/admin/")
+    aux("/reims/2018-21/")
+    for w in range(21, 52):
+        reacheable.add("/reims/2018-W{}.json".format(w))
 
     for url in served_urls - reacheable:
         yield "UNREACHABLE URL: {}".format(url)

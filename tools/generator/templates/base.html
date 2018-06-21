@@ -1,3 +1,20 @@
+{% set stylesheets = [
+  "/lib/bootstrap-4.1.1.min.css",
+  "/style.css",
+] + (stylesheets|default([])) -%}
+
+{%- set scripts = [
+  "/lib/jquery-3.3.1.min.js",
+  "/lib/popper-1.14.3.min.js",
+  "/lib/bootstrap-4.1.1.min.js",
+  "/lib/lodash-4.17.10.min.js",
+  "/lib/URI-1.19.1.min.js",
+  "/lib/moment-2.22.2.min.js",
+  "/lib/js.cookie-2.2.0.js",
+  "/lib/crypto-js-3.1.9-1.min.js",
+  "/main.js",
+] + (scripts|default([])) -%}
+
 <!doctype html>
 <html lang="fr" class="mdrn-no-js">
   <head>
@@ -5,9 +22,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="/lib/bootstrap-4.1.1.min.css">
-    <link rel="stylesheet" href="/style.css">
-{% for css in additional_css|default([]) %}
+{% for css in stylesheets %}
     <link rel="stylesheet" href="{{ css }}">
 {% endfor %}
 
@@ -18,8 +33,8 @@
   <body>
     <div class="container">
       <div class="jumbotron">
-        <h1 class="display-4"><a href="/">Splight</a>{% if city is defined %} - <a href="/{{ city.slug }}/">{{ city.name }}</a>{% endif %}</h1>
-        <p class="lead">Votre agenda culturel {% if city is defined %}à {{ city.name }} et dans sa région{% else %}régional{% endif %}.</p>
+        <h1 class="display-4"><a href="/">Splight</a>{% block jumbo_city %}{% endblock %}</h1>
+        <p class="lead">{% block jumbo_lead %}Votre agenda culturel régional.{% endblock %}</p>
       </div>
 
       <div class="sp-noscript">
@@ -37,21 +52,76 @@
       </div>
 
       <div class="sp-modern">
-{% block contents %}
-{% endblock %}
+        {% block contents %}{% endblock %}
       </div>
 
-      <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018</p>
+      <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018<span id="sp-admin-mode-show-activation-modal">.</span></p>
     </div>
 
-    <script src="/lib/jquery-3.3.1.slim.min.js"></script>
-    <script src="/lib/popper-1.14.3.min.js"></script>
-    <script src="/lib/bootstrap-4.1.1.min.js"></script>
-{% for js in additional_js|default([]) %}
-    <script src="{{ js }}"></script>
-{% endfor %}
+    <div class="modal" id="sp-admin-mode-activation-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Mode administrateur</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="sp-admin-mode-decrypt-key">Clé&nbsp;:</label>
+              <input id="sp-admin-mode-decrypt-key" type="text" />
+            </div>
+            <div class="alert alert-danger" id="sp-admin-mode-activation-wrong-key"><p>Clé incorrecte.</p></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+            <button id="sp-admin-mode-enable" type="button" class="btn btn-primary">Activer</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-{% block script %}
-{% endblock %}
+    <div id="sp-admin-mode-dashboard" class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Mode administrateur</h5>
+        </div>
+        <div class="modal-body">
+          <p>Les éléments cachés aux visiteurs sont <span class="sp-admin-mode-only">en rouge</span>.</p>
+          <div class="form-group">
+            <label>Type de vue&nbsp;:
+            <select id="sp-admin-mode-view-type">
+              <option value="basic">Basique</option>
+              <option value="list">Liste</option>
+              <option value="agenda">Agenda</option>
+            </select></label>
+            <div id="sp-admin-mode-agenda-view-settings">
+              <div class="form-check form-check-inline">
+                <label class="form-check-label"><input id="sp-admin-mode-agenda-view-overlap" class="form-check-input" type="checkbox" />Les événements se chevauchent</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="sp-admin-mode-deactivate" type="button" class="btn btn-primary">Désactiver</button>
+        </div>
+      </div>
+    </div>
+
+    {% for js in scripts %}
+    <script src="{{ js }}"></script>
+    {% endfor %}
+
+    {% block script %}{% endblock %}
+
+    <script>
+      $(function() {
+        Splight.initialize({
+          decrypt_key_sha: "{{ decrypt_key_sha }}",
+          {% block splight_parameters %}{% endblock %}
+        });
+      });
+    </script>
   </body>
 </html>

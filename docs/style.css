@@ -29,12 +29,6 @@ a {
     font-size: .8em;
 }
 
-.sp-display-checkbox {
-    padding: 2px;
-    border-radius: 3px;
-    border: solid 1px;
-}
-
 .mdrn-js .sp-noscript {
     display: none;
 }
@@ -53,4 +47,23 @@ a {
 
 .mdrn-arrow.mdrn-es6collections.mdrn-hashchange.mdrn-history .sp-modern {
     display: block;
+}
+
+#sp-admin-mode-dashboard {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 25px;
+    z-index: 100000;
+}
+
+.sp-admin-mode-only {
+    border: red 3px solid;
+    background-color: #faa;
+}
+
+#sp-tag-filtering .form-check-inline {
+    padding: 2px;
+    border-radius: 3px;
+    border: solid 1px;
 }
