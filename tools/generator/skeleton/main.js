@@ -293,6 +293,8 @@ var Splight = (function() {
             }
             if(data_for_admin_only) {
               self.admin_mode.decorate($("#sp-fullcalendar"), {show_if_inactive: true});
+            } else {
+              self.admin_mode.undecorate($("#sp-fullcalendar"));
             }
 
             events = self.tag_filter.filter(events);
