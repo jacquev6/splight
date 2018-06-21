@@ -276,7 +276,28 @@ var Splight = (function() {
             if(data_for_admin_only) {
               self.admin_mode.decorate($("#sp-fullcalendar"), {show_if_inactive: true});
             }
-            callback(self.tag_filter.filter(events));
+
+            events = self.tag_filter.filter(events);
+
+            var minTime = Math.min(...events.map(function(e) {
+              // @todo Build moments in EventsCache (they are used here and in fullCalendar, thus constructed many times)
+              var start = moment(e.start);
+              return start.diff(start.clone().startOf("day"));
+            }));
+            var maxTime = Math.max(...events.map(function(e) {
+              var start = moment(e.start);
+              var end = e.end ? moment(e.end) : moment(e.start).add(2, "hours");
+              return end.diff(start.clone().startOf("day"));
+            }));
+            if(!isFinite(minTime)) {
+              minTime = 18 * 3600000;
+              maxTime = 20 * 3600000;
+            }
+
+            self.calendar.option("minTime", Math.floor(minTime / 3600000) * 3600000);
+            self.calendar.option("maxTime", Math.ceil(maxTime / 3600000) * 3600000);
+
+            callback(events);
           },
         });
       },
