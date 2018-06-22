@@ -153,6 +153,36 @@ class Week:
     def next(self):
         return Week(start_date=self.__start_date + datetime.timedelta(days=7))
 
+    @property
+    def date_after(self):
+        return self.next.start_date
+
+
+class ThreeDays:
+    def __init__(self, *, start_date):
+        assert isinstance(start_date, datetime.date)
+        self.__start_date = start_date
+
+    @property
+    def slug(self):
+        return self.__start_date.strftime("%Y-%m-%d+2")
+
+    @property
+    def start_date(self):
+        return self.__start_date
+
+    @property
+    def previous(self):
+        return ThreeDays(start_date=self.__start_date - datetime.timedelta(days=1))
+
+    @property
+    def next(self):
+        return ThreeDays(start_date=self.__start_date + datetime.timedelta(days=1))
+
+    @property
+    def date_after(self):
+        return self.__start_date + datetime.timedelta(days=3)
+
 
 class Day:
     def __init__(self, *, date):
@@ -174,6 +204,10 @@ class Day:
     @property
     def next(self):
         return Day(date=self.__date + datetime.timedelta(days=1))
+
+    @property
+    def date_after(self):
+        return self.next.date
 
 
 class Event:
@@ -375,22 +409,30 @@ class CityIndexHtml(CityBaseHtml):
 class CityTimespanHtml(CityBaseHtml):
     template_name = "city/timespan.html"
 
-    def __init__(self, *, decrypt_key_sha, city, first_week, week_after, displayed_week, displayed_day):
+    def __init__(
+        self, *,
+        decrypt_key_sha, city, first_week, week_after,
+        displayed_day, displayed_three_days, displayed_week,
+    ):
         super().__init__(decrypt_key_sha=decrypt_key_sha, city=city, first_week=first_week, week_after=week_after)
-        assert displayed_week is None or isinstance(displayed_week, Week)
-        self.__displayed_week = displayed_week
         assert displayed_day is None or isinstance(displayed_day, Day)
         self.__displayed_day = displayed_day
-        assert bool(displayed_week) ^ bool(displayed_day)
+        assert displayed_three_days is None or isinstance(displayed_three_days, ThreeDays)
+        self.__displayed_three_days = displayed_three_days
+        assert displayed_week is None or isinstance(displayed_week, Week)
+        self.__displayed_week = displayed_week
+        assert sum(1 if x else 0 for x in [displayed_day, displayed_three_days, displayed_week]) == 1
+        self.__displayed_timespan = displayed_day or displayed_three_days or displayed_week
 
     @property
     def destination(self):
-        return os.path.join(super().destination, (self.__displayed_week or self.__displayed_day).slug, "index.html")
+        return os.path.join(super().destination, self.__displayed_timespan.slug, "index.html")
 
     @property
     def context(self):
         return dict(
-            displayed_week=self.__displayed_week,
             displayed_day=self.__displayed_day,
+            displayed_three_days=self.__displayed_three_days,
+            displayed_week=self.__displayed_week,
             **super().context,
         )

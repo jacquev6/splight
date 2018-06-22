@@ -221,6 +221,20 @@ var Splight = (function() {
     });
   }
 
+  function set_url_three_days(url, three_days) {
+    var uri = new URI(url);
+    var path_parts = uri.path().split("/");
+    path_parts[2] = three_days.format("YYYY-MM-DD") + "+2";
+    uri.path(path_parts.join("/"));
+    return uri.toString();
+  }
+
+  function update_city_three_days_links({links, three_days}) {
+    links.prop("href", function(index, href) {
+      return set_url_three_days(href, three_days);
+    });
+  }
+
   function set_url_day(url, day) {
     var uri = new URI(url);
     var path_parts = uri.path().split("/");
@@ -235,13 +249,13 @@ var Splight = (function() {
     });
   }
 
-  function DisplayedTimespan({displayed_week, displayed_day, first_monday, monday_after, admin_mode, update_browser_callback}) {
+  function DisplayedTimespan({displayed_week, displayed_three_days, displayed_day, first_monday, monday_after, admin_mode, update_browser_callback}) {
     var self = this;
 
     self.admin_mode = admin_mode;
 
-    self.start_date = displayed_week ? displayed_week.start_date : displayed_day.date;
-    self.duration = displayed_week ? "Week" : "Day";
+    self.start_date = displayed_week ? displayed_week.start_date : displayed_three_days ? displayed_three_days.start_date : displayed_day.date;
+    self.duration = displayed_week ? "Week" : displayed_three_days ? "ThreeDays" : "Day";
     self.first_monday = first_monday;
     self.monday_after = monday_after;
     self.events_cache = new EventsCache();
@@ -262,7 +276,7 @@ var Splight = (function() {
       events: function(start, end, timezone, callback) {
         callback(self.displayed_events);
       },
-      /*views: {
+      views: {
         agendaThreeDays: {
           type: "agenda",
           duration: {days: 3},
@@ -275,7 +289,7 @@ var Splight = (function() {
           type: "basic",
           duration: {days: 3},
         },
-      },*/
+      },
     });
 
     self.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
@@ -295,6 +309,25 @@ var Splight = (function() {
     $(".sp-now-week-link").on("click", function() {
       self.start_date = moment().startOf("week");
       self.duration = "Week";
+      update_browser_callback();
+      return false;
+    });
+
+    $(".sp-next-three-days-link").on("click", function() {
+      self.start_date.add(1, "day");
+      update_browser_callback();
+      return false;
+    });
+
+    $(".sp-previous-three-days-link").on("click", function() {
+      self.start_date.subtract(1, "day");
+      update_browser_callback();
+      return false;
+    });
+
+    $(".sp-now-three-days-link").on("click", function() {
+      self.start_date = moment().startOf("day");
+      self.duration = "ThreeDays";
       update_browser_callback();
       return false;
     });
@@ -328,7 +361,7 @@ var Splight = (function() {
       // @todo Display animated icon while waiting for responses
       self.events_cache.get({
         start: self.start_date,
-        end: self.start_date.clone().add(1, self.duration),
+        end: self.start_date.clone().add(self.duration == "Week" ? 7 : self.duration == "ThreeDays" ? 3 : 1, "days"),
         callback: function(eventss) {
           var events = [];
           var data_for_admin_only = false;
@@ -376,6 +409,9 @@ var Splight = (function() {
       if(self.duration == "Week") {
         $("#sp-timespan-title").text("Semaine du " + self.start_date.format("dddd Do MMMM YYYY"));
         history.replaceState(null, window.document.title, set_url_week(window.location, self.start_date));
+      } else if(self.duration == "ThreeDays") {
+        $("#sp-timespan-title").text("3 jours à partir du " + self.start_date.format("dddd Do MMMM YYYY"));
+        history.replaceState(null, window.document.title, set_url_three_days(window.location, self.start_date));
       } else {
         $("#sp-timespan-title").text("Journée du " + self.start_date.format("dddd Do MMMM YYYY"));
         history.replaceState(null, window.document.title, set_url_day(window.location, self.start_date));
@@ -410,6 +446,35 @@ var Splight = (function() {
         non_admin_condition: !moment().add(4, "weeks").isSame(self.start_date, "isoWeek"),
       });
 
+      function update_three_days_links({links, three_days, global_condition, non_admin_condition}) {
+        update_city_three_days_links({links: links, three_days: three_days});
+        if(global_condition) {
+          if(non_admin_condition) {
+            self.admin_mode.undecorate(links);
+          } else {
+            self.admin_mode.decorate(links, {show_if_inactive: false});
+          }
+        } else {
+          links.hide();
+        }
+      }
+
+      var previous_day = self.start_date.clone().subtract(1, "day");
+      update_three_days_links({
+        links: $(".sp-previous-three-days-link"),
+        three_days: previous_day,
+        global_condition: self.duration == "ThreeDays" && previous_day >= self.first_monday,
+        non_admin_condition: !moment().isSame(self.start_date, "day"),
+      });
+
+      var next_day = self.start_date.clone().add(1, "day");
+      update_three_days_links({
+        links: $(".sp-next-three-days-link"),
+        three_days: next_day,
+        global_condition: self.duration == "ThreeDays" && next_day.clone().add(2, "days") < self.monday_after,
+        non_admin_condition: !moment().startOf("week").add(32, "days").isSame(self.start_date, "day"),
+      });
+
       function update_day_links({links, day, global_condition, non_admin_condition}) {
         update_city_day_links({links: links, day: day});
         if(global_condition) {
@@ -441,13 +506,14 @@ var Splight = (function() {
     },
   };
 
-  function City({city: {first_week, week_after, displayed_week, displayed_day}, admin_mode, update_browser_callback}) {
+  function City({city: {first_week, week_after, displayed_week, displayed_three_days, displayed_day}, admin_mode, update_browser_callback}) {
     var self = this;
 
-    if(displayed_week || displayed_day) {
+    if(displayed_week || displayed_three_days || displayed_day) {
       self.displayed_timespan = new DisplayedTimespan(
         {
           displayed_week: displayed_week,
+          displayed_three_days: displayed_three_days,
           displayed_day: displayed_day,
           first_monday: first_week.start_date,
           monday_after: week_after.start_date,
@@ -463,6 +529,7 @@ var Splight = (function() {
       var self = this;
 
       update_city_week_links({links: $(".sp-now-week-link"), week: moment()});
+      update_city_three_days_links({links: $(".sp-now-three-days-link"), three_days: moment()});
       update_city_day_links({links: $(".sp-now-day-link"), day: moment()});
 
       self.displayed_timespan && self.displayed_timespan.update_browser();
