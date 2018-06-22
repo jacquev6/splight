@@ -24,9 +24,6 @@ var Splight = (function() {
         }
       }
 
-      // console.log("EventsCache.get(" + start.format() + ", " + end.format() + ") -> fetch " + Array.from(keys_to_fetch).join(", "));
-
-      // @todo Display animated icon while waiting for responses
       $.when(
         ...Array.from(keys_to_fetch).map(
           key => $.getJSON("/reims/" + key + ".json", null, data => Object.assign(self._days, data))
@@ -253,6 +250,8 @@ var Splight = (function() {
       update_browser_callback: update_browser_callback,
     });
 
+    self.displayed_events = [];
+
     $("#sp-fullcalendar").fullCalendar({
       header: false,
       defaultDate: self.start_date,
@@ -261,50 +260,7 @@ var Splight = (function() {
       allDaySlot: false,
       height: "auto",
       events: function(start, end, timezone, callback) {
-        // @todo Undertand why fullCalendar refetches events twice on initialization and on update. Refetch only once.
-        self.events_cache.get({
-          start: start,
-          end: end,
-          callback: function(eventss) {
-            var events = [];
-            var data_for_admin_only = false;
-            for(var i = 0; i != eventss.length; ++i) {
-              var day_data = eventss[i];
-              if(day_data.encrypted) {
-                day_data = self.admin_mode.decrypt_json({message: day_data.encrypted, default_value: []});
-                data_for_admin_only = true;
-              }
-              events = events.concat(day_data);
-            }
-            if(data_for_admin_only) {
-              self.admin_mode.decorate($("#sp-fullcalendar"), {show_if_inactive: true});
-            } else {
-              self.admin_mode.undecorate($("#sp-fullcalendar"));
-            }
-
-            events = self.tag_filter.filter(events);
-
-            var minTime = Math.min(...events.map(function(e) {
-              // @todo Build moments in EventsCache (they are used here and in fullCalendar, thus constructed many times)
-              var start = moment(e.start);
-              return start.diff(start.clone().startOf("day"));
-            }));
-            var maxTime = Math.max(...events.map(function(e) {
-              var start = moment(e.start);
-              var end = e.end ? moment(e.end) : moment(e.start).add(2, "hours");
-              return end.diff(start.clone().startOf("day"));
-            }));
-            if(!isFinite(minTime)) {
-              minTime = 18 * 3600000;
-              maxTime = 20 * 3600000;
-            }
-
-            self.calendar.option("minTime", Math.floor(minTime / 3600000) * 3600000);
-            self.calendar.option("maxTime", Math.ceil(maxTime / 3600000) * 3600000);
-
-            callback(events);
-          },
-        });
+        callback(self.displayed_events);
       },
       /*views: {
         agendaThreeDays: {
@@ -369,7 +325,51 @@ var Splight = (function() {
 
       self.calendar.changeView(self.admin_mode.get_view_type() + self.duration, self.start_date);
       self.calendar.option("slotEventOverlap", self.admin_mode.get_events_overlap())
-      self.calendar.refetchEvents();
+      // @todo Display animated icon while waiting for responses
+      self.events_cache.get({
+        start: self.start_date,
+        end: self.start_date.clone().add(1, self.duration),
+        callback: function(eventss) {
+          var events = [];
+          var data_for_admin_only = false;
+          for(var i = 0; i != eventss.length; ++i) {
+            var day_data = eventss[i];
+            if(day_data.encrypted) {
+              day_data = self.admin_mode.decrypt_json({message: day_data.encrypted, default_value: []});
+              data_for_admin_only = true;
+            }
+            events = events.concat(day_data);
+          }
+          if(data_for_admin_only) {
+            self.admin_mode.decorate($("#sp-fullcalendar"), {show_if_inactive: true});
+          } else {
+            self.admin_mode.undecorate($("#sp-fullcalendar"));
+          }
+
+          events = self.tag_filter.filter(events);
+
+          var minTime = Math.min(...events.map(function(e) {
+            // @todo Build moments in EventsCache (they are used here and in fullCalendar, thus constructed many times)
+            var start = moment(e.start);
+            return start.diff(start.clone().startOf("day"));
+          }));
+          var maxTime = Math.max(...events.map(function(e) {
+            var start = moment(e.start);
+            var end = e.end ? moment(e.end) : moment(e.start).add(2, "hours");
+            return end.diff(start.clone().startOf("day"));
+          }));
+          if(!isFinite(minTime)) {
+            minTime = 18 * 3600000;
+            maxTime = 20 * 3600000;
+          }
+
+          self.calendar.option("minTime", Math.floor(minTime / 3600000) * 3600000);
+          self.calendar.option("maxTime", Math.ceil(maxTime / 3600000) * 3600000);
+
+          self.displayed_events = events;
+          self.calendar.refetchEvents();
+        }
+      });
 
       self.tag_filter.update_browser();
 
