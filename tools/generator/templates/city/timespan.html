@@ -60,19 +60,3 @@
   </div>
 </div>
 {% endblock %}
-
-{% block city_base_splight_parameters %}
-  {% if displayed_week %}
-            displayed_week: {
-              start_date: moment("{{ displayed_week.start_date }}"),
-            },
-  {% elif displayed_three_days %}
-            displayed_three_days: {
-              start_date: moment("{{ displayed_three_days.start_date }}"),
-            },
-  {% else %}
-            displayed_day: {
-              date: moment("{{ displayed_day.date }}"),
-            },
-  {% endif %}
-{% endblock %}

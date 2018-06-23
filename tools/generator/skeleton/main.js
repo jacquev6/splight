@@ -250,13 +250,31 @@ var Splight = (function() {
     });
   }
 
-  function DisplayedTimespan({city_slug, displayed_week, displayed_three_days, displayed_day, first_monday, monday_after, admin_mode, update_browser_callback}) {
-    var self = this;
+  function make_displayed_timespan({city_slug, first_monday, monday_after, admin_mode, update_browser_callback}) {
+    var self = Object.create(DisplayedTimespan_prototype);
 
     self.admin_mode = admin_mode;
 
-    self.start_date = displayed_week ? displayed_week.start_date : displayed_three_days ? displayed_three_days.start_date : displayed_day.date;
-    self.duration = displayed_week ? "Week" : displayed_three_days ? "ThreeDays" : "Day";
+    self.start_date = null;
+    self.duration = null
+    var timespan = URI.parse(window.location.href).path.split("/")[2];
+    switch(timespan.length) {
+      case 8:
+        self.start_date = moment(timespan);
+        self.duration = "Week";
+        break;
+      case 12:
+        self.start_date = moment(timespan.substring(0, 10));
+        self.duration = "ThreeDays";
+        break;
+      case 10:
+        self.start_date = moment(timespan);
+        self.duration = "Day";
+        break;
+      default:
+        return undefined;
+    }
+
     self.first_monday = first_monday;
     self.monday_after = monday_after;
     self.events_cache = new EventsCache({city_slug: city_slug});
@@ -351,9 +369,11 @@ var Splight = (function() {
       update_browser_callback();
       return false;
     });
+
+    return self;
   };
 
-  DisplayedTimespan.prototype = {
+  var DisplayedTimespan_prototype = {
     update_browser: function() {
       var self = this;
 
@@ -507,23 +527,18 @@ var Splight = (function() {
     },
   };
 
-  function City({city: {first_week, week_after, displayed_week, displayed_three_days, displayed_day}, admin_mode, update_browser_callback}) {
+  function City({city: {first_week, week_after}, admin_mode, update_browser_callback}) {
     var self = this;
 
-    if(displayed_week || displayed_three_days || displayed_day) {
-      self.displayed_timespan = new DisplayedTimespan(
-        {
-          city_slug: URI.parse(window.location.href).path.split("/")[1],
-          displayed_week: displayed_week,
-          displayed_three_days: displayed_three_days,
-          displayed_day: displayed_day,
-          first_monday: first_week.start_date,
-          monday_after: week_after.start_date,
-          admin_mode: admin_mode,
-          update_browser_callback: update_browser_callback,
-        },
-      );
-    }
+    self.displayed_timespan = make_displayed_timespan(
+      {
+        city_slug: URI.parse(window.location.href).path.split("/")[1],
+        first_monday: first_week.start_date,
+        monday_after: week_after.start_date,
+        admin_mode: admin_mode,
+        update_browser_callback: update_browser_callback,
+      },
+    );
   };
 
   City.prototype = {
