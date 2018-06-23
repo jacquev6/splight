@@ -1,40 +1,6 @@
 "use strict";
 
 var Splight = (function() {
-  function EventsCache({city_slug}) {
-    var self = this;
-
-    self._city_slug = city_slug;
-    self._days = {};
-  };
-
-  EventsCache.prototype = {
-    get: function({start, end, callback}) {
-      var self = this;
-
-      var required_keys = [];
-      for(var d = start.clone(); d.isBefore(end); d.add(1, "day")) {
-        required_keys.push(d.format("YYYY-MM-DD"));
-      }
-
-      var keys_to_fetch = new Set();
-      for(var i = 0; i != required_keys.length; ++i) {
-        var key = required_keys[i];
-        if(!self._days.hasOwnProperty(key)) {
-          keys_to_fetch.add(moment(key).startOf("isoWeek").format("GGGG-[W]WW"));
-        }
-      }
-
-      $.when(
-        ...Array.from(keys_to_fetch).map(
-          key => $.getJSON(URITemplate("/{city}/{key}.json").expand({city: self._city_slug, key: key}), null, data => Object.assign(self._days, data))
-        )
-      ).then(
-        () => callback(required_keys.map(key => self._days[key]))
-      );
-    },
-  };
-
   function AdminMode({decrypt_key_sha, update_browser_callback}) {
     var self = this;
 
@@ -157,7 +123,146 @@ var Splight = (function() {
 
       return self._events_overlap;
     },
+
+    is_active: function() {
+      var self = this;
+
+      return self._is_active;
+    }
   };
+
+  var EventsCache = (function() {
+    const day_format = "YYYY-MM-DD";
+    const week_format = "GGGG-[W]WW";
+    const uri_template = URITemplate("/{city}/{week}.json");
+
+    function make({city, admin_mode}) {
+      var my = {
+        weeks: {},
+        events: {},
+      };
+
+      function handle_fetch_success(week) {
+        return function(data) {
+          my.weeks[week] = {exists: true, data: data};
+        };
+      };
+
+      function handle_fetch_error(week) {
+        return function(jqXHR) {
+          if(jqXHR.status == 404) {
+            my.weeks[week] = {exists: false}
+          } else {
+            console.log("Unhandled fetch error:", week, jqXHR);
+          }
+        };
+      };
+
+      function fetch(start, end) {
+        var weeks_fetching = new Set();
+        var queries = [];
+        for(var day = start.clone(); day.isBefore(end); day.add(1, "day")) {
+          var week = day.format(week_format);
+          if(!my.weeks.hasOwnProperty(week) && !weeks_fetching.has(week)) {
+            weeks_fetching.add(week);
+            console.log("Fetching", week);
+            var url = uri_template.expand({city: city, week: week});
+            queries.push($.ajax({
+              dataType: "json",
+              url: url,
+              data: null,
+              success: handle_fetch_success(week),
+              error: handle_fetch_error(week),
+            }));
+          };
+        };
+        return $.when(...queries);
+      };
+
+      function parse_events(day_data) {
+        var admin_only = !!day_data.encrypted;
+        if(admin_only) {
+          day_data = admin_mode.decrypt_json({message: day_data.encrypted, default_value: undefined});
+        }
+        if(day_data) {
+          return day_data.map(
+            event => ({
+              title: event.title,
+              start: moment(event.start),
+              end: event.end ? moment(event.end) : undefined,
+              tags: event.tags,
+              backgroundColor: event.backgroundColor,
+              borderColor: event.borderColor,
+              splight: {
+                admin_only: admin_only,
+              },
+            })
+          );
+        }
+      };
+
+      function get_day_events(day) {
+        const day_key = day.format(day_format);
+
+        if(!my.events[day_key]) {
+          var week = my.weeks[day.format(week_format)];
+          if(week && week.exists) {
+            for(var d in week.data) {
+              my.events[d] = parse_events(week.data[d]);
+            }
+          }
+        }
+
+        if(my.events[day_key]) {
+          return my.events[day_key];
+        } else {
+          return [];
+        }
+      };
+
+      function get_events(start, end) {
+        var events = [];
+        for(var day = start.clone(); day.isBefore(end); day.add(1, "day")) {
+          events = events.concat(get_day_events(day));
+        };
+        return events;
+      };
+
+      function moment_exists(moment) {
+        return my.weeks[moment.format(week_format)].exists;
+      };
+
+      function fetch_then(start, end, handler) {
+        fetch(start, end).then(handler, handler);
+      };
+
+      return {
+        get_events: function({start, end, callback}) {
+          fetch_then(
+            start,
+            end,
+            function() {
+              callback(get_events(start, end));
+            },
+          );
+        },
+
+        moment_exists: function({moment, callback}) {
+          fetch_then(
+            moment,
+            moment.clone().add(1, "day"),
+            function() {
+              callback(moment, moment_exists(moment));
+            },
+          );
+        }
+      };
+    };
+
+    return {
+      make: make,
+    };
+  })();
 
   function TagFilter({update_browser_callback}) {
     var self = this;
@@ -250,7 +355,7 @@ var Splight = (function() {
     });
   }
 
-  function make_displayed_timespan({city_slug, first_monday, monday_after, admin_mode, update_browser_callback}) {
+  function make_displayed_timespan({city_slug, admin_mode, update_browser_callback}) {
     var self = Object.create(DisplayedTimespan_prototype);
 
     self.admin_mode = admin_mode;
@@ -275,9 +380,7 @@ var Splight = (function() {
         return undefined;
     }
 
-    self.first_monday = first_monday;
-    self.monday_after = monday_after;
-    self.events_cache = new EventsCache({city_slug: city_slug});
+    self.events_cache = EventsCache.make({city: city_slug, admin_mode: admin_mode});
 
     self.tag_filter = new TagFilter({
       update_browser_callback: update_browser_callback,
@@ -380,37 +483,27 @@ var Splight = (function() {
       self.calendar.changeView(self.admin_mode.get_view_type() + self.duration, self.start_date);
       self.calendar.option("slotEventOverlap", self.admin_mode.get_events_overlap())
       // @todo Display animated icon while waiting for responses
-      self.events_cache.get({
+      self.events_cache.get_events({
         start: self.start_date,
         end: self.start_date.clone().add(self.duration == "Week" ? 7 : self.duration == "ThreeDays" ? 3 : 1, "days"),
-        callback: function(eventss) {
-          var events = [];
-          var data_for_admin_only = false;
-          for(var i = 0; i != eventss.length; ++i) {
-            var day_data = eventss[i];
-            if(day_data.encrypted) {
-              day_data = self.admin_mode.decrypt_json({message: day_data.encrypted, default_value: []});
-              data_for_admin_only = true;
+        callback: function(events) {
+          events = self.tag_filter.filter(events);
+
+          if(events.some(e => e.splight.admin_only)) {
+            if(!self.admin_mode.is_active()) {
+              events = events.filter(e => !e.splight.admin_only);
             }
-            events = events.concat(day_data);
-          }
-          if(data_for_admin_only) {
             self.admin_mode.decorate($("#sp-fullcalendar"), {show_if_inactive: true});
           } else {
             self.admin_mode.undecorate($("#sp-fullcalendar"));
           }
 
-          events = self.tag_filter.filter(events);
-
           var minTime = Math.min(...events.map(function(e) {
-            // @todo Build moments in EventsCache (they are used here and in fullCalendar, thus constructed many times)
-            var start = moment(e.start);
-            return start.diff(start.clone().startOf("day"));
+            return e.start.diff(e.start.clone().startOf("day"));
           }));
           var maxTime = Math.max(...events.map(function(e) {
-            var start = moment(e.start);
-            var end = e.end ? moment(e.end) : moment(e.start).add(2, "hours");
-            return end.diff(start.clone().startOf("day"));
+            var end = e.end ? moment(e.end) : e.start.clone().add(2, "hours");
+            return end.diff(e.start.clone().startOf("day"));
           }));
           if(!isFinite(minTime)) {
             minTime = 18 * 3600000;
@@ -438,110 +531,91 @@ var Splight = (function() {
         history.replaceState(null, window.document.title, set_url_day(window.location.href, self.start_date));
       }
 
-      function update_week_links({links, week, global_condition, non_admin_condition}) {
-        update_city_week_links({links: links, week: week});
-        if(global_condition) {
-          if(non_admin_condition) {
-            self.admin_mode.undecorate(links);
-          } else {
-            self.admin_mode.decorate(links, {show_if_inactive: false});
-          }
-        } else {
-          links.hide();
-        }
-      }
+      self.events_cache.moment_exists({
+        moment: self.start_date.clone().subtract(1, "day"),
+        callback: function(previous_day, exists) {
+          var links = $(".sp-previous-week-link");
+          links.toggle(
+            self.duration == "Week" && exists
+            && (self.admin_mode.is_active() || !moment().isSame(self.start_date, "isoWeek"))
+          );
+          update_city_week_links({links: links, week: previous_day});
 
-      var previous_week = self.start_date.clone().subtract(1, "week");
-      update_week_links({
-        links: $(".sp-previous-week-link"),
-        week: previous_week,
-        global_condition: self.duration == "Week" && previous_week >= self.first_monday,
-        non_admin_condition: !moment().isSame(self.start_date, "isoWeek"),
+          links = $(".sp-previous-three-days-link");
+          links.toggle(
+            self.duration == "ThreeDays" && exists
+            && (self.admin_mode.is_active() || !moment().isSame(self.start_date, "day"))
+          );
+          update_city_three_days_links({links: links, three_days: previous_day});
+
+          links = $(".sp-previous-day-link");
+          links.toggle(
+            self.duration == "Day" && exists
+            && (self.admin_mode.is_active() || !moment().isSame(self.start_date, "day"))
+          );
+          update_city_day_links({links: links, day: previous_day});
+        },
       });
 
-      var next_week = self.start_date.clone().add(1, "week");
-      update_week_links({
-        links: $(".sp-next-week-link"),
-        week: next_week,
-        global_condition: self.duration == "Week" && next_week < self.monday_after,
-        non_admin_condition: !moment().add(4, "weeks").isSame(self.start_date, "isoWeek"),
+      self.events_cache.moment_exists({
+        moment: self.start_date.clone().add(1, "week"),
+        callback: function(next_week, exists) {
+          var links = $(".sp-next-week-link");
+          links.toggle(
+            self.duration == "Week" && exists
+            && (self.admin_mode.is_active() || !moment().add(4, "weeks").isSame(self.start_date, "isoWeek"))
+          );
+          update_city_week_links({links: links, week: next_week});
+        },
       });
 
-      function update_three_days_links({links, three_days, global_condition, non_admin_condition}) {
-        update_city_three_days_links({links: links, three_days: three_days});
-        if(global_condition) {
-          if(non_admin_condition) {
-            self.admin_mode.undecorate(links);
-          } else {
-            self.admin_mode.decorate(links, {show_if_inactive: false});
-          }
-        } else {
-          links.hide();
-        }
-      }
-
-      var previous_day = self.start_date.clone().subtract(1, "day");
-      update_three_days_links({
-        links: $(".sp-previous-three-days-link"),
-        three_days: previous_day,
-        global_condition: self.duration == "ThreeDays" && previous_day >= self.first_monday,
-        non_admin_condition: !moment().isSame(self.start_date, "day"),
+      self.events_cache.moment_exists({
+        moment: self.start_date.clone().add(3, "day"),
+        callback: function(in_three_days, exists) {
+          var links = $(".sp-next-three-days-link");
+          links.toggle(
+            self.duration == "ThreeDays" && exists
+            && (self.admin_mode.is_active() || !moment().startOf("week").add(32, "days").isSame(self.start_date, "day"))
+          );
+          update_city_three_days_links({links: links, three_days: self.start_date.clone().add(1, "day")});
+        },
       });
 
-      var next_day = self.start_date.clone().add(1, "day");
-      update_three_days_links({
-        links: $(".sp-next-three-days-link"),
-        three_days: next_day,
-        global_condition: self.duration == "ThreeDays" && next_day.clone().add(2, "days") < self.monday_after,
-        non_admin_condition: !moment().startOf("week").add(32, "days").isSame(self.start_date, "day"),
-      });
-
-      function update_day_links({links, day, global_condition, non_admin_condition}) {
-        update_city_day_links({links: links, day: day});
-        if(global_condition) {
-          if(non_admin_condition) {
-            self.admin_mode.undecorate(links);
-          } else {
-            self.admin_mode.decorate(links, {show_if_inactive: false});
-          }
-        } else {
-          links.hide();
-        }
-      }
-
-      var previous_day = self.start_date.clone().subtract(1, "day");
-      update_day_links({
-        links: $(".sp-previous-day-link"),
-        day: previous_day,
-        global_condition: self.duration == "Day" && previous_day >= self.first_monday,
-        non_admin_condition: !moment().isSame(self.start_date, "day"),
-      });
-
-      var next_day = self.start_date.clone().add(1, "day");
-      update_day_links({
-        links: $(".sp-next-day-link"),
-        day: next_day,
-        global_condition: self.duration == "Day" && next_day < self.monday_after,
-        non_admin_condition: !moment().startOf("week").add(34, "days").isSame(self.start_date, "day"),
+      self.events_cache.moment_exists({
+        moment: self.start_date.clone().add(1, "day"),
+        callback: function(next_day, exists) {
+          var links = $(".sp-next-day-link");
+          links.toggle(
+            self.duration == "Day" && exists
+            && (self.admin_mode.is_active() || !moment().startOf("week").add(34, "days").isSame(self.start_date, "day"))
+          );
+          update_city_day_links({links: links, day: next_day});
+        },
       });
     },
   };
 
-  function City({city: {first_week, week_after}, admin_mode, update_browser_callback}) {
-    var self = this;
+  function makeCity({admin_mode, update_browser_callback}) {
+    var city_slug = URI.parse(window.location.href).path.split("/")[1];
+
+    if(!city_slug) {
+      return null;
+    }
+
+    var self = Object.create(City_prototype);
 
     self.displayed_timespan = make_displayed_timespan(
       {
-        city_slug: URI.parse(window.location.href).path.split("/")[1],
-        first_monday: first_week.start_date,
-        monday_after: week_after.start_date,
+        city_slug: city_slug,
         admin_mode: admin_mode,
         update_browser_callback: update_browser_callback,
       },
     );
+
+    return self;
   };
 
-  City.prototype = {
+  var City_prototype = {
     update_browser: function() {
       var self = this;
 
@@ -554,7 +628,7 @@ var Splight = (function() {
   };
 
   return {
-    initialize: function({decrypt_key_sha, city}) {
+    initialize: function({decrypt_key_sha}) {
       var self = {};
 
       function update_browser() {
@@ -567,9 +641,7 @@ var Splight = (function() {
         update_browser_callback: update_browser,
       });
 
-      if(city) {
-        self.city = new City({city: city, admin_mode: self.admin_mode, update_browser_callback: update_browser})
-      }
+      self.city = makeCity({admin_mode: self.admin_mode, update_browser_callback: update_browser})
 
       update_browser(true);
     },

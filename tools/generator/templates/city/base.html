@@ -5,15 +5,3 @@
 {% block base_jumbo_lead %}Votre agenda culturel à {{ city.name }} et dans sa région.{% endblock %}
 
 {% block base_content %}{% block city_base_content %}{% endblock %}{% endblock %}
-
-{% block base_splight_parameters %}
-          city: {
-            first_week: {
-              start_date: moment("{{ first_week.start_date }}"),
-            },
-            week_after: {
-              start_date: moment("{{ week_after.start_date }}"),
-            },
-            {% block city_base_splight_parameters %}{% endblock %}
-          },
-{% endblock %}
