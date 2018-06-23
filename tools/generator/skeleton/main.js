@@ -138,6 +138,7 @@ var Splight = (function() {
 
     function make({city, admin_mode}) {
       var my = {
+        queries: {},
         weeks: {},
         events: {},
       };
@@ -159,21 +160,21 @@ var Splight = (function() {
       };
 
       function fetch(start, end) {
-        var weeks_fetching = new Set();
         var queries = [];
         for(var day = start.clone(); day.isBefore(end); day.add(1, "day")) {
           var week = day.format(week_format);
-          if(!my.weeks.hasOwnProperty(week) && !weeks_fetching.has(week)) {
-            weeks_fetching.add(week);
-            console.log("Fetching", week);
-            var url = uri_template.expand({city: city, week: week});
-            queries.push($.ajax({
-              dataType: "json",
-              url: url,
-              data: null,
-              success: handle_fetch_success(week),
-              error: handle_fetch_error(week),
-            }));
+          if(!my.weeks[week]) {
+            if(!my.queries[week]) {
+              console.log("Fetching", week);
+              my.queries[week] = $.ajax({
+                dataType: "json",
+                url: uri_template.expand({city: city, week: week}),
+                data: null,
+                success: handle_fetch_success(week),
+                error: handle_fetch_error(week),
+              });
+            }
+            queries.push(my.queries[week]);
           };
         };
         return $.when(...queries);
