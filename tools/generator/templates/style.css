@@ -57,11 +57,6 @@ a {
     z-index: 100000;
 }
 
-.sp-admin-mode-only {
-    border: red 3px solid;
-    background-color: #faa;
-}
-
 #sp-tag-filtering .form-check-inline {
     padding: 2px;
     border-radius: 3px;

@@ -98,20 +98,6 @@ var Splight = (function() {
       }
     },
 
-    decorate: function(q, {show_if_inactive}) {
-      var self = this;
-
-      q.toggle(show_if_inactive || self._is_active);
-      q.toggleClass("sp-admin-mode-only", self._is_active);
-    },
-
-    undecorate: function(q) {
-      var self = this;
-
-      q.show();
-      q.removeClass("sp-admin-mode-only");
-    },
-
     get_view_type: function() {
       var self = this;
 
@@ -494,9 +480,6 @@ var Splight = (function() {
             if(!self.admin_mode.is_active()) {
               events = events.filter(e => !e.splight.admin_only);
             }
-            self.admin_mode.decorate($("#sp-fullcalendar"), {show_if_inactive: true});
-          } else {
-            self.admin_mode.undecorate($("#sp-fullcalendar"));
           }
 
           var minTime = Math.min(...events.map(function(e) {
