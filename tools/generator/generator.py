@@ -66,11 +66,11 @@ def generate(*, data_directory, destination_directory):
         date = city.first_day
         date_after = (
             dateutils.previous_week_day(datetime.date.today(), 0)
-            + datetime.timedelta(weeks=10)
-        )
-        encrypt_after = (
-            dateutils.previous_week_day(datetime.date.today(), 0)
             + datetime.timedelta(weeks=5)
+        )
+        encrypt_until = (
+            dateutils.previous_week_day(datetime.date.today(), 0)
+            + datetime.timedelta(weeks=15)
         )
         first_week = templates.Week(start_date=city.first_day)
         week_after = templates.Week(start_date=date_after)
@@ -114,38 +114,51 @@ def generate(*, data_directory, destination_directory):
                     displayed_week=displayed_week,
                 ).render()
 
-                def make_events(d):
-                    events = city.events.get(d, [])
-                    if d >= encrypt_after:
-                        # openssl enc doesn't provide a strong encryption (its IV is not random),
-                        # but we don't require a high level of security.
-                        # We just want to require an admin password to view events not yet published.
-                        # We're even encrypting with fixed salt to produce deterministic files to be stored in git.
-                        events = dict(
-                            encrypted=base64.b64encode(subprocess.run(
-                                [
-                                    "openssl", "enc",
-                                    "-e",
-                                    "-aes-256-cbc",
-                                    "-S", "0123456789",
-                                    "-k", encrypt_key,
-                                ],
-                                input=json.dumps(
-                                    events, separators=(',', ':'), default=templates.Event.to_json
-                                ).encode("utf-8"),
-                                stdout=subprocess.PIPE,
-                            ).stdout).decode("utf-8")
-                        )
-                    return events
-
                 events = {
-                    d.isoformat(): make_events(d)
+                    d.isoformat(): make_events(city, d, encrypt_key=None)
                     for d in (date + datetime.timedelta(days=i) for i in range(7))
                 }
                 with open("docs/{}/{}.json".format(city.for_templates.slug, displayed_week.slug), "w") as f:
                     json.dump(events, f, sort_keys=True, indent=1, default=templates.Event.to_json)
 
             date += datetime.timedelta(days=1)
+
+        while date <= encrypt_until:
+            assert date.weekday() == 0
+            displayed_week = templates.Week(start_date=date)
+            events = {
+                d.isoformat(): make_events(city, d, encrypt_key=encrypt_key)
+                for d in (date + datetime.timedelta(days=i) for i in range(7))
+            }
+            with open("docs/{}/{}.json".format(city.for_templates.slug, displayed_week.slug), "w") as f:
+                json.dump(events, f, sort_keys=True, indent=1, default=templates.Event.to_json)
+
+            date += datetime.timedelta(days=7)
+
+
+def make_events(city, d, encrypt_key):
+    events = city.events.get(d, [])
+    if encrypt_key:
+        # openssl enc doesn't provide a strong encryption (its IV is not random),
+        # but we don't require a high level of security.
+        # We just want to require an admin password to view events not yet published.
+        # We're even encrypting with fixed salt to produce deterministic files to be stored in git.
+        events = dict(
+            encrypted=base64.b64encode(subprocess.run(
+                [
+                    "openssl", "enc",
+                    "-e",
+                    "-aes-256-cbc",
+                    "-S", "0123456789",
+                    "-k", encrypt_key,
+                ],
+                input=json.dumps(
+                    events, separators=(',', ':'), default=templates.Event.to_json
+                ).encode("utf-8"),
+                stdout=subprocess.PIPE,
+            ).stdout).decode("utf-8")
+        )
+    return events
 
 
 def make_cities(data):

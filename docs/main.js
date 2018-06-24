@@ -296,10 +296,24 @@ var Splight = (function() {
   var DisplayedTimespan = (function() {
     var Week = (function() {
       return {
-        fc_name: "Week",
-        days: 7,
+        name: "Week",
+        duration_days: 7,
+        increment_days: 7,
+        fix_start_date: function(start_date) {
+          start_date.startOf("isoWeek");
+        },
         make_title: function(start_date) {
           return "Semaine du " + start_date.format("dddd Do MMMM");
+        },
+        previous_link_text: "Semaine précédente",
+        next_link_text: "Semaine suivante",
+        now_1_link_text: "Cette semaine",
+        now_2_link_text: "La semaine prochaine",
+        get_now_1_date: function() {
+          return moment().startOf("isoWeek");
+        },
+        get_now_2_date: function() {
+          return moment().startOf("isoWeek").add(7, "days");
         },
         fix_url: function(url, start_date) {
           var uri = new URI(url);
@@ -308,15 +322,35 @@ var Splight = (function() {
           uri.path(path_parts.join("/"));
           return uri.toString();
         },
+        date_is_public: function(start_date) {
+          return (
+            start_date.isSameOrAfter(moment().startOf("isoWeek"))
+            && start_date.isBefore(moment().startOf("isoWeek").add(35, "days"))
+          );
+        },
       }
     })();
 
     var ThreeDays = (function() {
       return {
-        fc_name: "ThreeDays",
-        days: 3,
+        name: "ThreeDays",
+        duration_days: 3,
+        increment_days: 1,
+        fix_start_date: function(start_date) {
+          start_date.startOf("day");
+        },
         make_title: function(start_date) {
           return "3 jours à partir du " + start_date.format("dddd Do MMMM");
+        },
+        previous_link_text: "Jours précédents",
+        next_link_text: "Jours suivants",
+        now_1_link_text: "Ces 3 jours",
+        now_2_link_text: "Le week-end prochain",
+        get_now_1_date: function() {
+          return moment().startOf("day");
+        },
+        get_now_2_date: function() {
+          return moment().add(3, "days").startOf("isoWeek").add(4, "days");
         },
         fix_url: function(url, start_date) {
           var uri = new URI(url);
@@ -325,15 +359,35 @@ var Splight = (function() {
           uri.path(path_parts.join("/"));
           return uri.toString();
         },
+        date_is_public: function(start_date) {
+          return (
+            start_date.isSameOrAfter(moment().startOf("isoWeek"))
+            && start_date.isBefore(moment().startOf("isoWeek").add(33, "days"))
+          );
+        },
       }
     })();
 
     var Day = (function() {
       return {
-        fc_name: "Day",
-        days: 1,
+        name: "Day",
+        duration_days: 1,
+        increment_days: 1,
+        fix_start_date: function(start_date) {
+          start_date.startOf("day");
+        },
         make_title: function(date) {
           return "Journée du " + date.format("dddd Do MMMM");
+        },
+        previous_link_text: "Jour précédent",
+        next_link_text: "Jour suivant",
+        now_1_link_text: "Aujourd'hui",
+        now_2_link_text: "Demain",
+        get_now_1_date: function() {
+          return moment().startOf("day");
+        },
+        get_now_2_date: function() {
+          return moment().startOf("day").add(1, "day");
         },
         fix_url: function(url, date) {
           var uri = new URI(url);
@@ -342,26 +396,14 @@ var Splight = (function() {
           uri.path(path_parts.join("/"));
           return uri.toString();
         },
+        date_is_public: function(start_date) {
+          return (
+            start_date.isSameOrAfter(moment().startOf("isoWeek"))
+            && start_date.isBefore(moment().startOf("isoWeek").add(35, "days"))
+          );
+        },
       }
     })();
-
-    function update_city_week_links({links, week}) {
-      links.prop("href", function(index, href) {
-        return Week.fix_url(href, week);
-      });
-    }
-
-    function update_city_three_days_links({links, three_days}) {
-      links.prop("href", function(index, href) {
-        return ThreeDays.fix_url(href, three_days);
-      });
-    }
-
-    function update_city_day_links({links, day}) {
-      links.prop("href", function(index, href) {
-        return Day.fix_url(href, day);
-      });
-    }
 
     function make({city_slug, admin_mode, update_browser_callback}) {
       var my = {};
@@ -399,7 +441,7 @@ var Splight = (function() {
       $("#sp-fullcalendar").fullCalendar({
         header: false,
         defaultDate: my.start_date,
-        defaultView: "basic" + my.duration.fc_name,
+        defaultView: "basic" + my.duration.name,
         locale: "fr",
         allDaySlot: false,
         height: "auto",
@@ -424,70 +466,43 @@ var Splight = (function() {
 
       my.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
 
-      $(".sp-next-week-link").on("click", function() {
-        my.start_date.add(1, "week");
+      $(".sp-timespan-previous").on("click", function() {
+        my.start_date.subtract(my.duration.increment_days, "days");
         update_browser_callback();
         return false;
       });
 
-      $(".sp-previous-week-link").on("click", function() {
-        my.start_date.subtract(1, "week");
+      $(".sp-timespan-next").on("click", function() {
+        my.start_date.add(my.duration.increment_days, "days");
         update_browser_callback();
         return false;
       });
 
-      $(".sp-now-week-link").on("click", function() {
-        my.start_date = moment().startOf("week");
-        my.duration = Week;
+      $(".sp-timespan-now-1").on("click", function() {
+        my.start_date = my.duration.get_now_1_date();
         update_browser_callback();
         return false;
       });
 
-      $(".sp-next-three-days-link").on("click", function() {
-        my.start_date.add(1, "day");
+      $(".sp-timespan-now-2").on("click", function() {
+        my.start_date = my.duration.get_now_2_date();
         update_browser_callback();
         return false;
       });
 
-      $(".sp-previous-three-days-link").on("click", function() {
-        my.start_date.subtract(1, "day");
-        update_browser_callback();
-        return false;
-      });
-
-      $(".sp-now-three-days-link").on("click", function() {
-        my.start_date = moment().startOf("day");
-        my.duration = ThreeDays;
-        update_browser_callback();
-        return false;
-      });
-
-      $(".sp-next-day-link").on("click", function() {
-        my.start_date.add(1, "day");
-        update_browser_callback();
-        return false;
-      });
-
-      $(".sp-previous-day-link").on("click", function() {
-        my.start_date.subtract(1, "day");
-        update_browser_callback();
-        return false;
-      });
-
-      $(".sp-now-day-link").on("click", function() {
-        my.start_date = moment().startOf("day");
-        my.duration = Day;
+      $("#sp-timespan-duration").on("change", function() {
+        my.duration = eval($(this).val());
+        my.duration.fix_start_date(my.start_date);
         update_browser_callback();
         return false;
       });
 
       function update_browser() {
-        my.calendar.changeView(admin_mode.get_view_type() + my.duration.fc_name, my.start_date);
-        my.calendar.option("slotEventOverlap", admin_mode.get_events_overlap())
+        my.calendar.changeView(admin_mode.get_view_type() + my.duration.name, my.start_date);
         // @todo Display animated icon while waiting for responses
         my.events_cache.get_events({
           start: my.start_date,
-          end: my.start_date.clone().add(my.duration.days, "days"),
+          end: my.start_date.clone().add(my.duration.duration_days, "days"),
           callback: function(events) {
             events = my.tag_filter.filter(events);
 
@@ -509,8 +524,11 @@ var Splight = (function() {
               maxTime = 20 * 3600000;
             }
 
-            my.calendar.option("minTime", Math.floor(minTime / 3600000) * 3600000);
-            my.calendar.option("maxTime", Math.ceil(maxTime / 3600000) * 3600000);
+            my.calendar.option({
+              minTime: Math.floor(minTime / 3600000) * 3600000,
+              maxTime: Math.ceil(maxTime / 3600000) * 3600000,
+              slotEventOverlap: admin_mode.get_events_overlap(),
+            });
 
             my.displayed_events = events;
             my.calendar.refetchEvents();
@@ -521,72 +539,44 @@ var Splight = (function() {
 
         $("#sp-timespan-title").text(my.duration.make_title(my.start_date));
         history.replaceState(null, window.document.title, my.duration.fix_url(window.location.href, my.start_date));
+        $("#sp-timespan-duration").val(my.duration.name);
+
+        var links = $(".sp-timespan-now-1");
+        links.text(my.duration.now_1_link_text);
+        links.prop("href", function(index, href) {
+          return my.duration.fix_url(href, my.duration.get_now_1_date());
+        });
+
+        var links = $(".sp-timespan-now-2");
+        links.text(my.duration.now_2_link_text);
+        links.prop("href", function(index, href) {
+          return my.duration.fix_url(href, my.duration.get_now_2_date());
+        });
 
         my.events_cache.moment_exists({
-          moment: my.start_date.clone().subtract(1, "day"),
-          callback: function(previous_day, exists) {
-            var links = $(".sp-previous-week-link");
-            links.toggle(
-              my.duration.fc_name == "Week" && exists
-              && (admin_mode.is_active() || !moment().isSame(my.start_date, "isoWeek"))
-            );
-            update_city_week_links({links: links, week: previous_day});
-
-            links = $(".sp-previous-three-days-link");
-            links.toggle(
-              my.duration.fc_name == "ThreeDays" && exists
-              && (admin_mode.is_active() || !moment().isSame(my.start_date, "day"))
-            );
-            update_city_three_days_links({links: links, three_days: previous_day});
-
-            links = $(".sp-previous-day-link");
-            links.toggle(
-              my.duration.fc_name == "Day" && exists
-              && (admin_mode.is_active() || !moment().isSame(my.start_date, "day"))
-            );
-            update_city_day_links({links: links, day: previous_day});
+          moment: my.start_date.clone().subtract(my.duration.increment_days, "days"),
+          callback: function(previous_start_date, exists) {
+            var links = $(".sp-timespan-previous");
+            links.toggle(exists && (admin_mode.is_active() || my.duration.date_is_public(previous_start_date)));
+            links.text("< " + my.duration.previous_link_text);
+            links.prop("href", function(index, href) {
+              return my.duration.fix_url(href, previous_start_date);
+            });
           },
         });
 
         my.events_cache.moment_exists({
-          moment: my.start_date.clone().add(1, "week"),
-          callback: function(next_week, exists) {
-            var links = $(".sp-next-week-link");
-            links.toggle(
-              my.duration.fc_name == "Week" && exists
-              && (admin_mode.is_active() || !moment().add(4, "weeks").isSame(my.start_date, "isoWeek"))
-            );
-            update_city_week_links({links: links, week: next_week});
+          moment: my.start_date.clone().add(my.duration.duration_days + my.duration.increment_days - 1, "days"),
+          callback: function(next_last_date, exists) {
+            var next_start_date = my.start_date.clone().add(my.duration.increment_days, "days");
+            var links = $(".sp-timespan-next");
+            links.toggle(exists && (admin_mode.is_active() || my.duration.date_is_public(next_start_date)));
+            links.text(my.duration.next_link_text + " >");
+            links.prop("href", function(index, href) {
+              return my.duration.fix_url(href, next_start_date);
+            });
           },
         });
-
-        my.events_cache.moment_exists({
-          moment: my.start_date.clone().add(3, "day"),
-          callback: function(in_three_days, exists) {
-            var links = $(".sp-next-three-days-link");
-            links.toggle(
-              my.duration.fc_name == "ThreeDays" && exists
-              && (admin_mode.is_active() || !moment().startOf("week").add(32, "days").isSame(my.start_date, "day"))
-            );
-            update_city_three_days_links({links: links, three_days: my.start_date.clone().add(1, "day")});
-          },
-        });
-
-        my.events_cache.moment_exists({
-          moment: my.start_date.clone().add(1, "day"),
-          callback: function(next_day, exists) {
-            var links = $(".sp-next-day-link");
-            links.toggle(
-              my.duration.fc_name == "Day" && exists
-              && (admin_mode.is_active() || !moment().startOf("week").add(34, "days").isSame(my.start_date, "day"))
-            );
-            update_city_day_links({links: links, day: next_day});
-          },
-        });
-
-        update_city_week_links({links: $(".sp-now-week-link"), week: moment()});
-        update_city_three_days_links({links: $(".sp-now-three-days-link"), three_days: moment()});
-        update_city_day_links({links: $(".sp-now-day-link"), day: moment()});
       }
 
       return {

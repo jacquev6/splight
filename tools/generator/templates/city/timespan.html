@@ -33,19 +33,22 @@
 
     <div class="row">
       <div class="col">
-        <p class="text-right">&nbsp;<a class="sp-previous-week-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_week and displayed_week.previous.start_date >= first_week.start_date %}{{ displayed_week.previous.slug }}{% endif %}/">&lt; Semaine précédente</a></p>
-        <p class="text-right">&nbsp;<a class="sp-previous-three-days-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_three_days and displayed_three_days.previous.start_date >= first_week.start_date %}{{ displayed_three_days.previous.slug }}{% endif %}/">&lt; Jours précédents</a></p>
-        <p class="text-right">&nbsp;<a class="sp-previous-day-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_day and displayed_day.previous.date >= first_week.start_date %}{{ displayed_day.previous.slug }}{% endif %}/">&lt; Jour précédent</a></p>
+        <p class="text-right">&nbsp;<a class="sp-timespan-previous sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{{ timespan.previous_link_slug }}/">&lt; {{ timespan.previous_link_text }}</a></p>
+      </div>
+      <div class="col"><div class="form-group text-center">
+        <label>Afficher&nbsp;: <select id="sp-timespan-duration"><option value="Week">une semaine</option><option value="ThreeDays">trois jours</option><option value="Day">une journée</option></select></label>
+      </div></div>
+      <div class="col">
+        <p class="text-left"><a class="sp-timespan-next sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{{ timespan.next_link_slug }}/">{{ timespan.next_link_text }} &gt;</a>&nbsp;</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <p class="text-right">&nbsp;<a class="sp-timespan-now-1 sp-tag-filtering-tagged-link" href="/{{ city.slug }}//">{{ timespan.now_1_link_text }}</a></p>
       </div>
       <div class="col">
-        <p class="text-center"><a class="sp-now-week-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}//">Cette semaine</a></p>
-        <p class="text-center"><a class="sp-now-three-days-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}//">Ces 3 jours</a></p>
-        <p class="text-center"><a class="sp-now-day-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}//">Aujourd'hui</a></p>
-      </div>
-      <div class="col">
-        <p class="text-left"><a class="sp-next-week-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_week and displayed_week.date_after < week_after.start_date %}{{ displayed_week.next.slug }}{% endif %}/">Semaine suivante &gt;</a>&nbsp;</p>
-        <p class="text-left"><a class="sp-next-three-days-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_three_days and displayed_three_days.date_after < week_after.start_date %}{{ displayed_three_days.next.slug }}{% endif %}/">Jours suivants &gt;</a>&nbsp;</p>
-        <p class="text-left"><a class="sp-next-day-link sp-tag-filtering-tagged-link" href="/{{ city.slug }}/{% if displayed_day and displayed_day.date_after < week_after.start_date %}{{ displayed_day.next.slug }}{% endif %}/">Jour suivant &gt;</a>&nbsp;</p>
+        <p class="text-left"><a class="sp-timespan-now-2 sp-tag-filtering-tagged-link" href="/{{ city.slug }}//">{{ timespan.now_2_link_text }}</a>&nbsp;</p>
       </div>
     </div>
 

@@ -1,5 +1,6 @@
 import datetime
 import os
+import types
 
 import jinja2
 
@@ -382,6 +383,14 @@ class CityBaseHtml(_BaseHtml):
         self.__week_after = week_after
 
     @property
+    def first_week(self):
+        return self.__first_week
+
+    @property
+    def week_after(self):
+        return self.__week_after
+
+    @property
     def destination(self):
         return os.path.join(super().destination, self.__city.slug)
 
@@ -434,5 +443,60 @@ class CityTimespanHtml(CityBaseHtml):
             displayed_day=self.__displayed_day,
             displayed_three_days=self.__displayed_three_days,
             displayed_week=self.__displayed_week,
+            timespan=self.__make_timespan(),
             **super().context,
         )
+
+    def __make_timespan(self):
+        if self.__displayed_week:
+            return types.SimpleNamespace(
+                previous_link_text="Semaine précédente",
+                previous_link_slug=(
+                    self.__displayed_week.previous.slug
+                    if self.__displayed_week.previous.start_date >= self.first_week.start_date
+                    else ""
+                ),
+                next_link_text="Semaine suivante",
+                next_link_slug=(
+                    self.__displayed_week.next.slug
+                    if self.__displayed_week.date_after < self.week_after.start_date
+                    else ""
+                ),
+                now_1_link_text="Cette semaine",
+                now_2_link_text="La semaine prochaine",
+            )
+        elif self.__displayed_three_days:
+            return types.SimpleNamespace(
+                previous_link_text="Jours précédents",
+                previous_link_slug=(
+                    self.__displayed_three_days.previous.slug
+                    if self.__displayed_three_days.previous.start_date >= self.first_week.start_date
+                    else ""
+                ),
+                next_link_text="Jours suivants",
+                next_link_slug=(
+                    self.__displayed_three_days.next.slug
+                    if self.__displayed_three_days.date_after < self.week_after.start_date
+                    else ""
+                ),
+                now_1_link_text="Ces trois jours",
+                now_2_link_text="Ce week-end",
+            )
+        else:
+            assert self.__displayed_day
+            return types.SimpleNamespace(
+                previous_link_text="Jour précédent",
+                previous_link_slug=(
+                    self.__displayed_day.previous.slug
+                    if self.__displayed_day.previous.date >= self.first_week.start_date
+                    else ""
+                ),
+                next_link_text="Jour suivant",
+                next_link_slug=(
+                    self.__displayed_day.next.slug
+                    if self.__displayed_day.date_after < self.week_after.start_date
+                    else ""
+                ),
+                now_1_link_text="Aujourd'hui",
+                now_2_link_text="Demain",
+            )
