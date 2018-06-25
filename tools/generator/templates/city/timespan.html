@@ -21,7 +21,7 @@
 
 <div class="row">
   <div class="col">
-    <h1 id="sp-timespan-title">{% if displayed_week %}Semaine du {{ displayed_week.start_date|format_date }}{% elif displayed_three_days %}3 jours à partir du {{ displayed_three_days.start_date|format_date }}{% else %}Journée du {{ displayed_day.date|format_date }}{% endif %}</h1>
+    <h1 id="sp-timespan-title">{{ timespan.title }}</h1>
 
     <div class="row"><div class="col"><div id="sp-tag-filtering" class="form-group">
       {% for tag in city.tags %}

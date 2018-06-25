@@ -158,6 +158,17 @@ class Week:
     def date_after(self):
         return self.next.start_date
 
+    def for_context(self, first_week, week_after):
+        return dict(
+            title="Semaine du {}".format(_format_date(self.start_date)),
+            previous_link_text="Semaine précédente",
+            previous_link_slug=(self.previous.slug if self.previous.start_date >= first_week.start_date else ""),
+            next_link_text="Semaine suivante",
+            next_link_slug=(self.next.slug if self.date_after < week_after.start_date else ""),
+            now_1_link_text="Cette semaine",
+            now_2_link_text="La semaine prochaine",
+        )
+
 
 class ThreeDays:
     def __init__(self, *, start_date):
@@ -184,6 +195,17 @@ class ThreeDays:
     def date_after(self):
         return self.__start_date + datetime.timedelta(days=3)
 
+    def for_context(self, first_week, week_after):
+        return dict(
+            title="3 jours à partir du {}".format(_format_date(self.start_date)),
+            previous_link_text="Jours précédents",
+            previous_link_slug=(self.previous.slug if self.previous.start_date >= first_week.start_date else ""),
+            next_link_text="Jours suivants",
+            next_link_slug=(self.next.slug if self.date_after < week_after.start_date else ""),
+            now_1_link_text="Ces trois jours",
+            now_2_link_text="Ce week-end",
+        )
+
 
 class Day:
     def __init__(self, *, date):
@@ -209,6 +231,17 @@ class Day:
     @property
     def date_after(self):
         return self.next.date
+
+    def for_context(self, first_week, week_after):
+        return dict(
+            title="Journée du {}".format(_format_date(self.date)),
+            previous_link_text="Jour précédent",
+            previous_link_slug=(self.previous.slug if self.previous.date >= first_week.start_date else ""),
+            next_link_text="Jour suivant",
+            next_link_slug=(self.next.slug if self.date_after < week_after.start_date else ""),
+            now_1_link_text="Aujourd'hui",
+            now_2_link_text="Demain",
+        )
 
 
 class Event:
@@ -421,82 +454,19 @@ class CityTimespanHtml(CityBaseHtml):
     def __init__(
         self, *,
         decrypt_key_sha, city, first_week, week_after,
-        displayed_day, displayed_three_days, displayed_week,
+        timespan,
     ):
         super().__init__(decrypt_key_sha=decrypt_key_sha, city=city, first_week=first_week, week_after=week_after)
-        assert displayed_day is None or isinstance(displayed_day, Day)
-        self.__displayed_day = displayed_day
-        assert displayed_three_days is None or isinstance(displayed_three_days, ThreeDays)
-        self.__displayed_three_days = displayed_three_days
-        assert displayed_week is None or isinstance(displayed_week, Week)
-        self.__displayed_week = displayed_week
-        assert sum(1 if x else 0 for x in [displayed_day, displayed_three_days, displayed_week]) == 1
-        self.__displayed_timespan = displayed_day or displayed_three_days or displayed_week
+        assert isinstance(timespan, (Week, ThreeDays, Day))
+        self.__timespan = timespan
 
     @property
     def destination(self):
-        return os.path.join(super().destination, self.__displayed_timespan.slug, "index.html")
+        return os.path.join(super().destination, self.__timespan.slug, "index.html")
 
     @property
     def context(self):
         return dict(
-            displayed_day=self.__displayed_day,
-            displayed_three_days=self.__displayed_three_days,
-            displayed_week=self.__displayed_week,
-            timespan=self.__make_timespan(),
+            timespan=self.__timespan.for_context(self.first_week, self.week_after),
             **super().context,
         )
-
-    def __make_timespan(self):
-        if self.__displayed_week:
-            return types.SimpleNamespace(
-                previous_link_text="Semaine précédente",
-                previous_link_slug=(
-                    self.__displayed_week.previous.slug
-                    if self.__displayed_week.previous.start_date >= self.first_week.start_date
-                    else ""
-                ),
-                next_link_text="Semaine suivante",
-                next_link_slug=(
-                    self.__displayed_week.next.slug
-                    if self.__displayed_week.date_after < self.week_after.start_date
-                    else ""
-                ),
-                now_1_link_text="Cette semaine",
-                now_2_link_text="La semaine prochaine",
-            )
-        elif self.__displayed_three_days:
-            return types.SimpleNamespace(
-                previous_link_text="Jours précédents",
-                previous_link_slug=(
-                    self.__displayed_three_days.previous.slug
-                    if self.__displayed_three_days.previous.start_date >= self.first_week.start_date
-                    else ""
-                ),
-                next_link_text="Jours suivants",
-                next_link_slug=(
-                    self.__displayed_three_days.next.slug
-                    if self.__displayed_three_days.date_after < self.week_after.start_date
-                    else ""
-                ),
-                now_1_link_text="Ces trois jours",
-                now_2_link_text="Ce week-end",
-            )
-        else:
-            assert self.__displayed_day
-            return types.SimpleNamespace(
-                previous_link_text="Jour précédent",
-                previous_link_slug=(
-                    self.__displayed_day.previous.slug
-                    if self.__displayed_day.previous.date >= self.first_week.start_date
-                    else ""
-                ),
-                next_link_text="Jour suivant",
-                next_link_slug=(
-                    self.__displayed_day.next.slug
-                    if self.__displayed_day.date_after < self.week_after.start_date
-                    else ""
-                ),
-                now_1_link_text="Aujourd'hui",
-                now_2_link_text="Demain",
-            )

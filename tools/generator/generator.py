@@ -88,9 +88,7 @@ def generate(*, data_directory, destination_directory):
                 city=city.for_templates,
                 first_week=first_week,
                 week_after=week_after,
-                displayed_day=templates.Day(date=date),
-                displayed_three_days=None,
-                displayed_week=None,
+                timespan=templates.Day(date=date),
             ).render()
             if date + datetime.timedelta(days=2) < date_after:
                 templates.CityTimespanHtml(
@@ -98,9 +96,7 @@ def generate(*, data_directory, destination_directory):
                     city=city.for_templates,
                     first_week=first_week,
                     week_after=week_after,
-                    displayed_day=None,
-                    displayed_three_days=templates.ThreeDays(start_date=date),
-                    displayed_week=None,
+                    timespan=templates.ThreeDays(start_date=date),
                 ).render()
             if date.weekday() == 0:
                 displayed_week = templates.Week(start_date=date)
@@ -109,9 +105,7 @@ def generate(*, data_directory, destination_directory):
                     city=city.for_templates,
                     first_week=first_week,
                     week_after=week_after,
-                    displayed_day=None,
-                    displayed_three_days=None,
-                    displayed_week=displayed_week,
+                    timespan=displayed_week,
                 ).render()
 
                 events = {
