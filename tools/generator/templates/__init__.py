@@ -338,6 +338,26 @@ class _Template:
         return dict()
 
 
+class IndexJs(_Template):
+    template_name = "index.js"
+
+    def __init__(self, *, decrypt_key_sha):
+        super().__init__()
+        assert isinstance(decrypt_key_sha, str)
+        self.__decrypt_key_sha = decrypt_key_sha
+
+    @property
+    def destination(self):
+        return os.path.join(super().destination, "index.js")
+
+    @property
+    def context(self):
+        return dict(
+            decrypt_key_sha=self.__decrypt_key_sha,
+            **super().context,
+        )
+
+
 class IndexCss(_Template):
     template_name = "index.css"
 
@@ -363,24 +383,14 @@ class IndexCss(_Template):
 
 
 class _BaseHtml(_Template):
-    def __init__(self, *, decrypt_key_sha):
-        super().__init__()
-        assert isinstance(decrypt_key_sha, str)
-        self.__decrypt_key_sha = decrypt_key_sha
-
-    @property
-    def context(self):
-        return dict(
-            decrypt_key_sha=self.__decrypt_key_sha,
-            **super().context,
-        )
+    pass
 
 
 class IndexHtml(_BaseHtml):
     template_name = "index.html"
 
-    def __init__(self, *, decrypt_key_sha, cities):
-        super().__init__(decrypt_key_sha=decrypt_key_sha)
+    def __init__(self, *, cities):
+        super().__init__()
         assert isinstance(cities, list)
         assert all(isinstance(city, City) for city in cities)
         self.__cities = cities
@@ -406,8 +416,8 @@ class AdsHtml(_BaseHtml):
 
 
 class CityBaseHtml(_BaseHtml):
-    def __init__(self, *, decrypt_key_sha, city, first_week, week_after):
-        super().__init__(decrypt_key_sha=decrypt_key_sha)
+    def __init__(self, *, city, first_week, week_after):
+        super().__init__()
         assert isinstance(city, City)
         self.__city = city
         assert isinstance(first_week, Week)
@@ -440,8 +450,8 @@ class CityBaseHtml(_BaseHtml):
 class CityIndexHtml(CityBaseHtml):
     template_name = "city/index.html"
 
-    def __init__(self, *, decrypt_key_sha, city, first_week, week_after):
-        super().__init__(decrypt_key_sha=decrypt_key_sha, city=city, first_week=first_week, week_after=week_after)
+    def __init__(self, *, city, first_week, week_after):
+        super().__init__(city=city, first_week=first_week, week_after=week_after)
 
     @property
     def destination(self):
@@ -453,10 +463,10 @@ class CityTimespanHtml(CityBaseHtml):
 
     def __init__(
         self, *,
-        decrypt_key_sha, city, first_week, week_after,
+        city, first_week, week_after,
         timespan,
     ):
-        super().__init__(decrypt_key_sha=decrypt_key_sha, city=city, first_week=first_week, week_after=week_after)
+        super().__init__(city=city, first_week=first_week, week_after=week_after)
         assert isinstance(timespan, (Week, ThreeDays, Day))
         self.__timespan = timespan
 

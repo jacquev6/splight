@@ -58,9 +58,10 @@ def generate(*, data_directory, destination_directory):
     encrypt_key = os.environ["SPLIGHT_ENCRYPT_KEY"]
     decrypt_key_sha = hashlib.sha1(encrypt_key.encode("utf-8")).hexdigest()
 
-    templates.IndexHtml(decrypt_key_sha=decrypt_key_sha, cities=[city.for_templates for city in cities]).render()
-    templates.AdsHtml(decrypt_key_sha=decrypt_key_sha).render()
+    templates.IndexHtml(cities=[city.for_templates for city in cities]).render()
+    templates.AdsHtml().render()
     templates.IndexCss(modernizr_features=modernizr_features, colors=colors).render()
+    templates.IndexJs(decrypt_key_sha=decrypt_key_sha).render()
 
     for city in cities:
         date = city.first_day
@@ -76,7 +77,6 @@ def generate(*, data_directory, destination_directory):
         week_after = templates.Week(start_date=date_after)
 
         templates.CityIndexHtml(
-            decrypt_key_sha=decrypt_key_sha,
             city=city.for_templates,
             first_week=first_week,
             week_after=week_after,
@@ -84,7 +84,6 @@ def generate(*, data_directory, destination_directory):
 
         while date < date_after:
             templates.CityTimespanHtml(
-                decrypt_key_sha=decrypt_key_sha,
                 city=city.for_templates,
                 first_week=first_week,
                 week_after=week_after,
@@ -92,7 +91,6 @@ def generate(*, data_directory, destination_directory):
             ).render()
             if date + datetime.timedelta(days=2) < date_after:
                 templates.CityTimespanHtml(
-                    decrypt_key_sha=decrypt_key_sha,
                     city=city.for_templates,
                     first_week=first_week,
                     week_after=week_after,
@@ -101,7 +99,6 @@ def generate(*, data_directory, destination_directory):
             if date.weekday() == 0:
                 displayed_week = templates.Week(start_date=date)
                 templates.CityTimespanHtml(
-                    decrypt_key_sha=decrypt_key_sha,
                     city=city.for_templates,
                     first_week=first_week,
                     week_after=week_after,

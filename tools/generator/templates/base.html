@@ -111,14 +111,5 @@
     {% for js in scripts %}
     <script src="{{ js }}"></script>
     {% endfor %}
-
-
-    <script>
-      $(function() {
-        Splight.initialize({
-          decrypt_key_sha: "{{ decrypt_key_sha }}",
-        });
-      });
-    </script>
   </body>
 </html>

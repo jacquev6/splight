@@ -1,12 +1,12 @@
-"use strict";
+(function() {
+  "use strict";
 
-var Splight = (function() {
   var AdminMode = (function() {
-    function make({decrypt_key_sha, update_browser_callback}) {
+    function make({update_browser_callback}) {
       var my = {};
 
       function try_enable(decrypt_key, is_active) {
-        var decrypt_key_is_valid = CryptoJS.SHA1(decrypt_key).toString() == decrypt_key_sha;
+        var decrypt_key_is_valid = CryptoJS.SHA1(decrypt_key).toString() == "f722f20fc568981ad1702f8075048e08a766bfa0";
 
         if(decrypt_key_is_valid) {
           my.decrypt_key = decrypt_key;
@@ -621,7 +621,7 @@ var Splight = (function() {
     }
   })();
 
-  function initialize({decrypt_key_sha}) {
+  $(function() {
     var my = {};
 
     function update_browser() {
@@ -629,14 +629,10 @@ var Splight = (function() {
       my.city.update_browser();
     };
 
-    my.admin_mode = AdminMode.make({decrypt_key_sha: decrypt_key_sha, update_browser_callback: update_browser});
+    my.admin_mode = AdminMode.make({update_browser_callback: update_browser});
 
     my.city = City.make({admin_mode: my.admin_mode, update_browser_callback: update_browser})
 
     update_browser();
-  }
-
-  return {
-    initialize: initialize,
-  }
+  });
 })();
