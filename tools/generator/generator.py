@@ -60,7 +60,7 @@ def generate(*, data_directory, destination_directory):
 
     templates.IndexHtml(decrypt_key_sha=decrypt_key_sha, cities=[city.for_templates for city in cities]).render()
     templates.AdsHtml(decrypt_key_sha=decrypt_key_sha).render()
-    templates.StyleCss(modernizr_features=modernizr_features, colors=colors).render()
+    templates.IndexCss(modernizr_features=modernizr_features, colors=colors).render()
 
     for city in cities:
         date = city.first_day

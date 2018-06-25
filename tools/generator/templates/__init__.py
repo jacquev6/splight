@@ -338,8 +338,8 @@ class _Template:
         return dict()
 
 
-class StyleCss(_Template):
-    template_name = "style.css"
+class IndexCss(_Template):
+    template_name = "index.css"
 
     def __init__(self, *, modernizr_features, colors):
         super().__init__()
@@ -351,7 +351,7 @@ class StyleCss(_Template):
 
     @property
     def destination(self):
-        return os.path.join(super().destination, "style.css")
+        return os.path.join(super().destination, "index.css")
 
     @property
     def context(self):
