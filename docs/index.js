@@ -164,36 +164,28 @@
         return $.when(...queries);
       };
 
-      function parse_events(day_data) {
-        var admin_only = !!day_data.encrypted;
-        if(admin_only) {
-          day_data = admin_mode.decrypt_json({message: day_data.encrypted, default_value: null});
-        }
-        if(day_data) {
-          return day_data.map(
-            event => ({
-              title: event.title,
-              start: moment(event.start),
-              end: event.end ? moment(event.end) : null,
-              tags: event.tags,
-              backgroundColor: event.backgroundColor,
-              borderColor: event.borderColor,
-              splight: {
-                admin_only: admin_only,
-              },
-            })
-          );
-        }
-      };
-
       function get_day_events(day) {
         const day_key = day.format(day_format);
 
         if(!my.events[day_key]) {
           var week = my.weeks[day.format(week_format)];
+          var admin_only = !!week.encrypted;
+          if(admin_only) {
+            week = admin_mode.decrypt_json({message: week.encrypted, default_value: null});
+          }
           if(week && week.exists) {
-            for(var d in week.data) {
-              my.events[d] = parse_events(week.data[d]);
+            for(var d in week.data.events) {
+              my.events[d] = week.data.events[d].map(event => ({
+                title: event.title,
+                start: moment(event.start),
+                end: event.end ? moment(event.end) : null,
+                tags: event.tags,
+                backgroundColor: event.backgroundColor,
+                borderColor: event.borderColor,
+                splight: {
+                  admin_only: admin_only,
+                },
+              }));
             }
           }
         }
@@ -519,10 +511,8 @@
           callback: function(events) {
             events = my.tag_filter.filter(events);
 
-            if(events.some(e => e.splight.admin_only)) {
-              if(!admin_mode.is_active()) {
-                events = events.filter(e => !e.splight.admin_only);
-              }
+            if(!admin_mode.is_active()) {
+              events = events.filter(e => !e.splight.admin_only);
             }
 
             var minTime = Math.min(...events.map(function(e) {

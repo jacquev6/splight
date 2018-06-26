@@ -105,51 +105,48 @@ def generate(*, data_directory, destination_directory):
                     timespan=displayed_week,
                 ).render()
 
-                events = {
-                    d.isoformat(): make_events(city, d, encrypt_key=None)
-                    for d in (date + datetime.timedelta(days=i) for i in range(7))
-                }
+                week_data = make_week_data(city, date)
                 with open("docs/{}/{}.json".format(city.for_templates.slug, displayed_week.slug), "w") as f:
-                    json.dump(events, f, sort_keys=True, indent=1, default=templates.Event.to_json)
+                    json.dump(week_data, f, sort_keys=True, indent=1, default=templates.Event.to_json)
 
             date += datetime.timedelta(days=1)
 
         while date <= encrypt_until:
             assert date.weekday() == 0
             displayed_week = templates.Week(start_date=date)
-            events = {
-                d.isoformat(): make_events(city, d, encrypt_key=encrypt_key)
-                for d in (date + datetime.timedelta(days=i) for i in range(7))
-            }
+            week_data = make_week_data(city, date)
+            # openssl enc doesn't provide a strong encryption (its IV is not random),
+            # but we don't require a high level of security.
+            # We just want to require an admin password to view events not yet published.
+            # We're even encrypting with fixed salt to produce deterministic files to be stored in git.
+            week_data = dict(
+                encrypted=base64.b64encode(subprocess.run(
+                    [
+                        "openssl", "enc",
+                        "-e",
+                        "-aes-256-cbc",
+                        "-S", "0123456789",
+                        "-k", encrypt_key,
+                    ],
+                    input=json.dumps(
+                        week_data, separators=(',', ':'), default=templates.Event.to_json
+                    ).encode("utf-8"),
+                    stdout=subprocess.PIPE,
+                ).stdout).decode("utf-8")
+            )
             with open("docs/{}/{}.json".format(city.for_templates.slug, displayed_week.slug), "w") as f:
-                json.dump(events, f, sort_keys=True, indent=1, default=templates.Event.to_json)
+                json.dump(week_data, f, sort_keys=True, indent=1, default=templates.Event.to_json)
 
             date += datetime.timedelta(days=7)
 
 
-def make_events(city, d, encrypt_key):
-    events = city.events.get(d, [])
-    if encrypt_key:
-        # openssl enc doesn't provide a strong encryption (its IV is not random),
-        # but we don't require a high level of security.
-        # We just want to require an admin password to view events not yet published.
-        # We're even encrypting with fixed salt to produce deterministic files to be stored in git.
-        events = dict(
-            encrypted=base64.b64encode(subprocess.run(
-                [
-                    "openssl", "enc",
-                    "-e",
-                    "-aes-256-cbc",
-                    "-S", "0123456789",
-                    "-k", encrypt_key,
-                ],
-                input=json.dumps(
-                    events, separators=(',', ':'), default=templates.Event.to_json
-                ).encode("utf-8"),
-                stdout=subprocess.PIPE,
-            ).stdout).decode("utf-8")
-        )
-    return events
+def make_week_data(city, start_date):
+    return dict(
+        events={
+            d.isoformat(): city.events.get(d, [])
+            for d in (start_date + datetime.timedelta(days=i) for i in range(7))
+        },
+    )
 
 
 def make_cities(data):
