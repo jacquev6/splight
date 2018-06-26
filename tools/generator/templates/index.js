@@ -673,7 +673,7 @@
         my.admin_mode.update_browser(),
         my.city.update_browser(),
       ).then(function() {
-        window.setTimeout(function() { // @todo Remove timeout (added only to show animation to shareholders)
+        window.setTimeout(function() {
           $(".sp-modern").removeClass("sp-loading");
         }, my.admin_mode.get_dancing_cow_delay());
       });
