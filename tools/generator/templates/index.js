@@ -81,6 +81,8 @@
 
         $("#sp-admin-mode-agenda-view-settings").toggle(my.view_type == "agenda");
         $("#sp-admin-mode-agenda-view-overlap").prop("checked", my.events_overlap);
+
+        return $.Deferred().resolve();
       }
 
       function decrypt_json({message, default_value}) {
@@ -139,7 +141,6 @@
           var week = day.format(week_format);
           if(!my.weeks[week]) {
             if(!my.queries[week]) {
-              console.log("Fetching", week);
               my.queries[week] = $.ajax({
                 dataType: "json",
                 url: uri_template.expand({city: city, week: week}),
@@ -272,6 +273,8 @@
         })
 
         history.replaceState(null, window.document.title, URI(window.location.href).query(new_query).toString());
+
+        return $.Deferred().resolve();
       }
 
       function filter(events) {
@@ -462,6 +465,13 @@
             duration: {days: 3},
           },
         },
+        // @todo Can we use a local variable in update_browser to hold the deferred?
+        eventAfterAllRender: function() {
+          if(my.calendar_updated) {
+            my.calendar_updated.resolve();
+            my.calendar_updated = undefined;
+          }
+        },
       });
 
       my.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
@@ -497,9 +507,10 @@
         return false;
       });
 
-      function update_browser() {
+      function update_calendar() {
+        var r = $.Deferred();
+
         my.calendar.changeView(admin_mode.get_view_type() + my.duration.name, my.start_date);
-        // @todo Display animated icon while waiting for responses
         my.events_cache.get_events({
           start: my.start_date,
           end: my.start_date.clone().add(my.duration.duration_days, "days"),
@@ -531,52 +542,75 @@
             });
 
             my.displayed_events = events;
+            my.calendar_updated = r;
             my.calendar.refetchEvents();
           }
         });
 
-        my.tag_filter.update_browser();
+        return r;
+      }
 
-        $("#sp-timespan-title").text(my.duration.make_title(my.start_date));
-        history.replaceState(null, window.document.title, my.duration.fix_url(window.location.href, my.start_date));
-        $("#sp-timespan-duration").val(my.duration.name);
+      function update_browser() {
+        return $.when(
+          update_calendar(),
+          my.tag_filter.update_browser(),
+          function() {
+            $("#sp-timespan-title").text(my.duration.make_title(my.start_date));
+            history.replaceState(null, window.document.title, my.duration.fix_url(window.location.href, my.start_date));
+            $("#sp-timespan-duration").val(my.duration.name);
 
-        var links = $(".sp-timespan-now-1");
-        links.text(my.duration.now_1_link_text);
-        links.prop("href", function(index, href) {
-          return my.duration.fix_url(href, my.duration.get_now_1_date());
-        });
-
-        var links = $(".sp-timespan-now-2");
-        links.text(my.duration.now_2_link_text);
-        links.prop("href", function(index, href) {
-          return my.duration.fix_url(href, my.duration.get_now_2_date());
-        });
-
-        my.events_cache.moment_exists({
-          moment: my.start_date.clone().subtract(my.duration.increment_days, "days"),
-          callback: function(previous_start_date, exists) {
-            var links = $(".sp-timespan-previous");
-            links.toggle(exists && (admin_mode.is_active() || my.duration.date_is_public(previous_start_date)));
-            links.text("< " + my.duration.previous_link_text);
+            var links = $(".sp-timespan-now-1");
+            links.text(my.duration.now_1_link_text);
             links.prop("href", function(index, href) {
-              return my.duration.fix_url(href, previous_start_date);
+              return my.duration.fix_url(href, my.duration.get_now_1_date());
             });
-          },
-        });
 
-        my.events_cache.moment_exists({
-          moment: my.start_date.clone().add(my.duration.duration_days + my.duration.increment_days - 1, "days"),
-          callback: function(next_last_date, exists) {
-            var next_start_date = my.start_date.clone().add(my.duration.increment_days, "days");
-            var links = $(".sp-timespan-next");
-            links.toggle(exists && (admin_mode.is_active() || my.duration.date_is_public(next_start_date)));
-            links.text(my.duration.next_link_text + " >");
+            var links = $(".sp-timespan-now-2");
+            links.text(my.duration.now_2_link_text);
             links.prop("href", function(index, href) {
-              return my.duration.fix_url(href, next_start_date);
+              return my.duration.fix_url(href, my.duration.get_now_2_date());
             });
-          },
-        });
+
+            return $.Deferred().resolve()
+          }(),
+          function() {
+            var r = $.Deferred();
+
+            my.events_cache.moment_exists({
+              moment: my.start_date.clone().subtract(my.duration.increment_days, "days"),
+              callback: function(previous_start_date, exists) {
+                var links = $(".sp-timespan-previous");
+                links.toggle(exists && (admin_mode.is_active() || my.duration.date_is_public(previous_start_date)));
+                links.text("< " + my.duration.previous_link_text);
+                links.prop("href", function(index, href) {
+                  return my.duration.fix_url(href, previous_start_date);
+                });
+                r.resolve();
+              },
+            });
+
+            return r;
+          }(),
+          function() {
+            var r = $.Deferred();
+
+            my.events_cache.moment_exists({
+              moment: my.start_date.clone().add(my.duration.duration_days + my.duration.increment_days - 1, "days"),
+              callback: function(next_last_date, exists) {
+                var next_start_date = my.start_date.clone().add(my.duration.increment_days, "days");
+                var links = $(".sp-timespan-next");
+                links.toggle(exists && (admin_mode.is_active() || my.duration.date_is_public(next_start_date)));
+                links.text(my.duration.next_link_text + " >");
+                links.prop("href", function(index, href) {
+                  return my.duration.fix_url(href, next_start_date);
+                });
+                r.resolve();
+              },
+            });
+
+            return r;
+          }(),
+        );
       }
 
       return {
@@ -603,7 +637,7 @@
         });
 
         function update_browser() {
-          my.displayed_timespan.update_browser();
+          return my.displayed_timespan.update_browser();
         }
 
         return {
@@ -625,8 +659,15 @@
     var my = {};
 
     function update_browser() {
-      my.admin_mode.update_browser();
-      my.city.update_browser();
+      $(".sp-modern").addClass("sp-loading");
+      $.when(
+        my.admin_mode.update_browser(),
+        my.city.update_browser(),
+      ).then(function() {
+        window.setTimeout(function() { // @todo Remove timeout (added only to show animation to shareholders)
+          $(".sp-modern").removeClass("sp-loading");
+        }, 500);
+      });
     };
 
     my.admin_mode = AdminMode.make({update_browser_callback: update_browser});

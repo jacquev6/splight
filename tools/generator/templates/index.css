@@ -62,3 +62,16 @@ a {
     border-radius: 3px;
     border: solid 1px;
 }
+
+.sp-loading .sp-content {
+    display: none;
+}
+
+.sp-loading-gif {
+    display: none;
+    height: 1000px;
+}
+
+.sp-loading .sp-loading-gif {
+    display: block;
+}
