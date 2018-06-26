@@ -20,6 +20,7 @@
       }
 
       var cookie = Cookies.getJSON("sp-admin-mode") || {};
+      my.dancing_cow_delay = cookie.dancing_cow_delay || 500;
       my.view_type = cookie.view_type || "basic";
       my.events_overlap = cookie.events_overlap || false;
       try_enable(cookie.decrypt_key, cookie.is_active);
@@ -53,6 +54,11 @@
         update_browser_callback();
       });
 
+      $("#sp-admin-dancing-cow-delay").on("change", function() {
+        my.dancing_cow_delay = $(this).val();
+        update_browser_callback();
+      });
+
       $("#sp-admin-mode-view-type").on("change", function() {
         my.view_type = $(this).val();
         update_browser_callback();
@@ -68,6 +74,7 @@
           Cookies.set("sp-admin-mode", {
             decrypt_key: my.decrypt_key,
             is_active: my.is_active,
+            dancing_cow_delay: my.dancing_cow_delay,
             view_type: my.view_type,
             events_overlap: my.events_overlap
           });
@@ -77,6 +84,7 @@
 
         $("#sp-admin-mode-dashboard").toggle(my.is_active);
 
+        $("#sp-admin-dancing-cow-delay").val(my.dancing_cow_delay);
         $("#sp-admin-mode-view-type").val(my.view_type);
 
         $("#sp-admin-mode-agenda-view-settings").toggle(my.view_type == "agenda");
@@ -96,6 +104,7 @@
       return {
         update_browser: update_browser,
         decrypt_json: decrypt_json,
+        get_dancing_cow_delay: () => my.dancing_cow_delay,
         get_view_type: () => my.view_type,
         get_events_overlap: () => my.events_overlap,
         is_active: () => my.is_active,
@@ -666,7 +675,7 @@
       ).then(function() {
         window.setTimeout(function() { // @todo Remove timeout (added only to show animation to shareholders)
           $(".sp-modern").removeClass("sp-loading");
-        }, 500);
+        }, my.admin_mode.get_dancing_cow_delay());
       });
     };
 
