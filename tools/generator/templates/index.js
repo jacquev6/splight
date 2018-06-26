@@ -474,13 +474,6 @@
             duration: {days: 3},
           },
         },
-        // @todo Can we use a local variable in update_browser to hold the deferred?
-        eventAfterAllRender: function() {
-          if(my.calendar_updated) {
-            my.calendar_updated.resolve();
-            my.calendar_updated = undefined;
-          }
-        },
       });
 
       my.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
@@ -548,10 +541,13 @@
               minTime: Math.floor(minTime / 3600000) * 3600000,
               maxTime: Math.ceil(maxTime / 3600000) * 3600000,
               slotEventOverlap: admin_mode.get_events_overlap(),
+              eventAfterAllRender: function() {
+                r.resolve();
+                my.calendar.option({eventAfterAllRender: null});
+              },
             });
 
             my.displayed_events = events;
-            my.calendar_updated = r;
             my.calendar.refetchEvents();
           }
         });
@@ -668,11 +664,13 @@
     var my = {};
 
     function update_browser() {
+      // console.log("START loading");
       $(".sp-modern").addClass("sp-loading");
       $.when(
         my.admin_mode.update_browser(),
         my.city.update_browser(),
       ).then(function() {
+        // console.log("STOP loading");
         window.setTimeout(function() {
           $(".sp-modern").removeClass("sp-loading");
         }, my.admin_mode.get_dancing_cow_delay());
