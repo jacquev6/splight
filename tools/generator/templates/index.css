@@ -43,6 +43,7 @@ a {
 
 .sp-modern {
     display: none;
+    min-height: 200px;
 }
 
 {% for feature in modernizr_features %}.mdrn-{{ feature }}{% endfor %} .sp-modern {
@@ -63,15 +64,21 @@ a {
     border: solid 1px;
 }
 
-.sp-loading .sp-content {
+.sp-loading {
+    position: relative;
+}
+
+#sp-loading {
     display: none;
 }
 
-.sp-loading-gif {
-    display: none;
-    height: 1000px;
-}
-
-.sp-loading .sp-loading-gif {
+.sp-loading #sp-loading {
     display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #fff;
+    z-index: 1;
 }
