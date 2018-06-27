@@ -32,8 +32,13 @@ done
 
 python3 -m unittest discover --verbose --start-directory tools --pattern "*.py"
 
-# fuser -k 4000/tcp >/dev/null 2>/dev/null || true
-ps ux | grep http.server | grep -v grep | sed "s/^vincent\(......\).*$/\1/" | xargs kill -9
+if [ $(uname) == Linux ]
+then
+  fuser -k 4000/tcp >/dev/null 2>/dev/null || true
+elif [ $(uname) == Darwin ]
+then
+  ps ux | grep http.server | grep -v grep | sed "s/^vincent\(......\).*$/\1/" | xargs kill -9
+fi
 
 echo
 

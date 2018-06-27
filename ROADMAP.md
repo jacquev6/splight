@@ -1,5 +1,4 @@
 - réduire le jumbotron Splight
-- supprimer le lien "semaine précédente" de la semaine actuelle
 
 
 Définition des rôles
@@ -30,19 +29,6 @@ Afficher la date est certes parfaitement explicite, mais demande une certaine gy
 ### Solution(s)
 
 Afficher "cette semaine", "la semaine prochaine", "dans 15 jours", "dans 3 semaines", "dans un mois", etc.
-
-
-En tant que spectateur, je veux connaître la durée des événements
------------------------------------------------------------------
-
-### Problème
-
-Savoir à quelle heure c'est, c'est bien. Savoir jusqu'à quelle heure ça va durer, c'est mieux.
-
-### Solution(s)
-
-Data : ajouter un champ "duration".
-Générateur : calculer la date de fin et l'ajouter à l'event FullCalendar.
 
 
 En tant que spectateur, je veux des détails sur les événements
@@ -126,7 +112,7 @@ En tant que web-master, je veux cacher de manière sécurisée les événements 
 ### Solution(s)
 
 Rendre le repository GitHub privé (7€/mois).
-Ajouter un contrôle d'accès à la version /admin du site. (Pas évident techniquement)
+FAIT: Ajouter un contrôle d'accès au "mode administrateur" du site.
 
 
 En tant que web-master, je veux que mes visiteurs explorent le site
