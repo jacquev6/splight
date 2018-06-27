@@ -466,6 +466,11 @@
             duration: {days: 3},
           },
         },
+        eventClick: function(event) {
+          var modal = $("#sp-event-details");
+          modal.find(".modal-title").text(event.title);
+          modal.modal();
+        },
       });
 
       my.calendar = $("#sp-fullcalendar").fullCalendar("getCalendar");
