@@ -469,6 +469,14 @@
         eventClick: function(event) {
           var modal = $("#sp-event-details");
           modal.find(".modal-title").text(event.title);
+          var artist = modal.find("#sp-event-details-artist");
+          event.splight.artist = "The Who";
+          if(event.splight.artist) {
+            artist.show();
+            artist.find("dd").text(event.splight.artist);
+          } else {
+            artist.hide();
+          }
           modal.modal();
         },
       });
