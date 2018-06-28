@@ -2,7 +2,7 @@
 
 {% block city_base_content %}
 <div class="row"><div class="col-md-3"></div><div class="col-md-6">
-  <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/"><img class="img-fluid" src="/actualite-leaderboard.jpg" alt="Toute l'actualité" /></a></p>
+  <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/"><canvas class="img-fluid" width="768" height="288" data-sp-random-seed="Toute l'actualité"></canvas></a></p>
   <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/">Toute l'actualité</a></p>
 </div></div>
 <div class="row"><div class="col">
@@ -11,7 +11,7 @@
 <div class="row">
   {% for tag in city.tags %}
   <div class="col-6 col-md-3">
-    <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/?{{ tag.slug }}"><img class="img-fluid" src="/{{ tag.slug }}-rectangle.jpg" alt="{{ tag.title }}" /></a></p>
+    <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/?{{ tag.slug }}"><canvas class="img-fluid" width="320" height="240" data-sp-random-seed="{{ tag.title }}"></canvas></a></p>
     <p><a class="sp-now-week-link" href="/{{ city.slug }}/{{ first_week.slug }}/?{{ tag.slug }}">{{ tag.title }}</a></p>
   </div>
   {% endfor %}

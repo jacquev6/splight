@@ -651,6 +651,16 @@
   })();
 
   $(function() {
+    $("canvas[data-sp-random-seed]").each(function() {
+      var c = $(this);
+      randomize_canvas({
+        canvas: this,
+        seed: c.data("sp-random-seed"),
+        width: c.attr("width"),
+        height: c.attr("height"),
+      });
+    });
+
     var my = {};
 
     function update_browser() {

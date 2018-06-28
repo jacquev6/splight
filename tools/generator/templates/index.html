@@ -4,7 +4,7 @@
 <div class="row">
   {% for city in cities %}
   <div class="col-6 col-md-3">
-    <p><a href="/{{ city.slug }}/"><img class="img-fluid" src="/{{ city.slug }}-rectangle.jpg" alt="{{ city.name }}" /></a></p>
+    <p><a href="/{{ city.slug }}/"><canvas class="img-fluid" width="320" height="240" data-sp-random-seed="{{ city.name }}"></canvas></a></p>
     <p><a href="/{{ city.slug }}/">{{ city.name }}</a></p>
   </div>
   {% endfor %}

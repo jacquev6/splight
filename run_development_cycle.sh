@@ -44,6 +44,14 @@ echo
 
 modernizr --config tools/generator/modernizr-config.json --dest tools/generator/skeleton/lib/modernizr-custom.js
 
+if which opam >/dev/null
+then
+  eval `opam config env --switch=4.06.1.Splight.dev_with_newest_versions`
+  opam install --yes JsOfOCairo General
+  (cd tools/random-canvas; jbuilder build random_canvas.bc.js)
+  ln -f tools/random-canvas/_build/default/random_canvas.bc.js tools/generator/skeleton/random_canvas.js
+fi
+
 python3 -m tools.generator data docs
 
 git --no-pager diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat docs
