@@ -56,6 +56,7 @@ pycodestyle --max-line-length=120 $(git ls-files "*.py")
 echo
 
 python3 -m tools.checker docs
+html5validator --root docs --show-warnings --also-check-css  # pip install html5validator
 
 echo
 echo "Development cycle OK"
