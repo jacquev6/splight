@@ -9,6 +9,8 @@ import shutil
 import subprocess
 import types
 
+import cairo
+
 from . import dateutils
 from . import data as data_
 from . import templates
@@ -54,6 +56,41 @@ def generate(*, data_directory, destination_directory):
         complement_dark="#FFAA00",
         complement_very_dark="#B17600",
     )
+
+    size = 12
+    with cairo.SVGSurface(os.path.join(destination_directory, "external.svg"), size, size) as surface:
+        r = int(colors.primary[1:3], 16) / 255.
+        g = int(colors.primary[3:5], 16) / 255.
+        b = int(colors.primary[5:7], 16) / 255.
+        margin = 0.5
+        doc_size = 8
+        arrow_a = 6
+        arrow_b = 2
+        arrow_c = 4.5
+
+        context = cairo.Context(surface)
+
+        context.rectangle(margin, size - doc_size - margin, doc_size, doc_size)
+        context.set_source_rgb(1, 1, 1)
+        context.fill_preserve()
+        context.set_source_rgb(r, g, b)
+        context.set_line_width(1)
+        context.stroke()
+
+        context.move_to(size - margin, margin)
+        context.rel_move_to(0 - arrow_b - arrow_c, arrow_a - arrow_b + arrow_c)
+        context.rel_line_to(arrow_c, -arrow_c)
+        context.rel_line_to(arrow_b, arrow_b)
+        context.rel_line_to(0, -arrow_a)
+        context.rel_line_to(-arrow_a, 0)
+        context.rel_line_to(arrow_b, arrow_b)
+        context.rel_line_to(-arrow_c, arrow_c)
+        context.close_path()
+        context.set_source_rgb(1, 1, 1)
+        context.fill_preserve()
+        context.set_source_rgb(r, g, b)
+        context.set_line_width(1)
+        context.stroke()
 
     encrypt_key = os.environ["SPLIGHT_ENCRYPT_KEY"]
     decrypt_key_sha = hashlib.sha1(encrypt_key.encode("utf-8")).hexdigest()
@@ -107,7 +144,7 @@ def generate(*, data_directory, destination_directory):
 
                 week_data = make_week_data(city, date)
                 with open("docs/{}/{}.json".format(city.for_templates.slug, displayed_week.slug), "w") as f:
-                    json.dump(week_data, f, sort_keys=True, indent=1, default=templates.Event.to_json)
+                    json.dump(week_data, f, sort_keys=True, indent=1, default=templates.to_json)
 
             date += datetime.timedelta(days=1)
 
@@ -129,22 +166,50 @@ def generate(*, data_directory, destination_directory):
                         "-k", encrypt_key,
                     ],
                     input=json.dumps(
-                        week_data, separators=(',', ':'), default=templates.Event.to_json
+                        week_data, separators=(',', ':'), default=templates.to_json
                     ).encode("utf-8"),
                     stdout=subprocess.PIPE,
                 ).stdout).decode("utf-8")
             )
             with open("docs/{}/{}.json".format(city.for_templates.slug, displayed_week.slug), "w") as f:
-                json.dump(week_data, f, sort_keys=True, indent=1, default=templates.Event.to_json)
+                json.dump(week_data, f, sort_keys=True, indent=1, default=templates.to_json)
 
             date += datetime.timedelta(days=7)
 
 
 def make_week_data(city, start_date):
+    events = dict()
+    locations = set()
+    artists = set()
+
+    for d in (start_date + datetime.timedelta(days=i) for i in range(7)):
+        events[d.isoformat()] = []
+        for e in city.events.get(d, []):
+            events[d.isoformat()].append(e.for_templates)
+            if e.location:
+                locations.add(e.location)
+            if e.artist:
+                artists.add(e.artist)
+
     return dict(
-        events={
-            d.isoformat(): city.events.get(d, [])
-            for d in (start_date + datetime.timedelta(days=i) for i in range(7))
+        events=events,
+        locations={
+            location.slug: dict(
+                slug=location.slug,
+                name=location.name,
+                description=location.description,
+                website=location.website,
+            )
+            for location in sorted(locations)
+        },
+        artists={
+            artist.slug: dict(
+                slug=artist.slug,
+                name=artist.name,
+                description=artist.description,
+                website=artist.website,
+            )
+            for artist in sorted(artists)
         },
     )
 
@@ -152,6 +217,7 @@ def make_week_data(city, start_date):
 def make_cities(data):
     for city in data.cities:
         tags = {
+            # @todo Construct templates.Tag and templates.* as late as possible, just before rendering the template
             tag.slug: templates.Tag(
                 slug=tag.slug,
                 title=tag.title,
@@ -173,13 +239,19 @@ def make_cities(data):
                     assert False, "Event without title information"
 
                 first_tag = tags[event.tags[0].slug]
-                events[day].append(templates.Event(
-                    title=title,
-                    start=event.datetime,
-                    end=event.datetime + event.duration if event.duration else None,
-                    tags=[tag.slug for tag in event.tags],
-                    border_color=first_tag.border_color,
-                    background_color=first_tag.background_color,
+                events[day].append(types.SimpleNamespace(
+                    for_templates=templates.Event(
+                        title=title,
+                        start=event.datetime,
+                        end=event.datetime + event.duration if event.duration else None,
+                        tags=[tag.slug for tag in event.tags],
+                        border_color=first_tag.border_color,
+                        background_color=first_tag.background_color,
+                        location=event.location.slug,
+                        artist=event.artist and event.artist.slug,
+                    ),
+                    location=event.location,
+                    artist=event.artist,
                 ))
 
         yield types.SimpleNamespace(

@@ -34,8 +34,8 @@ exec(_make_source("Data", "cities"))
 exec(_make_source("City", "slug name tags events"))
 exec(_make_source("Tag", "slug title display_order"))
 exec(_make_source("Event", "datetime duration title artist location tags"))
-exec(_make_source("Artist", "slug name genre"))
-exec(_make_source("Location", "slug name"))
+exec(_make_source("Artist", "slug name genre description website"))
+exec(_make_source("Location", "slug name description website"))
 
 
 def load(data_directory):
@@ -43,17 +43,31 @@ def load(data_directory):
 
 
 def make_data(*, artists, cities):
-    artists = {slug: Artist(slug=slug, **artist) for (slug, artist) in artists.items()}
+    artists = {slug: make_artist(slug=slug, **artist) for (slug, artist) in artists.items()}
     cities = [make_city(artists, slug=slug, **city) for (slug, city) in cities.items()]
     return Data(cities=cities)
 
 
+def make_artist(*, slug, name, genre, description=[], website=None):
+    if isinstance(description, str):
+        description = [description]
+    description = tuple(description)
+    return Artist(slug=slug, name=name, genre=genre, description=description, website=website)
+
+
 def make_city(artists, *, slug, name, tags, locations, events):
-    locations = {slug: Location(slug=slug, **location) for (slug, location) in locations.items()}
+    locations = {slug: make_location(slug=slug, **location) for (slug, location) in locations.items()}
     tags = {slug: Tag(slug=slug, **tag) for (slug, tag) in tags.items()}
     events = sorted(generate_events(artists, locations, tags, events), key=lambda e: e.datetime)
     tags = sorted(tags.values(), key=lambda tag: tag.display_order)
     return City(slug=slug, name=name, tags=tags, events=events)
+
+
+def make_location(*, slug, name, description=[], website=None):
+    if isinstance(description, str):
+        description = [description]
+    description = tuple(description)
+    return Location(slug=slug, name=name, description=description, website=website)
 
 
 def generate_events(artists, locations, tags, events):

@@ -2,9 +2,18 @@ artists:
   artist-a:
     name: Artiste de test A
     genre: Genre Toto
+    website: https://www.google.fr/search?q=Artiste de test A
+    description: Description de l'artiste de test A
   artist-b:
     name: Artiste de test B
     genre: Genre Titi
+    website: https://www.google.fr/search?q=Artiste de test B
+    description:
+      - Description de l'artiste de test B (paragraphe 1)
+      - Description de l'artiste de test B (paragraphe 2)
+      - Description de l'artiste de test B (paragraphe 3)
   artist-c:
     name: Artiste de test C
     genre: Genre Tutu
+    website: https://www.google.fr/search?q=Artiste de test C
+    description: Description de l'artiste de test C

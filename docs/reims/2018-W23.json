@@ -1,11 +1,33 @@
 {
+ "artists": {
+  "artist-a": {
+   "description": [
+    "Description de l'artiste de test A"
+   ],
+   "name": "Artiste de test A",
+   "slug": "artist-a",
+   "website": "https://www.google.fr/search?q=Artiste de test A"
+  },
+  "artist-b": {
+   "description": [
+    "Description de l'artiste de test B (paragraphe 1)",
+    "Description de l'artiste de test B (paragraphe 2)",
+    "Description de l'artiste de test B (paragraphe 3)"
+   ],
+   "name": "Artiste de test B",
+   "slug": "artist-b",
+   "website": "https://www.google.fr/search?q=Artiste de test B"
+  }
+ },
  "events": {
   "2018-06-04": [],
   "2018-06-05": [
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-05T20:45:00",
+    "location": "lieu-b",
     "start": "2018-06-05T19:30:00",
     "tags": [
      "cinema"
@@ -15,9 +37,11 @@
   ],
   "2018-06-06": [
    {
+    "artist": "artist-b",
     "backgroundColor": "#e5a0a0",
     "borderColor": "#7f3f3f",
     "end": null,
+    "location": "lieu-a",
     "start": "2018-06-06T19:00:00",
     "tags": [
      "musique"
@@ -28,9 +52,11 @@
   "2018-06-07": [],
   "2018-06-08": [
    {
+    "artist": "artist-a",
     "backgroundColor": "#a0e5e5",
     "borderColor": "#3f7f7f",
     "end": null,
+    "location": "lieu-c",
     "start": "2018-06-08T20:00:00",
     "tags": [
      "theatre"
@@ -40,9 +66,11 @@
   ],
   "2018-06-09": [
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-09T20:45:00",
+    "location": "lieu-b",
     "start": "2018-06-09T19:30:00",
     "tags": [
      "cinema"
@@ -51,5 +79,33 @@
    }
   ],
   "2018-06-10": []
+ },
+ "locations": {
+  "lieu-a": {
+   "description": [
+    "Description du lieu de test A"
+   ],
+   "name": "Lieu de test A",
+   "slug": "lieu-a",
+   "website": "https://www.google.fr/search?q=Lieu de test A"
+  },
+  "lieu-b": {
+   "description": [
+    "Description du lieu de test B (paragraphe 1)",
+    "Description du lieu de test B (paragraphe 2)",
+    "Description du lieu de test B (paragraphe 3)"
+   ],
+   "name": "Lieu de test B",
+   "slug": "lieu-b",
+   "website": "https://www.google.fr/search?q=Lieu de test B"
+  },
+  "lieu-c": {
+   "description": [
+    "Description du lieu de test C"
+   ],
+   "name": "Lieu de test C",
+   "slug": "lieu-c",
+   "website": "https://www.google.fr/search?q=Lieu de test C"
+  }
  }
 }
