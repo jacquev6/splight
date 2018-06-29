@@ -110,6 +110,62 @@ class Tag:
         return self.__background_color
 
 
+class Location:
+    def __init__(self, *, slug, name, description, official_website):
+        assert isinstance(slug, str)
+        self.__slug = slug
+        assert isinstance(name, str)
+        self.__name = name
+        assert isinstance(description, list) and all(isinstance(d, str) for d in description)
+        self.__description = description
+        assert isinstance(official_website, str)
+        self.__official_website = official_website
+
+    @property
+    def slug(self):
+        return self.__slug
+
+    @property
+    def name(self):
+        return self.__name
+
+    def to_json(self):
+        return dict(
+            slug=self.__slug,
+            name=self.__name,
+            description=self.__description,
+            official_website=self.__official_website,
+        )
+
+
+class Artist:
+    def __init__(self, *, slug, name, description, official_website):
+        assert isinstance(slug, str)
+        self.__slug = slug
+        assert isinstance(name, str)
+        self.__name = name
+        assert isinstance(description, list) and all(isinstance(d, str) for d in description)
+        self.__description = description
+        assert isinstance(official_website, str)
+        self.__official_website = official_website
+
+    @property
+    def slug(self):
+        return self.__slug
+
+    @property
+    def name(self):
+        return self.__name
+
+    def to_json(self):
+        return dict(
+            slug=self.__slug,
+            name=self.__name,
+            description=self.__description,
+            official_website=self.__official_website,
+        )
+
+
 class City:
     def __init__(self, *, slug, name, tags):
         assert isinstance(slug, str)
@@ -245,7 +301,7 @@ class Day:
 
 
 class Event:
-    def __init__(self, *, title, start, end, tags, border_color, background_color):
+    def __init__(self, *, title, start, end, tags, border_color, background_color, location, artist):
         assert isinstance(title, str)
         self.__title = title
         assert isinstance(start, datetime.datetime)
@@ -259,6 +315,10 @@ class Event:
         self.__border_color = border_color
         assert isinstance(background_color, str)
         self.__background_color = background_color
+        assert isinstance(location, str)
+        self.__location = location
+        assert artist is None or isinstance(artist, str)
+        self.__artist = artist
 
     @property
     def title(self):
@@ -284,6 +344,7 @@ class Event:
     def background_color(self):
         return self.__background_color
 
+    # @todo Remove json from templates.py, build json structure in generator.py
     def to_json(self):
         return dict(
             title=self.__title,
@@ -292,7 +353,13 @@ class Event:
             tags=self.__tags,
             borderColor=self.__border_color,
             backgroundColor=self.__background_color,
+            location=self.__location,
+            artist=self.__artist,
         )
+
+
+def to_json(x):
+    return x.to_json()
 
 
 def _format_date(d):

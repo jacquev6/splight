@@ -124,20 +124,48 @@
     function make({city, admin_mode}) {
       var my = {
         queries: {},
-        weeks: {},
+        week_exists: {},
         events: {},
+        artists: {},
+        locations: {},
       };
 
       function handle_fetch_success(week) {
         return function(data) {
-          my.weeks[week] = {exists: true, data: data};
-        };
+          my.week_exists[week] = true;
+
+          var admin_only = !!data.encrypted;
+          if(admin_only) {
+            data = admin_mode.decrypt_json({message: data.encrypted, default_value: null});
+          }
+
+          if(data) {
+            for(var d in data.events) {
+              my.events[d] = data.events[d].map(event => ({
+                title: event.title,
+                start: moment(event.start),
+                end: event.end ? moment(event.end) : null,
+                tags: event.tags,
+                backgroundColor: event.backgroundColor,
+                borderColor: event.borderColor,
+                splight: {
+                  admin_only: admin_only,
+                  artist: event.artist,
+                  location: event.location,
+                },
+              }));
+            }
+
+            Object.assign(my.artists, data.artists);
+            Object.assign(my.locations, data.locations);
+          }
+        }
       };
 
       function handle_fetch_error(week) {
         return function(jqXHR) {
           if(jqXHR.status == 404) {
-            my.weeks[week] = {exists: false}
+            my.week_exists[week] = false
           } else {
             console.log("Unhandled fetch error:", week, jqXHR);
           }
@@ -148,7 +176,7 @@
         var queries = [];
         for(var day = start.clone(); day.isBefore(end); day.add(1, "day")) {
           var week = day.format(week_format);
-          if(!my.weeks[week]) {
+          if(my.week_exists[week] === undefined) {
             if(!my.queries[week]) {
               my.queries[week] = $.ajax({
                 dataType: "json",
@@ -167,29 +195,6 @@
       function get_day_events(day) {
         const day_key = day.format(day_format);
 
-        if(!my.events[day_key]) {
-          var week = my.weeks[day.format(week_format)];
-          var admin_only = !!week.encrypted;
-          if(admin_only) {
-            week = admin_mode.decrypt_json({message: week.encrypted, default_value: null});
-          }
-          if(week && week.exists) {
-            for(var d in week.data.events) {
-              my.events[d] = week.data.events[d].map(event => ({
-                title: event.title,
-                start: moment(event.start),
-                end: event.end ? moment(event.end) : null,
-                tags: event.tags,
-                backgroundColor: event.backgroundColor,
-                borderColor: event.borderColor,
-                splight: {
-                  admin_only: admin_only,
-                },
-              }));
-            }
-          }
-        }
-
         if(my.events[day_key]) {
           return my.events[day_key];
         } else {
@@ -206,7 +211,7 @@
       };
 
       function moment_exists(moment) {
-        return my.weeks[moment.format(week_format)].exists;
+        return my.week_exists[moment.format(week_format)];
       };
 
       function fetch_then(start, end, handler) {
@@ -232,7 +237,15 @@
               callback(moment, moment_exists(moment));
             },
           );
-        }
+        },
+
+        get_artist: function(slug) {
+          return my.artists[slug];
+        },
+
+        get_location: function(slug) {
+          return my.locations[slug];
+        },
       };
     };
 
@@ -468,15 +481,51 @@
         },
         eventClick: function(event) {
           var modal = $("#sp-event-details");
-          modal.find(".modal-title").text(event.title);
-          var artist = modal.find("#sp-event-details-artist");
-          event.splight.artist = "The Who";
+
+          modal.find("#sp-event-details-title").text(event.title);
+          modal.find("#sp-event-details-datetime").text((function(e) {
+            if(e.end) {
+              if(e.end.isSame(e.start, "day")) {
+                return ["Le", e.start.format("dddd"), e.start.format("LL"), "de", e.start.format("LT"), "à", e.end.format("LT")];
+              } else {
+                return [
+                  "Du", e.start.format("dddd"), e.start.format("LL"), "à", e.start.format("LT"),
+                  "au", e.end.format("dddd"), e.end.format("LL"), "à", e.end.format("LT"),
+                ];
+              }
+            } else {
+              return ["Le", e.start.format("dddd"), e.start.format("LL"), "à", e.start.format("LT")];
+            }
+          })(event).join(" "));
+
+          modal.find("#sp-event-details-artist").toggle(!!event.splight.artist);
           if(event.splight.artist) {
-            artist.show();
-            artist.find("dd").text(event.splight.artist);
-          } else {
-            artist.hide();
+            var artist = my.events_cache.get_artist(event.splight.artist);
+            modal.find("#sp-event-details-artist-name").text(artist.name);
+            modal.find("#sp-event-details-artist-description").first().text(artist.description.join(" ")); // @todo Make a paragraph per line
+            randomize_canvas({
+              canvas: modal.find("#sp-event-details-artist-image").get(0),
+              seed: artist.name,
+              width: 640,
+              height: 480,
+            });
+            modal.find("#sp-event-details-artist-website").prop("href", artist.website);
           }
+
+          modal.find("#sp-event-details-location").toggle(!!event.splight.location);
+          if(event.splight.location) {
+            var location = my.events_cache.get_location(event.splight.location);
+            modal.find("#sp-event-details-location-name").text(location.name);
+            modal.find("#sp-event-details-location-description").first().text(location.description.join(" ")); // @todo Make a paragraph per line
+            randomize_canvas({
+              canvas: modal.find("#sp-event-details-location-image").get(0),
+              seed: location.name,
+              width: 640,
+              height: 480,
+            });
+            modal.find("#sp-event-details-location-website").prop("href", location.website);
+          }
+
           modal.modal();
         },
       });

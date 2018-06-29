@@ -2,10 +2,19 @@ name: Reims
 locations:
   lieu-a:
     name: Lieu de test A
+    description: Description du lieu de test A
+    website: https://www.google.fr/search?q=Lieu de test A
   lieu-b:
     name: Lieu de test B
+    description:
+      - Description du lieu de test B (paragraphe 1)
+      - Description du lieu de test B (paragraphe 2)
+      - Description du lieu de test B (paragraphe 3)
+    website: https://www.google.fr/search?q=Lieu de test B
   lieu-c:
     name: Lieu de test C
+    description: Description du lieu de test C
+    website: https://www.google.fr/search?q=Lieu de test C
 events:
   musique:
     - artist: artist-b

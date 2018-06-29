@@ -1,10 +1,40 @@
 {
+ "artists": {
+  "artist-a": {
+   "description": [
+    "Description de l'artiste de test A"
+   ],
+   "name": "Artiste de test A",
+   "slug": "artist-a",
+   "website": "https://www.google.fr/search?q=Artiste de test A"
+  },
+  "artist-b": {
+   "description": [
+    "Description de l'artiste de test B (paragraphe 1)",
+    "Description de l'artiste de test B (paragraphe 2)",
+    "Description de l'artiste de test B (paragraphe 3)"
+   ],
+   "name": "Artiste de test B",
+   "slug": "artist-b",
+   "website": "https://www.google.fr/search?q=Artiste de test B"
+  },
+  "artist-c": {
+   "description": [
+    "Description de l'artiste de test C"
+   ],
+   "name": "Artiste de test C",
+   "slug": "artist-c",
+   "website": "https://www.google.fr/search?q=Artiste de test C"
+  }
+ },
  "events": {
   "2018-06-18": [
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T13:23:00",
+    "location": "gaumont",
     "start": "2018-06-18T11:00:00",
     "tags": [
      "cinema"
@@ -12,9 +42,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T13:05:00",
+    "location": "gaumont",
     "start": "2018-06-18T11:05:00",
     "tags": [
      "cinema"
@@ -22,9 +54,11 @@
     "title": "Demi-s\u0153urs"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T13:48:00",
+    "location": "gaumont",
     "start": "2018-06-18T11:25:00",
     "tags": [
      "cinema"
@@ -32,9 +66,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T13:54:00",
+    "location": "opera",
     "start": "2018-06-18T11:45:00",
     "tags": [
      "cinema"
@@ -42,9 +78,11 @@
     "title": "D\u00e9sob\u00e9issance"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T13:40:00",
+    "location": "opera",
     "start": "2018-06-18T11:45:00",
     "tags": [
      "cinema"
@@ -52,9 +90,11 @@
     "title": "Trois visages"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T14:27:00",
+    "location": "opera",
     "start": "2018-06-18T12:00:00",
     "tags": [
      "cinema"
@@ -62,9 +102,11 @@
     "title": "L'Homme qui tua Don Quichotte"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T14:33:00",
+    "location": "gaumont",
     "start": "2018-06-18T12:10:00",
     "tags": [
      "cinema"
@@ -72,9 +114,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T14:13:00",
+    "location": "opera",
     "start": "2018-06-18T12:10:00",
     "tags": [
      "cinema"
@@ -82,9 +126,11 @@
     "title": "Gueule d'ange"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T16:03:00",
+    "location": "gaumont",
     "start": "2018-06-18T13:40:00",
     "tags": [
      "cinema"
@@ -92,9 +138,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T15:24:00",
+    "location": "gaumont",
     "start": "2018-06-18T13:40:00",
     "tags": [
      "cinema"
@@ -102,9 +150,11 @@
     "title": "Mon Ket"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T15:41:00",
+    "location": "opera",
     "start": "2018-06-18T13:45:00",
     "tags": [
      "cinema"
@@ -112,9 +162,11 @@
     "title": "Volontaire"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T16:10:00",
+    "location": "opera",
     "start": "2018-06-18T14:00:00",
     "tags": [
      "cinema"
@@ -122,9 +174,11 @@
     "title": "3 jours \u00e0 Quiberon"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T16:10:00",
+    "location": "gaumont",
     "start": "2018-06-18T14:10:00",
     "tags": [
      "cinema"
@@ -132,9 +186,11 @@
     "title": "Demi-s\u0153urs"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T16:38:00",
+    "location": "gaumont",
     "start": "2018-06-18T14:15:00",
     "tags": [
      "cinema"
@@ -142,9 +198,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T16:28:00",
+    "location": "opera",
     "start": "2018-06-18T14:20:00",
     "tags": [
      "cinema"
@@ -152,9 +210,11 @@
     "title": "En Guerre"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T16:53:00",
+    "location": "opera",
     "start": "2018-06-18T14:30:00",
     "tags": [
      "cinema"
@@ -162,9 +222,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T18:21:00",
+    "location": "opera",
     "start": "2018-06-18T15:30:00",
     "tags": [
      "cinema"
@@ -172,9 +234,11 @@
     "title": "Avengers: Infinity War"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T17:24:00",
+    "location": "gaumont",
     "start": "2018-06-18T15:40:00",
     "tags": [
      "cinema"
@@ -182,9 +246,11 @@
     "title": "Mon Ket"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T17:34:00",
+    "location": "opera",
     "start": "2018-06-18T15:45:00",
     "tags": [
      "cinema"
@@ -192,9 +258,11 @@
     "title": "Une ann\u00e9e polaire"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T18:24:00",
+    "location": "opera",
     "start": "2018-06-18T16:15:00",
     "tags": [
      "cinema"
@@ -202,9 +270,11 @@
     "title": "D\u00e9sob\u00e9issance"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T18:48:00",
+    "location": "gaumont",
     "start": "2018-06-18T16:25:00",
     "tags": [
      "cinema"
@@ -212,9 +282,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T18:40:00",
+    "location": "gaumont",
     "start": "2018-06-18T16:40:00",
     "tags": [
      "cinema"
@@ -222,9 +294,11 @@
     "title": "Demi-s\u0153urs"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T18:52:00",
+    "location": "opera",
     "start": "2018-06-18T16:40:00",
     "tags": [
      "cinema"
@@ -232,9 +306,11 @@
     "title": "Sicilian Ghost Story"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T18:40:00",
+    "location": "opera",
     "start": "2018-06-18T17:00:00",
     "tags": [
      "cinema"
@@ -242,9 +318,11 @@
     "title": "Una Questione Privata"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T19:53:00",
+    "location": "gaumont",
     "start": "2018-06-18T17:30:00",
     "tags": [
      "cinema"
@@ -252,9 +330,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T19:29:00",
+    "location": "gaumont",
     "start": "2018-06-18T17:45:00",
     "tags": [
      "cinema"
@@ -262,9 +342,11 @@
     "title": "Mon Ket"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T19:34:00",
+    "location": "opera",
     "start": "2018-06-18T17:45:00",
     "tags": [
      "cinema"
@@ -272,9 +354,11 @@
     "title": "Alberto Giacometti, The Final Portrait"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T20:43:00",
+    "location": "gaumont",
     "start": "2018-06-18T18:20:00",
     "tags": [
      "cinema"
@@ -282,9 +366,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T20:50:00",
+    "location": "opera",
     "start": "2018-06-18T18:20:00",
     "tags": [
      "cinema"
@@ -292,9 +378,11 @@
     "title": "Solo: A Star Wars Story"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T20:40:00",
+    "location": "opera",
     "start": "2018-06-18T18:30:00",
     "tags": [
      "cinema"
@@ -302,9 +390,11 @@
     "title": "3 jours \u00e0 Quiberon"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T21:08:00",
+    "location": "opera",
     "start": "2018-06-18T18:45:00",
     "tags": [
      "cinema"
@@ -312,9 +402,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T20:30:00",
+    "location": "opera",
     "start": "2018-06-18T19:00:00",
     "tags": [
      "cinema"
@@ -322,9 +414,11 @@
     "title": "Senses 5"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T21:10:00",
+    "location": "gaumont",
     "start": "2018-06-18T19:10:00",
     "tags": [
      "cinema"
@@ -332,9 +426,11 @@
     "title": "Demi-s\u0153urs"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T21:38:00",
+    "location": "gaumont",
     "start": "2018-06-18T19:15:00",
     "tags": [
      "cinema"
@@ -342,9 +438,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T20:45:00",
+    "location": "lieu-b",
     "start": "2018-06-18T19:30:00",
     "tags": [
      "cinema"
@@ -352,9 +450,11 @@
     "title": "Film de test"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T21:30:00",
+    "location": "opera",
     "start": "2018-06-18T19:35:00",
     "tags": [
      "cinema"
@@ -362,9 +462,11 @@
     "title": "Trois visages"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T21:39:00",
+    "location": "gaumont",
     "start": "2018-06-18T19:55:00",
     "tags": [
      "cinema"
@@ -372,9 +474,11 @@
     "title": "Mon Ket"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T22:47:00",
+    "location": "opera",
     "start": "2018-06-18T20:35:00",
     "tags": [
      "cinema"
@@ -382,9 +486,11 @@
     "title": "Sicilian Ghost Story"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T22:54:00",
+    "location": "opera",
     "start": "2018-06-18T20:45:00",
     "tags": [
      "cinema"
@@ -392,9 +498,11 @@
     "title": "D\u00e9sob\u00e9issance"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T23:13:00",
+    "location": "gaumont",
     "start": "2018-06-18T20:50:00",
     "tags": [
      "cinema"
@@ -402,9 +510,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T23:36:00",
+    "location": "opera",
     "start": "2018-06-18T21:00:00",
     "tags": [
      "cinema"
@@ -412,9 +522,11 @@
     "title": "2001 : l'odyss\u00e9e de l'espace"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T23:38:00",
+    "location": "opera",
     "start": "2018-06-18T21:15:00",
     "tags": [
      "cinema"
@@ -422,9 +534,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T23:31:00",
+    "location": "opera",
     "start": "2018-06-18T21:35:00",
     "tags": [
      "cinema"
@@ -432,9 +546,11 @@
     "title": "Volontaire"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T00:18:00",
+    "location": "gaumont",
     "start": "2018-06-18T21:55:00",
     "tags": [
      "cinema"
@@ -442,9 +558,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-18T23:54:00",
+    "location": "gaumont",
     "start": "2018-06-18T22:10:00",
     "tags": [
      "cinema"
@@ -454,9 +572,11 @@
   ],
   "2018-06-19": [
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T13:23:00",
+    "location": "gaumont",
     "start": "2018-06-19T11:00:00",
     "tags": [
      "cinema"
@@ -464,9 +584,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T13:48:00",
+    "location": "gaumont",
     "start": "2018-06-19T11:25:00",
     "tags": [
      "cinema"
@@ -474,9 +596,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T13:55:00",
+    "location": "opera",
     "start": "2018-06-19T11:45:00",
     "tags": [
      "cinema"
@@ -484,9 +608,11 @@
     "title": "3 jours \u00e0 Quiberon"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T13:41:00",
+    "location": "opera",
     "start": "2018-06-19T11:45:00",
     "tags": [
      "cinema"
@@ -494,9 +620,11 @@
     "title": "Volontaire"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T14:27:00",
+    "location": "opera",
     "start": "2018-06-19T12:00:00",
     "tags": [
      "cinema"
@@ -504,9 +632,11 @@
     "title": "Everybody knows"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T14:12:00",
+    "location": "opera",
     "start": "2018-06-19T12:00:00",
     "tags": [
      "cinema"
@@ -514,9 +644,11 @@
     "title": "Sicilian Ghost Story"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T14:33:00",
+    "location": "gaumont",
     "start": "2018-06-19T12:10:00",
     "tags": [
      "cinema"
@@ -524,9 +656,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T15:16:00",
+    "location": "opera",
     "start": "2018-06-19T12:40:00",
     "tags": [
      "cinema"
@@ -534,9 +668,11 @@
     "title": "2001 : l'odyss\u00e9e de l'espace"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T16:03:00",
+    "location": "gaumont",
     "start": "2018-06-19T13:40:00",
     "tags": [
      "cinema"
@@ -544,9 +680,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T15:40:00",
+    "location": "opera",
     "start": "2018-06-19T13:45:00",
     "tags": [
      "cinema"
@@ -554,9 +692,11 @@
     "title": "Trois visages"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T16:09:00",
+    "location": "opera",
     "start": "2018-06-19T14:00:00",
     "tags": [
      "cinema"
@@ -564,9 +704,11 @@
     "title": "D\u00e9sob\u00e9issance"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T16:10:00",
+    "location": "gaumont",
     "start": "2018-06-19T14:10:00",
     "tags": [
      "cinema"
@@ -574,9 +716,11 @@
     "title": "Demi-s\u0153urs"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T16:38:00",
+    "location": "gaumont",
     "start": "2018-06-19T14:15:00",
     "tags": [
      "cinema"
@@ -584,9 +728,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T15:50:00",
+    "location": "opera",
     "start": "2018-06-19T14:20:00",
     "tags": [
      "cinema"
@@ -594,9 +740,11 @@
     "title": "Senses 5"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T16:53:00",
+    "location": "opera",
     "start": "2018-06-19T14:30:00",
     "tags": [
      "cinema"
@@ -604,9 +752,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T18:00:00",
+    "location": "opera",
     "start": "2018-06-19T15:30:00",
     "tags": [
      "cinema"
@@ -614,9 +764,11 @@
     "title": "Solo: A Star Wars Story"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T17:41:00",
+    "location": "opera",
     "start": "2018-06-19T15:45:00",
     "tags": [
      "cinema"
@@ -624,9 +776,11 @@
     "title": "Volontaire"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T18:03:00",
+    "location": "opera",
     "start": "2018-06-19T15:55:00",
     "tags": [
      "cinema"
@@ -634,9 +788,11 @@
     "title": "En Guerre"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T18:25:00",
+    "location": "opera",
     "start": "2018-06-19T16:15:00",
     "tags": [
      "cinema"
@@ -644,9 +800,11 @@
     "title": "3 jours \u00e0 Quiberon"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T18:48:00",
+    "location": "gaumont",
     "start": "2018-06-19T16:25:00",
     "tags": [
      "cinema"
@@ -654,9 +812,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T18:40:00",
+    "location": "gaumont",
     "start": "2018-06-19T16:40:00",
     "tags": [
      "cinema"
@@ -664,9 +824,11 @@
     "title": "Demi-s\u0153urs"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T18:40:00",
+    "location": "opera",
     "start": "2018-06-19T17:00:00",
     "tags": [
      "cinema"
@@ -674,9 +836,11 @@
     "title": "Una Questione Privata"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T19:53:00",
+    "location": "gaumont",
     "start": "2018-06-19T17:30:00",
     "tags": [
      "cinema"
@@ -684,9 +848,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T19:29:00",
+    "location": "gaumont",
     "start": "2018-06-19T17:45:00",
     "tags": [
      "cinema"
@@ -694,9 +860,11 @@
     "title": "Mon Ket"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T19:34:00",
+    "location": "opera",
     "start": "2018-06-19T17:45:00",
     "tags": [
      "cinema"
@@ -704,9 +872,11 @@
     "title": "Une ann\u00e9e polaire"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T21:01:00",
+    "location": "opera",
     "start": "2018-06-19T18:10:00",
     "tags": [
      "cinema"
@@ -714,9 +884,11 @@
     "title": "Avengers: Infinity War"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T20:27:00",
+    "location": "opera",
     "start": "2018-06-19T18:15:00",
     "tags": [
      "cinema"
@@ -724,9 +896,11 @@
     "title": "Sicilian Ghost Story"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T20:43:00",
+    "location": "gaumont",
     "start": "2018-06-19T18:20:00",
     "tags": [
      "cinema"
@@ -734,9 +908,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T20:39:00",
+    "location": "opera",
     "start": "2018-06-19T18:30:00",
     "tags": [
      "cinema"
@@ -744,9 +920,11 @@
     "title": "D\u00e9sob\u00e9issance"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T21:08:00",
+    "location": "opera",
     "start": "2018-06-19T18:45:00",
     "tags": [
      "cinema"
@@ -754,9 +932,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T21:10:00",
+    "location": "gaumont",
     "start": "2018-06-19T19:10:00",
     "tags": [
      "cinema"
@@ -764,9 +944,11 @@
     "title": "Demi-s\u0153urs"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T21:38:00",
+    "location": "gaumont",
     "start": "2018-06-19T19:15:00",
     "tags": [
      "cinema"
@@ -774,9 +956,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T21:34:00",
+    "location": "opera",
     "start": "2018-06-19T19:45:00",
     "tags": [
      "cinema"
@@ -784,9 +968,11 @@
     "title": "Alberto Giacometti, The Final Portrait"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T21:39:00",
+    "location": "gaumont",
     "start": "2018-06-19T19:55:00",
     "tags": [
      "cinema"
@@ -794,9 +980,11 @@
     "title": "Mon Ket"
    },
    {
+    "artist": "artist-a",
     "backgroundColor": "#a0e5e5",
     "borderColor": "#3f7f7f",
     "end": null,
+    "location": "lieu-c",
     "start": "2018-06-19T20:00:00",
     "tags": [
      "theatre"
@@ -804,9 +992,11 @@
     "title": "Artiste de test A (Genre Toto)"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T22:38:00",
+    "location": "opera",
     "start": "2018-06-19T20:35:00",
     "tags": [
      "cinema"
@@ -814,9 +1004,11 @@
     "title": "Gueule d'ange"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T22:55:00",
+    "location": "opera",
     "start": "2018-06-19T20:45:00",
     "tags": [
      "cinema"
@@ -824,9 +1016,11 @@
     "title": "3 jours \u00e0 Quiberon"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T23:30:00",
+    "location": "opera",
     "start": "2018-06-19T21:00:00",
     "tags": [
      "cinema"
@@ -834,9 +1028,11 @@
     "title": "Solo: A Star Wars Story"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T23:38:00",
+    "location": "opera",
     "start": "2018-06-19T21:15:00",
     "tags": [
      "cinema"
@@ -844,9 +1040,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T23:30:00",
+    "location": "opera",
     "start": "2018-06-19T21:35:00",
     "tags": [
      "cinema"
@@ -854,9 +1052,11 @@
     "title": "Trois visages"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-20T00:18:00",
+    "location": "gaumont",
     "start": "2018-06-19T21:55:00",
     "tags": [
      "cinema"
@@ -864,9 +1064,11 @@
     "title": "Jurassic World: Fallen Kingdom"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-19T23:54:00",
+    "location": "gaumont",
     "start": "2018-06-19T22:10:00",
     "tags": [
      "cinema"
@@ -877,9 +1079,11 @@
   "2018-06-20": [],
   "2018-06-21": [
    {
+    "artist": "artist-b",
     "backgroundColor": "#e5a0a0",
     "borderColor": "#7f3f3f",
     "end": null,
+    "location": "lieu-a",
     "start": "2018-06-21T19:00:00",
     "tags": [
      "musique"
@@ -887,9 +1091,11 @@
     "title": "Artiste de test B (Genre Titi)"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-21T22:00:00",
+    "location": "gaumont",
     "start": "2018-06-21T20:00:00",
     "tags": [
      "cinema"
@@ -897,9 +1103,11 @@
     "title": "Grease"
    },
    {
+    "artist": "artist-c",
     "backgroundColor": "#a0e5e5",
     "borderColor": "#3f7f7f",
     "end": "2018-06-22T00:27:00",
+    "location": "lieu-a",
     "start": "2018-06-21T21:30:00",
     "tags": [
      "theatre"
@@ -909,9 +1117,11 @@
   ],
   "2018-06-22": [
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-22T20:45:00",
+    "location": "lieu-b",
     "start": "2018-06-22T19:30:00",
     "tags": [
      "cinema"
@@ -921,9 +1131,11 @@
   ],
   "2018-06-23": [
    {
+    "artist": "artist-a",
     "backgroundColor": "#a0e5e5",
     "borderColor": "#3f7f7f",
     "end": null,
+    "location": "lieu-c",
     "start": "2018-06-23T20:00:00",
     "tags": [
      "theatre"
@@ -933,9 +1145,11 @@
   ],
   "2018-06-24": [
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-24T12:10:00",
+    "location": "gaumont",
     "start": "2018-06-24T10:30:00",
     "tags": [
      "cinema"
@@ -943,9 +1157,11 @@
     "title": "Maya l'abeille 2 - Les jeux du miel"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-24T15:45:00",
+    "location": "gaumont",
     "start": "2018-06-24T13:45:00",
     "tags": [
      "cinema"
@@ -953,9 +1169,11 @@
     "title": "Edward aux mains d'argent"
    },
    {
+    "artist": null,
     "backgroundColor": "#c3e5a0",
     "borderColor": "#5f7f3f",
     "end": "2018-06-24T18:28:00",
+    "location": "gaumont",
     "start": "2018-06-24T16:15:00",
     "tags": [
      "cinema"
@@ -963,5 +1181,45 @@
     "title": "Les Indestructibles 2"
    }
   ]
+ },
+ "locations": {
+  "gaumont": {
+   "description": [],
+   "name": "Gaumont",
+   "slug": "gaumont",
+   "website": null
+  },
+  "lieu-a": {
+   "description": [
+    "Description du lieu de test A"
+   ],
+   "name": "Lieu de test A",
+   "slug": "lieu-a",
+   "website": "https://www.google.fr/search?q=Lieu de test A"
+  },
+  "lieu-b": {
+   "description": [
+    "Description du lieu de test B (paragraphe 1)",
+    "Description du lieu de test B (paragraphe 2)",
+    "Description du lieu de test B (paragraphe 3)"
+   ],
+   "name": "Lieu de test B",
+   "slug": "lieu-b",
+   "website": "https://www.google.fr/search?q=Lieu de test B"
+  },
+  "lieu-c": {
+   "description": [
+    "Description du lieu de test C"
+   ],
+   "name": "Lieu de test C",
+   "slug": "lieu-c",
+   "website": "https://www.google.fr/search?q=Lieu de test C"
+  },
+  "opera": {
+   "description": [],
+   "name": "Op\u00e9ra",
+   "slug": "opera",
+   "website": null
+  }
  }
 }
