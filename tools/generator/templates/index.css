@@ -82,3 +82,8 @@ a {
     background-color: #fff;
     z-index: 1;
 }
+
+a[target=_blank] {
+    background: url("/external.svg") center right no-repeat;
+    padding-right: 18px;
+}
