@@ -18,3 +18,10 @@ artists:
     genre: Genre Tutu
     website: https://www.google.fr/search?q=Artiste de test C
     description: Description de l'artiste de test C
+  full:
+    name: Artiste complètement renseigné
+    genre: Un certain genre
+    website: https://www.google.fr/search?q=Artiste complètement renseigné
+    description:
+      - Cet artiste a tous ses champs remplis, aucune information ne manque.
+      - Cette description fait même plusieurs paragraphes.

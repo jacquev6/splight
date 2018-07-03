@@ -53,6 +53,11 @@ def check_local_links(root_dir_name, all_files):
     for w in range(21, 52):
         reacheable.add("/reims/2018-W{}.json".format(w))
 
+    aux("/test/2018-07-02/")
+    aux("/test/2018-07-02+2/")
+    for w in range(27, 52):
+        reacheable.add("/test/2018-W{}.json".format(w))
+
     for url in served_urls - reacheable:
         yield "UNREACHABLE URL: {}".format(url)
 

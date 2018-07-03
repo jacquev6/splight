@@ -15,8 +15,8 @@
   <body>
     <div class="container">
       <div class="jumbotron">
-        <h1 class="display-4"><a href="/">Splight</a></h1>
-        <p class="lead">Votre agenda culturel régional.</p>
+        <h1 class="display-4"><a href="/">Splight</a> - <a href="/test/">Testeville</a></h1>
+        <p class="lead">Votre agenda culturel à Testeville et dans sa région.</p>
       </div>
 
       <div class="sp-noscript">
@@ -35,16 +35,103 @@
 
       <div class="sp-modern sp-loading">
         <div class="sp-content">
-<div class="row">
-  <div class="col-6 col-md-3">
-    <p><a href="/test/"><canvas class="img-fluid" width="320" height="240" data-sp-random-seed="Testeville"></canvas></a></p>
-    <p><a href="/test/">Testeville</a></p>
-  </div>
-  <div class="col-6 col-md-3">
-    <p><a href="/reims/"><canvas class="img-fluid" width="320" height="240" data-sp-random-seed="Reims"></canvas></a></p>
-    <p><a href="/reims/">Reims</a></p>
+<div class="row d-lg-none">
+  <div class="col">
+    <div class="sp-advertisement">
+      <p>Publicité</p>
+      <p><canvas class="img-fluid" width="468" height="60" data-sp-random-seed="Publicité 468x60"></canvas></p>
+    </div>
   </div>
 </div>
+
+<div class="row">
+  <div class="col">
+    <h1 id="sp-timespan-title">Journée du dimanche 05 août 2018</h1>
+
+    <div class="row"><div class="col"><div id="sp-tag-filtering" class="form-group">
+      <div class="form-check form-check-inline" style="border-color: #7f3f3f; background-color: #e5a0a0">
+        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="some" />Quelques événements</label>
+      </div>
+      <div class="form-check form-check-inline" style="border-color: #3f7f3f; background-color: #a0e5a0">
+        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="incomplete" />Événements incomplets</label>
+      </div>
+      <div class="form-check form-check-inline" style="border-color: #3f3f7f; background-color: #a0a0e5">
+        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="many" />Beaucoup d'événements</label>
+      </div>
+    </div></div></div>
+
+    <div class="row">
+      <div class="col">
+        <p class="text-right">&nbsp;<a class="sp-timespan-previous sp-tag-filtering-tagged-link" href="/test/2018-08-04/">&lt; Jour précédent</a></p>
+      </div>
+      <div class="col"><div class="form-group text-center">
+        <label>Afficher&nbsp;: <select id="sp-timespan-duration"><option value="Week">une semaine</option><option value="ThreeDays">trois jours</option><option value="Day">une journée</option></select></label>
+      </div></div>
+      <div class="col">
+        <p class="text-left"><a class="sp-timespan-next sp-tag-filtering-tagged-link" href="/test//">Jour suivant &gt;</a>&nbsp;</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <p class="text-right">&nbsp;<a class="sp-timespan-now-1 sp-tag-filtering-tagged-link" href="/test//">Aujourd'hui</a></p>
+      </div>
+      <div class="col">
+        <p class="text-left"><a class="sp-timespan-now-2 sp-tag-filtering-tagged-link" href="/test//">Demain</a>&nbsp;</p>
+      </div>
+    </div>
+
+    <div id="sp-fullcalendar"></div>
+  </div>
+
+  <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
+    <div class="sp-advertisement">
+      <p>Publicité</p>
+      <p><canvas class="img-fluid" width="160" height="600" data-sp-random-seed="Publicité 160x600"></canvas></p>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="sp-event-details">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="sp-event-details-title" class="modal-title">...</h5>
+        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg">
+              <h3>Quand&nbsp;?</h3>
+              <p id="sp-event-details-datetime">...</p>
+              <h3>Quoi&nbsp;?</h3>
+              <div id="sp-event-details-artist">
+                <h4 id="sp-event-details-artist-name">...</h4>
+                <canvas id="sp-event-details-artist-image" class="img-fluid" width="640" height="480" data-sp-random-seed="The Who"></canvas>
+                <p id="sp-event-details-artist-description">...</p>
+                <p><a id="sp-event-details-artist-website" target="_blank" href="/">Site internet</a></p>
+              </div>
+            </div>
+            <div class="col-lg">
+              <h3>Où&nbsp;?</h3>
+              <div id="sp-event-details-location">
+                <h4 id="sp-event-details-location-name">...</h4>
+                <canvas id="sp-event-details-location-image" class="img-fluid" width="640" height="480" data-sp-random-seed="La Cartonnerie"></canvas>
+                <p id="sp-event-details-location-description">...</p>
+                <!--<div class="embed-responsive embed-responsive-1by1">
+                  <iframe id="sp-event-details-location-google-maps" src="data:text/plain,Bientot+Google+Maps"></iframe>
+                </div>-->
+                <p><a id="sp-event-details-location-website" target="_blank" href="/">Site internet</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
         </div>
         <div id="sp-loading" class="text-center"><p><img src="/loading.gif" alt="Animation de chargement"></p><p>Patience pendant le chargement...</p></div>
       </div>
