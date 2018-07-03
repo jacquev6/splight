@@ -462,6 +462,8 @@
         locale: "fr",
         allDaySlot: false,
         height: "auto",
+        themeSystem: "bootstrap4",
+        eventTextColor: "black",
         events: function(start, end, timezone, callback) {
           callback(my.displayed_events);
         },

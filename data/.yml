@@ -1,4 +1,5 @@
 artists:
+  # Here are just the test artists. Actual artist go into separate files in data/artists
   artist-a:
     name: Artiste de test A
     genre: Genre Toto
