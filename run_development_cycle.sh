@@ -52,6 +52,8 @@ then
   ln -f tools/random-canvas/_build/default/random_canvas.bc.js tools/generator/skeleton/random_canvas.js
 fi
 
+(cd tools/splight-logic; browserify -t uglifyify index.js) >tools/generator/skeleton/index.js
+
 python3 -m tools.generator data docs
 
 git --no-pager diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat docs

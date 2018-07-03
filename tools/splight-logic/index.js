@@ -1,3 +1,13 @@
+const URI = require("urijs");
+const URITemplate = require('urijs/src/URITemplate');
+const CryptoJS = require("crypto-js");
+const Cookies = require("js-cookie");
+const moment = require("moment");
+const $ = global.jQuery = require("jquery");
+require("fullcalendar");
+require("./node_modules/fullcalendar/dist/locale/fr.js");
+require("bootstrap");
+
 (function() {
   "use strict";
 
@@ -6,7 +16,7 @@
       var my = {};
 
       function try_enable(decrypt_key, is_active) {
-        var decrypt_key_is_valid = CryptoJS.SHA1(decrypt_key).toString() == "{{ decrypt_key_sha }}";
+        var decrypt_key_is_valid = CryptoJS.SHA1(decrypt_key).toString() == "f722f20fc568981ad1702f8075048e08a766bfa0";
 
         if(decrypt_key_is_valid) {
           my.decrypt_key = decrypt_key;
