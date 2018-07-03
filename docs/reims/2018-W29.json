@@ -46,7 +46,32 @@
     "title": "Film de test"
    }
   ],
-  "2018-07-17": [],
+  "2018-07-17": [
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-17T21:40:00",
+    "location": "gaumont",
+    "start": "2018-07-17T20:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ma Reum"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-17T22:58:00",
+    "location": "gaumont",
+    "start": "2018-07-17T20:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ant-Man et la Gu\u00eape"
+   }
+  ],
   "2018-07-18": [
    {
     "artist": "artist-a",
@@ -93,6 +118,12 @@
   "2018-07-22": []
  },
  "locations": {
+  "gaumont": {
+   "description": [],
+   "name": "Gaumont",
+   "slug": "gaumont",
+   "website": null
+  },
   "lieu-a": {
    "description": [
     "Description du lieu de test A"

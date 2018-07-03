@@ -23,6 +23,30 @@
   "2018-07-02": [],
   "2018-07-03": [
    {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T21:27:00",
+    "location": "gaumont",
+    "start": "2018-07-03T19:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T21:55:00",
+    "location": "gaumont",
+    "start": "2018-07-03T19:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
     "artist": "artist-a",
     "backgroundColor": "#a0e5e5",
     "borderColor": "#3f7f7f",
@@ -33,9 +57,1077 @@
      "theatre"
     ],
     "title": "Artiste de test A (Genre Toto)"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T21:46:00",
+    "location": "gaumont",
+    "start": "2018-07-03T20:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Christ(off)"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T22:07:00",
+    "location": "gaumont",
+    "start": "2018-07-03T20:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T22:00:00",
+    "location": "gaumont",
+    "start": "2018-07-03T20:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T22:10:00",
+    "location": "gaumont",
+    "start": "2018-07-03T20:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T22:27:00",
+    "location": "opera",
+    "start": "2018-07-03T20:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ma fille"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T23:03:00",
+    "location": "gaumont",
+    "start": "2018-07-03T20:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T23:05:00",
+    "location": "opera",
+    "start": "2018-07-03T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T23:40:00",
+    "location": "opera",
+    "start": "2018-07-03T21:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T23:45:00",
+    "location": "gaumont",
+    "start": "2018-07-03T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T23:08:00",
+    "location": "opera",
+    "start": "2018-07-03T21:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T00:21:00",
+    "location": "gaumont",
+    "start": "2018-07-03T21:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Avengers: Infinity War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T23:51:00",
+    "location": "gaumont",
+    "start": "2018-07-03T21:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "H\u00e9r\u00e9dit\u00e9"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T23:32:00",
+    "location": "opera",
+    "start": "2018-07-03T21:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "B\u00e9cassine!"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T23:55:00",
+    "location": "gaumont",
+    "start": "2018-07-03T21:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T00:18:00",
+    "location": "gaumont",
+    "start": "2018-07-03T21:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T00:09:00",
+    "location": "gaumont",
+    "start": "2018-07-03T22:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Love, Simon"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T00:22:00",
+    "location": "gaumont",
+    "start": "2018-07-03T22:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-03T23:52:00",
+    "location": "gaumont",
+    "start": "2018-07-03T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T00:20:00",
+    "location": "gaumont",
+    "start": "2018-07-03T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T00:22:00",
+    "location": "gaumont",
+    "start": "2018-07-03T22:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T00:20:00",
+    "location": "gaumont",
+    "start": "2018-07-03T22:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T00:15:00",
+    "location": "gaumont",
+    "start": "2018-07-03T22:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
    }
   ],
   "2018-07-04": [
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:23:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:13:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T12:42:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Mon voisin Totoro"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:05:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:12:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:30:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T12:52:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:08:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:17:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:20:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:43:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:15:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T14:02:00",
+    "location": "gaumont",
+    "start": "2018-07-04T11:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:45:00",
+    "location": "opera",
+    "start": "2018-07-04T11:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:52:00",
+    "location": "opera",
+    "start": "2018-07-04T11:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Un Couteau Dans le Coeur"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T13:57:00",
+    "location": "opera",
+    "start": "2018-07-04T12:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "How To Talk To Girls At Parties"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T14:05:00",
+    "location": "opera",
+    "start": "2018-07-04T12:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T15:22:00",
+    "location": "gaumont",
+    "start": "2018-07-04T13:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T15:30:00",
+    "location": "gaumont",
+    "start": "2018-07-04T13:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T15:07:00",
+    "location": "gaumont",
+    "start": "2018-07-04T13:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T15:37:00",
+    "location": "gaumont",
+    "start": "2018-07-04T13:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T16:08:00",
+    "location": "gaumont",
+    "start": "2018-07-04T13:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T15:58:00",
+    "location": "opera",
+    "start": "2018-07-04T13:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T16:03:00",
+    "location": "gaumont",
+    "start": "2018-07-04T13:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T15:38:00",
+    "location": "opera",
+    "start": "2018-07-04T13:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T15:09:00",
+    "location": "opera",
+    "start": "2018-07-04T13:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Wallace & Gromit : C\u0153urs \u00e0 modeler"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T15:53:00",
+    "location": "gaumont",
+    "start": "2018-07-04T14:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T16:05:00",
+    "location": "opera",
+    "start": "2018-07-04T14:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T16:14:00",
+    "location": "gaumont",
+    "start": "2018-07-04T14:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Love, Simon"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T15:38:00",
+    "location": "opera",
+    "start": "2018-07-04T14:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T16:00:00",
+    "location": "gaumont",
+    "start": "2018-07-04T14:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T16:45:00",
+    "location": "gaumont",
+    "start": "2018-07-04T14:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T16:43:00",
+    "location": "gaumont",
+    "start": "2018-07-04T14:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T16:32:00",
+    "location": "gaumont",
+    "start": "2018-07-04T14:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T17:02:00",
+    "location": "opera",
+    "start": "2018-07-04T15:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ma fille"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T17:32:00",
+    "location": "gaumont",
+    "start": "2018-07-04T15:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T17:07:00",
+    "location": "gaumont",
+    "start": "2018-07-04T15:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T17:33:00",
+    "location": "opera",
+    "start": "2018-07-04T15:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T17:55:00",
+    "location": "gaumont",
+    "start": "2018-07-04T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T17:45:00",
+    "location": "opera",
+    "start": "2018-07-04T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T18:07:00",
+    "location": "gaumont",
+    "start": "2018-07-04T16:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T19:01:00",
+    "location": "opera",
+    "start": "2018-07-04T16:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Avengers: Infinity War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T18:28:00",
+    "location": "opera",
+    "start": "2018-07-04T16:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T18:17:00",
+    "location": "gaumont",
+    "start": "2018-07-04T16:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T18:48:00",
+    "location": "gaumont",
+    "start": "2018-07-04T16:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T18:43:00",
+    "location": "gaumont",
+    "start": "2018-07-04T16:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T18:15:00",
+    "location": "gaumont",
+    "start": "2018-07-04T16:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T18:47:00",
+    "location": "gaumont",
+    "start": "2018-07-04T16:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T19:15:00",
+    "location": "gaumont",
+    "start": "2018-07-04T17:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T18:53:00",
+    "location": "gaumont",
+    "start": "2018-07-04T17:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T18:53:00",
+    "location": "opera",
+    "start": "2018-07-04T17:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Dossier Mona Lina"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T19:10:00",
+    "location": "gaumont",
+    "start": "2018-07-04T17:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T19:07:00",
+    "location": "gaumont",
+    "start": "2018-07-04T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T19:43:00",
+    "location": "gaumont",
+    "start": "2018-07-04T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T19:35:00",
+    "location": "opera",
+    "start": "2018-07-04T17:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Trois visages"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T19:18:00",
+    "location": "opera",
+    "start": "2018-07-04T17:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T20:25:00",
+    "location": "gaumont",
+    "start": "2018-07-04T18:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T20:47:00",
+    "location": "gaumont",
+    "start": "2018-07-04T18:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T20:42:00",
+    "location": "gaumont",
+    "start": "2018-07-04T18:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T20:58:00",
+    "location": "opera",
+    "start": "2018-07-04T18:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T20:47:00",
+    "location": "gaumont",
+    "start": "2018-07-04T18:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T20:45:00",
+    "location": "gaumont",
+    "start": "2018-07-04T19:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T21:23:00",
+    "location": "opera",
+    "start": "2018-07-04T19:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T21:02:00",
+    "location": "opera",
+    "start": "2018-07-04T19:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "B\u00e9cassine!"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T21:33:00",
+    "location": "gaumont",
+    "start": "2018-07-04T19:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T21:28:00",
+    "location": "gaumont",
+    "start": "2018-07-04T19:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T21:02:00",
+    "location": "gaumont",
+    "start": "2018-07-04T19:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
    {
     "artist": null,
     "backgroundColor": "#c3e5a0",
@@ -47,9 +1139,1137 @@
      "cinema"
     ],
     "title": "Film de test"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T21:27:00",
+    "location": "gaumont",
+    "start": "2018-07-04T19:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T21:25:00",
+    "location": "opera",
+    "start": "2018-07-04T19:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T21:35:00",
+    "location": "opera",
+    "start": "2018-07-04T19:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T21:30:00",
+    "location": "gaumont",
+    "start": "2018-07-04T19:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T21:49:00",
+    "location": "gaumont",
+    "start": "2018-07-04T19:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Love, Simon"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T21:43:00",
+    "location": "gaumont",
+    "start": "2018-07-04T19:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T22:43:00",
+    "location": "gaumont",
+    "start": "2018-07-04T20:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T23:05:00",
+    "location": "gaumont",
+    "start": "2018-07-04T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T22:57:00",
+    "location": "gaumont",
+    "start": "2018-07-04T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T22:51:00",
+    "location": "opera",
+    "start": "2018-07-04T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tully"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T23:12:00",
+    "location": "gaumont",
+    "start": "2018-07-04T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T23:32:00",
+    "location": "gaumont",
+    "start": "2018-07-04T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T23:28:00",
+    "location": "opera",
+    "start": "2018-07-04T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T23:15:00",
+    "location": "gaumont",
+    "start": "2018-07-04T21:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T22:58:00",
+    "location": "opera",
+    "start": "2018-07-04T21:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T23:35:00",
+    "location": "opera",
+    "start": "2018-07-04T21:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T00:26:00",
+    "location": "gaumont",
+    "start": "2018-07-04T21:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Avengers: Infinity War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-04T23:40:00",
+    "location": "opera",
+    "start": "2018-07-04T21:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T00:20:00",
+    "location": "gaumont",
+    "start": "2018-07-04T21:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T00:18:00",
+    "location": "gaumont",
+    "start": "2018-07-04T21:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T00:13:00",
+    "location": "gaumont",
+    "start": "2018-07-04T22:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T00:20:00",
+    "location": "gaumont",
+    "start": "2018-07-04T22:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T00:12:00",
+    "location": "gaumont",
+    "start": "2018-07-04T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T00:08:00",
+    "location": "gaumont",
+    "start": "2018-07-04T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
    }
   ],
   "2018-07-05": [
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:23:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:13:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T12:42:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Mon voisin Totoro"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:12:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:30:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T12:52:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:08:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:17:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:20:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:43:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:15:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T14:02:00",
+    "location": "gaumont",
+    "start": "2018-07-05T11:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:45:00",
+    "location": "opera",
+    "start": "2018-07-05T11:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:46:00",
+    "location": "opera",
+    "start": "2018-07-05T11:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tully"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:48:00",
+    "location": "opera",
+    "start": "2018-07-05T12:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Dossier Mona Lina"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T13:38:00",
+    "location": "opera",
+    "start": "2018-07-05T12:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T15:22:00",
+    "location": "gaumont",
+    "start": "2018-07-05T13:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T15:30:00",
+    "location": "gaumont",
+    "start": "2018-07-05T13:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T15:07:00",
+    "location": "gaumont",
+    "start": "2018-07-05T13:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T15:37:00",
+    "location": "gaumont",
+    "start": "2018-07-05T13:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T16:08:00",
+    "location": "gaumont",
+    "start": "2018-07-05T13:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T15:58:00",
+    "location": "opera",
+    "start": "2018-07-05T13:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T16:03:00",
+    "location": "gaumont",
+    "start": "2018-07-05T13:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T15:38:00",
+    "location": "opera",
+    "start": "2018-07-05T13:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T15:47:00",
+    "location": "opera",
+    "start": "2018-07-05T13:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Un Couteau Dans le Coeur"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T15:45:00",
+    "location": "opera",
+    "start": "2018-07-05T13:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T15:53:00",
+    "location": "gaumont",
+    "start": "2018-07-05T14:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T15:57:00",
+    "location": "opera",
+    "start": "2018-07-05T14:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "How To Talk To Girls At Parties"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T16:14:00",
+    "location": "gaumont",
+    "start": "2018-07-05T14:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Love, Simon"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T16:00:00",
+    "location": "gaumont",
+    "start": "2018-07-05T14:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T16:45:00",
+    "location": "gaumont",
+    "start": "2018-07-05T14:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T16:43:00",
+    "location": "gaumont",
+    "start": "2018-07-05T14:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T16:32:00",
+    "location": "gaumont",
+    "start": "2018-07-05T14:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T17:32:00",
+    "location": "gaumont",
+    "start": "2018-07-05T15:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T17:07:00",
+    "location": "gaumont",
+    "start": "2018-07-05T15:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T17:33:00",
+    "location": "opera",
+    "start": "2018-07-05T15:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T17:55:00",
+    "location": "gaumont",
+    "start": "2018-07-05T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T17:18:00",
+    "location": "opera",
+    "start": "2018-07-05T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T17:04:00",
+    "location": "opera",
+    "start": "2018-07-05T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Wallace & Gromit : C\u0153urs \u00e0 modeler"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T18:05:00",
+    "location": "opera",
+    "start": "2018-07-05T16:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T18:07:00",
+    "location": "gaumont",
+    "start": "2018-07-05T16:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T18:28:00",
+    "location": "opera",
+    "start": "2018-07-05T16:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T18:17:00",
+    "location": "gaumont",
+    "start": "2018-07-05T16:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T18:48:00",
+    "location": "gaumont",
+    "start": "2018-07-05T16:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T18:43:00",
+    "location": "gaumont",
+    "start": "2018-07-05T16:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T18:15:00",
+    "location": "gaumont",
+    "start": "2018-07-05T16:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T18:55:00",
+    "location": "gaumont",
+    "start": "2018-07-05T16:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T18:47:00",
+    "location": "gaumont",
+    "start": "2018-07-05T16:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T18:53:00",
+    "location": "gaumont",
+    "start": "2018-07-05T17:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T18:57:00",
+    "location": "opera",
+    "start": "2018-07-05T17:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ma fille"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T19:10:00",
+    "location": "gaumont",
+    "start": "2018-07-05T17:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T19:07:00",
+    "location": "gaumont",
+    "start": "2018-07-05T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T19:43:00",
+    "location": "gaumont",
+    "start": "2018-07-05T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T19:25:00",
+    "location": "opera",
+    "start": "2018-07-05T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T19:40:00",
+    "location": "opera",
+    "start": "2018-07-05T17:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T20:46:00",
+    "location": "opera",
+    "start": "2018-07-05T18:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "2001 : l'odyss\u00e9e de l'espace"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T20:25:00",
+    "location": "gaumont",
+    "start": "2018-07-05T18:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T20:47:00",
+    "location": "gaumont",
+    "start": "2018-07-05T18:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T20:42:00",
+    "location": "gaumont",
+    "start": "2018-07-05T18:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T20:58:00",
+    "location": "opera",
+    "start": "2018-07-05T18:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T20:47:00",
+    "location": "gaumont",
+    "start": "2018-07-05T18:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T20:45:00",
+    "location": "gaumont",
+    "start": "2018-07-05T19:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T20:48:00",
+    "location": "opera",
+    "start": "2018-07-05T19:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Dossier Mona Lina"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T21:33:00",
+    "location": "gaumont",
+    "start": "2018-07-05T19:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T21:28:00",
+    "location": "gaumont",
+    "start": "2018-07-05T19:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T21:27:00",
+    "location": "gaumont",
+    "start": "2018-07-05T19:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T20:58:00",
+    "location": "opera",
+    "start": "2018-07-05T19:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T21:30:00",
+    "location": "gaumont",
+    "start": "2018-07-05T19:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T21:40:00",
+    "location": "opera",
+    "start": "2018-07-05T19:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Trois visages"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T21:43:00",
+    "location": "gaumont",
+    "start": "2018-07-05T19:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
    {
     "artist": null,
     "backgroundColor": "#c3e5a0",
@@ -61,9 +2281,957 @@
      "cinema"
     ],
     "title": "Britannicus (Com\u00e9die-Fran\u00e7aise / Path\u00e9 Live)"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T22:30:00",
+    "location": "gaumont",
+    "start": "2018-07-05T20:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Britannicus (Com\u00e9die-Fran\u00e7aise / Path\u00e9 Live)"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T22:43:00",
+    "location": "gaumont",
+    "start": "2018-07-05T20:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T23:05:00",
+    "location": "gaumont",
+    "start": "2018-07-05T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T22:57:00",
+    "location": "gaumont",
+    "start": "2018-07-05T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T22:57:00",
+    "location": "opera",
+    "start": "2018-07-05T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "B\u00e9cassine!"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T23:23:00",
+    "location": "opera",
+    "start": "2018-07-05T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T23:05:00",
+    "location": "opera",
+    "start": "2018-07-05T21:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T23:12:00",
+    "location": "gaumont",
+    "start": "2018-07-05T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T23:32:00",
+    "location": "gaumont",
+    "start": "2018-07-05T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T23:28:00",
+    "location": "opera",
+    "start": "2018-07-05T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T23:15:00",
+    "location": "gaumont",
+    "start": "2018-07-05T21:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-05T23:40:00",
+    "location": "opera",
+    "start": "2018-07-05T21:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T00:20:00",
+    "location": "gaumont",
+    "start": "2018-07-05T21:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T00:18:00",
+    "location": "gaumont",
+    "start": "2018-07-05T21:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T00:13:00",
+    "location": "gaumont",
+    "start": "2018-07-05T22:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T00:12:00",
+    "location": "gaumont",
+    "start": "2018-07-05T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T00:08:00",
+    "location": "gaumont",
+    "start": "2018-07-05T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
    }
   ],
   "2018-07-06": [
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:23:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:13:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T12:42:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Mon voisin Totoro"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:05:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:12:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:30:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T12:52:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:08:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:17:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:20:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:43:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:15:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T14:02:00",
+    "location": "gaumont",
+    "start": "2018-07-06T11:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:40:00",
+    "location": "opera",
+    "start": "2018-07-06T11:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Trois visages"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T13:57:00",
+    "location": "opera",
+    "start": "2018-07-06T12:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "B\u00e9cassine!"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T14:23:00",
+    "location": "opera",
+    "start": "2018-07-06T12:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T14:05:00",
+    "location": "opera",
+    "start": "2018-07-06T12:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T15:22:00",
+    "location": "gaumont",
+    "start": "2018-07-06T13:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T15:30:00",
+    "location": "gaumont",
+    "start": "2018-07-06T13:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T15:07:00",
+    "location": "gaumont",
+    "start": "2018-07-06T13:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T15:37:00",
+    "location": "gaumont",
+    "start": "2018-07-06T13:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T15:28:00",
+    "location": "opera",
+    "start": "2018-07-06T13:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T16:08:00",
+    "location": "gaumont",
+    "start": "2018-07-06T13:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T15:58:00",
+    "location": "opera",
+    "start": "2018-07-06T13:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T16:03:00",
+    "location": "gaumont",
+    "start": "2018-07-06T13:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T15:09:00",
+    "location": "opera",
+    "start": "2018-07-06T13:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Wallace & Gromit : C\u0153urs \u00e0 modeler"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T15:53:00",
+    "location": "gaumont",
+    "start": "2018-07-06T14:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T16:14:00",
+    "location": "gaumont",
+    "start": "2018-07-06T14:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Love, Simon"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T15:38:00",
+    "location": "opera",
+    "start": "2018-07-06T14:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T16:00:00",
+    "location": "gaumont",
+    "start": "2018-07-06T14:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T16:45:00",
+    "location": "gaumont",
+    "start": "2018-07-06T14:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T16:43:00",
+    "location": "gaumont",
+    "start": "2018-07-06T14:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T16:39:00",
+    "location": "opera",
+    "start": "2018-07-06T14:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "D\u00e9sob\u00e9issance"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T16:32:00",
+    "location": "gaumont",
+    "start": "2018-07-06T14:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T17:07:00",
+    "location": "opera",
+    "start": "2018-07-06T15:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Un Couteau Dans le Coeur"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T17:32:00",
+    "location": "gaumont",
+    "start": "2018-07-06T15:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T17:07:00",
+    "location": "gaumont",
+    "start": "2018-07-06T15:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T17:23:00",
+    "location": "opera",
+    "start": "2018-07-06T15:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T17:55:00",
+    "location": "gaumont",
+    "start": "2018-07-06T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T17:45:00",
+    "location": "opera",
+    "start": "2018-07-06T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T18:07:00",
+    "location": "gaumont",
+    "start": "2018-07-06T16:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T18:28:00",
+    "location": "opera",
+    "start": "2018-07-06T16:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T18:17:00",
+    "location": "gaumont",
+    "start": "2018-07-06T16:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T18:48:00",
+    "location": "gaumont",
+    "start": "2018-07-06T16:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T18:43:00",
+    "location": "gaumont",
+    "start": "2018-07-06T16:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T18:15:00",
+    "location": "gaumont",
+    "start": "2018-07-06T16:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T18:42:00",
+    "location": "opera",
+    "start": "2018-07-06T16:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "How To Talk To Girls At Parties"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T18:47:00",
+    "location": "gaumont",
+    "start": "2018-07-06T16:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T19:15:00",
+    "location": "gaumont",
+    "start": "2018-07-06T17:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T18:53:00",
+    "location": "gaumont",
+    "start": "2018-07-06T17:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T19:01:00",
+    "location": "opera",
+    "start": "2018-07-06T17:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tully"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T19:10:00",
+    "location": "gaumont",
+    "start": "2018-07-06T17:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T19:07:00",
+    "location": "gaumont",
+    "start": "2018-07-06T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T19:43:00",
+    "location": "gaumont",
+    "start": "2018-07-06T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T19:30:00",
+    "location": "opera",
+    "start": "2018-07-06T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T19:18:00",
+    "location": "opera",
+    "start": "2018-07-06T17:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T20:25:00",
+    "location": "gaumont",
+    "start": "2018-07-06T18:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T20:47:00",
+    "location": "gaumont",
+    "start": "2018-07-06T18:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T20:42:00",
+    "location": "gaumont",
+    "start": "2018-07-06T18:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T20:58:00",
+    "location": "opera",
+    "start": "2018-07-06T18:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T20:50:00",
+    "location": "opera",
+    "start": "2018-07-06T18:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T20:47:00",
+    "location": "gaumont",
+    "start": "2018-07-06T18:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
    {
     "artist": "artist-b",
     "backgroundColor": "#e5a0a0",
@@ -75,10 +3243,2219 @@
      "musique"
     ],
     "title": "Artiste de test B (Genre Titi)"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T20:45:00",
+    "location": "gaumont",
+    "start": "2018-07-06T19:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T20:57:00",
+    "location": "opera",
+    "start": "2018-07-06T19:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ma fille"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T21:33:00",
+    "location": "gaumont",
+    "start": "2018-07-06T19:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T21:28:00",
+    "location": "gaumont",
+    "start": "2018-07-06T19:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T21:02:00",
+    "location": "gaumont",
+    "start": "2018-07-06T19:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T21:27:00",
+    "location": "gaumont",
+    "start": "2018-07-06T19:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T21:25:00",
+    "location": "opera",
+    "start": "2018-07-06T19:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T21:35:00",
+    "location": "opera",
+    "start": "2018-07-06T19:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T21:30:00",
+    "location": "gaumont",
+    "start": "2018-07-06T19:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T21:49:00",
+    "location": "gaumont",
+    "start": "2018-07-06T19:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Love, Simon"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T21:43:00",
+    "location": "gaumont",
+    "start": "2018-07-06T19:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T22:43:00",
+    "location": "gaumont",
+    "start": "2018-07-06T20:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T23:31:00",
+    "location": "opera",
+    "start": "2018-07-06T20:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "2001 : l'odyss\u00e9e de l'espace"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T23:05:00",
+    "location": "gaumont",
+    "start": "2018-07-06T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T22:57:00",
+    "location": "gaumont",
+    "start": "2018-07-06T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T22:48:00",
+    "location": "opera",
+    "start": "2018-07-06T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Dossier Mona Lina"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T23:12:00",
+    "location": "gaumont",
+    "start": "2018-07-06T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T23:32:00",
+    "location": "gaumont",
+    "start": "2018-07-06T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T23:28:00",
+    "location": "opera",
+    "start": "2018-07-06T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T23:15:00",
+    "location": "gaumont",
+    "start": "2018-07-06T21:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T22:58:00",
+    "location": "opera",
+    "start": "2018-07-06T21:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T00:26:00",
+    "location": "gaumont",
+    "start": "2018-07-06T21:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Avengers: Infinity War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-06T23:40:00",
+    "location": "opera",
+    "start": "2018-07-06T21:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T00:20:00",
+    "location": "gaumont",
+    "start": "2018-07-06T21:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T00:18:00",
+    "location": "gaumont",
+    "start": "2018-07-06T21:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T00:13:00",
+    "location": "gaumont",
+    "start": "2018-07-06T22:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T00:20:00",
+    "location": "gaumont",
+    "start": "2018-07-06T22:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T00:12:00",
+    "location": "gaumont",
+    "start": "2018-07-06T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T00:08:00",
+    "location": "gaumont",
+    "start": "2018-07-06T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
    }
   ],
-  "2018-07-07": [],
+  "2018-07-07": [
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T13:23:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T13:13:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T12:42:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Mon voisin Totoro"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T13:05:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T13:12:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T13:30:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T12:52:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T13:08:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T13:17:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T13:20:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T13:43:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T13:15:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T14:02:00",
+    "location": "gaumont",
+    "start": "2018-07-07T11:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T15:22:00",
+    "location": "gaumont",
+    "start": "2018-07-07T13:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T15:30:00",
+    "location": "gaumont",
+    "start": "2018-07-07T13:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T15:07:00",
+    "location": "gaumont",
+    "start": "2018-07-07T13:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T15:37:00",
+    "location": "gaumont",
+    "start": "2018-07-07T13:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T15:28:00",
+    "location": "opera",
+    "start": "2018-07-07T13:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T16:08:00",
+    "location": "gaumont",
+    "start": "2018-07-07T13:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T15:58:00",
+    "location": "opera",
+    "start": "2018-07-07T13:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T16:03:00",
+    "location": "gaumont",
+    "start": "2018-07-07T13:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T15:45:00",
+    "location": "opera",
+    "start": "2018-07-07T13:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T15:47:00",
+    "location": "opera",
+    "start": "2018-07-07T13:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ma fille"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T15:53:00",
+    "location": "gaumont",
+    "start": "2018-07-07T14:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T16:05:00",
+    "location": "opera",
+    "start": "2018-07-07T14:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T16:14:00",
+    "location": "gaumont",
+    "start": "2018-07-07T14:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Love, Simon"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T16:00:00",
+    "location": "gaumont",
+    "start": "2018-07-07T14:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T16:45:00",
+    "location": "gaumont",
+    "start": "2018-07-07T14:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T16:43:00",
+    "location": "gaumont",
+    "start": "2018-07-07T14:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T16:32:00",
+    "location": "gaumont",
+    "start": "2018-07-07T14:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T17:32:00",
+    "location": "gaumont",
+    "start": "2018-07-07T15:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T17:07:00",
+    "location": "gaumont",
+    "start": "2018-07-07T15:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T17:23:00",
+    "location": "opera",
+    "start": "2018-07-07T15:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T17:55:00",
+    "location": "gaumont",
+    "start": "2018-07-07T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T17:18:00",
+    "location": "opera",
+    "start": "2018-07-07T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T17:04:00",
+    "location": "opera",
+    "start": "2018-07-07T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Wallace & Gromit : C\u0153urs \u00e0 modeler"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T18:07:00",
+    "location": "gaumont",
+    "start": "2018-07-07T16:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T18:33:00",
+    "location": "opera",
+    "start": "2018-07-07T16:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T18:28:00",
+    "location": "opera",
+    "start": "2018-07-07T16:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T18:17:00",
+    "location": "gaumont",
+    "start": "2018-07-07T16:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T18:48:00",
+    "location": "gaumont",
+    "start": "2018-07-07T16:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T18:43:00",
+    "location": "gaumont",
+    "start": "2018-07-07T16:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T18:15:00",
+    "location": "gaumont",
+    "start": "2018-07-07T16:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T18:47:00",
+    "location": "gaumont",
+    "start": "2018-07-07T16:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T19:15:00",
+    "location": "gaumont",
+    "start": "2018-07-07T17:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T18:53:00",
+    "location": "gaumont",
+    "start": "2018-07-07T17:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T18:57:00",
+    "location": "opera",
+    "start": "2018-07-07T17:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Un Couteau Dans le Coeur"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T19:10:00",
+    "location": "gaumont",
+    "start": "2018-07-07T17:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T19:07:00",
+    "location": "gaumont",
+    "start": "2018-07-07T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T19:43:00",
+    "location": "gaumont",
+    "start": "2018-07-07T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T19:30:00",
+    "location": "opera",
+    "start": "2018-07-07T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T19:25:00",
+    "location": "opera",
+    "start": "2018-07-07T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T20:25:00",
+    "location": "gaumont",
+    "start": "2018-07-07T18:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T20:47:00",
+    "location": "gaumont",
+    "start": "2018-07-07T18:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T20:45:00",
+    "location": "opera",
+    "start": "2018-07-07T18:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T20:42:00",
+    "location": "gaumont",
+    "start": "2018-07-07T18:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T20:58:00",
+    "location": "opera",
+    "start": "2018-07-07T18:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T20:47:00",
+    "location": "gaumont",
+    "start": "2018-07-07T18:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T20:45:00",
+    "location": "gaumont",
+    "start": "2018-07-07T19:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T20:56:00",
+    "location": "opera",
+    "start": "2018-07-07T19:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tully"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T21:33:00",
+    "location": "gaumont",
+    "start": "2018-07-07T19:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T21:28:00",
+    "location": "gaumont",
+    "start": "2018-07-07T19:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T21:02:00",
+    "location": "gaumont",
+    "start": "2018-07-07T19:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T21:27:00",
+    "location": "gaumont",
+    "start": "2018-07-07T19:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T20:58:00",
+    "location": "opera",
+    "start": "2018-07-07T19:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T21:35:00",
+    "location": "opera",
+    "start": "2018-07-07T19:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T21:30:00",
+    "location": "gaumont",
+    "start": "2018-07-07T19:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T21:49:00",
+    "location": "gaumont",
+    "start": "2018-07-07T19:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Love, Simon"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T21:43:00",
+    "location": "gaumont",
+    "start": "2018-07-07T19:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T22:43:00",
+    "location": "gaumont",
+    "start": "2018-07-07T20:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T22:38:00",
+    "location": "opera",
+    "start": "2018-07-07T20:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Dossier Mona Lina"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T23:05:00",
+    "location": "gaumont",
+    "start": "2018-07-07T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T22:57:00",
+    "location": "gaumont",
+    "start": "2018-07-07T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T22:57:00",
+    "location": "opera",
+    "start": "2018-07-07T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "B\u00e9cassine!"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T23:05:00",
+    "location": "opera",
+    "start": "2018-07-07T21:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T23:12:00",
+    "location": "gaumont",
+    "start": "2018-07-07T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T23:32:00",
+    "location": "gaumont",
+    "start": "2018-07-07T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T23:28:00",
+    "location": "opera",
+    "start": "2018-07-07T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T23:15:00",
+    "location": "gaumont",
+    "start": "2018-07-07T21:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T00:26:00",
+    "location": "gaumont",
+    "start": "2018-07-07T21:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Avengers: Infinity War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-07T23:40:00",
+    "location": "opera",
+    "start": "2018-07-07T21:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T00:20:00",
+    "location": "gaumont",
+    "start": "2018-07-07T21:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T00:18:00",
+    "location": "gaumont",
+    "start": "2018-07-07T21:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T00:13:00",
+    "location": "gaumont",
+    "start": "2018-07-07T22:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T00:20:00",
+    "location": "gaumont",
+    "start": "2018-07-07T22:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T00:12:00",
+    "location": "gaumont",
+    "start": "2018-07-07T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T00:08:00",
+    "location": "gaumont",
+    "start": "2018-07-07T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   }
+  ],
   "2018-07-08": [
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T12:43:00",
+    "location": "opera",
+    "start": "2018-07-08T10:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T12:23:00",
+    "location": "opera",
+    "start": "2018-07-08T10:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Dossier Mona Lina"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T12:28:00",
+    "location": "opera",
+    "start": "2018-07-08T10:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T11:59:00",
+    "location": "opera",
+    "start": "2018-07-08T10:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Wallace & Gromit : C\u0153urs \u00e0 modeler"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T12:40:00",
+    "location": "opera",
+    "start": "2018-07-08T10:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T13:23:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T13:13:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T12:42:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Mon voisin Totoro"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T13:05:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T13:12:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T13:30:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T12:52:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T13:08:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T13:17:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T13:20:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T13:43:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T13:15:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T14:02:00",
+    "location": "gaumont",
+    "start": "2018-07-08T11:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T15:22:00",
+    "location": "gaumont",
+    "start": "2018-07-08T13:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T15:30:00",
+    "location": "gaumont",
+    "start": "2018-07-08T13:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T15:07:00",
+    "location": "gaumont",
+    "start": "2018-07-08T13:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T15:37:00",
+    "location": "gaumont",
+    "start": "2018-07-08T13:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T15:28:00",
+    "location": "opera",
+    "start": "2018-07-08T13:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T16:08:00",
+    "location": "gaumont",
+    "start": "2018-07-08T13:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T15:58:00",
+    "location": "opera",
+    "start": "2018-07-08T13:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T16:03:00",
+    "location": "gaumont",
+    "start": "2018-07-08T13:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T15:09:00",
+    "location": "opera",
+    "start": "2018-07-08T13:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Wallace & Gromit : C\u0153urs \u00e0 modeler"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T15:53:00",
+    "location": "gaumont",
+    "start": "2018-07-08T14:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T15:57:00",
+    "location": "opera",
+    "start": "2018-07-08T14:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "How To Talk To Girls At Parties"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T16:14:00",
+    "location": "gaumont",
+    "start": "2018-07-08T14:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Love, Simon"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T15:38:00",
+    "location": "opera",
+    "start": "2018-07-08T14:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T16:00:00",
+    "location": "gaumont",
+    "start": "2018-07-08T14:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T16:45:00",
+    "location": "gaumont",
+    "start": "2018-07-08T14:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T16:43:00",
+    "location": "gaumont",
+    "start": "2018-07-08T14:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T16:32:00",
+    "location": "gaumont",
+    "start": "2018-07-08T14:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T17:02:00",
+    "location": "opera",
+    "start": "2018-07-08T15:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ma fille"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T17:32:00",
+    "location": "gaumont",
+    "start": "2018-07-08T15:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T17:07:00",
+    "location": "gaumont",
+    "start": "2018-07-08T15:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T17:28:00",
+    "location": "opera",
+    "start": "2018-07-08T15:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Parvana"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T17:55:00",
+    "location": "gaumont",
+    "start": "2018-07-08T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T17:45:00",
+    "location": "opera",
+    "start": "2018-07-08T15:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T18:05:00",
+    "location": "opera",
+    "start": "2018-07-08T16:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T18:07:00",
+    "location": "gaumont",
+    "start": "2018-07-08T16:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T18:28:00",
+    "location": "opera",
+    "start": "2018-07-08T16:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T18:17:00",
+    "location": "gaumont",
+    "start": "2018-07-08T16:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T18:48:00",
+    "location": "gaumont",
+    "start": "2018-07-08T16:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T18:43:00",
+    "location": "gaumont",
+    "start": "2018-07-08T16:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T18:15:00",
+    "location": "gaumont",
+    "start": "2018-07-08T16:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T18:47:00",
+    "location": "gaumont",
+    "start": "2018-07-08T16:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T19:15:00",
+    "location": "gaumont",
+    "start": "2018-07-08T17:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T18:53:00",
+    "location": "gaumont",
+    "start": "2018-07-08T17:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T19:02:00",
+    "location": "opera",
+    "start": "2018-07-08T17:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "B\u00e9cassine!"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T19:10:00",
+    "location": "gaumont",
+    "start": "2018-07-08T17:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T19:07:00",
+    "location": "gaumont",
+    "start": "2018-07-08T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T19:43:00",
+    "location": "gaumont",
+    "start": "2018-07-08T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T19:30:00",
+    "location": "opera",
+    "start": "2018-07-08T17:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T19:18:00",
+    "location": "opera",
+    "start": "2018-07-08T17:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T20:33:00",
+    "location": "opera",
+    "start": "2018-07-08T18:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T20:25:00",
+    "location": "gaumont",
+    "start": "2018-07-08T18:20:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T20:47:00",
+    "location": "gaumont",
+    "start": "2018-07-08T18:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T20:42:00",
+    "location": "gaumont",
+    "start": "2018-07-08T18:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T20:58:00",
+    "location": "opera",
+    "start": "2018-07-08T18:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T20:47:00",
+    "location": "gaumont",
+    "start": "2018-07-08T18:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T20:45:00",
+    "location": "gaumont",
+    "start": "2018-07-08T19:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T20:57:00",
+    "location": "opera",
+    "start": "2018-07-08T19:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Un Couteau Dans le Coeur"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T21:33:00",
+    "location": "gaumont",
+    "start": "2018-07-08T19:10:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T21:28:00",
+    "location": "gaumont",
+    "start": "2018-07-08T19:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T21:02:00",
+    "location": "gaumont",
+    "start": "2018-07-08T19:25:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Le Doudou"
+   },
    {
     "artist": null,
     "backgroundColor": "#c3e5a0",
@@ -92,6 +5469,78 @@
     "title": "Film de test"
    },
    {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T21:27:00",
+    "location": "gaumont",
+    "start": "2018-07-08T19:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T21:25:00",
+    "location": "opera",
+    "start": "2018-07-08T19:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Woman at War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T21:35:00",
+    "location": "opera",
+    "start": "2018-07-08T19:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T21:30:00",
+    "location": "gaumont",
+    "start": "2018-07-08T19:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Affam\u00e9s"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T21:49:00",
+    "location": "gaumont",
+    "start": "2018-07-08T19:45:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Love, Simon"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T21:43:00",
+    "location": "gaumont",
+    "start": "2018-07-08T19:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
+   },
+   {
     "artist": "artist-a",
     "backgroundColor": "#a0e5e5",
     "borderColor": "#3f7f7f",
@@ -102,6 +5551,222 @@
      "theatre"
     ],
     "title": "Artiste de test A (Genre Toto)"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T22:43:00",
+    "location": "gaumont",
+    "start": "2018-07-08T20:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T22:45:00",
+    "location": "opera",
+    "start": "2018-07-08T20:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T23:05:00",
+    "location": "gaumont",
+    "start": "2018-07-08T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Ocean's 8"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T22:57:00",
+    "location": "gaumont",
+    "start": "2018-07-08T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tamara Vol.2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T22:51:00",
+    "location": "opera",
+    "start": "2018-07-08T21:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Tully"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T23:12:00",
+    "location": "gaumont",
+    "start": "2018-07-08T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Budapest"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T23:32:00",
+    "location": "gaumont",
+    "start": "2018-07-08T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sicario La Guerre des Cartels"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T23:28:00",
+    "location": "opera",
+    "start": "2018-07-08T21:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T23:15:00",
+    "location": "gaumont",
+    "start": "2018-07-08T21:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Sans un bruit"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T22:58:00",
+    "location": "opera",
+    "start": "2018-07-08T21:30:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Au Poste !"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-09T00:26:00",
+    "location": "gaumont",
+    "start": "2018-07-08T21:35:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Avengers: Infinity War"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-08T23:40:00",
+    "location": "opera",
+    "start": "2018-07-08T21:40:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Joueurs"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-09T00:20:00",
+    "location": "gaumont",
+    "start": "2018-07-08T21:50:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Solo: A Star Wars Story"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-09T00:18:00",
+    "location": "gaumont",
+    "start": "2018-07-08T21:55:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Jurassic World: Fallen Kingdom"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-09T00:13:00",
+    "location": "gaumont",
+    "start": "2018-07-08T22:00:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Les Indestructibles 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-09T00:20:00",
+    "location": "gaumont",
+    "start": "2018-07-08T22:05:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "Deadpool 2"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-09T00:12:00",
+    "location": "gaumont",
+    "start": "2018-07-08T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "American Nightmare 4 : Les Origines"
+   },
+   {
+    "artist": null,
+    "backgroundColor": "#c3e5a0",
+    "borderColor": "#5f7f3f",
+    "end": "2018-07-09T00:08:00",
+    "location": "gaumont",
+    "start": "2018-07-08T22:15:00",
+    "tags": [
+     "cinema"
+    ],
+    "title": "\u00c0 la d\u00e9rive"
    }
   ]
  },
@@ -137,6 +5802,12 @@
    "name": "Lieu de test C",
    "slug": "lieu-c",
    "website": "https://www.google.fr/search?q=Lieu de test C"
+  },
+  "opera": {
+   "description": [],
+   "name": "Op\u00e9ra",
+   "slug": "opera",
+   "website": null
   }
  }
 }
