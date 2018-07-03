@@ -52,14 +52,17 @@ Exemples:
 
 Exemple de fichier `the-who.yml` (@todo Compléter):
 
-    name: The Who
+    name: "The Who"
+    genre: "Rock"
+    website: https://thewho.com/
+    description: "Super groupe anglais."
 
 Villes
 ======
 
 Dans le dossier [cities](cities), chaque fichier représente une ville.
 
-Exemple de fichier `reims.yml` (@todo Compléter):
+Exemple de fichier `reims.yml`:
 
     name: Reims
 
@@ -70,9 +73,11 @@ Lieux
 
 Dans le dossier [locations](cities/reims/locations) de chaque ville, chaque fichier représente un lieu de spectacle.
 
-Exemple de fichier `cartonnerie.yml` (@todo Compléter):
+Exemple de fichier `cartonnerie.yml`:
 
-    name: La Cartonnerie
+    name: "La Cartonnerie"
+    description: "On y a longtemps fait du carton. Maintenant ça cartonne!"
+    website: https://lacartonnerie.fr/
 
 Événements
 ==========
@@ -82,19 +87,42 @@ Les informations relative aux événements sont dans le dossier [events](cities/
 Chaque fichier contient une liste d'événements.
 Le nom du fichier correspond au tag principal (voir "Tags" ci-dessous) des événements qu'il contient.
 
-Exemple de fichier `musique.yml` (@todo Compléter):
+Exemple de fichier `musique.yml`:
 
     - datetime: 2018/06/04 19:00
       artist: zinzin
       location: cartonnerie
     - datetime: 2018/06/04 21:00
       artist: beatles
-      location: fond_droite
-    - artist: rolling_stones
+      location: fond-droite
+    - artist: rolling-stones
       location: erlon
       occurrences:
         - datetime: 2018/06/11 20:00
         - datetime: 2018/06/20 20:00
+
+Exemple de fichier `cinema.yml`:
+
+    - title: "Action ou vérité"
+      location: gaumont
+      duration: 01:55
+      occurrences:
+        - datetime: 2018/06/12 13:55
+        - datetime: 2018/06/12 19:30
+        - datetime: 2018/06/12 22:10
+    - title: "Adriana Lecouvreur (Met - Pathé Live)"
+      location: gaumont
+      duration: 04:13
+      occurrences:
+        - datetime: 2019/01/12 18:55
+    - title: "Avengers: Infinity War"
+      location: gaumont
+      duration: 02:51
+      occurrences:
+        - datetime: 2018/06/12 11:40
+        - datetime: 2018/06/12 15:00
+        - datetime: 2018/06/12 18:00
+        - datetime: 2018/06/12 21:15
 
 Les champs "artist" et "location" contiennent respectivement une référence vers un artiste et une référence vers un lieu.
 Ces références sont les slugs (c.-à-d. les noms de base des fichiers) de cet artistes et ce lieu.
@@ -103,7 +131,11 @@ Pour les événements ne se produisant qu'une fois, le champ "datetime" contient
 au format "AAAA/MM/JJ hh:mm".
 Pour les événements avec plusieurs représentations, le champs "occurrences" contient une liste de "datetime" similaires.
 
+Le champs "duration" est facultatif et contient la durée de l'événement, au format "hh:mm".
+
+Le champs "title" est facultatif. S'il est absent, le nom de l'artiste est utilisé comme titre pour l'événement.
+
 Tags
 ====
 
-@todo Documenter
+Pour l'instant, laissons Vincent s'occuper des tags !
