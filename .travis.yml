@@ -8,6 +8,7 @@ dist: trusty
 sudo: false
 install:
 - pip install --upgrade pip jinja2 PyYAML bs4
+- pip install --upgrade pycairo
 script:
 - python -m tools.generator data docs
 - python -m tools.checker docs
