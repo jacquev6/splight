@@ -1,0 +1,323 @@
+{
+ "artists": {
+  "full": {
+   "description": [
+    "Cet artiste a tous ses champs remplis, aucune information ne manque.",
+    "Cette description fait m\u00eame plusieurs paragraphes."
+   ],
+   "name": "Artiste compl\u00e8tement renseign\u00e9",
+   "slug": "full",
+   "website": "https://www.google.fr/search?q=Artiste compl\u00e8tement renseign\u00e9"
+  }
+ },
+ "events": {
+  "2018-07-02": [
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T01:34:00",
+    "location": "full",
+    "start": "2018-07-02T00:46:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T02:36:00",
+    "location": "full",
+    "start": "2018-07-02T01:48:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T03:38:00",
+    "location": "full",
+    "start": "2018-07-02T02:50:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T04:40:00",
+    "location": "full",
+    "start": "2018-07-02T03:52:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T05:42:00",
+    "location": "full",
+    "start": "2018-07-02T04:54:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T06:44:00",
+    "location": "full",
+    "start": "2018-07-02T05:56:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T07:46:00",
+    "location": "full",
+    "start": "2018-07-02T06:58:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T08:48:00",
+    "location": "full",
+    "start": "2018-07-02T08:00:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T09:50:00",
+    "location": "full",
+    "start": "2018-07-02T09:02:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T10:52:00",
+    "location": "full",
+    "start": "2018-07-02T10:04:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T11:54:00",
+    "location": "full",
+    "start": "2018-07-02T11:06:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T12:56:00",
+    "location": "full",
+    "start": "2018-07-02T12:08:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T13:58:00",
+    "location": "full",
+    "start": "2018-07-02T13:10:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T15:00:00",
+    "location": "full",
+    "start": "2018-07-02T14:12:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T16:02:00",
+    "location": "full",
+    "start": "2018-07-02T15:14:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T17:04:00",
+    "location": "full",
+    "start": "2018-07-02T16:16:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T18:06:00",
+    "location": "full",
+    "start": "2018-07-02T17:18:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T19:08:00",
+    "location": "full",
+    "start": "2018-07-02T18:20:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T20:10:00",
+    "location": "full",
+    "start": "2018-07-02T19:22:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T21:12:00",
+    "location": "full",
+    "start": "2018-07-02T20:24:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T22:14:00",
+    "location": "full",
+    "start": "2018-07-02T21:26:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-02T23:16:00",
+    "location": "full",
+    "start": "2018-07-02T22:28:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   },
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-03T00:18:00",
+    "location": "full",
+    "start": "2018-07-02T23:30:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   }
+  ],
+  "2018-07-03": [
+   {
+    "artist": "full",
+    "backgroundColor": "#a0a0e5",
+    "borderColor": "#3f3f7f",
+    "end": "2018-07-03T01:20:00",
+    "location": "full",
+    "start": "2018-07-03T00:32:00",
+    "tags": [
+     "many"
+    ],
+    "title": "Artiste compl\u00e8tement renseign\u00e9 (Un certain genre)"
+   }
+  ],
+  "2018-07-04": [],
+  "2018-07-05": [],
+  "2018-07-06": [],
+  "2018-07-07": [],
+  "2018-07-08": []
+ },
+ "locations": {
+  "full": {
+   "description": [
+    "Ce lieu a tous ses champs remplis, aucune information ne manque.",
+    "Cette description fait m\u00eame plusieurs paragraphes."
+   ],
+   "name": "Lieu compl\u00e8tement renseign\u00e9",
+   "slug": "full",
+   "website": "http://google.fr/search?q=Lieu compl\u00e8tement renseign\u00e9"
+  }
+ }
+}

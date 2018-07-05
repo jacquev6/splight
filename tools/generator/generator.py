@@ -93,12 +93,10 @@ def generate(*, data_directory, destination_directory):
         context.stroke()
 
     encrypt_key = os.environ["SPLIGHT_ENCRYPT_KEY"]
-    decrypt_key_sha = hashlib.sha1(encrypt_key.encode("utf-8")).hexdigest()
 
     templates.IndexHtml(cities=[city.for_templates for city in cities]).render()
     templates.AdsHtml().render()
     templates.IndexCss(modernizr_features=modernizr_features, colors=colors).render()
-    templates.IndexJs(decrypt_key_sha=decrypt_key_sha).render()
 
     for city in cities:
         date = city.first_day

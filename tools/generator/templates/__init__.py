@@ -405,26 +405,6 @@ class _Template:
         return dict()
 
 
-class IndexJs(_Template):
-    template_name = "index.js"
-
-    def __init__(self, *, decrypt_key_sha):
-        super().__init__()
-        assert isinstance(decrypt_key_sha, str)
-        self.__decrypt_key_sha = decrypt_key_sha
-
-    @property
-    def destination(self):
-        return os.path.join(super().destination, "index.js")
-
-    @property
-    def context(self):
-        return dict(
-            decrypt_key_sha=self.__decrypt_key_sha,
-            **super().context,
-        )
-
-
 class IndexCss(_Template):
     template_name = "index.css"
 

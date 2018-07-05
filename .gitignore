@@ -1,2 +1,4 @@
 __pycache__/
 web.log
+node_modules/
+/allocine_cache.json
