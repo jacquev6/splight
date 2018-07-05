@@ -1,5 +1,12 @@
+Trucs courts:
 - réduire le jumbotron Splight
+- bouton "+" plus d'infos sur les évents
+- bouton "voir seulement cette catégorie"
+- flèche -> main quand on hover un event
 
+User-stories à développer:
+- recherche ?
+- mailing/facebook
 
 Définition des rôles
 ====================
