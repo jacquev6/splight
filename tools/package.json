@@ -1,0 +1,13 @@
+{
+  "name": "splight-tools",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "nyc --reporter=html --reporter=text mocha --reporter dot '*-test.js'",
+    "generator": "node generator.js"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2"
+  }
+}
