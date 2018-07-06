@@ -1,0 +1,12 @@
+{
+    "array": ["array.json", "array/.json", "array.yml", "array/.yml", "array.yaml", "array/.yaml"],
+    "object": {
+        "object.json": "object.json",
+        "object.yaml": "object.yaml",
+        "object.yml": "object.yml",
+        "object/.json": "object/.json",
+        "object/.yaml": "object/.yaml",
+        "object/.yml": "object/.yml"
+    },
+    "null": null
+}
