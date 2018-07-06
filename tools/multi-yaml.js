@@ -1,100 +1,99 @@
-"use strict";
-const fs = require("fs");
-const path = require('path');
+'use strict'
+const fs = require('fs')
+const path = require('path')
 
-const yaml = require("js-yaml");
+const yaml = require('js-yaml')
 
-
-function merge_data(data, new_data) {
-  if(!data) {
-    return new_data;
-  } else if(Array.isArray(data) && Array.isArray(new_data)) {
-    return data.concat(new_data);
-  } else if(Array.isArray(data) && typeof(new_data) == "object") {
-    for(const k in new_data) {
-      data.push(new_data[k]);
+function mergeData (data, newData) {
+  if (!data) {
+    return newData
+  } else if (Array.isArray(data) && Array.isArray(newData)) {
+    return data.concat(newData)
+  } else if (Array.isArray(data) && typeof (newData) === 'object') {
+    for (const k in newData) {
+      data.push(newData[k])
     }
     return data
-  } else if(typeof(data) == "object" && typeof(new_data) == "object") {
-    for(const k in new_data) {
-      const v = data[k];
-      if(v) {
-        data[k] = merge_data(v, new_data[k]);
+  } else if (typeof (data) === 'object' && typeof (newData) === 'object') {
+    for (const k in newData) {
+      const v = data[k]
+      if (v) {
+        data[k] = mergeData(v, newData[k])
       } else {
-        data[k] = new_data[k];
+        data[k] = newData[k]
       }
     }
-    return data;
+    return data
   } else {
-    throw new Error("Types incompatible for merging: " + typeof(data) + " and " + typeof(new_data));
+    throw new Error('Types incompatible for merging: ' + typeof (data) + ' and ' + typeof (newData))
   }
 }
 
-function load(dir_name) {
-  const extensions = [".json", ".yml", ".yaml"];
-  const no_data_to_load = "No data to load";
+function load (dirName) {
+  const extensions = ['.json', '.yml', '.yaml']
+  const noDataToLoad = 'No data to load'
 
-  const [is_file, file_contents] = (function() {
-    var is_file = false;
-    const file_contents = [];
+  const [isFile, fileContents] = (function () {
+    var isFile = false
+    const fileContents = []
 
-    extensions.forEach(function(ext) {
-      [dir_name + ext, dir_name + "/" + ext].forEach(function(file_name) {
+    extensions.forEach(function (ext) {
+      [dirName + ext, path.join(dirName, ext)].forEach(function (fileName) {
         try {
-          file_contents.push(fs.readFileSync(file_name));
-          is_file = true;
-        } catch {
+          fileContents.push(fs.readFileSync(fileName))
+          isFile = true
+        } catch (e) {
         }
-      });
-    });
+      })
+    })
 
-    return [is_file, file_contents];
-  })();
+    return [isFile, fileContents]
+  })()
 
-  const [is_directory, directory_contents] = (function() {
+  const [isDirectory, directoryContents] = (function () {
     try {
-      return [true, fs.readdirSync(dir_name)];
-    } catch {
-      return [false, []];
+      return [true, fs.readdirSync(dirName)]
+    } catch (e) {
+      return [false, []]
     }
-  })();
+  })()
 
-  var data = null;
+  var data = null
 
-  file_contents.forEach(function(contents) {
-    data = merge_data(data, yaml.safeLoad(contents));
-  });
+  fileContents.forEach(function (contents) {
+    data = mergeData(data, yaml.safeLoad(contents))
+  })
 
-  if(is_directory) {
-    const new_data = {};
-    directory_contents.map(name => {
-      const key = (function() {
-        const [radix, ext] = name.split(".");
-        if(extensions.indexOf("." + ext) != -1) {
-          return radix;
+  if (isDirectory) {
+    const newData = {}
+    directoryContents.map(name => {
+      const key = (function () {
+        const [radix, ext] = name.split('.')
+        if (extensions.indexOf('.' + ext) !== -1) {
+          return radix
         } else {
-          return name;
+          return name
         }
-      })();
+      })()
 
-      if(key) {
+      if (key) {
         try {
-          new_data[key] = load(dir_name + "/" + key);
-        } catch(e) {
-          if(e.message != no_data_to_load) {
-            throw e;
+          newData[key] = load(path.join(dirName, key))
+        } catch (e) {
+          if (e.message !== noDataToLoad) {
+            throw e
           }
         }
       }
-    });
-    data = merge_data(data, new_data);
+    })
+    data = mergeData(data, newData)
   };
 
-  if(is_file || is_directory) {
-    return data;
+  if (isFile || isDirectory) {
+    return data
   } else {
-    throw new Error(no_data_to_load);
+    throw new Error(noDataToLoad)
   }
 }
 
-exports.load = load;
+exports.load = load

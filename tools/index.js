@@ -1,6 +1,6 @@
-const $ = global.jQuery = require("jquery");
-require("bootstrap");
+const $ = global.jQuery = require('jquery')
+require('bootstrap')
 
-$(function() {
-  $(".sp-modern").removeClass("sp-loading")
+$(function () {
+  $('.sp-modern').removeClass('sp-loading')
 })
