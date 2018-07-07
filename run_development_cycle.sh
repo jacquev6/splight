@@ -28,10 +28,10 @@ do
   shift
 done
 
-(cd tools && npm test)
+(cd tools; npm test)
 
 show_in_browser "Unit test coverage details" $PROJECT_ROOT/tools/coverage/index.html
 
-(cd tools && npm run generator ../data ../docs)
+(cd tools; npm run generator ../data ../docs)
 
 git --no-pager diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat docs
