@@ -5,6 +5,18 @@ cities:
       tag-1:
         title: Seule catégorie
         display_order: 100
+    locations:
+      location-1:
+        name: Seul lieu
+    artists:
+      artist-1:
+        name: Seul artiste
+    events:
+      tag-1:
+        - title: Seul événement
+          artist: artist-1
+          location: location-1
+          datetime: 2018/06/27 12:00
   avalon:
     name: Avalon
     tags:
@@ -20,3 +32,11 @@ cities:
       tag-2:
         title: Catégorie 2
         display_order: 200
+    events:
+      tag-2:
+        - title: Événement 2
+          datetime: 2018/06/20 13:00
+        - title: Événement 1
+          datetime: 2018/06/20 12:00
+        - title: Événement 3
+          datetime: 2018/06/20 14:00

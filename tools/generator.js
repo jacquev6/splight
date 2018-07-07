@@ -4,10 +4,12 @@ const path = require('path')
 
 const browserify = require('browserify')
 const modernizr = require('modernizr')
+const moment = require('moment')
 const mustache = require('mustache')
 const sass = require('node-sass')
 
 const multiYaml = require('./multi-yaml')
+const splightUrls = require('./splight-urls')
 
 const dataDirectory = process.argv[2]
 const outputDirectory = process.argv[3]
@@ -76,10 +78,10 @@ sass.render(
   }
 )
 
-function render (contentTemplate, contentData, destination) {
+function renderHtml (contentTemplate, contentData, destination) {
   const staticContent = mustache.render(fs.readFileSync(path.join('templates', 'static_content', contentTemplate), 'utf8'), contentData)
   fs.outputFileSync(
-    path.join(outputDirectory, destination),
+    path.join(outputDirectory, destination, 'index.html'),
     mustache.render(
       fs.readFileSync('templates/container.html', 'utf8'),
       {static_content: staticContent}
@@ -93,7 +95,7 @@ function render (contentTemplate, contentData, destination) {
     const city = Object.assign({}, data.cities[citySlug], {slug: citySlug})
     cities.push(city)
   }
-  render('index.html', {cities: cities}, 'index.html')
+  renderHtml('index.html', {cities: cities}, '')
 })()
 
 for (const citySlug in data.cities) {
@@ -105,27 +107,34 @@ for (const citySlug in data.cities) {
       const tag = Object.assign({}, city.tags[tagSlug], {slug: tagSlug})
       tags.push(tag)
     }
-    return tags.sort((t1, t2) => t1.display_order - t2.display_order).map(({slug, title}) => ({slug: slug, title: title}))
+    return tags.sort(
+      (tag1, tag2) => tag1.display_order - tag2.display_order
+    ).map(
+      ({slug, title}) => ({slug: slug, title: title})
+    )
   })()
 
-  render(
-    'city/index.html',
+  const events = (function () {
+    const events = []
+    for (const mainTag in city.events) {
+      city.events[mainTag].forEach(function (event) {
+        events.push({
+          start: moment(event.datetime, 'YYYY/MM/DD HH:mm')
+        })
+      })
+    }
+    return events.sort(
+      (e1, e2) => e1.start.diff(e2.start)
+    )
+  })()
+
+  renderHtml(
+    'city_index.html',
     {
       city: city,
       tags: tags,
-      first_week: {slug: '2018-W21'} // @todo Compute instead of hard-coding
+      first_week_url: splightUrls.makeWeek({city: city.slug, week: events[0].start})
     },
-    path.join(citySlug, 'index.html')
+    citySlug
   )
-
-  // fs.ensureDirSync(outputDirectory + "/" + citySlug);
-
-  // const events = new Set();
-  // for(const tagSlug in city.events) {
-  //   const tagged_events = city.events[tagSlug];
-
-  //   tagged_events.forEach(event => events.add(event));
-  // }
-
-  // console.log(citySlug, events.size);
 }
