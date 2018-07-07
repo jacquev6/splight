@@ -24,7 +24,8 @@ const modernizrFeatures = [
   ['test/es6/arrow'],
   ['test/es6/collections', 'es6collections'],
   ['test/hashchange'],
-  ['test/history']
+  ['test/history'],
+  ['test/canvas']
 ]
 
 modernizr.build(

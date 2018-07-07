@@ -6312,14 +6312,14 @@ a {
 .mdrn-no-js .sp-retro {
   display: none; }
 
-.mdrn-arrow.mdrn-es6collections.mdrn-hashchange.mdrn-history .sp-retro {
+.mdrn-arrow.mdrn-es6collections.mdrn-hashchange.mdrn-history.mdrn-canvas .sp-retro {
   display: none; }
 
 .sp-modern {
   display: none;
   min-height: 200px; }
 
-.mdrn-arrow.mdrn-es6collections.mdrn-hashchange.mdrn-history .sp-modern {
+.mdrn-arrow.mdrn-es6collections.mdrn-hashchange.mdrn-history.mdrn-canvas .sp-modern {
   display: block; }
 
 #sp-admin-mode-dashboard {
