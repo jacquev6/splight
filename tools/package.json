@@ -21,6 +21,7 @@
     "nyc": "^12.0.2",
     "popper.js": "^1.14.3",
     "standard": "^11.0.1",
+    "stringify": "^5.2.0",
     "urijs": "^1.19.1"
   },
   "standard": {

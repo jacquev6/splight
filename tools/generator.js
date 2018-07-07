@@ -7,9 +7,13 @@ const modernizr = require('modernizr')
 const moment = require('moment')
 const mustache = require('mustache')
 const sass = require('node-sass')
+const stringify = require('stringify')
+
+stringify.registerWithRequire(['.html'])
 
 const multiYaml = require('./multi-yaml')
 const splightUrls = require('./splight-urls')
+const templates = require('./splight-templates')
 
 const dataDirectory = process.argv[2]
 const outputDirectory = process.argv[3]
@@ -57,7 +61,7 @@ modernizr.build(
   }
 )
 
-browserify('index.js').bundle(function (error, result) {
+browserify('index.js').transform(stringify, ['.html']).bundle(function (error, result) {
   if (error) {
     throw error
   } else {
@@ -79,11 +83,11 @@ sass.render(
 )
 
 function renderHtml (contentTemplate, contentData, subtitle, lead, destination) {
-  const staticContent = mustache.render(fs.readFileSync(path.join('templates', 'static_content', contentTemplate), 'utf8'), contentData)
+  const staticContent = mustache.render(contentTemplate, contentData)
   fs.outputFileSync(
     path.join(outputDirectory, destination, 'index.html'),
     mustache.render(
-      fs.readFileSync('templates/container.html', 'utf8'),
+      templates.container,
       {static_content: staticContent, subtitle: subtitle, lead: lead}
     )
   )
@@ -95,7 +99,7 @@ function renderHtml (contentTemplate, contentData, subtitle, lead, destination) 
     const city = Object.assign({}, data.cities[citySlug], {slug: citySlug, url: splightUrls.makeCity({city: citySlug})})
     cities.push(city)
   }
-  renderHtml('index.html', {cities: cities}, null, 'Votre agenda culturel régional', '')
+  renderHtml(templates.staticContent.index, {cities: cities}, null, 'Votre agenda culturel régional', '')
 })()
 
 for (const citySlug in data.cities) {
@@ -129,7 +133,7 @@ for (const citySlug in data.cities) {
   })()
 
   renderHtml(
-    'city_index.html',
+    templates.staticContent.city.index,
     {
       city: city,
       tags: tags,
