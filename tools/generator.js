@@ -119,7 +119,7 @@ for (const citySlug in data.cities) {
     for (const mainTag in city.events) {
       city.events[mainTag].forEach(function (event) {
         events.push({
-          start: moment(event.datetime, 'YYYY/MM/DD HH:mm')
+          start: moment(event.datetime, 'YYYY/MM/DD HH:mm', true)
         })
       })
     }
