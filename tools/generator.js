@@ -87,7 +87,14 @@ function render (contentTemplate, contentData, destination) {
   )
 }
 
-render('index.html', {}, 'index.html')
+(function () {
+  const cities = []
+  for (const citySlug in data.cities) {
+    const city = Object.assign({}, data.cities[citySlug], {slug: citySlug})
+    cities.push(city)
+  }
+  render('index.html', {cities: cities}, 'index.html')
+})()
 
 for (const citySlug in data.cities) {
   const city = Object.assign({}, data.cities[citySlug], {slug: citySlug})
