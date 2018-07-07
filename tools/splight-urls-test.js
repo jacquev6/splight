@@ -7,6 +7,21 @@ const moment = require('moment')
 const splightUrls = require('./splight-urls')
 
 describe('splight-url', function () {
+  describe('makeCity', function () {
+    it('creates a brand new city URL', function () {
+      assert.equal(
+        splightUrls.makeCity({city: 'city'}),
+        '/city/'
+      )
+    })
+    it('changes just the city in a full city URL', function () {
+      assert.equal(
+        splightUrls.makeCity({url: 'http://splight.fr/foo/?query=1&string=2#fragment', city: 'city'}),
+        'http://splight.fr/city/?query=1&string=2#fragment'
+      )
+    })
+  })
+
   describe('makeWeek', function () {
     it('adds the timespan to a city URL', function () {
       assert.equal(

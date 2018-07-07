@@ -78,13 +78,13 @@ sass.render(
   }
 )
 
-function renderHtml (contentTemplate, contentData, destination) {
+function renderHtml (contentTemplate, contentData, subtitle, lead, destination) {
   const staticContent = mustache.render(fs.readFileSync(path.join('templates', 'static_content', contentTemplate), 'utf8'), contentData)
   fs.outputFileSync(
     path.join(outputDirectory, destination, 'index.html'),
     mustache.render(
       fs.readFileSync('templates/container.html', 'utf8'),
-      {static_content: staticContent}
+      {static_content: staticContent, subtitle: subtitle, lead: lead}
     )
   )
 }
@@ -92,10 +92,10 @@ function renderHtml (contentTemplate, contentData, destination) {
 (function () {
   const cities = []
   for (const citySlug in data.cities) {
-    const city = Object.assign({}, data.cities[citySlug], {slug: citySlug})
+    const city = Object.assign({}, data.cities[citySlug], {slug: citySlug, url: splightUrls.makeCity({city: citySlug})})
     cities.push(city)
   }
-  renderHtml('index.html', {cities: cities}, '')
+  renderHtml('index.html', {cities: cities}, null, 'Votre agenda culturel régional', '')
 })()
 
 for (const citySlug in data.cities) {
@@ -135,6 +135,11 @@ for (const citySlug in data.cities) {
       tags: tags,
       first_week_url: splightUrls.makeWeek({city: city.slug, week: events[0].start})
     },
+    {
+      href: splightUrls.makeCity({city: city.slug}),
+      text: city.name
+    },
+    'Votre agenda culturel à ' + city.name + ' et dans sa région',
     citySlug
   )
 }
