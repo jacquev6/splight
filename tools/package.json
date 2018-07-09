@@ -23,6 +23,7 @@
     "seedrandom": "^2.4.3",
     "standard": "^11.0.1",
     "stringify": "^5.2.0",
+    "uglifyify": "^5.0.1",
     "urijs": "^1.19.1"
   },
   "standard": {

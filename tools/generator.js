@@ -61,7 +61,7 @@ modernizr.build(
   }
 )
 
-browserify('index.js').transform(stringify, ['.html']).bundle(function (error, result) {
+browserify('index.js').transform(stringify, ['.html']).transform('uglifyify', {global: true}).bundle(function (error, result) {
   if (error) {
     throw error
   } else {
