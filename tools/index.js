@@ -4,7 +4,7 @@ const $ = global.jQuery = require('jquery')
 require('bootstrap')
 const moment = require('moment')
 
-const randomizeCanvas = require('./randomize_canvas.bc').randomize_canvas
+const randomizeCanvas = require('./randomize_canvas')
 const splightUrls = require('./splight-urls')
 
 $(function () {
