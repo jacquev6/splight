@@ -3,6 +3,7 @@ const fs = require('fs-extra')
 const path = require('path')
 
 const browserify = require('browserify')
+const CleanCSS = require('clean-css')
 const modernizr = require('modernizr')
 const moment = require('moment')
 const mustache = require('mustache')
@@ -77,7 +78,7 @@ sass.render(
     if (error) {
       throw error
     } else {
-      fs.outputFileSync(path.join(outputDirectory, 'index.css'), result.css)
+      fs.outputFileSync(path.join(outputDirectory, 'index.css'), new CleanCSS({}).minify(result.css).styles)
     }
   }
 )
