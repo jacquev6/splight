@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "standard && nyc --reporter=html --reporter=text mocha '*-test.js'",
-    "generator": "node generator.js"
+    "test": "standard && nyc --reporter=html --reporter=text mocha $(find . -name '*-test.js' | grep -v node_modules)",
+    "node": "node"
   },
   "dependencies": {
     "ajv": "^6.5.2",

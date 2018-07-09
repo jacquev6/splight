@@ -1,11 +1,13 @@
 'use strict'
+
 /* global Modernizr */
+
 const $ = global.jQuery = require('jquery')
 require('bootstrap')
 const moment = require('moment')
 
-const randomizeCanvas = require('./randomize_canvas')
-const splightUrls = require('./splight-urls')
+const randomizeCanvas = require('../../randomize-canvas')
+const splightUrls = require('../urls')
 
 $(function () {
   $('.sp-modern').removeClass('sp-loading')

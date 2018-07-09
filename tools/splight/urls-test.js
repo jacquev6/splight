@@ -1,12 +1,14 @@
 'use strict'
+
 /* global describe, it */
+
 const assert = require('assert').strict
 
 const moment = require('moment')
 
-const splightUrls = require('./splight-urls')
+const splightUrls = require('./urls')
 
-describe('splight-url', function () {
+describe('splight/urls', function () {
   describe('makeCity', function () {
     it('creates a brand new city URL', function () {
       assert.equal(

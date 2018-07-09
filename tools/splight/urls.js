@@ -1,4 +1,5 @@
 'use strict'
+
 const URI = require('urijs')
 
 exports.makeCity = function ({url, city}) {

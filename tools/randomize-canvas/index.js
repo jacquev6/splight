@@ -1,4 +1,5 @@
 'use strict'
+
 const seedrandom = require('seedrandom')
 
 function generator (seed) {
