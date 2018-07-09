@@ -9,28 +9,28 @@ const mustache = require('mustache')
 const splightUrls = require('../../urls')
 const templates = require('./templates')
 
-exports.generate = function (data, outputDirectory) {
-  function renderHtml (contentTemplate, contentData, subtitle, lead, destination) {
-    const staticContent = mustache.render(contentTemplate, contentData)
-    fs.outputFileSync(
-      path.join(outputDirectory, destination, 'index.html'),
-      mustache.render(
-        templates.container,
-        {static_content: staticContent, subtitle: subtitle, lead: lead}
-      )
-    )
-  }
+function makeHtml (contentTemplate, contentData, subtitle, lead) {
+  return mustache.render(
+    templates.container,
+    {
+      static_content: mustache.render(contentTemplate, contentData),
+      subtitle: subtitle,
+      lead: lead
+    }
+  )
+}
 
-  (function () {
+function makeGenerator (data) {
+  function indexPage () {
     const cities = []
     for (const citySlug in data.cities) {
       const city = Object.assign({}, data.cities[citySlug], {slug: citySlug, url: splightUrls.makeCity({city: citySlug})})
       cities.push(city)
     }
-    renderHtml(templates.staticContent.index, {cities: cities}, null, 'Votre agenda culturel régional', '')
-  })()
+    return makeHtml(templates.staticContent.index, {cities: cities}, null, 'Votre agenda culturel régional', '')
+  }
 
-  for (const citySlug in data.cities) {
+  function cityPage (citySlug) {
     const city = Object.assign({}, data.cities[citySlug], {slug: citySlug})
 
     const tags = (function () {
@@ -60,7 +60,7 @@ exports.generate = function (data, outputDirectory) {
       )
     })()
 
-    renderHtml(
+    return makeHtml(
       templates.staticContent.city.index,
       {
         city: city,
@@ -71,8 +71,28 @@ exports.generate = function (data, outputDirectory) {
         href: splightUrls.makeCity({city: city.slug}),
         text: city.name
       },
-      'Votre agenda culturel à ' + city.name + ' et dans sa région',
-      citySlug
+      'Votre agenda culturel à ' + city.name + ' et dans sa région'
     )
+  }
+
+  return {
+    indexPage: indexPage,
+    cityPage: cityPage
+  }
+}
+
+exports.generator = makeGenerator
+
+exports.generate = function (data, outputDirectory) {
+  const generator = makeGenerator(data)
+
+  function outputIndex (html, destination) {
+    fs.outputFileSync(path.join(outputDirectory, destination, 'index.html'), html)
+  }
+
+  outputIndex(generator.indexPage(), '')
+
+  for (const citySlug in data.cities) {
+    outputIndex(generator.cityPage(citySlug), citySlug)
   }
 }
