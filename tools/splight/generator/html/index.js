@@ -9,18 +9,19 @@ const mustache = require('mustache')
 const splightUrls = require('../../urls')
 const templates = require('./templates')
 
-function makeHtml (contentTemplate, contentData, subtitle, lead) {
-  return mustache.render(
-    templates.container,
-    {
-      static_content: mustache.render(contentTemplate, contentData),
-      subtitle: subtitle,
-      lead: lead
-    }
-  )
-}
+function makeGenerator (data, reload = false) {
+  function makeHtml (contentTemplate, contentData, subtitle, lead) {
+    return mustache.render(
+      templates.container,
+      {
+        static_content: mustache.render(contentTemplate, contentData),
+        subtitle: subtitle,
+        lead: lead,
+        reload: reload
+      }
+    )
+  }
 
-function makeGenerator (data) {
   function indexPage () {
     const cities = []
     for (const citySlug in data.cities) {
