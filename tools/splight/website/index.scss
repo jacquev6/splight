@@ -96,7 +96,13 @@ a {
     z-index: 1;
 }
 
+// https://stackoverflow.com/a/25478589/905845
+@function url-friendly-colour($colour) {
+    @return '%23' + str-slice('#{$colour}', 2, -1)
+}
+
 a[target=_blank] {
-    background: url("/external.svg") center right no-repeat;
+    background: center right no-repeat;
+    background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' version='1.1'><path fill='%23fff' stroke='#{url-friendly-colour($primary)}' d='M 0.5 3.5 L 8.5 3.5 L 8.5 11.5 L 0.5 11.5 Z M 0.5 3.5'/><path fill='%23fff' stroke='#{url-friendly-colour($primary)}' d='M 5 9 L 9.5 4.5 L 11.5 6.5 L 11.5 0.5 L 5.5 0.5 L 7.5 2.5 L 3 7 Z M 5 9'/></svg>");
     padding-right: 18px;
 }

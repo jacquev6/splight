@@ -9,9 +9,6 @@ const modernizr = require('modernizr')
 const sass = require('node-sass')
 
 exports.generate = function (outputDirectory) {
-  // Could we avoid having skeleton files?
-  // @todo Produce CNAME and .nojekyll
-  // @todo Produce external.svg with appropriate color
   fs.copySync(path.join(__dirname, 'skeleton'), outputDirectory)
 
   const modernizrFeatures = [
