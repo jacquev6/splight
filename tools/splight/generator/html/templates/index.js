@@ -8,6 +8,7 @@ exports.container = require('./container.html')
 exports.staticContent = {
   index: require('./static_content/index.html'),
   city: {
-    index: require('./static_content/city_index.html')
+    index: require('./static_content/city_index.html'),
+    timespan: require('./static_content/city_timespan.html')
   }
 }

@@ -9,9 +9,13 @@ exports.makeCity = function ({url, city}) {
   ).toString()
 }
 
-exports.makeWeek = function ({url, city, week}) {
+exports.makeTimespan = function ({url, city, timespanSlug}) {
   const uri = new URI(url || '/')
   return uri.path(
-    ['', city || uri.path().split('/')[1], week.format('GGGG-[W]WW'), ''].join('/')
+    ['', city || uri.path().split('/')[1], timespanSlug, ''].join('/')
   ).toString()
+}
+
+exports.makeWeek = function ({url, city, week}) {
+  return exports.makeTimespan({url, city, timespanSlug: week.format('GGGG-[W]WW')})
 }

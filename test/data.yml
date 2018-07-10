@@ -33,6 +33,23 @@ cities:
         title: Catégorie 2
         display_order: 200
     events:
+      tag-1:
+        - title: Événement 1-A
+          occurences:
+            - datetime: 2018/07/09 13:00
+            - datetime: 2018/07/10 13:00
+            - datetime: 2018/07/10 15:00
+            - datetime: 2018/07/10 17:00
+            - datetime: 2018/07/11 13:00
+            - datetime: 2018/07/11 17:00
+            - datetime: 2018/07/12 13:00
+            - datetime: 2018/07/12 19:00
+            - datetime: 2018/07/13 13:00
+            - datetime: 2018/07/13 21:00
+            - datetime: 2018/07/14 13:00
+            - datetime: 2018/07/14 15:00
+            - datetime: 2018/07/14 17:00
+            - datetime: 2018/07/15 13:00
       tag-2:
         - title: Événement 2
           datetime: 2018/06/20 13:00

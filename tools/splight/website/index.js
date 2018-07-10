@@ -5,9 +5,11 @@
 const $ = global.jQuery = require('jquery')
 require('bootstrap')
 const moment = require('moment')
+const URI = require('urijs')
 
 const randomizeCanvas = require('../../randomize-canvas')
 const splightUrls = require('../urls')
+const timespan = require('../timespan')
 
 $(function () {
   $('.sp-modern').removeClass('sp-loading')
@@ -25,6 +27,17 @@ $(function () {
         width: c.attr('width'),
         height: c.attr('height')
       })
+    })
+  }
+
+  const timespanSlug = URI.parse(window.location.href).path.split("/")[2]
+  if (timespanSlug) {
+    const ts = timespan.make(timespanSlug)
+    $('.sp-timespan-now-1').prop('href', function (index, href) {
+      return splightUrls.makeTimespan({url: href, timespanSlug: ts.now1LinkSlug(moment())})
+    })
+    $('.sp-timespan-now-2').prop('href', function (index, href) {
+      return splightUrls.makeTimespan({url: href, timespanSlug: ts.now2LinkSlug(moment())})
     })
   }
 })

@@ -1,0 +1,63 @@
+<div class="row d-lg-none">
+  <div class="col">
+    <div class="sp-advertisement">
+      <p>Publicité</p>
+      <p><canvas class="img-fluid" width="468" height="60" data-sp-random-seed="Publicité 468x60"></canvas></p>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <h1>{{duration}} du {{startDate}}</h1>
+
+    <div class="row"><div class="col"><div id="sp-tag-filtering" class="form-group">
+      {{#tags}}
+      <div class="form-check form-check-inline sp-tag-{{city.slug}}-{{slug}}">
+        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="{{slug}}" />{{title}}</label>
+      </div>
+      {{/tags}}
+    </div></div></div>
+
+    <div class="row">
+      <div class="col">
+        <p class="text-right">&nbsp;<a class="sp-timespan-previous sp-tag-filtering-tagged-link" href="/{{city.slug}}/{{previousLinkSlug}}/">&lt; {{previousLinkText}}</a></p>
+      </div>
+      <div class="col"><div class="form-group text-center">
+        <label>Afficher&nbsp;: <select id="sp-timespan-duration" class="form-control"><option value="7">une semaine</option><option value="3">trois jours</option><option value="1">une journée</option></select></label>
+      </div></div>
+      <div class="col">
+        <p class="text-left"><a class="sp-timespan-next sp-tag-filtering-tagged-link" href="/{{city.slug}}/{{nextLinkSlug}}/">{{nextLinkText}} &gt;</a>&nbsp;</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <p class="text-right">&nbsp;<a class="sp-timespan-now-1 sp-tag-filtering-tagged-link" href="/{{city.slug}}//">{{now1LinkText}}</a></p>
+      </div>
+      <div class="col">
+        <p class="text-left"><a class="sp-timespan-now-2 sp-tag-filtering-tagged-link" href="/{{city.slug}}//">{{now2LinkText}}</a>&nbsp;</p>
+      </div>
+    </div>
+
+    <div id="sp-calendar" class="row">
+      {{#days}}
+      <div class="col-md">
+        <p>{{date}}</p>
+        {{#events}}
+        <div>
+          <p><strong>{{time}}</strong> {{title}}</p>
+        </div>
+        {{/events}}
+      </div>
+      {{/days}}
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
+    <div class="sp-advertisement">
+      <p>Publicité</p>
+      <p><canvas class="img-fluid" width="160" height="600" data-sp-random-seed="Publicité 160x600"></canvas></p>
+    </div>
+  </div>
+</div>

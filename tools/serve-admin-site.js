@@ -15,12 +15,24 @@ function serve () {
 
   const app = express()
 
+  require('reload')(app)
+
   app.use(express.static(path.join(__dirname, '.serve-admin-site/assets')))
 
-  app.get('/', (req, res) => res.send(htmlGenerator.indexPage()))
-  app.get('/:city/', (req, res) => res.send(htmlGenerator.cityPage(req.params['city'])))
+  app.get(
+    '/',
+    (req, res) => res.send(htmlGenerator.indexPage())
+  )
 
-  require('reload')(app)
+  app.get(
+    '/:city/',
+    (req, res) => res.send(htmlGenerator.cityPage(req.params.city))
+  )
+
+  app.get(
+    '/:city/:timespan/',
+    (req, res) => res.send(htmlGenerator.timespanPage(req.params.city, req.params.timespan))
+  )
 
   app.listen(8000, () => console.log('Admin site listening on port 8000'))
 }
