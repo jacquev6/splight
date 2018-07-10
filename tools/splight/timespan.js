@@ -33,7 +33,7 @@ exports.make = function (timespanSlug) {
       now1LinkText: 'Ces 3 jours',
       now1LinkSlug: now => now.format(format),
       now2LinkText: 'Le week-end prochain',
-      now2LinkSlug: now => now.clone().add(3, "days").startOf("isoWeek").add(4, "days").format(format)
+      now2LinkSlug: now => now.clone().add(3, 'days').startOf('isoWeek').add(4, 'days').format(format)
     }
   } else if (timespanSlug.length === 8) {
     const format = moment.HTML5_FMT.WEEK

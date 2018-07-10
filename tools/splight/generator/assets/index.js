@@ -69,7 +69,7 @@ exports.generate = function (outputDirectory) {
       )
     ),
     new Promise((resolve, reject) =>
-      browserify('splight/website/index.js').transform('stringify', ['.html'])/* .transform('uglifyify', {global: true}) */.bundle(function (error, result) {
+      browserify('splight/website/index.js').transform('stringify', ['.html']).transform('uglifyify', {global: true}).bundle(function (error, result) {
         if (error) {
           reject(error)
         } else {
