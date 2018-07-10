@@ -2,14 +2,16 @@
 const path = require('path')
 
 const express = require('express')
+const fs = require('fs-extra')
 
 require('stringify').registerWithRequire(['.html'])
 
 const multiYaml = require('./multi-yaml')
 const generator = require('./splight/generator')
 
-function serve () {
-  generator.assets.generate('.serve-admin-site/assets')
+async function serve () {
+  await fs.emptyDir('.serve-admin-site/assets')
+  await generator.assets.generate('.serve-admin-site/assets')
 
   const htmlGenerator = generator.html.generator(multiYaml.load(process.argv[2]), true)
 
