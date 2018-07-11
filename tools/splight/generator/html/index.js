@@ -8,7 +8,7 @@ const mustache = require('mustache')
 
 const splightUrls = require('../../urls')
 const timespan = require('../../timespan')
-const templates = require('./templates')
+const pages = require('../../pages')
 
 function makeGenerator (data, reload = false) {
   for (const citySlug in data.cities) {
@@ -41,7 +41,7 @@ function makeGenerator (data, reload = false) {
 
   function makeHtml (contentTemplate, contentData, subtitle, lead) {
     return mustache.render(
-      templates.container,
+      require('./container.html'),
       {
         static_content: mustache.render(contentTemplate, contentData),
         subtitle: subtitle,
@@ -52,8 +52,10 @@ function makeGenerator (data, reload = false) {
   }
 
   function indexPage () {
+    const page = pages.index
+
     return makeHtml(
-      templates.staticContent.index,
+      page.contentTemplate,
       {
         cities: Object.values(data.cities).map(({name, url}) => ({name, url}))
       },
@@ -71,8 +73,10 @@ function makeGenerator (data, reload = false) {
       ({slug, title}) => ({slug, title})
     )
 
+    const page = pages.cityIndex(citySlug)
+
     return makeHtml(
-      templates.staticContent.city.index,
+      page.contentTemplate,
       {
         city: city,
         tags: tags,
@@ -122,8 +126,10 @@ function makeGenerator (data, reload = false) {
 
     const tags = Object.values(city.tags).sort((t1, t2) => t1.display_order - t2.display_order).map(({slug, title}) => ({slug, title}))
 
+    const page = pages.cityTimespan(citySlug, timespanSlug)
+
     return makeHtml(
-      templates.staticContent.city.timespan,
+      page.contentTemplate,
       {
         city,
         duration,

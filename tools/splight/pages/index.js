@@ -8,9 +8,9 @@ const $ = require('jquery')
 const moment = require('moment')
 const URI = require('urijs')
 
-const randomizeCanvas = require('../randomize-canvas')
-const splightUrls = require('./urls')
-const timespan = require('./timespan')
+const randomizeCanvas = require('../../randomize-canvas')
+const splightUrls = require('../urls')
+const timespan = require('../timespan')
 
 function randomizeCanvases () {
   if (Modernizr.canvas) {
@@ -28,6 +28,7 @@ function randomizeCanvases () {
 
 const index = {
   path: '/',
+  contentTemplate: require('./index.html'),
   initializeInBrowser: function () {
     return Promise.all([
       randomizeCanvases()
@@ -38,6 +39,7 @@ const index = {
 function cityIndex (citySlug) {
   return {
     path: ['', citySlug, ''].join('/'),
+    contentTemplate: require('./cityIndex.html'),
     initializeInBrowser: function () {
       return Promise.all([
         randomizeCanvases(),
@@ -50,6 +52,7 @@ function cityIndex (citySlug) {
 function cityTimespan (citySlug, timespanSlug) {
   return {
     path: ['', citySlug, timespanSlug, ''].join('/'),
+    contentTemplate: require('./cityTimespan.html'),
     initializeInBrowser: function () {
       const ts = timespan.make(timespanSlug)
 
@@ -78,4 +81,7 @@ function fromUrl (url) {
   }
 }
 
+exports.index = index
+exports.cityIndex = cityIndex
+exports.cityTimespan = cityTimespan
 exports.fromUrl = fromUrl
