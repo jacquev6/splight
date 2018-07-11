@@ -6,12 +6,14 @@ const fs = require('fs-extra')
 
 require('stringify').registerWithRequire(['.html'])
 
-const multiYaml = require('./multi-yaml')
+const multiYaml = require('./multiYaml')
 const generator = require('./splight/generator')
 
 async function serve () {
-  await fs.emptyDir('.serve-admin-site/assets')
-  await generator.assets.generate('.serve-admin-site/assets')
+  const assets = '.assets'
+
+  await fs.emptyDir(assets)
+  await generator.assets.generate(assets)
 
   const htmlGenerator = generator.html.generator(multiYaml.load(process.argv[2]), true)
 
@@ -19,7 +21,7 @@ async function serve () {
 
   require('reload')(app)
 
-  app.use(express.static(path.join(__dirname, '.serve-admin-site/assets')))
+  app.use(express.static(path.join(__dirname, assets)))
 
   app.get(
     '/',

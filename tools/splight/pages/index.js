@@ -8,7 +8,7 @@ const $ = require('jquery')
 const moment = require('moment')
 const URI = require('urijs')
 
-const randomizeCanvas = require('../../randomize-canvas')
+const randomizeCanvas = require('../../randomizeCanvas')
 const splightUrls = require('../urls')
 const timespan = require('../timespan')
 

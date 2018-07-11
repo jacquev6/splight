@@ -37,11 +37,11 @@ done
 
 show_in_browser "Unit test coverage details" $PROJECT_ROOT/tools/coverage/index.html
 
-(cd tools; npm run generate-static-site)
+(cd tools; npm run generateStaticSite)
 
 if $SERVE_ADMIN_SITE
 then
-  (cd tools; npm run serve-admin-site)
+  (cd tools; npm run serveAdminSite)
 fi
 
 # (cd tools; npm run generator ../data ../docs)

@@ -10,12 +10,12 @@ const yaml = require('js-yaml')
 
 const multiYaml = require('.')
 
-describe('multi-yaml', function () {
+describe('multiYaml', function () {
   describe('load', function () {
-    fs.readdirSync(path.join(__dirname, 'multi-yaml-test/outputs')).forEach(function (name) {
+    fs.readdirSync(path.join(__dirname, 'spec/outputs')).forEach(function (name) {
       const [baseName, status] = name.split('.')
-      const inputName = path.join(__dirname, 'multi-yaml-test', 'inputs', baseName)
-      const outputName = path.join(__dirname, 'multi-yaml-test', 'outputs', name)
+      const inputName = path.join(__dirname, 'spec', 'inputs', baseName)
+      const outputName = path.join(__dirname, 'spec', 'outputs', name)
       const expected = yaml.safeLoad(fs.readFileSync(outputName))
       if (status === 'ok') {
         it("should load '" + baseName + "'", function () {
