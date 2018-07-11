@@ -94,19 +94,9 @@ function makeGenerator (data, reload = false) {
 
   const pages = require('../../pages')(source)
 
-  function renderContained (staticContent, title) {
-    return mustache.render(
-      require('./container.html'),
-      {
-        staticContent,
-        title: title,
-        reload: reload
-      }
-    )
-  }
-
-  function renderPage (page) {
-    return renderContained(page.makeContent(), page.makeTitle())
+  async function renderPage (page) {
+    const [title, content] = await Promise.all([page.makeTitle(), page.makeContent()])
+    return mustache.render(require('./container.html'), {content, title, reload})
   }
 
   function indexPage () {
@@ -133,8 +123,9 @@ exports.generator = makeGenerator
 exports.generate = function (data, outputDirectory) {
   const generator = makeGenerator(data)
 
-  function outputIndex (html, destination) {
-    fs.outputFileSync(path.join(outputDirectory, destination, 'index.html'), html)
+  async function outputIndex (html, destination) {
+    var text = await html
+    fs.outputFile(path.join(outputDirectory, destination, 'index.html'), text)
   }
 
   outputIndex(generator.indexPage(), '')

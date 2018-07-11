@@ -31,17 +31,17 @@ async function serve () {
 
   app.get(
     '/',
-    (req, res) => res.send(htmlGenerator.indexPage())
+    async (req, res) => res.send(await htmlGenerator.indexPage())
   )
 
   app.get(
     '/:city/',
-    (req, res) => res.send(htmlGenerator.cityPage(req.params.city))
+    async (req, res) => res.send(await htmlGenerator.cityPage(req.params.city))
   )
 
   app.get(
     '/:city/:timespan/',
-    (req, res) => res.send(htmlGenerator.timespanPage(req.params.city, req.params.timespan))
+    async (req, res) => res.send(await htmlGenerator.timespanPage(req.params.city, req.params.timespan))
   )
 
   app.listen(8000, () => console.log('Admin site listening on port 8000'))

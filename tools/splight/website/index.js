@@ -6,7 +6,7 @@ require('bootstrap')
 // We'll need to pass in a source that fetches data files from the server
 const pages = require('../pages')({getCities: true, getCity: true, getTags: true, getEvents: true})
 
-$(function () {
+$(async function () {
   const page = pages.fromUrl(window.location.href)
 
   /* This is probably how we will implement AJAX navigation:
@@ -19,7 +19,6 @@ $(function () {
     return true
   })
 
-  page.initializeInBrowser().then(
-    () => $('.sp-modern').removeClass('sp-loading')
-  )
+  await page.initializeInBrowser()
+  $('.sp-modern').removeClass('sp-loading')
 })

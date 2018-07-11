@@ -5,7 +5,7 @@
 const assert = require('assert')
 
 const $ = require('jquery')
-const Joi = require('joi'); // @todo Don't require in production (in browser)
+const Joi = require('joi') // @todo Don't require in production (in browser)
 const moment = require('moment')
 const mustache = require('mustache')
 const URI = require('urijs')
@@ -82,20 +82,20 @@ function validateSource (source) {
   }
 
   return {
-    getCities: function () {
-      return attempt(source.getCities(), cities)
+    getCities: async function () {
+      return attempt(await source.getCities(), cities)
     },
 
-    getCity: function (citySlug) {
-      return attempt(source.getCity(citySlug), city)
+    getCity: async function (citySlug) {
+      return attempt(await source.getCity(citySlug), city)
     },
 
-    getTags: function (citySlug) {
-      return attempt(source.getTags(citySlug), tags)
+    getTags: async function (citySlug) {
+      return attempt(await source.getTags(citySlug), tags)
     },
 
-    getEvents: function (citySlug, startDate, dateAfter) {
-      return attempt(source.getEvents(citySlug, startDate, dateAfter), events)
+    getEvents: async function (citySlug, startDate, dateAfter) {
+      return attempt(await source.getEvents(citySlug, startDate, dateAfter), events)
     }
   }
 }
@@ -110,16 +110,16 @@ module.exports = function (source) {
         randomizeCanvases()
       ])
     },
-    makeTitle: function () {
+    makeTitle: async function () {
       return {
         lead: 'Votre agenda culturel régional'
       }
     },
-    makeContent: function () {
+    makeContent: async function () {
       return mustache.render(
         require('./index.html'),
         {
-          cities: source.getCities()
+          cities: await source.getCities()
         }
       )
     }
@@ -134,16 +134,16 @@ module.exports = function (source) {
           $('.sp-now-week-link').attr('href', (index, href) => splightUrls.makeWeek({url: href, week: moment()}))
         ])
       },
-      makeTitle: function () {
-        return source.getCity(citySlug).title
+      makeTitle: async function () {
+        return (await source.getCity(citySlug)).title
       },
-      makeContent: function () {
-        const city = source.getCity(citySlug)
+      makeContent: async function () {
+        const city = await source.getCity(citySlug)
         return mustache.render(
           require('./cityIndex.html'),
           {
             city,
-            tags: source.getTags(citySlug),
+            tags: await source.getTags(citySlug),
             firstWeekUrl: city.firstWeekUrl
           }
         )
@@ -162,11 +162,11 @@ module.exports = function (source) {
           $('.sp-timespan-now-2').attr('href', (index, href) => splightUrls.makeTimespan({url: href, timespanSlug: this.timespan.now2LinkSlug(moment())}))
         ])
       },
-      makeTitle: function () {
-        return source.getCity(citySlug).title
+      makeTitle: async function () {
+        return (await source.getCity(citySlug)).title
       },
-      makeContent: function () {
-        const city = source.getCity(citySlug)
+      makeContent: async function () {
+        const city = await source.getCity(citySlug)
 
         const {
           duration,
@@ -180,9 +180,9 @@ module.exports = function (source) {
           now2LinkText
         } = this.timespan
 
-        const days = source.getEvents(citySlug, startDate, dateAfter)
+        const days = await source.getEvents(citySlug, startDate, dateAfter)
 
-        const tags = source.getTags(citySlug)
+        const tags = await source.getTags(citySlug)
 
         return mustache.render(
           require('./cityTimespan.html'),
@@ -229,4 +229,3 @@ module.exports = function (source) {
 
   return pages
 }
-
