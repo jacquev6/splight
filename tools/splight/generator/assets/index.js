@@ -66,6 +66,7 @@ exports.generate = function (outputDirectory) {
       )
     ),
     new Promise((resolve, reject) =>
+      // @todo Use watchify when serving site using nodemon
       browserify('splight/website/index.js').transform('stringify', ['.html']).transform('uglifyify', {global: true}).bundle(function (error, result) {
         if (error) {
           reject(error)

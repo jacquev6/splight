@@ -3,7 +3,8 @@
 const $ = global.jQuery = require('jquery')
 require('bootstrap')
 
-const pages = require('../pages')
+// We'll need to pass in a source that fetches data files from the server
+const pages = require('../pages')({getCities: true, getCity: true, getTags: true, getEvents: true})
 
 $(function () {
   const page = pages.fromUrl(window.location.href)

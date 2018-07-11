@@ -7,7 +7,6 @@ const moment = require('moment')
 const mustache = require('mustache')
 
 const splightUrls = require('../../pages/urls')
-const pages = require('../../pages')
 
 function makeGenerator (data, reload = false) {
   for (const citySlug in data.cities) {
@@ -44,111 +43,82 @@ function makeGenerator (data, reload = false) {
     city.firstWeekUrl = splightUrls.makeWeek({city: city.slug, week: city.events[0].start})
   }
 
-  function makeHtml (contentTemplate, contentData, title) {
+  const source = {
+    getCities: function () {
+      return Object.values(data.cities).map(({name, url}) => ({name, url}))
+    },
+
+    getCity: function (citySlug) {
+      const {slug, name, title, firstWeekUrl} = data.cities[citySlug]
+      return {slug, name, title, firstWeekUrl}
+    },
+
+    getTags: function (citySlug) {
+      return Object.values(data.cities[citySlug].tags).sort(
+        (tag1, tag2) => tag1.display_order - tag2.display_order
+      ).map(
+        ({slug, title}) => ({slug, title})
+      )
+    },
+
+    getEvents: function (citySlug, startDate, dateAfter) {
+      const eventsByDay = {}
+
+      for (var d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
+        eventsByDay[d.format('YYYY-MM-DD')] = []
+      }
+
+      data.cities[citySlug].events.forEach(function ({title, start}) {
+        const dayEvents = eventsByDay[start.format('YYYY-MM-DD')]
+        if (dayEvents !== undefined) {
+          dayEvents.push({
+            title,
+            time: start.format('HH:mm')
+          })
+        }
+      })
+
+      const days = []
+
+      for (d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
+        const date = d.format('YYYY-MM-DD')
+        days.push({
+          date,
+          events: eventsByDay[date]
+        })
+      }
+
+      return days
+    }
+  }
+
+  const pages = require('../../pages')(source)
+
+  function renderContained (staticContent, title) {
     return mustache.render(
       require('./container.html'),
       {
-        staticContent: mustache.render(contentTemplate, contentData),
+        staticContent,
         title: title,
         reload: reload
       }
     )
   }
 
-  function indexPage () {
-    const page = pages.index
+  function renderPage (page) {
+    return renderContained(page.makeContent(), page.makeTitle())
+  }
 
-    return makeHtml(
-      page.contentTemplate,
-      {
-        cities: Object.values(data.cities).map(({name, url}) => ({name, url}))
-      },
-      {
-        lead: 'Votre agenda culturel régional'
-      }
-    )
+  function indexPage () {
+    return renderPage(pages.index)
   }
 
   function cityPage (citySlug) {
-    const city = data.cities[citySlug]
-
-    const tags = Object.values(city.tags).sort(
-      (tag1, tag2) => tag1.display_order - tag2.display_order
-    ).map(
-      ({slug, title}) => ({slug, title})
-    )
-
-    const page = pages.cityIndex(citySlug)
-
-    return makeHtml(
-      page.contentTemplate,
-      {
-        city: city,
-        tags: tags,
-        firstWeekUrl: city.firstWeekUrl
-      },
-      city.title
-    )
+    return renderPage(pages.cityIndex(citySlug))
   }
 
   function timespanPage (citySlug, timespanSlug) {
-    const city = data.cities[citySlug]
-
-    const page = pages.cityTimespan(citySlug, timespanSlug)
-
-    const {
-      duration,
-      startDate,
-      dateAfter,
-      previousLinkSlug,
-      nextLinkSlug,
-      previousLinkText,
-      nextLinkText,
-      now1LinkText,
-      now2LinkText
-    } = page.timespan
-
-    const eventsByDay = {}
-    for (var d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
-      eventsByDay[d.format('YYYY-MM-DD')] = []
-    }
-    city.events.forEach(function ({title, start}) {
-      const dayEvents = eventsByDay[start.format('YYYY-MM-DD')]
-      if (dayEvents !== undefined) {
-        dayEvents.push({
-          title,
-          time: start.format('HH:mm')
-        })
-      }
-    })
-    const days = []
-    for (d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
-      const date = d.format('YYYY-MM-DD')
-      days.push({
-        date,
-        events: eventsByDay[date]
-      })
-    }
-
-    const tags = Object.values(city.tags).sort((t1, t2) => t1.display_order - t2.display_order).map(({slug, title}) => ({slug, title}))
-
-    return makeHtml(
-      page.contentTemplate,
-      {
-        city,
-        duration,
-        startDate: startDate.format() /* + ' au ' + dateAfter.format() */,
-        days,
-        tags,
-        previousLinkSlug: previousLinkSlug,
-        nextLinkSlug: nextLinkSlug,
-        previousLinkText: previousLinkText,
-        nextLinkText: nextLinkText,
-        now1LinkText: now1LinkText,
-        now2LinkText: now2LinkText
-      },
-      city.title
-    )
+    return renderPage(pages.cityTimespan(citySlug, timespanSlug))
   }
 
   return {
