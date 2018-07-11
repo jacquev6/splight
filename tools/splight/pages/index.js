@@ -9,8 +9,8 @@ const moment = require('moment')
 const URI = require('urijs')
 
 const randomizeCanvas = require('../../randomizeCanvas')
-const splightUrls = require('../urls')
-const timespan = require('../timespan')
+const splightUrls = require('./urls')
+const timespan = require('./timespan')
 
 function randomizeCanvases () {
   if (Modernizr.canvas) {
@@ -53,13 +53,12 @@ function cityTimespan (citySlug, timespanSlug) {
   return {
     path: ['', citySlug, timespanSlug, ''].join('/'),
     contentTemplate: require('./cityTimespan.html'),
+    timespan: timespan.make(timespanSlug),
     initializeInBrowser: function () {
-      const ts = timespan.make(timespanSlug)
-
       return Promise.all([
         randomizeCanvases(),
-        $('.sp-timespan-now-1').prop('href', (index, href) => splightUrls.makeTimespan({url: href, timespanSlug: ts.now1LinkSlug(moment())})),
-        $('.sp-timespan-now-2').prop('href', (index, href) => splightUrls.makeTimespan({url: href, timespanSlug: ts.now2LinkSlug(moment())}))
+        $('.sp-timespan-now-1').prop('href', (index, href) => splightUrls.makeTimespan({url: href, timespanSlug: this.timespan.now1LinkSlug(moment())})),
+        $('.sp-timespan-now-2').prop('href', (index, href) => splightUrls.makeTimespan({url: href, timespanSlug: this.timespan.now2LinkSlug(moment())}))
       ])
     }
   }

@@ -6,8 +6,7 @@ const path = require('path')
 const moment = require('moment')
 const mustache = require('mustache')
 
-const splightUrls = require('../../urls')
-const timespan = require('../../timespan')
+const splightUrls = require('../../pages/urls')
 const pages = require('../../pages')
 
 function makeGenerator (data, reload = false) {
@@ -15,6 +14,10 @@ function makeGenerator (data, reload = false) {
     const city = data.cities[citySlug]
     city.slug = citySlug
     city.url = splightUrls.makeCity({city: citySlug})
+    city.title = {
+      sub: {href: city.url, text: city.name},
+      lead: `Votre agenda culturel à ${city.name} et dans sa région`
+    }
 
     for (const tagSlug in city.tags) {
       const tag = city.tags[tagSlug]
@@ -37,15 +40,16 @@ function makeGenerator (data, reload = false) {
     city.events = events.sort(
       (e1, e2) => e1.start.diff(e2.start)
     )
+
+    city.firstWeekUrl = splightUrls.makeWeek({city: city.slug, week: city.events[0].start})
   }
 
-  function makeHtml (contentTemplate, contentData, subtitle, lead) {
+  function makeHtml (contentTemplate, contentData, title) {
     return mustache.render(
       require('./container.html'),
       {
-        static_content: mustache.render(contentTemplate, contentData),
-        subtitle: subtitle,
-        lead: lead,
+        staticContent: mustache.render(contentTemplate, contentData),
+        title: title,
         reload: reload
       }
     )
@@ -59,8 +63,9 @@ function makeGenerator (data, reload = false) {
       {
         cities: Object.values(data.cities).map(({name, url}) => ({name, url}))
       },
-      null,
-      'Votre agenda culturel régional'
+      {
+        lead: 'Votre agenda culturel régional'
+      }
     )
   }
 
@@ -80,15 +85,16 @@ function makeGenerator (data, reload = false) {
       {
         city: city,
         tags: tags,
-        first_week_url: splightUrls.makeWeek({city: city.slug, week: city.events[0].start})
+        firstWeekUrl: city.firstWeekUrl
       },
-      {href: splightUrls.makeCity({city: city.slug}), text: city.name},
-      'Votre agenda culturel à ' + city.name + ' et dans sa région'
+      city.title
     )
   }
 
   function timespanPage (citySlug, timespanSlug) {
     const city = data.cities[citySlug]
+
+    const page = pages.cityTimespan(citySlug, timespanSlug)
 
     const {
       duration,
@@ -100,7 +106,7 @@ function makeGenerator (data, reload = false) {
       nextLinkText,
       now1LinkText,
       now2LinkText
-    } = timespan.make(timespanSlug)
+    } = page.timespan
 
     const eventsByDay = {}
     for (var d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
@@ -126,8 +132,6 @@ function makeGenerator (data, reload = false) {
 
     const tags = Object.values(city.tags).sort((t1, t2) => t1.display_order - t2.display_order).map(({slug, title}) => ({slug, title}))
 
-    const page = pages.cityTimespan(citySlug, timespanSlug)
-
     return makeHtml(
       page.contentTemplate,
       {
@@ -143,8 +147,7 @@ function makeGenerator (data, reload = false) {
         now1LinkText: now1LinkText,
         now2LinkText: now2LinkText
       },
-      {href: splightUrls.makeCity({city: city.slug}), text: city.name},
-      'Votre agenda culturel à ' + city.name + ' et dans sa région'
+      city.title
     )
   }
 

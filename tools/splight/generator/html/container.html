@@ -6,15 +6,15 @@
 
     <link rel="stylesheet" href="/index.css">
 
-    <title>{{#subtitle}}{{text}} - {{/subtitle}}Splight</title>
+    <title>{{#title.sub}}{{text}} - {{/title.sub}}Splight</title>
 
     <script src="/modernizr.js"></script>{{#reload}}<script src="/reload/reload.js"></script>{{/reload}}
   </head>
   <body>
     <div class="container">
       <div class="jumbotron">
-        <h1 class="display-4"><a href="/">Splight</a>{{#subtitle}} - <a href="{{{href}}}">{{text}}</a>{{/subtitle}}</h1>
-        <p class="lead">{{lead}}</p>
+        <h1 class="display-4"><a href="/">Splight</a>{{#title.sub}} - <a href="{{{href}}}">{{text}}</a>{{/title.sub}}</h1>
+        <p class="lead">{{title.lead}}</p>
       </div>
 
       <div class="sp-noscript">
@@ -33,7 +33,7 @@
 
       <div class="sp-modern sp-loading">
         <div class="sp-content">
-{{{static_content}}}
+{{{staticContent}}}
         </div>
         <div id="sp-loading" class="text-center"><p><img src="/loading.gif" alt="Animation de chargement"></p><p>Patience pendant le chargement...</p></div>
       </div>
