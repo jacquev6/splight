@@ -43,7 +43,7 @@ function cityIndex (citySlug) {
     initializeInBrowser: function () {
       return Promise.all([
         randomizeCanvases(),
-        $('.sp-now-week-link').prop('href', (index, href) => splightUrls.makeWeek({url: href, week: moment()}))
+        $('.sp-now-week-link').attr('href', (index, href) => splightUrls.makeWeek({url: href, week: moment()}))
       ])
     }
   }
@@ -57,8 +57,8 @@ function cityTimespan (citySlug, timespanSlug) {
     initializeInBrowser: function () {
       return Promise.all([
         randomizeCanvases(),
-        $('.sp-timespan-now-1').prop('href', (index, href) => splightUrls.makeTimespan({url: href, timespanSlug: this.timespan.now1LinkSlug(moment())})),
-        $('.sp-timespan-now-2').prop('href', (index, href) => splightUrls.makeTimespan({url: href, timespanSlug: this.timespan.now2LinkSlug(moment())}))
+        $('.sp-timespan-now-1').attr('href', (index, href) => splightUrls.makeTimespan({url: href, timespanSlug: this.timespan.now1LinkSlug(moment())})),
+        $('.sp-timespan-now-2').attr('href', (index, href) => splightUrls.makeTimespan({url: href, timespanSlug: this.timespan.now2LinkSlug(moment())}))
       ])
     }
   }
