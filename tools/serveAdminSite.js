@@ -23,6 +23,12 @@ async function serve () {
 
   app.use(express.static(path.join(__dirname, assets)))
 
+  // @todo Add a favicon in skeleton
+  app.get(
+    '/favicon.ico',
+    (req, res) => res.status(404)
+  )
+
   app.get(
     '/',
     (req, res) => res.send(htmlGenerator.indexPage())
