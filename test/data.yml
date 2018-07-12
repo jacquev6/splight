@@ -4,7 +4,7 @@ cities:
     tags:
       tag-1:
         title: Seule catégorie
-        display_order: 100
+        displayOrder: 100
     locations:
       location-1:
         name: Seul lieu
@@ -22,16 +22,16 @@ cities:
     tags:
       tag-1:
         title: Catégorie 1
-        display_order: 100
+        displayOrder: 100
       tag-3:
         title: Catégorie 3
-        display_order: 300
+        displayOrder: 300
       tag-4:
         title: Catégorie 4
-        display_order: 400
+        displayOrder: 400
       tag-2:
         title: Catégorie 2
-        display_order: 200
+        displayOrder: 200
     events:
       tag-1:
         - title: Événement 1-A

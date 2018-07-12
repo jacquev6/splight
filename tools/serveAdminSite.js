@@ -30,6 +30,11 @@ async function serve () {
   )
 
   app.get(
+    '/cities.json',
+    async (req, res) => res.send(await htmlGenerator.citiesData())
+  )
+
+  app.get(
     '/',
     async (req, res) => res.send(await htmlGenerator.indexPage())
   )
@@ -37,6 +42,11 @@ async function serve () {
   app.get(
     '/:city/',
     async (req, res) => res.send(await htmlGenerator.cityPage(req.params.city))
+  )
+
+  app.get(
+    '/:city/:timespan.json',
+    async (req, res) => res.send(await htmlGenerator.timespanData(req.params.city, req.params.timespan))
   )
 
   app.get(

@@ -48,48 +48,22 @@ function makeGenerator (data, reload = false) {
 
     getTags: function (citySlug) {
       return Object.values(data.cities[citySlug].tags).sort(
-        (tag1, tag2) => tag1.display_order - tag2.display_order
+        (tag1, tag2) => tag1.displayOrder - tag2.displayOrder
       ).map(
         ({slug, title}) => ({slug, title})
       )
     },
 
     getEvents: function (citySlug, startDate, dateAfter) {
-      const eventsByDay = {}
-
-      for (var d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
-        eventsByDay[d.format('YYYY-MM-DD')] = []
-      }
-
-      data.cities[citySlug].events.forEach(function ({title, start}) {
-        const dayEvents = eventsByDay[start.format('YYYY-MM-DD')]
-        if (dayEvents !== undefined) {
-          dayEvents.push({
-            title,
-            time: start.format('HH:mm')
-          })
-        }
-      })
-
-      const days = []
-
-      for (d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
-        const date = d.format('YYYY-MM-DD')
-        days.push({
-          date,
-          events: eventsByDay[date]
-        })
-      }
-
-      return days
+      return data.cities[citySlug].events.filter(({start}) => start.isBetween(startDate, dateAfter, null, '[)'))
     }
   }
 
   const pages = require('../../pages')(source)
 
   async function renderPage (page) {
-    const [title, content] = await Promise.all([page.makeTitle(), page.makeContent()])
-    return mustache.render(require('./container.html'), {content, title, reload})
+    const {title, jumbotron, content} = await page.make()
+    return mustache.render(require('./container.html'), {title, jumbotron, content, reload})
   }
 
   function indexPage () {
@@ -104,10 +78,35 @@ function makeGenerator (data, reload = false) {
     return renderPage(pages.cityTimespan(citySlug, timespanSlug))
   }
 
+  function citiesData () {
+    const ret = {}
+    Object.values(data.cities).forEach(({slug, name, firstDate, tags}) => {
+      const tags_ = {}
+      Object.values(tags).forEach(({slug, title, displayOrder}) => {
+        tags_[slug] = {title, displayOrder}
+      })
+      ret[slug] = {
+        name,
+        firstDate: firstDate.format(moment.HTML5_FMT.DATE),
+        tags: tags_
+      }
+    })
+    return ret
+  }
+
+  function timespanData (citySlug, timespanSlug) {
+    const week = moment(timespanSlug, 'GGGG-[W]WW', true)
+    return {
+      events: data.cities[citySlug].events.filter(({start}) => start.isSame(week, 'isoWeek'))
+    }
+  }
+
   return {
     indexPage: indexPage,
     cityPage: cityPage,
-    timespanPage: timespanPage
+    timespanPage: timespanPage,
+    citiesData: citiesData,
+    timespanData: timespanData
   }
 }
 
