@@ -11,8 +11,6 @@ const mustache = require('mustache')
 const URI = require('urijs')
 
 const randomizeCanvas = require('../../randomizeCanvas')
-const splightUrls = require('./urls')
-const timespan = require('./timespan')
 
 function randomizeCanvases () {
   if (Modernizr.canvas) {
@@ -47,21 +45,14 @@ function validateSource (source) {
   }
 
   const cities = arr(obj({
-    name: str(),
-    url: str()
+    slug: str(),
+    name: str()
   }))
 
   const city = obj({
     slug: str(),
     name: str(),
-    title: obj({
-      sub: obj({
-        href: str(),
-        text: str()
-      }),
-      lead: str()
-    }),
-    firstWeekUrl: str()
+    firstDate: Joi.any().required() // Actually, a moment
   })
 
   const tags = arr(obj({
@@ -71,7 +62,7 @@ function validateSource (source) {
 
   const events = arr(obj({
     date: str(),
-    events: arr(obj({
+    events: arr(Joi.object({
       title: str(),
       time: str()
     }))
@@ -100,6 +91,108 @@ function validateSource (source) {
   }
 }
 
+const timespan = (function () {
+  const oneWeek = (function () {
+    const slugFormat = moment.HTML5_FMT.WEEK
+
+    function slugify (startDate) {
+      return startDate.format(slugFormat)
+    }
+
+    function make (startDate) {
+      return {
+        duration: 'Semaine',
+        startDate: startDate.clone(),
+        dateAfter: startDate.clone().add(7, 'days'),
+        previousLinkText: 'Semaine précédente',
+        previousLinkSlug: slugify(startDate.clone().subtract(7, 'days')),
+        nextLinkText: 'Semaine suivante',
+        nextLinkSlug: slugify(startDate.clone().add(7, 'days')),
+        now1LinkText: 'Cette semaine',
+        now1LinkSlug: now => slugify(now),
+        now2LinkText: 'La semaine prochaine',
+        now2LinkSlug: now => slugify(now.clone().add(7, 'days'))
+      }
+    }
+
+    return {slugFormat, slugify, make}
+  }())
+
+  const threeDays = (function () {
+    const slugFormat = moment.HTML5_FMT.DATE + '+2'
+
+    function slugify (startDate) {
+      return startDate.format(slugFormat)
+    }
+
+    function make (startDate) {
+      return {
+        duration: '3 jours à partir',
+        startDate: startDate.clone(),
+        dateAfter: startDate.clone().add(3, 'days'),
+        previousLinkText: 'Jours précédents',
+        previousLinkSlug: slugify(startDate.clone().subtract(1, 'days')),
+        nextLinkText: 'Jours suivants',
+        nextLinkSlug: slugify(startDate.clone().add(1, 'days')),
+        now1LinkText: 'Ces 3 jours',
+        now1LinkSlug: now => slugify(now),
+        now2LinkText: 'Le week-end prochain',
+        now2LinkSlug: now => slugify(now.clone().add(3, 'days').startOf('isoWeek').add(4, 'days'))
+      }
+    }
+
+    return {slugFormat, slugify, make}
+  }())
+
+  const oneDay = (function () {
+    const slugFormat = moment.HTML5_FMT.DATE
+
+    function slugify (startDate) {
+      return startDate.format(slugFormat)
+    }
+
+    function make (startDate) {
+      return {
+        duration: 'Journée',
+        startDate: startDate.clone(),
+        dateAfter: startDate.clone().add(1, 'days'),
+        previousLinkText: 'Journée précédente',
+        previousLinkSlug: slugify(startDate.clone().subtract(1, 'days')),
+        nextLinkText: 'Journée suivante',
+        nextLinkSlug: slugify(startDate.clone().add(1, 'days')),
+        now1LinkText: "Aujourd'hui",
+        now1LinkSlug: now => slugify(now),
+        now2LinkText: 'Demain',
+        now2LinkSlug: now => slugify(now.clone().add(1, 'days'))
+      }
+    }
+
+    return {slugFormat, slugify, make}
+  }())
+
+  function make (timespanSlug) {
+    return [oneWeek, threeDays, oneDay].reduce(function (r, ts) {
+      if (r) {
+        return r
+      } else {
+        const startDate = moment(timespanSlug, ts.slugFormat, true)
+        if (startDate.isValid()) {
+          return ts.make(startDate)
+        } else {
+          return null
+        }
+      }
+    }, null)
+  }
+
+  return {
+    make,
+    oneWeek,
+    threeDays,
+    oneDay
+  }
+}())
+
 module.exports = function (source) {
   source = validateSource(source)
 
@@ -116,12 +209,21 @@ module.exports = function (source) {
       }
     },
     makeContent: async function () {
-      return mustache.render(
-        require('./index.html'),
-        {
-          cities: await source.getCities()
-        }
-      )
+      const cities = await source.getCities()
+      cities.forEach(city => {
+        city.url = cityIndex(city.slug).path
+      })
+      return mustache.render(require('./index.html'), {cities})
+    }
+  }
+
+  function makeCityTitle (citySlug) {
+    return async function () {
+      const city = await source.getCity(citySlug)
+      return {
+        sub: {href: cityIndex(city.slug).path, text: city.name},
+        lead: `Votre agenda culturel à ${city.name} et dans sa région`
+      }
     }
   }
 
@@ -131,20 +233,18 @@ module.exports = function (source) {
       initializeInBrowser: function () {
         return Promise.all([
           randomizeCanvases(),
-          $('.sp-now-week-link').attr('href', (index, href) => splightUrls.makeWeek({url: href, week: moment()}))
+          $('.sp-now-week-link').attr('href', (index, href) => URI(href).path(['', citySlug, timespan.oneWeek.slugify(moment()), ''].join('/')).toString())
         ])
       },
-      makeTitle: async function () {
-        return (await source.getCity(citySlug)).title
-      },
+      makeTitle: makeCityTitle(citySlug),
       makeContent: async function () {
         const city = await source.getCity(citySlug)
         return mustache.render(
           require('./cityIndex.html'),
           {
             city,
-            tags: await source.getTags(citySlug),
-            firstWeekUrl: city.firstWeekUrl
+            tags: await source.getTags(city.slug),
+            firstWeekUrl: ['', citySlug, timespan.oneWeek.slugify(city.firstDate)].join('/')
           }
         )
       }
@@ -152,19 +252,18 @@ module.exports = function (source) {
   }
 
   function cityTimespan (citySlug, timespanSlug) {
+    const ts = timespan.make(timespanSlug)
+
     return {
       path: ['', citySlug, timespanSlug, ''].join('/'),
-      timespan: timespan.make(timespanSlug),
       initializeInBrowser: function () {
         return Promise.all([
           randomizeCanvases(),
-          $('.sp-timespan-now-1').attr('href', (index, href) => splightUrls.makeTimespan({url: href, timespanSlug: this.timespan.now1LinkSlug(moment())})),
-          $('.sp-timespan-now-2').attr('href', (index, href) => splightUrls.makeTimespan({url: href, timespanSlug: this.timespan.now2LinkSlug(moment())}))
+          $('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now1LinkSlug(moment()), ''].join('/')).toString()),
+          $('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now2LinkSlug(moment()), ''].join('/')).toString())
         ])
       },
-      makeTitle: async function () {
-        return (await source.getCity(citySlug)).title
-      },
+      makeTitle: makeCityTitle(citySlug),
       makeContent: async function () {
         const city = await source.getCity(citySlug)
 
@@ -178,11 +277,11 @@ module.exports = function (source) {
           nextLinkText,
           now1LinkText,
           now2LinkText
-        } = this.timespan
+        } = ts
 
-        const days = await source.getEvents(citySlug, startDate, dateAfter)
+        const days = await source.getEvents(city.slug, startDate, dateAfter)
 
-        const tags = await source.getTags(citySlug)
+        const tags = await source.getTags(city.slug)
 
         return mustache.render(
           require('./cityTimespan.html'),

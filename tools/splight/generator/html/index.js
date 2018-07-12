@@ -6,17 +6,10 @@ const path = require('path')
 const moment = require('moment')
 const mustache = require('mustache')
 
-const splightUrls = require('../../pages/urls')
-
 function makeGenerator (data, reload = false) {
   for (const citySlug in data.cities) {
     const city = data.cities[citySlug]
     city.slug = citySlug
-    city.url = splightUrls.makeCity({city: citySlug})
-    city.title = {
-      sub: {href: city.url, text: city.name},
-      lead: `Votre agenda culturel à ${city.name} et dans sa région`
-    }
 
     for (const tagSlug in city.tags) {
       const tag = city.tags[tagSlug]
@@ -40,17 +33,17 @@ function makeGenerator (data, reload = false) {
       (e1, e2) => e1.start.diff(e2.start)
     )
 
-    city.firstWeekUrl = splightUrls.makeWeek({city: city.slug, week: city.events[0].start})
+    city.firstDate = city.events[0].start
   }
 
   const source = {
     getCities: function () {
-      return Object.values(data.cities).map(({name, url}) => ({name, url}))
+      return Object.values(data.cities).map(({slug, name}) => ({slug, name}))
     },
 
     getCity: function (citySlug) {
-      const {slug, name, title, firstWeekUrl} = data.cities[citySlug]
-      return {slug, name, title, firstWeekUrl}
+      const {slug, name, firstDate} = data.cities[citySlug]
+      return {slug, name, firstDate}
     },
 
     getTags: function (citySlug) {
