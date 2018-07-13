@@ -1,10 +1,10 @@
 {
-  "name": "splight-tools",
+  "name": "splight.fr-generator",
   "version": "1.0.0",
   "scripts": {
     "test": "standard && nyc --reporter=html --reporter=text mocha $(find . -name '*-test.js' | grep -v node_modules)",
-    "generateStaticSite": "node generateStaticSite.js ../test/data ../test/site",
-    "serveAdminSite": "nodemon -w ../test/data.yml -w . --ext 'js,yml,html,scss' serveAdminSite.js ../test/data"
+    "generateStaticSite": "node generateStaticSite.js",
+    "serveAdminSite": "nodemon -w ../test/data.yml -w . --ext 'js,yml,html,scss' serveAdminSite.js"
   },
   "dependencies": {
     "ajv": "^6.5.2",
@@ -33,7 +33,8 @@
   },
   "standard": {
     "ignore": [
-      "randomize_canvas.bc.js"
+      "randomize_canvas.bc.js",
+      "test/site"
     ]
   }
 }

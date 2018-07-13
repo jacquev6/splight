@@ -33,16 +33,13 @@ do
   shift
 done
 
-(cd tools; npm test)
+npm test
 
-show_in_browser "Unit test coverage details" $PROJECT_ROOT/tools/coverage/index.html
+show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
 
-(cd tools; npm run generateStaticSite)
+npm run generateStaticSite test/data test/site
 
 if $SERVE_ADMIN_SITE
 then
-  (cd tools; npm run serveAdminSite)
+  npm run serveAdminSite test/data
 fi
-
-# (cd tools; npm run generator ../data ../docs)
-# git --no-pager diff --ignore-all-space --ignore-space-at-eol --ignore-blank-lines --stat docs
