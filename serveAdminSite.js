@@ -3,6 +3,7 @@ const path = require('path')
 
 const express = require('express')
 const fs = require('fs-extra')
+const opn = require('opn')
 
 require('stringify').registerWithRequire(['.html'])
 
@@ -54,7 +55,11 @@ async function serve () {
     async (req, res) => res.send(await htmlGenerator.timespanPage(req.params.city, req.params.timespan))
   )
 
-  app.listen(8000, () => console.log('Admin site listening on port 8000'))
+  app.listen(8000, () => {
+    const address = 'http://localhost:8000/'
+    console.log('Admin site live at', address)
+    opn(address)
+  })
 }
 
 serve()
