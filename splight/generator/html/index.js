@@ -6,7 +6,8 @@ const path = require('path')
 const moment = require('moment')
 const mustache = require('mustache')
 
-function makeGenerator (data, reload = false) {
+function makeGenerator ({data, scripts}) {
+  scripts = scripts || []
   for (const citySlug in data.cities) {
     const city = data.cities[citySlug]
     city.slug = citySlug
@@ -63,7 +64,7 @@ function makeGenerator (data, reload = false) {
 
   async function renderPage (page) {
     const {title, jumbotron, content} = await page.make()
-    return mustache.render(require('./container.html'), {title, jumbotron, content, reload})
+    return mustache.render(require('./container.html'), {title, jumbotron, content, scripts})
   }
 
   function indexPage () {
@@ -113,7 +114,7 @@ function makeGenerator (data, reload = false) {
 exports.generator = makeGenerator
 
 exports.generate = function (data, outputDirectory) {
-  const generator = makeGenerator(data)
+  const generator = makeGenerator({data})
 
   async function outputIndex (html, destination) {
     var text = await html

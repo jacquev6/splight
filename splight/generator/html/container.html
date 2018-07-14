@@ -8,7 +8,7 @@
 
     <title>{{title}}</title>
 
-    <script src="/modernizr.js"></script>{{#reload}}<script src="/reload/reload.js"></script><script>new WebSocket('ws://localhost:8080/')</script>{{/reload}}
+    <script src="/modernizr.js"></script>{{#scripts}}<script src="{{.}}"></script>{{/scripts}}
   </head>
   <body>
     <div class="container">

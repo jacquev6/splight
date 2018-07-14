@@ -19,7 +19,13 @@ async function serve () {
   await fs.emptyDir(assets)
   await generator.assets.generate(assets)
 
-  const htmlGenerator = generator.html.generator(multiYaml.load(process.argv[2]), true)
+  const htmlGenerator = generator.html.generator({
+    data: multiYaml.load(process.argv[2]),
+    scripts: [
+      '/reload/reload.js',
+      '/shutdown/shutdown.js'
+    ]
+  })
 
   const app = express()
   const server = http.Server(app)
@@ -27,6 +33,11 @@ async function serve () {
   require('reload')(app)
 
   app.use(express.static(path.join(__dirname, assets)))
+
+  app.get(
+    '/shutdown/shutdown.js',
+    (req, res) => res.type('.js').send("new WebSocket('ws://localhost:8080/')")
+  )
 
   // @todo Add a favicon in skeleton
   app.get(
