@@ -1,8 +1,9 @@
 'use strict'
+
+const fs = require('fs-extra')
 const path = require('path')
 
 const express = require('express')
-const fs = require('fs-extra')
 const opn = require('opn')
 
 require('stringify').registerWithRequire(['.html'])

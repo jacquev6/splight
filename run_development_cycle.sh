@@ -43,3 +43,6 @@ if $SERVE_ADMIN_SITE
 then
   npm run serveAdminSite test/data
 fi
+
+echo
+echo "Development cycle OK"
