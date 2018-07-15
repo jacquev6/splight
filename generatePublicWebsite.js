@@ -12,12 +12,15 @@ const publicWebsite = require('./splight/publicWebsite')
 const data = multiYaml.load(process.argv[2])
 const outputDirectory = process.argv[3]
 
-fs.emptyDirSync(outputDirectory)
+;(async function () {
+  await fs.emptyDir(outputDirectory)
 
-for (var [name, content] of publicWebsite.generate({
-  data,
-  now: moment(),
-  scripts: []
-})) {
-  fs.outputFile(path.join(outputDirectory, name), content)
-}
+  for (var [name, content] of publicWebsite.generate({
+    data,
+    now: moment(),
+    scripts: []
+  })) {
+    console.log('Generating', name)
+    fs.outputFile(path.join(outputDirectory, name), await content)
+  }
+}())
