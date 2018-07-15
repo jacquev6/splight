@@ -12,11 +12,11 @@
     <h1>{{duration}} du {{startDate}}</h1>
 
     <div class="row"><div class="col"><div id="sp-tag-filtering" class="form-group">
-      {{#tags}}
+      {{#city.tags}}
       <div class="form-check form-check-inline sp-tag-{{city.slug}}-{{slug}}">
         <label class="form-check-label"><input class="form-check-input" type="checkbox" value="{{slug}}" />{{title}}</label>
       </div>
-      {{/tags}}
+      {{/city.tags}}
     </div></div></div>
 
     <div class="row">

@@ -127,7 +127,59 @@ const timespan = (function () {
   }
 }())
 
-module.exports = function (source) {
+module.exports = function (fetcher) {
+  const source = (function () {
+    const cities = fetcher.getCities().then(cities => {
+      cities.forEach(city => {
+        city.url = cityIndex(city.slug).path
+        city.firstDate = moment(city.firstDate, 'YYYY-MM-DD', true)
+      })
+      return cities
+    })
+
+    function getCities () {
+      return cities
+    }
+
+    const citiesBySlug = cities.then(cities => {
+      const citiesBySlug = {}
+      cities.forEach(city => {
+        citiesBySlug[city.slug] = city
+      })
+      return citiesBySlug
+    })
+
+    async function getCity (citySlug) {
+      return (await citiesBySlug)[citySlug]
+    }
+
+    const cityWeeks = {}
+
+    function getCityWeek (citySlug, week) {
+      const key = citySlug + '/' + week.format()
+      if (!cityWeeks[key]) {
+        cityWeeks[key] = fetcher.getCityWeek(citySlug, week).then(cityWeek => {
+          cityWeek.events.forEach(event => {
+            event.start = moment(event.start, 'YYYY/MM/DD HH:mm', true)
+          })
+          return cityWeek
+        })
+      }
+      return cityWeeks[key]
+    }
+
+    async function getEvents (citySlug, startDate, dateAfter) {
+      const weeksToFetch = []
+      for (var week = startDate.clone().startOf('isoWeek'); week.isBefore(dateAfter); week.add(7, 'days')) {
+        weeksToFetch.push(getCityWeek(citySlug, week).then(({events}) => events))
+      }
+      const weeks = await Promise.all(weeksToFetch)
+      return weeks.reduce((a, b) => a.concat(b)).filter(({start}) => start.isBetween(startDate, dateAfter, null, '[)'))
+    }
+
+    return {getCities, getCity, getEvents}
+  }())
+
   const index = {
     path: '/',
     initializeInBrowser: function () {
@@ -137,13 +189,10 @@ module.exports = function (source) {
     },
     make: async function () {
       const cities = await source.getCities()
-      cities.forEach(city => {
-        city.url = cityIndex(city.slug).path
-      })
       return {
         title: 'Splight',
         jumbotron: '<h1 class="display-4"><a href="/">Splight</a></h1><p class="lead">Votre agenda culturel régional</p>',
-        content: mustache.render(require('./index.html'), {cities})
+        content: mustache.render(require('./pages/index.html'), {cities})
       }
     }
   }
@@ -177,10 +226,10 @@ module.exports = function (source) {
           title: makeCityTitle(city),
           jumbotron: makeCityJumbotron(city),
           content: mustache.render(
-            require('./cityIndex.html'),
+            require('./pages/cityIndex.html'),
             {
               city,
-              tags: await source.getTags(city.slug),
+              tags: city.tags,
               firstWeekUrl: ['', citySlug, timespan.oneWeek.slugify(city.firstDate)].join('/')
             }
           )
@@ -216,7 +265,7 @@ module.exports = function (source) {
           now2LinkText
         } = ts
 
-        const [events, tags] = await Promise.all([source.getEvents(city.slug, startDate, dateAfter), source.getTags(city.slug)])
+        const events = await source.getEvents(city.slug, startDate, dateAfter)
 
         const eventsByDay = {}
 
@@ -245,13 +294,12 @@ module.exports = function (source) {
           title: makeCityTitle(city),
           jumbotron: makeCityJumbotron(city),
           content: mustache.render(
-            require('./cityTimespan.html'),
+            require('./pages/cityTimespan.html'),
             {
               city,
               duration,
               startDate: startDate.format(),
               days,
-              tags,
               previousLinkSlug,
               nextLinkSlug,
               previousLinkText,
