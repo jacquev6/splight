@@ -6,13 +6,14 @@ const path = require('path')
 const browserify = require('browserify')
 const CleanCSS = require('clean-css')
 const deepcopy = require('deepcopy')
+const fs = require('fs-extra')
 const modernizr = require('modernizr')
 const moment = require('moment')
 const neatJSON = require('neatjson').neatJSON
 const sass = require('node-sass')
 
 function * generate ({data, now, scripts}) {
-  // yield* generateSkeleton()
+  yield * generateSkeleton()
 
   yield * generateAssets()
 
@@ -21,6 +22,11 @@ function * generate ({data, now, scripts}) {
   yield * Object.entries(preparedData).map(
     ([name, content]) => [name + '.json', Promise.resolve(neatJSON(content, {sort: true, wrap: true, afterColon: 1}) + '\n')]
   )
+}
+
+function * generateSkeleton () {
+  const skeleton = path.join(__dirname, 'generator/assets/skeleton')
+  yield * fs.readdirSync(skeleton).map(fileName => [fileName, fs.readFile(path.join(skeleton, fileName))])
 }
 
 function * generateAssets () {
