@@ -14,6 +14,9 @@ const neatJSON = require('neatjson').neatJSON
 const sass = require('node-sass')
 
 function * generate ({data, now, scripts}) {
+  // @todo favicon.ico
+  // @todo robots.txt
+
   yield * generateSkeleton()
 
   yield * generateAssets()
@@ -24,7 +27,7 @@ function * generate ({data, now, scripts}) {
     ([name, content]) => [name + '.json', Promise.resolve(neatJSON(content, {sort: true, wrap: true, afterColon: 1}) + '\n')]
   )
 
-  yield * generatePages({preparedData, now})
+  yield * generatePages({preparedData, now, scripts})
 }
 
 function * generateSkeleton () {
@@ -200,7 +203,7 @@ function * _prepareData ({data, now}) {
   }
 }
 
-function * generatePages ({preparedData, now}) {
+function * generatePages ({preparedData, now, scripts}) {
   const fetcher = {
     getCities: async function () {
       return deepcopy(preparedData['cities'])
@@ -213,8 +216,8 @@ function * generatePages ({preparedData, now}) {
 
   const pages = require('./publicWebsite/pages')(fetcher)
 
-  function renderContained (data) {
-    return mustache.render(require('./generator/html/container.html'), data)
+  function renderContained ({title, jumbotron, content}) {
+    return mustache.render(require('./generator/html/container.html'), {title, scripts, jumbotron, content})
   }
 
   yield [

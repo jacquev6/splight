@@ -1,73 +1,49 @@
 'use strict'
 
-const fs = require('fs-extra')
-const http = require('http')
-const path = require('path')
-
-const express = require('express')
-const opn = require('opn')
-const ws = require('ws')
-
 require('stringify').registerWithRequire(['.html'])
 
+const express = require('express')
+const fs = require('fs-extra')
+const http = require('http')
+const moment = require('moment')
+const opn = require('opn')
+const path = require('path')
+const ws = require('ws')
+
 const multiYaml = require('./multiYaml')
-const generator = require('./splight/generator')
+const publicWebsite = require('./splight/publicWebsite')
 
 async function serve () {
-  const assets = '.assets'
+  const app = express()
 
-  await fs.emptyDir(assets)
-  await generator.assets.generate(assets)
-
-  const htmlGenerator = generator.html.generator({
+  for (var [name, content] of publicWebsite.generate({
     data: multiYaml.load(process.argv[2]),
+    now: moment(),
     scripts: [
       '/reload/reload.js',
       '/shutdown/shutdown.js'
     ]
-  })
-
-  const app = express()
+  })) {
+    (function(name, content) {
+      name = '/' + name
+      const type = path.extname(name)
+      if (name.endsWith('/index.html')) {
+        name = name.slice(0, -10)
+      }
+      console.log('Prepare to serve', name)
+      app.get(
+        name,
+        async (req, res) => res.type(type).send(await content)
+      )
+    })(name, content)
+  }
   const server = http.Server(app)
 
   require('reload')(app)
 
-  app.use(express.static(path.join(__dirname, assets)))
-
   app.get(
     '/shutdown/shutdown.js',
     (req, res) => res.type('.js').send("new WebSocket('ws://localhost:8080/')")
-  )
-
-  // @todo Add a favicon in skeleton
-  app.get(
-    '/favicon.ico',
-    (req, res) => res.status(404)
-  )
-
-  app.get(
-    '/cities.json',
-    async (req, res) => res.send(await htmlGenerator.citiesData())
-  )
-
-  app.get(
-    '/',
-    async (req, res) => res.send(await htmlGenerator.indexPage())
-  )
-
-  app.get(
-    '/:city/',
-    async (req, res) => res.send(await htmlGenerator.cityPage(req.params.city))
-  )
-
-  app.get(
-    '/:city/:timespan.json',
-    async (req, res) => res.send(await htmlGenerator.timespanData(req.params.city, req.params.timespan))
-  )
-
-  app.get(
-    '/:city/:timespan/',
-    async (req, res) => res.send(await htmlGenerator.timespanPage(req.params.city, req.params.timespan))
   )
 
   const wss = new ws.Server({
