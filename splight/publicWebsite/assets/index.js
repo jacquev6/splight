@@ -6,7 +6,6 @@ const path = require('path')
 
 const $ = global.jQuery = require('jquery')
 require('bootstrap')
-const moment = require('moment')
 const URI = require('urijs')
 
 const fetcher = (function () {
@@ -18,7 +17,7 @@ const fetcher = (function () {
     }
     return data[key]
   }
-  
+
   return {
     getCities: function () {
       return get('cities')

@@ -3,7 +3,6 @@
 require('stringify').registerWithRequire(['.html'])
 
 const express = require('express')
-const fs = require('fs-extra')
 const http = require('http')
 const moment = require('moment')
 const opn = require('opn')
@@ -24,13 +23,12 @@ async function serve () {
       '/shutdown/shutdown.js'
     ]
   })) {
-    (function(name, content) {
+    (function (name, content) {
       name = '/' + name
       const type = path.extname(name)
       if (name.endsWith('/index.html')) {
         name = name.slice(0, -10)
       }
-      console.log('Prepare to serve', name)
       app.get(
         name,
         async (req, res) => res.type(type).send(await content)
