@@ -4,7 +4,6 @@
   "scripts": {
     "test": "standard && nyc --reporter=html --reporter=text mocha $(find . -name '*-test.js' | grep -v node_modules)",
     "generatePublicWebsite": "node generatePublicWebsite.js",
-    "generateStaticSite": "node generateStaticSite.js",
     "serveAdminSite": "nodemon -w ../test/data.yml -w . --ext 'js,yml,html,scss' serveAdminSite.js"
   },
   "dependencies": {

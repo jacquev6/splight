@@ -31,7 +31,7 @@ function * generate ({data, now, scripts}) {
 }
 
 function * generateSkeleton () {
-  const skeleton = path.join(__dirname, 'generator/assets/skeleton')
+  const skeleton = path.join(__dirname, 'publicWebsite/skeleton')
   yield * fs.readdirSync(skeleton).map(fileName => [fileName, fs.readFile(path.join(skeleton, fileName))])
 }
 
@@ -99,7 +99,7 @@ function * generateAssets () {
     new Promise((resolve, reject) =>
       sass.render(
         {
-          data: '$modernizr-features: "' + modernizrFeatures.map(([detect, feature]) => '.mdrn-' + (feature || detect.split('/').slice(-1)[0])).join('') + '";\n\n@import "splight/website/index.scss"'
+          data: '$modernizr-features: "' + modernizrFeatures.map(([detect, feature]) => '.mdrn-' + (feature || detect.split('/').slice(-1)[0])).join('') + '";\n\n@import "splight/publicWebsite/assets/index.scss"'
         },
         function (error, result) {
           if (error) {
@@ -217,7 +217,7 @@ function * generatePages ({preparedData, now, scripts}) {
   const pages = require('./publicWebsite/pages')(fetcher)
 
   function renderContained ({title, jumbotron, content}) {
-    return mustache.render(require('./generator/html/container.html'), {title, scripts, jumbotron, content})
+    return mustache.render(require('./publicWebsite/container.html'), {title, scripts, jumbotron, content})
   }
 
   yield [
