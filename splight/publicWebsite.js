@@ -9,6 +9,7 @@ const deepcopy = require('deepcopy')
 const fs = require('fs-extra')
 const modernizr = require('modernizr')
 const moment = require('moment')
+const mustache = require('mustache')
 const neatJSON = require('neatjson').neatJSON
 const sass = require('node-sass')
 
@@ -22,6 +23,8 @@ function * generate ({data, now, scripts}) {
   yield * Object.entries(preparedData).map(
     ([name, content]) => [name + '.json', Promise.resolve(neatJSON(content, {sort: true, wrap: true, afterColon: 1}) + '\n')]
   )
+
+  yield * generatePages({preparedData, now})
 }
 
 function * generateSkeleton () {
@@ -103,7 +106,7 @@ function * generateAssets () {
           }
         }
       )
-    ),
+    )
   ]
 }
 
@@ -192,6 +195,46 @@ function * _prepareData ({data, now}) {
               ).reduce((a, b) => a.concat(b), [])
             ).reduce((a, b) => a.concat(b), [])
         }
+      ]
+    }
+  }
+}
+
+function * generatePages ({preparedData, now}) {
+  const fetcher = {
+    getCities: async function () {
+      return deepcopy(preparedData['cities'])
+    },
+
+    getCityWeek: async function (citySlug, week) {
+      return preparedData[path.join(citySlug, week.format('GGGG-[W]WW'))]
+    }
+  }
+
+  const pages = require('./publicWebsite/pages')(fetcher)
+
+  function renderContained (data) {
+    return mustache.render(require('./generator/html/container.html'), data)
+  }
+
+  yield [
+    'index.html',
+    pages.index.make().then(renderContained)
+  ]
+
+  // @todo Use keys in preparedData instead of recomputing them
+  const dateAfter = now.clone().startOf('isoWeek').add(5, 'weeks')
+  for (var city of preparedData['cities']) {
+    yield [
+      path.join(city.slug, 'index.html'),
+      pages.cityIndex(city.slug).make().then(renderContained)
+    ]
+
+    for (var week = moment(city.firstDate, 'YYYY-MM-DD', true).startOf('isoWeek'); week.isBefore(dateAfter); week.add(7, 'days')) {
+      const weekSlug = week.format('GGGG-[W]WW')
+      yield [
+        path.join(city.slug, weekSlug, 'index.html'),
+        pages.cityTimespan(city.slug, weekSlug).make().then(renderContained)
       ]
     }
   }

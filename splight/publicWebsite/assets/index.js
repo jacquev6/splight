@@ -2,78 +2,35 @@
 
 /* global history, setTimeout */
 
+const path = require('path')
+
 const $ = global.jQuery = require('jquery')
 require('bootstrap')
 const moment = require('moment')
 const URI = require('urijs')
 
-const source = (function () {
-  const fetchCities = (function () {
-    var cities = null
+const fetcher = (function () {
+  var data = {}
 
-    return async function () {
-      if (!cities) {
-        cities = await $.getJSON('/cities.json')
-        Object.entries(cities).forEach(([slug, city]) => {
-          city.slug = slug
-          city.firstDate = moment(city.firstDate, 'YYYY-MM-DD', true)
-          Object.entries(city.tags).forEach(([slug, tag]) => {
-            tag.slug = slug
-          })
-        })
-      }
-      return cities
+  function get (key) {
+    if (!data[key]) {
+      data[key] = $.getJSON('/' + key + '.json')
     }
-  }())
+    return data[key]
+  }
+  
+  return {
+    getCities: function () {
+      return get('cities')
+    },
 
-  const fetchWeek = (function () {
-    var weeks = {}
-
-    return async function (citySlug, weekSlug) {
-      const key = citySlug + '/' + weekSlug
-      if (weeks[key] === undefined) {
-        const data = await $.getJSON('/' + key + '.json')
-        data.events.forEach(event => {
-          event.start = moment(event.start)
-        })
-        weeks[key] = data.events
-      }
-      return weeks[key]
+    getCityWeek: function (citySlug, week) {
+      return get(path.join(citySlug, week.format('GGGG-[W]WW')))
     }
-  }())
-
-  // @todo Prefetch cities, then when loading cityIndex, prefetch current week, then on a week, prefetch previous and next weeks
-
-  async function getCities () {
-    return Object.values((await fetchCities())).map(({slug, name}) => ({slug, name}))
   }
-
-  async function getCity (citySlug) {
-    const {slug, name, firstDate} = (await fetchCities())[citySlug]
-    return {slug, name, firstDate}
-  }
-
-  async function getTags (citySlug) {
-    return Object.values((await fetchCities())[citySlug].tags).sort(
-      (tag1, tag2) => tag1.displayOrder - tag2.displayOrder
-    ).map(
-      ({slug, title}) => ({slug, title})
-    )
-  }
-
-  async function getEvents (citySlug, startDate, dateAfter) {
-    const weekSlugs = []
-    for (var d = startDate.clone().startOf('isoWeek'); d.isBefore(dateAfter); d.add(7, 'days')) {
-      weekSlugs.push(d.format('GGGG-[W]WW'))
-    }
-    var weeks = await Promise.all(weekSlugs.map(weekSlug => fetchWeek(citySlug, weekSlug)))
-    return [].concat.apply([], weeks).filter(({start}) => start.isBetween(startDate, dateAfter, null, '[)'))
-  }
-
-  return {getCities, getCity, getTags, getEvents}
 }())
 
-const pages = require('../../pages')(source)
+const pages = require('../pages')(fetcher)
 
 $(async function () {
   const page = pages.fromUrl(window.location.href)
