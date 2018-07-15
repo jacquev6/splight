@@ -37,7 +37,8 @@ npm test
 
 show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
 
-npm run generateStaticSite test/data test/site
+npm run generateStaticSite test/data test/site/old
+npm run generatePublicWebsite test/data test/site/new
 
 if $SERVE_ADMIN_SITE
 then

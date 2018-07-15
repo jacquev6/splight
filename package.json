@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "test": "standard && nyc --reporter=html --reporter=text mocha $(find . -name '*-test.js' | grep -v node_modules)",
+    "generatePublicWebsite": "node generatePublicWebsite.js",
     "generateStaticSite": "node generateStaticSite.js",
     "serveAdminSite": "nodemon -w ../test/data.yml -w . --ext 'js,yml,html,scss' serveAdminSite.js"
   },
@@ -11,6 +12,7 @@
     "bootstrap": "^4.1.1",
     "browserify": "^16.2.2",
     "clean-css": "^4.1.11",
+    "deepcopy": "^1.0.0",
     "express": "^4.16.3",
     "fs-extra": "^6.0.1",
     "joi": "^13.4.0",
@@ -20,6 +22,7 @@
     "modernizr": "^3.6.0",
     "moment": "^2.22.2",
     "mustache": "^2.3.0",
+    "neatjson": "^0.8.3",
     "node-sass": "^4.9.1",
     "nodemon": "^1.17.5",
     "nyc": "^12.0.2",
