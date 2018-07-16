@@ -186,9 +186,7 @@ module.exports = function (fetcher) {
   const index = {
     path: '/',
     initializeInBrowser: function () {
-      return Promise.all([
-        randomizeCanvases()
-      ])
+      randomizeCanvases()
     },
     make: async function () {
       const cities = await source.getCities()
@@ -217,10 +215,8 @@ module.exports = function (fetcher) {
     return {
       path: ['', citySlug, ''].join('/'),
       initializeInBrowser: function () {
-        return Promise.all([
-          randomizeCanvases(),
-          jQuery('.sp-now-week-link').attr('href', (index, href) => URI(href).path(['', citySlug, timespan.oneWeek.slugify(moment()), ''].join('/')).toString())
-        ])
+        randomizeCanvases()
+        jQuery('.sp-now-week-link').attr('href', (index, href) => URI(href).path(['', citySlug, timespan.oneWeek.slugify(moment()), ''].join('/')).toString())
       },
       make: async function () {
         const city = await source.getCity(citySlug)
@@ -247,11 +243,15 @@ module.exports = function (fetcher) {
     return {
       path: ['', citySlug, timespanSlug, ''].join('/'),
       initializeInBrowser: function () {
-        return Promise.all([
-          randomizeCanvases(),
-          jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now1LinkSlug(moment()), ''].join('/')).toString()),
-          jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now2LinkSlug(moment()), ''].join('/')).toString())
-        ])
+        randomizeCanvases()
+
+        jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now1LinkSlug(moment()), ''].join('/')).toString())
+        jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now2LinkSlug(moment()), ''].join('/')).toString())
+
+        jQuery('.sp-timespan-previous').hide()
+        source.getEvents(citySlug, ts.startDate.clone().subtract(1, 'day'), ts.startDate).then(() => jQuery('.sp-timespan-previous').show())
+        jQuery('.sp-timespan-next').hide()
+        source.getEvents(citySlug, ts.dateAfter, ts.dateAfter.clone().add(1, 'day')).then(() => jQuery('.sp-timespan-next').show())
       },
       make: async function () {
         const city = await source.getCity(citySlug)
