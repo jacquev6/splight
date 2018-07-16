@@ -12,7 +12,14 @@ async function main (inputDataFile) {
 
   const app = express()
 
-  await adminWebsite.populateApp({app, inputDataFile, scripts: ['/reload/reload.js']})
+  await adminWebsite.populateApp({
+    app,
+    inputDataFile,
+    scripts: [
+      '/reload/reload.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'
+    ]
+  })
 
   reload(app)
 
