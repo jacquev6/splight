@@ -4,7 +4,8 @@ set -o errexit
 
 PROJECT_ROOT=$(pwd)
 
-SERVE_ADMIN_SITE=false
+SERVE_DEVELOPER_SITE=false
+SERVE_WEBMASTER_SITE=false
 
 SHOW_IN_BROWSER=false
 function show_in_browser {
@@ -23,8 +24,13 @@ do
     -wb|--web-browser)
       SHOW_IN_BROWSER=true
       ;;
-    -as|--admin-site)
-      SERVE_ADMIN_SITE=true
+    -ds|--serve-developer-website)
+      SERVE_DEVELOPER_SITE=true
+      SERVE_WEBMASTER_SITE=false
+      ;;
+    -ws|--serve-webmaster-website)
+      SERVE_WEBMASTER_SITE=true
+      SERVE_DEVELOPER_SITE=false
       ;;
     *)
       echo "Unknown parameter passed: $1"
@@ -39,9 +45,14 @@ show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
 
 npm run generatePublicWebsite test/data.json test/site
 
-if $SERVE_ADMIN_SITE
+if $SERVE_DEVELOPER_SITE
 then
-  npm run serveAdminSite test/data.json
+  npm run serveDeveloperWebsite test/data.json
+fi
+
+if $SERVE_WEBMASTER_SITE
+then
+  npm run serveWebmasterWebsite test/data.json
 fi
 
 echo

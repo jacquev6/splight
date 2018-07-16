@@ -4,7 +4,8 @@
   "scripts": {
     "test": "standard && nyc --reporter=html --reporter=text mocha $(find . -name '*-test.js' | grep -v node_modules)",
     "generatePublicWebsite": "node generatePublicWebsite.js",
-    "serveAdminSite": "nodemon -w ../test/data.yml -w . --ext 'js,yml,html,scss' serveAdminSite.js"
+    "serveDeveloperWebsite": "nodemon -w ../test/data.yml -w . --ext 'js,json,html,scss' serveDeveloperWebsite.js",
+    "serveWebmasterWebsite": "node serveWebmasterWebsite.js"
   },
   "dependencies": {
     "bootstrap": "^4.1.2",
