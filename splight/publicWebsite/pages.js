@@ -252,6 +252,16 @@ module.exports = function (fetcher) {
         source.getEvents(citySlug, ts.startDate.clone().subtract(1, 'day'), ts.startDate).then(() => jQuery('.sp-timespan-previous').show())
         jQuery('.sp-timespan-next').hide()
         source.getEvents(citySlug, ts.dateAfter, ts.dateAfter.clone().add(1, 'day')).then(() => jQuery('.sp-timespan-next').show())
+
+        $("#sp-tag-filtering input").on("change", function() {
+          $('.sp-event').hide()
+          $("#sp-tag-filtering input").each(function(index, input) {
+            var input = $(input);
+            if (input.prop("checked")) {
+              $('.sp-tag-' + citySlug + '-' + input.val()).show()
+            }
+          });
+        });
       },
       make: async function () {
         const city = await source.getCity(citySlug)
@@ -276,10 +286,12 @@ module.exports = function (fetcher) {
           eventsByDay[d.format(moment.HTML5_FMT.DATE)] = []
         }
 
-        events.forEach(function ({title, start}) {
+        events.forEach(function ({title, start, tags}) {
           eventsByDay[start.format(moment.HTML5_FMT.DATE)].push({
             title,
-            time: start.format(moment.HTML5_FMT.TIME)
+            time: start.format(moment.HTML5_FMT.TIME),
+            mainTag: tags[0],
+            tags
           })
         })
 
