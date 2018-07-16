@@ -14,7 +14,7 @@ moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
 
 const fetcher = (function () {
-  var data = {}
+  const data = {}
 
   function get (key) {
     if (!data[key]) {
