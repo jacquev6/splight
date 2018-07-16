@@ -224,11 +224,27 @@ function * generatePages ({preparedData, now, scripts}) {
       pages.cityIndex(city.slug).make().then(renderContained)
     ]
 
-    for (var week = moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek'); week.isBefore(dateAfter); week.add(7, 'days')) {
-      const weekSlug = week.format(moment.HTML5_FMT.WEEK)
+    for (var oneWeek = moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek'); oneWeek.isBefore(dateAfter); oneWeek.add(7, 'days')) {
+      const oneWeekSlug = oneWeek.format(moment.HTML5_FMT.WEEK)
       yield [
-        path.join(city.slug, weekSlug, 'index.html'),
-        pages.cityTimespan(city.slug, weekSlug).make().then(renderContained)
+        path.join(city.slug, oneWeekSlug, 'index.html'),
+        pages.cityTimespan(city.slug, oneWeekSlug).make().then(renderContained)
+      ]
+    }
+
+    for (var oneDay = moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek'); oneDay.isBefore(dateAfter); oneDay.add(1, 'day')) {
+      const oneDaySlug = oneDay.format(moment.HTML5_FMT.DATE)
+      yield [
+        path.join(city.slug, oneDaySlug, 'index.html'),
+        pages.cityTimespan(city.slug, oneDaySlug).make().then(renderContained)
+      ]
+    }
+
+    for (var threeDays = moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek'); threeDays.clone().add(2, 'day').isBefore(dateAfter); threeDays.add(1, 'day')) {
+      const threeDaysSlug = threeDays.format(moment.HTML5_FMT.DATE + '+2')
+      yield [
+        path.join(city.slug, threeDaysSlug, 'index.html'),
+        pages.cityTimespan(city.slug, threeDaysSlug).make().then(renderContained)
       ]
     }
   }

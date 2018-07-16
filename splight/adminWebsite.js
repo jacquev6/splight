@@ -18,6 +18,6 @@ exports.populateApp = async function ({app, inputDataFile, scripts}) {
     if (name.endsWith('/index.html')) {
       name = name.slice(0, -10)
     }
-    app.get(name, (req, res) => res.type(type).send(text))
+    app.get(name.replace('+', '\\+'), (req, res) => res.type(type).send(text))
   }
 }
