@@ -1,6 +1,0 @@
-{
-    "object_in_subobject": {
-        "key": "value in sub_object",
-        "other_key": "other_value in sub_object"
-    }
-}

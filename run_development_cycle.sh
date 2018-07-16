@@ -37,11 +37,11 @@ npm test
 
 show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
 
-npm run generatePublicWebsite test/data test/site
+npm run generatePublicWebsite test/data.json test/site
 
 if $SERVE_ADMIN_SITE
 then
-  npm run serveAdminSite test/data
+  npm run serveAdminSite test/data.json
 fi
 
 echo

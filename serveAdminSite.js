@@ -3,20 +3,20 @@
 require('stringify').registerWithRequire(['.html'])
 
 const express = require('express')
+const fs = require('fs-extra')
 const http = require('http')
 const moment = require('moment')
 const opn = require('opn')
 const path = require('path')
 const ws = require('ws')
 
-const multiYaml = require('./multiYaml')
 const publicWebsite = require('./splight/publicWebsite')
 
 async function serve () {
   const app = express()
 
   for (var [name, content] of publicWebsite.generate({
-    data: multiYaml.load(process.argv[2]),
+    data: await fs.readJSON(process.argv[2]),
     now: moment(),
     scripts: [
       '/reload/reload.js',
