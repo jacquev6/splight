@@ -52,14 +52,15 @@ describe('publicWebsite', function () {
 
       it('keeps tags in order', function () {
         test(
-          {cities: [{slug: 'foo', name: 'Foo',
+          {cities: [{
+            slug: 'foo',
+            name: 'Foo',
             tags: [
-              {slug: 'foo', title: 'Foo'},
-              {slug: 'bar', title: 'Bar'},
-              {slug: 'baz', title: 'Baz'}
+              {slug: 'foo', title: 'Foo'}, {slug: 'bar', title: 'Bar'}, {slug: 'baz', title: 'Baz'}
             ]
           }]},
-          [{slug: 'foo',
+          [{
+            slug: 'foo',
             name: 'Foo',
             firstDate: '2018-06-01',
             tags: [
@@ -87,7 +88,9 @@ describe('publicWebsite', function () {
 
       it('gets firstDate from earliest occurence', function () {
         test(
-          {cities: [{slug: 'foo', name: 'Foo',
+          {cities: [{
+            slug: 'foo',
+            name: 'Foo',
             events: [{occurences: [
               {start: '2018-05-16T10:15'},
               {start: '2018-05-15T10:15'},
@@ -100,11 +103,15 @@ describe('publicWebsite', function () {
 
       it('gets firstDate from earliest event', function () {
         test(
-          {cities: [{slug: 'foo', name: 'Foo', events: [
-            {occurences: [{start: '2018-05-16T10:15'}]},
-            {occurences: [{start: '2018-05-15T10:15'}]},
-            {occurences: [{start: '2018-05-17T10:15'}]}
-          ]}]},
+          {cities: [{
+            slug: 'foo',
+            name: 'Foo',
+            events: [
+              {occurences: [{start: '2018-05-16T10:15'}]},
+              {occurences: [{start: '2018-05-15T10:15'}]},
+              {occurences: [{start: '2018-05-17T10:15'}]}
+            ]
+          }]},
           [{slug: 'foo', name: 'Foo', firstDate: '2018-05-15', tags: []}]
         )
       })
