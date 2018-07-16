@@ -2,8 +2,8 @@
 
 /* global Modernizr */
 
-const $ = require('jquery')
 const assert = require('assert')
+const jQuery = require('jquery')
 const moment = require('moment')
 const mustache = require('mustache')
 const URI = require('urijs')
@@ -16,8 +16,8 @@ const randomizeCanvas = require('../../randomizeCanvas')
 
 function randomizeCanvases () {
   if (Modernizr.canvas) {
-    $('canvas[data-sp-random-seed]').each(function () {
-      const c = $(this)
+    jQuery('canvas[data-sp-random-seed]').each(function () {
+      const c = jQuery(this)
       randomizeCanvas({
         canvas: this,
         seed: c.data('sp-random-seed'),
@@ -219,7 +219,7 @@ module.exports = function (fetcher) {
       initializeInBrowser: function () {
         return Promise.all([
           randomizeCanvases(),
-          $('.sp-now-week-link').attr('href', (index, href) => URI(href).path(['', citySlug, timespan.oneWeek.slugify(moment()), ''].join('/')).toString())
+          jQuery('.sp-now-week-link').attr('href', (index, href) => URI(href).path(['', citySlug, timespan.oneWeek.slugify(moment()), ''].join('/')).toString())
         ])
       },
       make: async function () {
@@ -249,8 +249,8 @@ module.exports = function (fetcher) {
       initializeInBrowser: function () {
         return Promise.all([
           randomizeCanvases(),
-          $('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now1LinkSlug(moment()), ''].join('/')).toString()),
-          $('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now2LinkSlug(moment()), ''].join('/')).toString())
+          jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now1LinkSlug(moment()), ''].join('/')).toString()),
+          jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now2LinkSlug(moment()), ''].join('/')).toString())
         ])
       },
       make: async function () {

@@ -3,9 +3,8 @@
 /* global describe, it */
 
 const assert = require('assert').strict
-const path = require('path')
-
 const moment = require('moment')
+const path = require('path')
 
 const publicWebsite = require('./publicWebsite').forTest
 

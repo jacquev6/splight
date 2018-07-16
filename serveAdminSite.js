@@ -3,7 +3,6 @@
 require('stringify').registerWithRequire(['.html'])
 
 const express = require('express')
-const fs = require('fs-extra')
 const http = require('http')
 const moment = require('moment')
 const opn = require('opn')
