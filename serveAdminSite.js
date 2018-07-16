@@ -11,12 +11,13 @@ const path = require('path')
 const ws = require('ws')
 
 const publicWebsite = require('./splight/publicWebsite')
+const splightData = require('./splight/data')
 
 async function serve () {
   const app = express()
 
   for (var [name, content] of publicWebsite.generate({
-    data: await fs.readJSON(process.argv[2]),
+    data: await splightData.load(process.argv[2]),
     now: moment(),
     scripts: [
       '/reload/reload.js',

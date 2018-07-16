@@ -2,12 +2,15 @@
 
 /* global Modernizr */
 
-const assert = require('assert')
-
 const $ = require('jquery')
+const assert = require('assert')
 const moment = require('moment')
 const mustache = require('mustache')
 const URI = require('urijs')
+
+// @todo Remove when https://github.com/moment/moment/issues/4698 is fixed on npm
+moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
+assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
 
 const randomizeCanvas = require('../../randomizeCanvas')
 
@@ -27,7 +30,7 @@ function randomizeCanvases () {
 
 const timespan = (function () {
   const oneWeek = (function () {
-    const slugFormat = 'GGGG-[W]WW'
+    const slugFormat = moment.HTML5_FMT.WEEK
 
     function slugify (startDate) {
       return startDate.format(slugFormat)
@@ -53,7 +56,7 @@ const timespan = (function () {
   }())
 
   const threeDays = (function () {
-    const slugFormat = 'YYYY-MM-DD+2'
+    const slugFormat = moment.HTML5_FMT.DATE + '+2'
 
     function slugify (startDate) {
       return startDate.format(slugFormat)
@@ -79,7 +82,7 @@ const timespan = (function () {
   }())
 
   const oneDay = (function () {
-    const slugFormat = 'YYYY-MM-DD'
+    const slugFormat = moment.HTML5_FMT.DATE
 
     function slugify (startDate) {
       return startDate.format(slugFormat)
@@ -132,7 +135,7 @@ module.exports = function (fetcher) {
     const cities = fetcher.getCities().then(cities => {
       cities.forEach(city => {
         city.url = cityIndex(city.slug).path
-        city.firstDate = moment(city.firstDate, 'YYYY-MM-DD', true)
+        city.firstDate = moment(city.firstDate, moment.HTML5_FMT.DATE, true)
       })
       return cities
     })
@@ -156,11 +159,11 @@ module.exports = function (fetcher) {
     const cityWeeks = {}
 
     function getCityWeek (citySlug, week) {
-      const key = citySlug + '/' + week.format()
+      const key = citySlug + '/' + week.format(moment.HTML5_FMT.WEEK)
       if (!cityWeeks[key]) {
         cityWeeks[key] = fetcher.getCityWeek(citySlug, week).then(cityWeek => {
           cityWeek.events.forEach(event => {
-            event.start = moment(event.start, 'YYYY/MM/DD HH:mm', true)
+            event.start = moment(event.start, moment.HTML5_FMT.DATETIME_LOCAL, true)
           })
           return cityWeek
         })
@@ -270,20 +273,20 @@ module.exports = function (fetcher) {
         const eventsByDay = {}
 
         for (var d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
-          eventsByDay[d.format('YYYY-MM-DD')] = []
+          eventsByDay[d.format(moment.HTML5_FMT.DATE)] = []
         }
 
         events.forEach(function ({title, start}) {
-          eventsByDay[start.format('YYYY-MM-DD')].push({
+          eventsByDay[start.format(moment.HTML5_FMT.DATE)].push({
             title,
-            time: start.format('HH:mm')
+            time: start.format(moment.HTML5_FMT.TIME)
           })
         })
 
         const days = []
 
         for (d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
-          const date = d.format('YYYY-MM-DD')
+          const date = d.format(moment.HTML5_FMT.DATE)
           days.push({
             date,
             events: eventsByDay[date]

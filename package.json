@@ -36,7 +36,6 @@
   },
   "standard": {
     "ignore": [
-      "randomize_canvas.bc.js",
       "test/site"
     ]
   }

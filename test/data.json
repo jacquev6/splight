@@ -1,59 +1,73 @@
 {
-  "cities": {
-    "shangri-la": {
-      "name": "Shangri-La",
-      "displayOrder": 100,
-      "tags": {"tag-1": {"title": "Seule catégorie","displayOrder": 100}},
-      "locations": {"location-1": {"name": "Seul lieu"}},
+  "cities": [
+    {
       "artists": {"artist-1": {"name": "Seul artiste"}},
-      "events": {
-        "tag-1": [
-          {
-            "title": "Seul événement",
-            "artist": "artist-1",
-            "location": "location-1",
-            "start": "2018/06/27 12: 00"
-          }
-        ]
-      }
+      "events": [
+        {
+          "artist": "artist-1",
+          "location": "location-1",
+          "occurences": [{"start": "2018-06-27T12:00"}],
+          "tags": ["tag-1"],
+          "title": "Seul événement"
+        }
+      ],
+      "locations": {"location-1": {"name": "Seul lieu"}},
+      "name": "Shangri-La",
+      "slug": "shangri-la",
+      "tags": [{"slug": "tag-1", "title": "Seule catégorie"}]
     },
-    "avalon": {
+    {
+      "artists": {},
+      "events": [
+        {
+          "location": "location-1",
+          "occurences": [
+            {"start": "2018-07-09T13:00"},
+            {"start": "2018-07-10T13:00"},
+            {"start": "2018-07-10T15:00"},
+            {"start": "2018-07-10T17:00"},
+            {"start": "2018-07-11T13:00"},
+            {"start": "2018-07-11T17:00"},
+            {"start": "2018-07-12T13:00"},
+            {"start": "2018-07-12T19:00"},
+            {"start": "2018-07-13T13:00"},
+            {"start": "2018-07-13T21:00"},
+            {"start": "2018-07-14T13:00"},
+            {"start": "2018-07-14T15:00"},
+            {"start": "2018-07-14T17:00"},
+            {"start": "2018-07-15T13:00"}
+          ],
+          "tags": ["tag-1"],
+          "title": "Événement 1-A"
+        },
+        {
+          "location": "location-1",
+          "occurences": [{"start": "2018-06-20T13:00"}],
+          "tags": ["tag-1"],
+          "title": "Événement 2"
+        },
+        {
+          "location": "location-1",
+          "occurences": [{"start": "2018-06-20T12:00"}],
+          "tags": ["tag-1"],
+          "title": "Événement 1"
+        },
+        {
+          "location": "location-1",
+          "occurences": [{"start": "2018-06-20T14:00"}],
+          "tags": ["tag-1"],
+          "title": "Événement 3"
+        }
+      ],
+      "locations": {"location-1": {"name": "Seul lieu"}},
       "name": "Avalon",
-      "displayOrder": 200,
-      "tags": {
-        "tag-1": {"title": "Catégorie 1","displayOrder": 100},
-        "tag-3": {"title": "Catégorie 3","displayOrder": 300},
-        "tag-4": {"title": "Catégorie 4","displayOrder": 400},
-        "tag-2": {"title": "Catégorie 2","displayOrder": 200}
-      },
-      "events": {
-        "tag-1": [
-          {
-            "title": "Événement 1-A",
-            "occurences": [
-              {"start": "2018/07/09 13: 00"},
-              {"start": "2018/07/10 13: 00"},
-              {"start": "2018/07/10 15: 00"},
-              {"start": "2018/07/10 17: 00"},
-              {"start": "2018/07/11 13: 00"},
-              {"start": "2018/07/11 17: 00"},
-              {"start": "2018/07/12 13: 00"},
-              {"start": "2018/07/12 19: 00"},
-              {"start": "2018/07/13 13: 00"},
-              {"start": "2018/07/13 21: 00"},
-              {"start": "2018/07/14 13: 00"},
-              {"start": "2018/07/14 15: 00"},
-              {"start": "2018/07/14 17: 00"},
-              {"start": "2018/07/15 13: 00"}
-            ]
-          }
-        ],
-        "tag-2": [
-          {"title": "Événement 2","start": "2018/06/20 13: 00"},
-          {"title": "Événement 1","start": "2018/06/20 12: 00"},
-          {"title": "Événement 3","start": "2018/06/20 14: 00"}
-        ]
-      }
+      "slug": "avalon",
+      "tags": [
+        {"slug": "tag-1", "title": "Catégorie 1"},
+        {"slug": "tag-2", "title": "Catégorie 2"},
+        {"slug": "tag-3", "title": "Catégorie 3"},
+        {"slug": "tag-4", "title": "Catégorie 4"}
+      ]
     }
-  }
+  ]
 }

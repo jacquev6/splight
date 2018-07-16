@@ -7,6 +7,12 @@ const path = require('path')
 const $ = global.jQuery = require('jquery')
 require('bootstrap')
 const URI = require('urijs')
+const moment = require('moment')
+const assert = require('assert')
+
+// @todo Remove when https://github.com/moment/moment/issues/4698 is fixed on npm
+moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
+assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
 
 const fetcher = (function () {
   var data = {}
@@ -24,7 +30,7 @@ const fetcher = (function () {
     },
 
     getCityWeek: function (citySlug, week) {
-      return get(path.join(citySlug, week.format('GGGG-[W]WW')))
+      return get(path.join(citySlug, week.format(moment.HTML5_FMT.WEEK)))
     }
   }
 }())
