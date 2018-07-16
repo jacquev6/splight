@@ -39,6 +39,7 @@ const timespan = (function () {
     function make (startDate) {
       return {
         duration: 'Semaine',
+        durationValue: 7,
         startDate: startDate.clone(),
         dateAfter: startDate.clone().add(7, 'days'),
         previousLinkText: 'Semaine précédente',
@@ -65,6 +66,7 @@ const timespan = (function () {
     function make (startDate) {
       return {
         duration: '3 jours à partir',
+        durationValue: 3,
         startDate: startDate.clone(),
         dateAfter: startDate.clone().add(3, 'days'),
         previousLinkText: 'Jours précédents',
@@ -91,6 +93,7 @@ const timespan = (function () {
     function make (startDate) {
       return {
         duration: 'Journée',
+        durationValue: 1,
         startDate: startDate.clone(),
         dateAfter: startDate.clone().add(1, 'days'),
         previousLinkText: 'Journée précédente',
@@ -183,10 +186,43 @@ module.exports = function (fetcher) {
     return {getCities, getCity, getEvents}
   }())
 
+  function handleInternalLinkClick (event) {
+    if (event.ctrlKey || event.altKey || event.metaKey) {
+      return true
+    } else {
+      navigateTo(jQuery(this).attr('href'))
+      return false
+    }
+  }
+
+  function navigateTo (url) {
+    jQuery('.sp-modern').addClass('sp-loading')
+    url = URI.parse(url)
+    const page = fromUrl(url.path)
+
+    page.make().then(async ({title, jumbotron, content}) => {
+      jQuery('title').text(title)
+      jQuery('#sp-jumbotron').html(jumbotron)
+      jQuery('#sp-content').html(content)
+
+      jQuery("#sp-jumbotron a[href^='/'], #sp-content a[href^='/']").on('click', handleInternalLinkClick)
+      history.replaceState(null, window.document.title, URI(window.location.href).path(url.path).query(url.query || '').toString())
+      await page.initializeInBrowser(false)
+      jQuery('.sp-modern').removeClass('sp-loading')
+    })
+  }
+
+  function hookInternalLinks (firstTime) {
+    if (firstTime) {
+      jQuery("a[href^='/']").on('click', handleInternalLinkClick)
+    }
+  }
+
   const index = {
     path: '/',
-    initializeInBrowser: function () {
+    initializeInBrowser: function (firstTime) {
       randomizeCanvases()
+      hookInternalLinks(firstTime)
     },
     make: async function () {
       const cities = await source.getCities()
@@ -214,8 +250,9 @@ module.exports = function (fetcher) {
   function cityIndex (citySlug) {
     return {
       path: ['', citySlug, ''].join('/'),
-      initializeInBrowser: function () {
+      initializeInBrowser: function (firstTime) {
         randomizeCanvases()
+        hookInternalLinks(firstTime)
         jQuery('.sp-now-week-link').attr('href', (index, href) => URI(href).path(['', citySlug, timespan.oneWeek.slugify(moment()), ''].join('/')).toString())
       },
       make: async function () {
@@ -242,8 +279,9 @@ module.exports = function (fetcher) {
 
     return {
       path: ['', citySlug, timespanSlug, ''].join('/'),
-      initializeInBrowser: function () {
+      initializeInBrowser: function (firstTime) {
         randomizeCanvases()
+        hookInternalLinks(firstTime)
 
         jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now1LinkSlug(moment()), ''].join('/')).toString())
         jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now2LinkSlug(moment()), ''].join('/')).toString())
@@ -252,6 +290,15 @@ module.exports = function (fetcher) {
         source.getEvents(citySlug, ts.startDate.clone().subtract(1, 'day'), ts.startDate).then(() => jQuery('.sp-timespan-previous').show())
         jQuery('.sp-timespan-next').hide()
         source.getEvents(citySlug, ts.dateAfter, ts.dateAfter.clone().add(1, 'day')).then(() => jQuery('.sp-timespan-next').show())
+
+        ;(function () {
+          const dropdown = jQuery('#sp-timespan-duration')
+          dropdown.val(ts.durationValue)
+          dropdown.on('change', function () {
+            const newTimespan = {1: timespan.oneDay, 3: timespan.threeDays, 7: timespan.oneWeek}[dropdown.val()]
+            navigateTo(['', citySlug, newTimespan.slugify(ts.startDate), ''].join('/'))
+          })
+        }())
 
         const allTags = new Set(jQuery('#sp-tag-filtering input').map((index, input) => jQuery(input).val()).toArray())
         const query = URI.parseQuery(URI.parse(window.location.href).query)
