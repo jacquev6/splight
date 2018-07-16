@@ -1,6 +1,6 @@
 'use strict'
 
-/* global Modernizr */
+/* global Modernizr, history */
 
 const assert = require('assert')
 const jQuery = require('jquery')
@@ -253,15 +253,39 @@ module.exports = function (fetcher) {
         jQuery('.sp-timespan-next').hide()
         source.getEvents(citySlug, ts.dateAfter, ts.dateAfter.clone().add(1, 'day')).then(() => jQuery('.sp-timespan-next').show())
 
-        $("#sp-tag-filtering input").on("change", function() {
-          $('.sp-event').hide()
-          $("#sp-tag-filtering input").each(function(index, input) {
-            var input = $(input);
-            if (input.prop("checked")) {
-              $('.sp-tag-' + citySlug + '-' + input.val()).show()
+        const allTags = new Set(jQuery('#sp-tag-filtering input').map((index, input) => jQuery(input).val()).toArray())
+        const query = URI.parseQuery(URI.parse(window.location.href).query)
+        if (Object.keys(query).length === 0) {
+          jQuery('#sp-tag-filtering input').prop('checked', true)
+        } else {
+          const displayedTags = new Set(Object.keys(query))
+          jQuery('#sp-tag-filtering input').each(function (index, input) {
+            input = jQuery(input)
+            input.prop('checked', displayedTags.has(input.val()))
+          })
+        }
+
+        function filterEvents () {
+          jQuery('.sp-event').hide()
+          const displayedTags = new Set()
+          jQuery('#sp-tag-filtering input').each(function (index, input) {
+            input = jQuery(input)
+            const tag = input.val()
+            if (input.prop('checked')) {
+              displayedTags.add(tag)
+              jQuery('.sp-tag-' + citySlug + '-' + tag).show()
             }
-          });
-        });
+          })
+
+          const newQuery = displayedTags.size === allTags.size ? '' : Array.from(displayedTags).sort().join('&')
+          jQuery('.sp-tag-filtering-tagged-link').attr('href', function (index, href) {
+            return URI(href).query(newQuery).toString()
+          })
+          history.replaceState(null, window.document.title, URI(window.location.href).query(newQuery).toString())
+        }
+
+        filterEvents()
+        jQuery('#sp-tag-filtering input').on('change', filterEvents)
       },
       make: async function () {
         const city = await source.getCity(citySlug)

@@ -13,7 +13,7 @@
 
     <div class="row"><div class="col"><div id="sp-tag-filtering" class="form-group">
       {{#city.tags}}
-      <div class="form-check form-check-inline sp-tag-{{city.slug}}-{{slug}}">
+      <div class="form-check form-check-inline sp-main-tag-{{city.slug}}-{{slug}}">
         <label class="form-check-label"><input class="form-check-input" type="checkbox" value="{{slug}}" />{{title}}</label>
       </div>
       {{/city.tags}}
@@ -45,7 +45,7 @@
       <div class="col-md">
         <p>{{date}}</p>
         {{#events}}
-        <div>
+        <div class="sp-event sp-main-tag-{{city.slug}}-{{mainTag}}{{#tags}} sp-tag-{{city.slug}}-{{.}}{{/tags}}">
           <p><strong>{{time}}</strong> {{title}}</p>
         </div>
         {{/events}}

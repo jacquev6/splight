@@ -43,9 +43,9 @@ jquery(async function () {
     if (event.ctrlKey || event.altKey || event.metaKey) {
       return true
     } else {
-      const path = jquery(this).attr('href')
+      const url = URI.parse(jquery(this).attr('href'))
       jquery('.sp-modern').addClass('sp-loading')
-      const page = pages.fromUrl(path)
+      const page = pages.fromUrl(url.path)
 
       page.make().then(async ({title, jumbotron, content}) => {
         jquery('title').text(title)
@@ -53,8 +53,8 @@ jquery(async function () {
         jquery('#sp-content').html(content)
 
         jquery("#sp-jumbotron a[href^='/'], #sp-content a[href^='/']").on('click', handleInternalLinkClick)
+        history.replaceState(null, window.document.title, URI(window.location.href).path(url.path).query(url.query || '').toString())
         await page.initializeInBrowser()
-        history.replaceState(null, window.document.title, URI(window.location.href).path(path).toString())
         jquery('.sp-modern').removeClass('sp-loading')
       })
 
