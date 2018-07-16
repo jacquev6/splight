@@ -71,10 +71,7 @@
       "locations": {"location-1": {"name": "Seul lieu"}},
       "name": "Avalon",
       "slug": "avalon",
-      "tags": [
-        {"slug": "tag-1", "title": "Catégorie 1"},
-        {"slug": "tag-2", "title": "Catégorie 2"}
-      ]
+      "tags": [{"slug": "tag-1", "title": "Catégorie 1"}, {"slug": "tag-2", "title": "Catégorie 2"}]
     }
   ]
 }
