@@ -218,8 +218,8 @@ function make (now, fetcher) {
       path: ['', citySlug, ''].join('/'),
       initializeInBrowser: function () {
         randomizeCanvases()
-        hookInternalLinks()
         jQuery('.sp-now-week-link').attr('href', (index, href) => URI(href).path(cityTimespan(citySlug, now, durations.oneWeek).path).toString())
+        hookInternalLinks()
       },
       make: async function () {
         const city = await source.getCity(citySlug)
