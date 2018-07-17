@@ -21,13 +21,13 @@
 
     <div class="row">
       <div class="col">
-        <p class="text-right">&nbsp;<a class="sp-timespan-previous sp-tag-filtering-tagged-link" href="{{{links.previous.path}}}">&lt; {{links.previous.text}}</a></p>
+        <p class="text-right">&nbsp;{{#links.previous.exists}}<a class="sp-timespan-previous sp-tag-filtering-tagged-link" href="{{{links.previous.path}}}">&lt; {{links.previous.text}}</a>{{/links.previous.exists}}</p>
       </div>
       <div class="col"><div class="form-group text-center">
         <label>Afficher&nbsp;: <select id="sp-timespan-duration" class="form-control"><option value="7">une semaine</option><option value="3">trois jours</option><option value="1">une journée</option></select></label>
       </div></div>
       <div class="col">
-        <p class="text-left"><a class="sp-timespan-next sp-tag-filtering-tagged-link" href="{{{links.next.path}}}">{{links.next.text}} &gt;</a>&nbsp;</p>
+        <p class="text-left">{{#links.next.exists}}<a class="sp-timespan-next sp-tag-filtering-tagged-link" href="{{{links.next.path}}}">{{links.next.text}} &gt;</a>{{/links.next.exists}}&nbsp;</p>
       </div>
     </div>
 

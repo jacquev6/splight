@@ -155,7 +155,6 @@ function make (now, fetcher) {
     if (!anticipatedNavigations[path]) {
       const page = fromPath(path)
       anticipatedNavigations[path] = page.make().then(({title, jumbotron, content}) => ({title, jumbotron, content, page}))
-      anticipatedNavigations[path].then(() => console.log('Ready to navigateTo', path))
     }
     return anticipatedNavigations[path].then(({title, jumbotron, content, page}) => ({title, jumbotron, content, page, path, query}))
   }
@@ -261,15 +260,11 @@ function make (now, fetcher) {
       path: makePath(startDate),
       initializeInBrowser: function () {
         randomizeCanvases()
-        hookInternalLinks()
 
         jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(links.now1.path).toString())
         jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(links.now2.path).toString())
 
-        jQuery('.sp-timespan-previous').hide()
-        source.getEvents(citySlug, startDate.clone().subtract(1, 'day'), startDate).then(() => jQuery('.sp-timespan-previous').show())
-        jQuery('.sp-timespan-next').hide()
-        source.getEvents(citySlug, dateAfter, dateAfter.clone().add(1, 'day')).then(() => jQuery('.sp-timespan-next').show())
+        hookInternalLinks()
 
         ;(function () {
           const durationsByDays = {}
@@ -346,6 +341,19 @@ function make (now, fetcher) {
             date: d.format('ddd Do MMM'),
             events: eventsByDay[d.format(moment.HTML5_FMT.DATE)]
           })
+        }
+
+        try {
+          await source.getEvents(citySlug, startDate.clone().subtract(1, 'day'), startDate)
+          links.previous.exists = true
+        } catch (e) {
+          links.previous.exists = false
+        }
+        try {
+          await source.getEvents(citySlug, dateAfter, dateAfter.clone().add(1, 'day'))
+          links.next.exists = true
+        } catch (e) {
+          links.next.exists = false
         }
 
         return {
