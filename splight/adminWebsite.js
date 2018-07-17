@@ -11,16 +11,12 @@ const publicWebsite = require('./publicWebsite')
 const data_ = require('./data')
 
 exports.populateApp = async function ({app, inputDataFile, scripts}) {
-  const now = moment()
+  const now = moment().subtract(2, 'days') // Simulate a site generated 2 days ago
   const data = await data_.load(inputDataFile)
 
   for (var [name, content] of publicWebsite.generate({data, now, scripts})) {
+    const type = name.endsWith('/') ? '.html' : path.extname(name)
     const text = await content
-    name = '/' + name
-    const type = path.extname(name)
-    if (name.endsWith('/index.html')) {
-      name = name.slice(0, -10)
-    }
     app.get(name.replace('+', '\\+'), (req, res) => res.type(type).send(text))
   }
 

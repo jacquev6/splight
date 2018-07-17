@@ -18,6 +18,9 @@ async function main (inputDataFile, outputDirectory) {
     now: moment(),
     scripts: []
   })) {
+    if (name.endsWith('/')) {
+      name += 'index.html'
+    }
     console.log('Generating', name)
     fs.outputFile(path.join(outputDirectory, name), await content)
   }

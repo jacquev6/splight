@@ -9,7 +9,7 @@
 
 <div class="row">
   <div class="col">
-    <h1>{{duration}} du {{startDate}}</h1>
+    <h1>{{title}}</h1>
 
     <div class="row"><div class="col"><div id="sp-tag-filtering" class="form-group">
       {{#city.tags}}
@@ -21,22 +21,22 @@
 
     <div class="row">
       <div class="col">
-        <p class="text-right">&nbsp;<a class="sp-timespan-previous sp-tag-filtering-tagged-link" href="/{{city.slug}}/{{previousLinkSlug}}/">&lt; {{previousLinkText}}</a></p>
+        <p class="text-right">&nbsp;<a class="sp-timespan-previous sp-tag-filtering-tagged-link" href="{{{links.previous.path}}}">&lt; {{links.previous.text}}</a></p>
       </div>
       <div class="col"><div class="form-group text-center">
         <label>Afficher&nbsp;: <select id="sp-timespan-duration" class="form-control"><option value="7">une semaine</option><option value="3">trois jours</option><option value="1">une journée</option></select></label>
       </div></div>
       <div class="col">
-        <p class="text-left"><a class="sp-timespan-next sp-tag-filtering-tagged-link" href="/{{city.slug}}/{{nextLinkSlug}}/">{{nextLinkText}} &gt;</a>&nbsp;</p>
+        <p class="text-left"><a class="sp-timespan-next sp-tag-filtering-tagged-link" href="{{{links.next.path}}}">{{links.next.text}} &gt;</a>&nbsp;</p>
       </div>
     </div>
 
     <div class="row">
       <div class="col">
-        <p class="text-right">&nbsp;<a class="sp-timespan-now-1 sp-tag-filtering-tagged-link" href="/{{city.slug}}//">{{now1LinkText}}</a></p>
+        <p class="text-right">&nbsp;<a class="sp-timespan-now-1 sp-tag-filtering-tagged-link" href="{{{links.now1.path}}}">{{links.now1.text}}</a></p>
       </div>
       <div class="col">
-        <p class="text-left"><a class="sp-timespan-now-2 sp-tag-filtering-tagged-link" href="/{{city.slug}}//">{{now2LinkText}}</a>&nbsp;</p>
+        <p class="text-left"><a class="sp-timespan-now-2 sp-tag-filtering-tagged-link" href="{{{links.now2.path}}}">{{links.now2.text}}</a>&nbsp;</p>
       </div>
     </div>
 

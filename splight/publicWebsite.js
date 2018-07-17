@@ -12,6 +12,8 @@ const neatJSON = require('neatjson').neatJSON
 const path = require('path')
 const sass = require('node-sass')
 
+const pages_ = require('./publicWebsite/pages')
+
 // @todo Remove when https://github.com/moment/moment/issues/4698 is fixed on npm
 moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
@@ -27,7 +29,7 @@ function * generate ({data, now, scripts}) {
   const preparedData = prepareData({data, now})
 
   yield * Object.entries(preparedData).map(
-    ([name, content]) => [name + '.json', Promise.resolve(neatJSON(content, {sort: true, wrap: true, afterColon: 1}) + '\n')]
+    ([name, content]) => ['/' + name + '.json', Promise.resolve(neatJSON(content, {sort: true, wrap: true, afterColon: 1}) + '\n')]
   )
 
   yield * generatePages({preparedData, now, scripts})
@@ -35,7 +37,7 @@ function * generate ({data, now, scripts}) {
 
 function * generateSkeleton () {
   const skeleton = path.join(__dirname, 'publicWebsite/skeleton')
-  yield * fs.readdirSync(skeleton).map(fileName => [fileName, fs.readFile(path.join(skeleton, fileName))])
+  yield * fs.readdirSync(skeleton).map(fileName => ['/' + fileName, fs.readFile(path.join(skeleton, fileName))])
 }
 
 function * generateAssets () {
@@ -48,7 +50,7 @@ function * generateAssets () {
   ]
 
   yield [
-    'modernizr.js',
+    '/modernizr.js',
     new Promise((resolve, reject) =>
       modernizr.build(
         {
@@ -81,7 +83,7 @@ function * generateAssets () {
   ]
 
   yield [
-    'index.js',
+    '/index.js',
     new Promise((resolve, reject) =>
       // @todo Use watchify when serving site using nodemon
       browserify('splight/publicWebsite/assets/index.js')
@@ -98,7 +100,7 @@ function * generateAssets () {
   ]
 
   yield [
-    'index.css',
+    '/index.css',
     new Promise((resolve, reject) =>
       sass.render(
         {
@@ -195,6 +197,19 @@ function * _prepareData ({data, now}) {
 }
 
 function * generatePages ({preparedData, now, scripts}) {
+  function renderContained ({title, jumbotron, content}) {
+    return mustache.render(require('./publicWebsite/container.html'), {title, scripts, jumbotron, content})
+  }
+
+  for (var page of generatePages_({preparedData, now})) {
+    yield [
+      page.path,
+      page.make().then(renderContained)
+    ]
+  }
+}
+
+function * generatePages_ ({preparedData, now}) {
   const fetcher = {
     getCities: async function () {
       return deepcopy(preparedData['cities'])
@@ -205,47 +220,25 @@ function * generatePages ({preparedData, now, scripts}) {
     }
   }
 
-  const pages = require('./publicWebsite/pages')(fetcher)
+  const pages = pages_.make(now, fetcher)
 
-  function renderContained ({title, jumbotron, content}) {
-    return mustache.render(require('./publicWebsite/container.html'), {title, scripts, jumbotron, content})
-  }
-
-  yield [
-    'index.html',
-    pages.index.make().then(renderContained)
-  ]
+  yield pages.index
 
   // @todo Use keys in preparedData instead of recomputing them
   const dateAfter = now.clone().startOf('isoWeek').add(5, 'weeks')
   for (var city of preparedData['cities']) {
-    yield [
-      path.join(city.slug, 'index.html'),
-      pages.cityIndex(city.slug).make().then(renderContained)
-    ]
+    yield pages.cityIndex(city.slug)
 
     for (var oneWeek = moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek'); oneWeek.isBefore(dateAfter); oneWeek.add(7, 'days')) {
-      const oneWeekSlug = oneWeek.format(moment.HTML5_FMT.WEEK)
-      yield [
-        path.join(city.slug, oneWeekSlug, 'index.html'),
-        pages.cityTimespan(city.slug, oneWeekSlug).make().then(renderContained)
-      ]
+      yield pages.cityTimespan(city.slug, oneWeek, pages_.durations.oneWeek)
     }
 
     for (var oneDay = moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek'); oneDay.isBefore(dateAfter); oneDay.add(1, 'day')) {
-      const oneDaySlug = oneDay.format(moment.HTML5_FMT.DATE)
-      yield [
-        path.join(city.slug, oneDaySlug, 'index.html'),
-        pages.cityTimespan(city.slug, oneDaySlug).make().then(renderContained)
-      ]
+      yield pages.cityTimespan(city.slug, oneDay, pages_.durations.oneDay)
     }
 
     for (var threeDays = moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek'); threeDays.clone().add(2, 'day').isBefore(dateAfter); threeDays.add(1, 'day')) {
-      const threeDaysSlug = threeDays.format(moment.HTML5_FMT.DATE + '+2')
-      yield [
-        path.join(city.slug, threeDaysSlug, 'index.html'),
-        pages.cityTimespan(city.slug, threeDaysSlug).make().then(renderContained)
-      ]
+      yield pages.cityTimespan(city.slug, threeDays, pages_.durations.threeDays)
     }
   }
 }

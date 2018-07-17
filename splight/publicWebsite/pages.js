@@ -1,6 +1,6 @@
 'use strict'
 
-/* global Modernizr, history */
+/* global history */
 
 const assert = require('assert')
 const jQuery = require('jquery')
@@ -18,125 +18,82 @@ const randomizeCanvas = require('../../randomizeCanvas')
 moment.locale('fr')
 
 function randomizeCanvases () {
-  if (Modernizr.canvas) {
-    jQuery('canvas[data-sp-random-seed]').each(function () {
-      const c = jQuery(this)
-      randomizeCanvas({
-        canvas: this,
-        seed: c.data('sp-random-seed'),
-        width: c.attr('width'),
-        height: c.attr('height')
-      })
+  jQuery('canvas[data-sp-random-seed]').each(function () {
+    const c = jQuery(this)
+    randomizeCanvas({
+      canvas: this,
+      seed: c.data('sp-random-seed'),
+      width: c.attr('width'),
+      height: c.attr('height')
     })
-  }
+  })
 }
 
-const timespan = (function () {
-  const oneWeek = (function () {
-    const slugFormat = moment.HTML5_FMT.WEEK
-
-    function slugify (startDate) {
-      return startDate.format(slugFormat)
+const durations = (function () {
+  const oneDay = (function () {
+    function clip (d) {
+      return d.clone().startOf('day')
     }
 
-    function make (startDate) {
-      return {
-        duration: 'Semaine',
-        durationValue: 7,
-        startDate: startDate.clone(),
-        dateAfter: startDate.clone().add(7, 'days'),
-        previousLinkText: 'Semaine précédente',
-        previousLinkSlug: slugify(startDate.clone().subtract(7, 'days')),
-        nextLinkText: 'Semaine suivante',
-        nextLinkSlug: slugify(startDate.clone().add(7, 'days')),
-        now1LinkText: 'Cette semaine',
-        now1LinkSlug: now => slugify(now),
-        now2LinkText: 'La semaine prochaine',
-        now2LinkSlug: now => slugify(now.clone().add(7, 'days'))
+    return {
+      days: 1,
+      clip,
+      titleFormat: '[Journée du] dddd LL',
+      slugFormat: moment.HTML5_FMT.DATE,
+      dateAfter: startDate => clip(startDate).add(1, 'day'),
+      links: {
+        previous: {text: 'Journée précédente', startDate: startDate => clip(startDate).subtract(1, 'day')},
+        next: {text: 'Journée suivante', startDate: startDate => clip(startDate).add(1, 'day')},
+        now1: {text: "Aujourd'hui", startDate: now => clip(now)},
+        now2: {text: 'Demain', startDate: now => clip(now).add(1, 'day')}
       }
     }
-
-    return {slugFormat, slugify, make}
   }())
 
   const threeDays = (function () {
-    const slugFormat = moment.HTML5_FMT.DATE + '+2'
-
-    function slugify (startDate) {
-      return startDate.format(slugFormat)
+    function clip (d) {
+      return d.clone().startOf('day')
     }
 
-    function make (startDate) {
-      return {
-        duration: '3 jours à partir',
-        durationValue: 3,
-        startDate: startDate.clone(),
-        dateAfter: startDate.clone().add(3, 'days'),
-        previousLinkText: 'Jours précédents',
-        previousLinkSlug: slugify(startDate.clone().subtract(1, 'days')),
-        nextLinkText: 'Jours suivants',
-        nextLinkSlug: slugify(startDate.clone().add(1, 'days')),
-        now1LinkText: 'Ces 3 jours',
-        now1LinkSlug: now => slugify(now),
-        now2LinkText: 'Le week-end prochain',
-        now2LinkSlug: now => slugify(now.clone().add(3, 'days').startOf('isoWeek').add(4, 'days'))
+    return {
+      days: 3,
+      clip,
+      titleFormat: '[3 jours à partir du] dddd LL',
+      slugFormat: moment.HTML5_FMT.DATE + '+2',
+      dateAfter: startDate => clip(startDate).add(3, 'days'),
+      links: {
+        previous: {text: 'Jours précédents', startDate: startDate => clip(startDate).add(1, 'day')},
+        next: {text: 'Jours suivants', startDate: startDate => clip(startDate).add(1, 'day')},
+        now1: {text: 'Ces 3 jours', startDate: now => clip(now)},
+        now2: {text: 'Le week-end prochain', startDate: now => clip(now).add(3, 'days').startOf('isoWeek').add(4, 'days')}
       }
     }
-
-    return {slugFormat, slugify, make}
   }())
 
-  const oneDay = (function () {
-    const slugFormat = moment.HTML5_FMT.DATE
-
-    function slugify (startDate) {
-      return startDate.format(slugFormat)
+  const oneWeek = (function () {
+    function clip (d) {
+      return d.clone().startOf('isoWeek')
     }
 
-    function make (startDate) {
-      return {
-        duration: 'Journée',
-        durationValue: 1,
-        startDate: startDate.clone(),
-        dateAfter: startDate.clone().add(1, 'days'),
-        previousLinkText: 'Journée précédente',
-        previousLinkSlug: slugify(startDate.clone().subtract(1, 'days')),
-        nextLinkText: 'Journée suivante',
-        nextLinkSlug: slugify(startDate.clone().add(1, 'days')),
-        now1LinkText: "Aujourd'hui",
-        now1LinkSlug: now => slugify(now),
-        now2LinkText: 'Demain',
-        now2LinkSlug: now => slugify(now.clone().add(1, 'days'))
+    return {
+      days: 7,
+      clip,
+      slugFormat: moment.HTML5_FMT.WEEK,
+      titleFormat: '[Semaine du] dddd LL',
+      dateAfter: startDate => clip(startDate).add(7, 'days'),
+      links: {
+        previous: {text: 'Semaine précédente', startDate: startDate => clip(startDate).subtract(7, 'days')},
+        next: {text: 'Semaine suivante', startDate: startDate => clip(startDate).add(7, 'days')},
+        now1: {text: 'Cette semaine', startDate: now => clip(now)},
+        now2: {text: 'La semaine prochaine', startDate: now => clip(now).add(7, 'days')}
       }
     }
-
-    return {slugFormat, slugify, make}
   }())
 
-  function make (timespanSlug) {
-    return [oneWeek, threeDays, oneDay].reduce(function (r, ts) {
-      if (r) {
-        return r
-      } else {
-        const startDate = moment(timespanSlug, ts.slugFormat, true)
-        if (startDate.isValid()) {
-          return ts.make(startDate)
-        } else {
-          return null
-        }
-      }
-    }, null)
-  }
-
-  return {
-    make,
-    oneWeek,
-    threeDays,
-    oneDay
-  }
+  return {oneDay, threeDays, oneWeek}
 }())
 
-module.exports = function (fetcher) {
+function make (now, fetcher) {
   const source = (function () {
     const cities = fetcher.getCities().then(cities => {
       cities.forEach(city => {
@@ -254,7 +211,7 @@ module.exports = function (fetcher) {
       initializeInBrowser: function (firstTime) {
         randomizeCanvases()
         hookInternalLinks(firstTime)
-        jQuery('.sp-now-week-link').attr('href', (index, href) => URI(href).path(['', citySlug, timespan.oneWeek.slugify(moment()), ''].join('/')).toString())
+        jQuery('.sp-now-week-link').attr('href', (index, href) => URI(href).path(cityTimespan(citySlug, now, durations.oneWeek).path).toString())
       },
       make: async function () {
         const city = await source.getCity(citySlug)
@@ -267,7 +224,7 @@ module.exports = function (fetcher) {
             {
               city,
               tags: city.tags,
-              firstWeekUrl: ['', citySlug, timespan.oneWeek.slugify(city.firstDate)].join('/')
+              firstWeekUrl: cityTimespan(citySlug, city.firstDate, durations.oneWeek).path
             }
           )
         }
@@ -275,29 +232,45 @@ module.exports = function (fetcher) {
     }
   }
 
-  function cityTimespan (citySlug, timespanSlug) {
-    const ts = timespan.make(timespanSlug)
+  function cityTimespan (citySlug, startDate, duration) {
+    startDate = duration.clip(startDate)
+    const dateAfter = duration.dateAfter(startDate)
+
+    function makePath (d) {
+      return ['', citySlug, d.format(duration.slugFormat), ''].join('/')
+    }
+
+    const links = {
+      previous: {text: duration.links.previous.text, path: makePath(duration.links.previous.startDate(startDate))},
+      next: {text: duration.links.next.text, path: makePath(duration.links.next.startDate(startDate))},
+      now1: {text: duration.links.now1.text, path: makePath(duration.links.now1.startDate(now))},
+      now2: {text: duration.links.now2.text, path: makePath(duration.links.now2.startDate(now))}
+    }
 
     return {
-      path: ['', citySlug, timespanSlug, ''].join('/'),
+      path: makePath(startDate),
       initializeInBrowser: function (firstTime) {
         randomizeCanvases()
         hookInternalLinks(firstTime)
 
-        jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now1LinkSlug(moment()), ''].join('/')).toString())
-        jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(['', citySlug, ts.now2LinkSlug(moment()), ''].join('/')).toString())
+        jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(links.now1.path).toString())
+        jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(links.now2.path).toString())
 
         jQuery('.sp-timespan-previous').hide()
-        source.getEvents(citySlug, ts.startDate.clone().subtract(1, 'day'), ts.startDate).then(() => jQuery('.sp-timespan-previous').show())
+        source.getEvents(citySlug, startDate.clone().subtract(1, 'day'), startDate).then(() => jQuery('.sp-timespan-previous').show())
         jQuery('.sp-timespan-next').hide()
-        source.getEvents(citySlug, ts.dateAfter, ts.dateAfter.clone().add(1, 'day')).then(() => jQuery('.sp-timespan-next').show())
+        source.getEvents(citySlug, dateAfter, dateAfter.clone().add(1, 'day')).then(() => jQuery('.sp-timespan-next').show())
 
         ;(function () {
+          const durationsByDays = {}
+          Object.values(durations).forEach(duration => {
+            durationsByDays[duration.days] = duration
+          })
           const dropdown = jQuery('#sp-timespan-duration')
-          dropdown.val(ts.durationValue)
+          dropdown.val(duration.days)
           dropdown.on('change', function () {
-            const newTimespan = {1: timespan.oneDay, 3: timespan.threeDays, 7: timespan.oneWeek}[dropdown.val()]
-            navigateTo(['', citySlug, newTimespan.slugify(ts.startDate), ''].join('/'))
+            const duration = durationsByDays[dropdown.val()]
+            navigateTo(cityTimespan(citySlug, startDate, duration).path)
           })
         }())
 
@@ -338,18 +311,6 @@ module.exports = function (fetcher) {
       make: async function () {
         const city = await source.getCity(citySlug)
 
-        const {
-          duration,
-          startDate,
-          dateAfter,
-          previousLinkSlug,
-          nextLinkSlug,
-          previousLinkText,
-          nextLinkText,
-          now1LinkText,
-          now2LinkText
-        } = ts
-
         const events = await source.getEvents(city.slug, startDate, dateAfter)
 
         const eventsByDay = {}
@@ -383,18 +344,21 @@ module.exports = function (fetcher) {
             require('./pages/cityTimespan.html'),
             {
               city,
-              duration,
-              startDate: startDate.format('dddd LL'),
+              title: startDate.format(duration.titleFormat),
               days,
-              previousLinkSlug,
-              nextLinkSlug,
-              previousLinkText,
-              nextLinkText,
-              now1LinkText,
-              now2LinkText
+              links
             }
           )
         }
+      }
+    }
+  }
+
+  cityTimespan.ofSlugs = function (citySlug, timespanSlug) {
+    for (var duration of Object.values(durations)) {
+      const startDate = moment(timespanSlug, duration.slugFormat, true)
+      if (startDate.isValid()) {
+        return cityTimespan(citySlug, startDate, duration)
       }
     }
   }
@@ -409,18 +373,14 @@ module.exports = function (fetcher) {
       case 3:
         return cityIndex(parts[1])
       case 4:
-        return cityTimespan(parts[1], parts[2])
+        return cityTimespan.ofSlugs(parts[1], parts[2])
       default:
         assert.fail('Unexpected path: ' + url)
     }
   }
 
-  const pages = {}
-
-  pages.index = index
-  pages.cityIndex = cityIndex
-  pages.cityTimespan = cityTimespan
-  pages.fromUrl = fromUrl
-
-  return pages
+  return {index, cityIndex, cityTimespan, fromUrl}
 }
+
+exports.durations = durations
+exports.make = make

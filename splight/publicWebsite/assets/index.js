@@ -6,7 +6,8 @@ const assert = require('assert')
 const bootstrap = require('bootstrap') // eslint-disable-line
 const jquery = require('jquery')
 const moment = require('moment')
-const path = require('path')
+
+const pages = require('../pages')
 
 // @todo Remove when https://github.com/moment/moment/issues/4698 is fixed on npm
 moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
@@ -28,14 +29,11 @@ const fetcher = (function () {
     },
 
     getCityWeek: function (citySlug, week) {
-      return get(path.join(citySlug, week.format(moment.HTML5_FMT.WEEK)))
+      return get(citySlug + '/' + week.format(moment.HTML5_FMT.WEEK))
     }
   }
 }())
 
-const pages = require('../pages')(fetcher)
-
-jquery(async function () {
-  const page = pages.fromUrl(window.location.href)
-  await page.initializeInBrowser(true)
+jquery(function () {
+  pages.make(moment(), fetcher).fromUrl(window.location.href).initializeInBrowser(true)
 })
