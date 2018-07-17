@@ -19,6 +19,8 @@ moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
 
 function * generate ({data, now, scripts}) {
+  const dateAfter = now.clone().startOf('isoWeek').add(5, 'weeks')
+
   // @todo favicon.ico
   // @todo robots.txt
 
@@ -26,13 +28,13 @@ function * generate ({data, now, scripts}) {
 
   yield * generateAssets()
 
-  const preparedData = prepareData({data, now})
+  const preparedData = prepareData({data, now, dateAfter})
 
   yield * Object.entries(preparedData).map(
     ([name, content]) => ['/' + name + '.json', Promise.resolve(neatJSON(content, {sort: true, wrap: true, afterColon: 1}) + '\n')]
   )
 
-  yield * generatePages({preparedData, now, scripts})
+  yield * generatePages({preparedData, now, dateAfter, scripts})
 }
 
 function * generateSkeleton () {
@@ -126,7 +128,7 @@ function prepareData (config) {
   return ret
 }
 
-function * _prepareData ({data, now}) {
+function * _prepareData ({data, now, dateAfter}) {
   data = deepcopy(data)
   data.cities = data.cities || []
 
@@ -176,16 +178,16 @@ function * _prepareData ({data, now}) {
     )
   ]
 
-  const dateAfter = now.clone().startOf('isoWeek').add(5, 'weeks')
   for (var city of data.cities) {
-    for (var week = city.firstDate.clone().startOf('isoWeek'); week.isBefore(dateAfter); week.add(7, 'days')) {
+    const duration = pages_.durations.oneWeek
+    for (var startDate = duration.clip(moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek')); duration.dateAfter(startDate).isSameOrBefore(dateAfter); startDate = duration.links.next.startDate(startDate)) {
       yield [
-        path.join(city.slug, week.format(moment.HTML5_FMT.WEEK)),
+        path.join(city.slug, startDate.format(duration.slugFormat)),
         {
           events:
             city.events.map(
               ({title, occurences, tags}) => occurences.filter(
-                ({start}) => start.isSame(week, 'isoWeek')
+                ({start}) => start.isSame(startDate, 'isoWeek')
               ).map(
                 ({start}) => ({title, start: start.format(moment.HTML5_FMT.DATETIME_LOCAL), tags})
               )
@@ -196,12 +198,12 @@ function * _prepareData ({data, now}) {
   }
 }
 
-function * generatePages ({preparedData, now, scripts}) {
+function * generatePages ({preparedData, now, dateAfter, scripts}) {
   function renderContained ({title, jumbotron, content}) {
     return mustache.render(require('./publicWebsite/container.html'), {title, scripts, jumbotron, content})
   }
 
-  for (var page of generatePages_({preparedData, now})) {
+  for (var page of _generatePages({preparedData, now, dateAfter})) {
     yield [
       page.path,
       page.make().then(renderContained)
@@ -209,7 +211,7 @@ function * generatePages ({preparedData, now, scripts}) {
   }
 }
 
-function * generatePages_ ({preparedData, now}) {
+function * _generatePages ({preparedData, now, dateAfter}) {
   const fetcher = {
     getCities: async function () {
       return deepcopy(preparedData['cities'])
@@ -224,21 +226,13 @@ function * generatePages_ ({preparedData, now}) {
 
   yield pages.index
 
-  // @todo Use keys in preparedData instead of recomputing them
-  const dateAfter = now.clone().startOf('isoWeek').add(5, 'weeks')
   for (var city of preparedData['cities']) {
     yield pages.cityIndex(city.slug)
 
-    for (var oneWeek = moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek'); oneWeek.isBefore(dateAfter); oneWeek.add(7, 'days')) {
-      yield pages.cityTimespan(city.slug, oneWeek, pages_.durations.oneWeek)
-    }
-
-    for (var oneDay = moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek'); oneDay.isBefore(dateAfter); oneDay.add(1, 'day')) {
-      yield pages.cityTimespan(city.slug, oneDay, pages_.durations.oneDay)
-    }
-
-    for (var threeDays = moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek'); threeDays.clone().add(2, 'day').isBefore(dateAfter); threeDays.add(1, 'day')) {
-      yield pages.cityTimespan(city.slug, threeDays, pages_.durations.threeDays)
+    for (var duration of Object.values(pages_.durations)) {
+      for (var startDate = duration.clip(moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek')); duration.dateAfter(startDate).isSameOrBefore(dateAfter); startDate = duration.links.next.startDate(startDate)) {
+        yield pages.cityTimespan(city.slug, startDate, duration)
+      }
     }
   }
 }
