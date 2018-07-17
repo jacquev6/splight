@@ -23,7 +23,7 @@ async function main (inputDataFile) {
 
   reload(app)
 
-  app.listen(8000, () => console.log('Developer website live at http://localhost:8000/'))
+  app.listen(8000, () => console.log('Developer website live at http://localhost:8000/admin/'))
 }
 
 main(process.argv[2])

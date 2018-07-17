@@ -51,7 +51,7 @@ async function main (inputDataFile) {
   const server = http.Server(app)
 
   server.listen(8000, () => {
-    const address = 'http://localhost:8000/'
+    const address = 'http://localhost:8000/admin/'
     console.log('Webmaster website live at', address)
     opn(address)
   })
