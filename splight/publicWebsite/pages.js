@@ -62,7 +62,7 @@ const durations = (function () {
       slugFormat: moment.HTML5_FMT.DATE + '+2',
       dateAfter: startDate => clip(startDate).add(3, 'days'),
       links: {
-        previous: {text: 'Jours précédents', startDate: startDate => clip(startDate).add(1, 'day')},
+        previous: {text: 'Jours précédents', startDate: startDate => clip(startDate).subtract(1, 'day')},
         next: {text: 'Jours suivants', startDate: startDate => clip(startDate).add(1, 'day')},
         now1: {text: 'Ces 3 jours', startDate: now => clip(now)},
         now2: {text: 'Le week-end prochain', startDate: now => clip(now).add(3, 'days').startOf('isoWeek').add(4, 'days')}
