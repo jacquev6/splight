@@ -149,14 +149,6 @@ function * _prepareData ({data, now, dateAfter}) {
         occurence.start = moment(occurence.start, moment.HTML5_FMT.DATETIME_LOCAL, true)
       })
     })
-
-    city.firstDate = city.events.reduce(
-      (acc, event) => event.occurences.reduce(
-        (acc, occurence) => moment.min(occurence.start, acc),
-        acc
-      ),
-      now
-    )
   })
 
   yield [
@@ -167,7 +159,6 @@ function * _prepareData ({data, now, dateAfter}) {
       ({slug, name, firstDate, tags}) => ({
         slug,
         name,
-        firstDate: firstDate.format(moment.HTML5_FMT.DATE),
         tags:
           Object.values(tags).sort(
             (tagA, tagB) => tagA.displayOrder - tagB.displayOrder
@@ -178,21 +169,25 @@ function * _prepareData ({data, now, dateAfter}) {
     )
   ]
 
+  const oneWeek = pages_.durations.oneWeek
   for (var city of data.cities) {
-    const duration = pages_.durations.oneWeek
-    for (var startDate = duration.clip(moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek')); duration.dateAfter(startDate).isSameOrBefore(dateAfter); startDate = duration.links.next.startDate(startDate)) {
-      yield [
-        path.join(city.slug, startDate.format(duration.slugFormat)),
-        {
-          events:
-            city.events.map(
-              ({title, occurences, tags}) => occurences.filter(
-                ({start}) => start.isSame(startDate, 'isoWeek')
-              ).map(
-                ({start}) => ({title, start: start.format(moment.HTML5_FMT.DATETIME_LOCAL), tags})
-              )
-            ).reduce((a, b) => a.concat(b), [])
+    const eventsByWeek = {}
+    city.events.forEach(({title, occurences, tags}) => {
+      occurences.forEach(({start}) => {
+        const week = start.format(oneWeek.slugFormat)
+        if (!eventsByWeek[week]) {
+          eventsByWeek[week] = []
         }
+        eventsByWeek[week].push({title, start: start.format(moment.HTML5_FMT.DATETIME_LOCAL), tags})
+      })
+    })
+    const firstDate = Object.keys(eventsByWeek).map(weekSlug => moment(weekSlug, oneWeek.slugFormat, true)).reduce((a, b) => moment.min(a, b), now)
+    for (var startDate = firstDate.clone(); oneWeek.dateAfter(startDate).isSameOrBefore(dateAfter); startDate = oneWeek.links.next.startDate(startDate)) {
+      const weekSlug = startDate.format(oneWeek.slugFormat)
+      const events = eventsByWeek[weekSlug] || []
+      yield [
+        path.join(city.slug, weekSlug),
+        {events}
       ]
     }
   }
@@ -228,10 +223,23 @@ function * _generatePages ({preparedData, now, dateAfter}) {
 
   for (var city of preparedData['cities']) {
     yield pages.cityIndex(city.slug)
+  }
 
-    for (var duration of Object.values(pages_.durations)) {
-      for (var startDate = duration.clip(moment(city.firstDate, moment.HTML5_FMT.DATE, true).startOf('isoWeek')); duration.dateAfter(startDate).isSameOrBefore(dateAfter); startDate = duration.links.next.startDate(startDate)) {
-        yield pages.cityTimespan(city.slug, startDate, duration)
+  for (var key in preparedData) {
+    const parts = key.split('/')
+    if (parts.length === 2) {
+      const [citySlug, weekSlug] = parts
+      const weekStartDate = moment(weekSlug, pages_.durations.oneWeek.slugFormat, true)
+      const weekDateAfter = pages_.durations.oneWeek.dateAfter(weekStartDate)
+      const isLastWeek = weekDateAfter.isSameOrAfter(dateAfter)
+      for (var duration of Object.values(pages_.durations)) {
+        for (
+          var startDate = weekStartDate.clone();
+          (isLastWeek ? duration.dateAfter(startDate).isSameOrBefore(dateAfter) : startDate.isBefore(weekDateAfter));
+          startDate = duration.links.next.startDate(startDate)
+        ) {
+          yield pages.cityTimespan(citySlug, startDate, duration)
+        }
       }
     }
   }

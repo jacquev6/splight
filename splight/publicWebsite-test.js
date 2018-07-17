@@ -24,7 +24,7 @@ describe('publicWebsite', function () {
       it('loads empty city', function () {
         test(
           {cities: [{slug: 'foo', name: 'Foo'}]},
-          [{slug: 'foo', name: 'Foo', firstDate: '2018-06-01', tags: []}]
+          [{slug: 'foo', name: 'Foo', tags: []}]
         )
       })
 
@@ -36,9 +36,9 @@ describe('publicWebsite', function () {
             {slug: 'baz', name: 'Baz'}
           ]},
           [
-            {slug: 'foo', name: 'Foo', firstDate: '2018-06-01', tags: []},
-            {slug: 'bar', name: 'Bar', firstDate: '2018-06-01', tags: []},
-            {slug: 'baz', name: 'Baz', firstDate: '2018-06-01', tags: []}
+            {slug: 'foo', name: 'Foo', tags: []},
+            {slug: 'bar', name: 'Bar', tags: []},
+            {slug: 'baz', name: 'Baz', tags: []}
           ]
         )
       })
@@ -46,7 +46,7 @@ describe('publicWebsite', function () {
       it('loads single tag', function () {
         test(
           {cities: [{slug: 'foo', name: 'Foo', tags: [{slug: 'bar', title: 'Bar'}]}]},
-          [{slug: 'foo', name: 'Foo', firstDate: '2018-06-01', tags: [{slug: 'bar', title: 'Bar'}]}]
+          [{slug: 'foo', name: 'Foo', tags: [{slug: 'bar', title: 'Bar'}]}]
         )
       })
 
@@ -62,57 +62,12 @@ describe('publicWebsite', function () {
           [{
             slug: 'foo',
             name: 'Foo',
-            firstDate: '2018-06-01',
             tags: [
               {slug: 'foo', title: 'Foo'},
               {slug: 'bar', title: 'Bar'},
               {slug: 'baz', title: 'Baz'}
             ]
           }]
-        )
-      })
-
-      it('gets firstDate from single event before now', function () {
-        test(
-          {cities: [{slug: 'foo', name: 'Foo', events: [{occurences: [{start: '2018-05-15T10:15'}]}]}]},
-          [{slug: 'foo', name: 'Foo', firstDate: '2018-05-15', tags: []}]
-        )
-      })
-
-      it('gets firstDate=now when all events are after now', function () {
-        test(
-          {cities: [{slug: 'foo', name: 'Foo', events: [{occurences: [{start: '2018-06-15T10:15'}]}]}]},
-          [{slug: 'foo', name: 'Foo', firstDate: '2018-06-01', tags: []}]
-        )
-      })
-
-      it('gets firstDate from earliest occurence', function () {
-        test(
-          {cities: [{
-            slug: 'foo',
-            name: 'Foo',
-            events: [{occurences: [
-              {start: '2018-05-16T10:15'},
-              {start: '2018-05-15T10:15'},
-              {start: '2018-05-17T10:15'}
-            ]}]
-          }]},
-          [{slug: 'foo', name: 'Foo', firstDate: '2018-05-15', tags: []}]
-        )
-      })
-
-      it('gets firstDate from earliest event', function () {
-        test(
-          {cities: [{
-            slug: 'foo',
-            name: 'Foo',
-            events: [
-              {occurences: [{start: '2018-05-16T10:15'}]},
-              {occurences: [{start: '2018-05-15T10:15'}]},
-              {occurences: [{start: '2018-05-17T10:15'}]}
-            ]
-          }]},
-          [{slug: 'foo', name: 'Foo', firstDate: '2018-05-15', tags: []}]
         )
       })
     })

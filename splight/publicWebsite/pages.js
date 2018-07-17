@@ -98,7 +98,6 @@ function make (now, fetcher) {
     const cities = fetcher.getCities().then(cities => {
       cities.forEach(city => {
         city.url = cityIndex(city.slug).path
-        city.firstDate = moment(city.firstDate, moment.HTML5_FMT.DATE, true)
       })
       return cities
     })
@@ -233,7 +232,7 @@ function make (now, fetcher) {
             {
               city,
               tags: city.tags,
-              firstWeekUrl: cityTimespan(citySlug, city.firstDate, durations.oneWeek).path
+              nowWeekUrl: cityTimespan(citySlug, now, durations.oneWeek).path
             }
           )
         }
