@@ -77,25 +77,6 @@ a {
     border: solid 1px;
 }
 
-.sp-loading {
-    position: relative;
-}
-
-#sp-loading {
-    display: none;
-}
-
-.sp-loading #sp-loading {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #fff;
-    z-index: 1;
-}
-
 // https://stackoverflow.com/a/25478589/905845
 @function url-friendly-colour($colour) {
     @return '%23' + str-slice('#{$colour}', 2, -1)

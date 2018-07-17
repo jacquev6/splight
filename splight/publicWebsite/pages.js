@@ -199,7 +199,6 @@ module.exports = function (fetcher) {
   }
 
   function navigateTo (url) {
-    jQuery('.sp-modern').addClass('sp-loading')
     url = URI.parse(url)
     const page = fromUrl(url.path)
 
@@ -211,7 +210,6 @@ module.exports = function (fetcher) {
       jQuery("#sp-jumbotron a[href^='/'], #sp-content a[href^='/']").on('click', handleInternalLinkClick)
       history.replaceState(null, window.document.title, URI(window.location.href).path(url.path).query(url.query || '').toString())
       await page.initializeInBrowser(false)
-      jQuery('.sp-modern').removeClass('sp-loading')
     })
   }
 

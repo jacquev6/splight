@@ -38,5 +38,4 @@ const pages = require('../pages')(fetcher)
 jquery(async function () {
   const page = pages.fromUrl(window.location.href)
   await page.initializeInBrowser(true)
-  jquery('.sp-modern').removeClass('sp-loading')
 })
