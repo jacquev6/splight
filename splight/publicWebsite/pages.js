@@ -5,6 +5,7 @@
 const assert = require('assert')
 const jQuery = require('jquery')
 const moment = require('moment')
+const moment_fr = require('moment/locale/fr') // eslint-disable-line
 const mustache = require('mustache')
 const URI = require('urijs')
 
@@ -13,6 +14,8 @@ moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
 
 const randomizeCanvas = require('../../randomizeCanvas')
+
+moment.locale('fr')
 
 function randomizeCanvases () {
   if (Modernizr.canvas) {
@@ -360,7 +363,7 @@ module.exports = function (fetcher) {
         events.forEach(function ({title, start, tags}) {
           eventsByDay[start.format(moment.HTML5_FMT.DATE)].push({
             title,
-            time: start.format(moment.HTML5_FMT.TIME),
+            time: start.format('LT'),
             mainTag: tags[0],
             tags
           })
@@ -369,10 +372,9 @@ module.exports = function (fetcher) {
         const days = []
 
         for (d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
-          const date = d.format(moment.HTML5_FMT.DATE)
           days.push({
-            date,
-            events: eventsByDay[date]
+            date: d.format('ddd Do MMM'),
+            events: eventsByDay[d.format(moment.HTML5_FMT.DATE)]
           })
         }
 
@@ -384,7 +386,7 @@ module.exports = function (fetcher) {
             {
               city,
               duration,
-              startDate: startDate.format(),
+              startDate: startDate.format('dddd LL'),
               days,
               previousLinkSlug,
               nextLinkSlug,
