@@ -14,6 +14,8 @@ const sass = require('node-sass')
 
 const pages_ = require('./publicWebsite/pages')
 
+const oneWeek = pages_.durations.oneWeek
+
 // @todo Remove when https://github.com/moment/moment/issues/4698 is fixed on npm
 moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
@@ -156,7 +158,7 @@ function * _prepareData ({data, now, dateAfter}) {
     Object.values(data.cities).sort(
       (cityA, cityB) => cityA.displayOrder - cityB.displayOrder
     ).map(
-      ({slug, name, firstDate, tags}) => ({
+      ({slug, name, tags}) => ({
         slug,
         name,
         tags:
@@ -169,20 +171,22 @@ function * _prepareData ({data, now, dateAfter}) {
     )
   ]
 
-  const oneWeek = pages_.durations.oneWeek
   for (var city of data.cities) {
     const eventsByWeek = {}
     city.events.forEach(({title, occurences, tags}) => {
       occurences.forEach(({start}) => {
-        const week = start.format(oneWeek.slugFormat)
-        if (!eventsByWeek[week]) {
-          eventsByWeek[week] = []
+        const weekSlug = start.format(oneWeek.slugFormat)
+        if (!eventsByWeek[weekSlug]) {
+          eventsByWeek[weekSlug] = []
         }
-        eventsByWeek[week].push({title, start: start.format(moment.HTML5_FMT.DATETIME_LOCAL), tags})
+        eventsByWeek[weekSlug].push({title, start: start.format(moment.HTML5_FMT.DATETIME_LOCAL), tags})
       })
     })
-    const firstDate = Object.keys(eventsByWeek).map(weekSlug => moment(weekSlug, oneWeek.slugFormat, true)).reduce((a, b) => moment.min(a, b), now)
-    for (var startDate = firstDate.clone(); oneWeek.dateAfter(startDate).isSameOrBefore(dateAfter); startDate = oneWeek.links.next.startDate(startDate)) {
+    for (
+      var startDate = Object.keys(eventsByWeek).map(weekSlug => moment(weekSlug, oneWeek.slugFormat, true)).reduce((a, b) => moment.min(a, b), now);
+      oneWeek.dateAfter(startDate).isSameOrBefore(dateAfter);
+      startDate = oneWeek.links.next.startDate(startDate)
+    ) {
       const weekSlug = startDate.format(oneWeek.slugFormat)
       const events = eventsByWeek[weekSlug] || []
       yield [
@@ -229,8 +233,8 @@ function * _generatePages ({preparedData, now, dateAfter}) {
     const parts = key.split('/')
     if (parts.length === 2) {
       const [citySlug, weekSlug] = parts
-      const weekStartDate = moment(weekSlug, pages_.durations.oneWeek.slugFormat, true)
-      const weekDateAfter = pages_.durations.oneWeek.dateAfter(weekStartDate)
+      const weekStartDate = moment(weekSlug, oneWeek.slugFormat, true)
+      const weekDateAfter = oneWeek.dateAfter(weekStartDate)
       const isLastWeek = weekDateAfter.isSameOrAfter(dateAfter)
       for (var duration of Object.values(pages_.durations)) {
         for (

@@ -274,6 +274,8 @@ function make (now, fetcher) {
           const dropdown = jQuery('#sp-timespan-duration')
           dropdown.val(duration.days)
           dropdown.on('change', function () {
+            // @todo Fix bug: display one day, navigate to last saturday or sunday, switch to three days: nothing happens
+            // because this would display a date that's not published
             const duration = durationsByDays[dropdown.val()]
             navigateTo(cityTimespan(citySlug, startDate, duration).path)
           })
