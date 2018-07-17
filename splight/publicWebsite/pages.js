@@ -146,41 +146,51 @@ function make (now, fetcher) {
     return {getCities, getCity, getEvents}
   }())
 
-  function handleInternalLinkClick (event) {
-    if (event.ctrlKey || event.altKey || event.metaKey) {
-      return true
-    } else {
-      navigateTo(jQuery(this).attr('href'))
-      return false
+  const anticipatedNavigations = {}
+
+  function anticipateNavigationTo (url) {
+    url = URI.parse(url)
+    const path = url.path
+    const query = url.query
+    if (!anticipatedNavigations[path]) {
+      const page = fromPath(path)
+      anticipatedNavigations[path] = page.make().then(({title, jumbotron, content}) => ({title, jumbotron, content, page}))
+      anticipatedNavigations[path].then(() => console.log('Ready to navigateTo', path))
     }
+    return anticipatedNavigations[path].then(({title, jumbotron, content, page}) => ({title, jumbotron, content, page, path, query}))
   }
 
   function navigateTo (url) {
-    url = URI.parse(url)
-    const page = fromUrl(url.path)
-
-    page.make().then(async ({title, jumbotron, content}) => {
+    anticipateNavigationTo(url).then(({title, jumbotron, content, page, path, query}) => {
+      history.replaceState(null, title, URI(window.location.href).path(path).query(query || '').toString())
       jQuery('title').text(title)
       jQuery('#sp-jumbotron').html(jumbotron)
       jQuery('#sp-content').html(content)
-
-      jQuery("#sp-jumbotron a[href^='/'], #sp-content a[href^='/']").on('click', handleInternalLinkClick)
-      history.replaceState(null, window.document.title, URI(window.location.href).path(url.path).query(url.query || '').toString())
-      await page.initializeInBrowser(false)
+      page.initializeInBrowser()
     })
   }
 
-  function hookInternalLinks (firstTime) {
-    if (firstTime) {
-      jQuery("a[href^='/']").on('click', handleInternalLinkClick)
-    }
+  function hookInternalLinks () {
+    const links = jQuery("a[href^='/']")
+    links.off('click')
+    links.on('click', function (event) {
+      if (event.ctrlKey || event.altKey || event.metaKey) {
+        return true
+      } else {
+        navigateTo(jQuery(this).attr('href'))
+        return false
+      }
+    })
+    links.each(function () {
+      anticipateNavigationTo(jQuery(this).attr('href'))
+    })
   }
 
   const index = {
     path: '/',
-    initializeInBrowser: function (firstTime) {
+    initializeInBrowser: function () {
       randomizeCanvases()
-      hookInternalLinks(firstTime)
+      hookInternalLinks()
     },
     make: async function () {
       const cities = await source.getCities()
@@ -199,7 +209,7 @@ function make (now, fetcher) {
   function makeCityJumbotron (city) {
     city.url = cityIndex(city.slug).path
     return mustache.render(
-      '<h1 class="display-4"><a href="/">Splight</a> - <a href="{{url}}">{{name}}</a></h1>' +
+      '<h1 class="display-4"><a href="/">Splight</a> - <a href="{{{url}}}">{{name}}</a></h1>' +
       '<p class="lead">Votre agenda culturel à {{name}} et dans sa région</p>',
       city
     )
@@ -208,9 +218,9 @@ function make (now, fetcher) {
   function cityIndex (citySlug) {
     return {
       path: ['', citySlug, ''].join('/'),
-      initializeInBrowser: function (firstTime) {
+      initializeInBrowser: function () {
         randomizeCanvases()
-        hookInternalLinks(firstTime)
+        hookInternalLinks()
         jQuery('.sp-now-week-link').attr('href', (index, href) => URI(href).path(cityTimespan(citySlug, now, durations.oneWeek).path).toString())
       },
       make: async function () {
@@ -249,9 +259,9 @@ function make (now, fetcher) {
 
     return {
       path: makePath(startDate),
-      initializeInBrowser: function (firstTime) {
+      initializeInBrowser: function () {
         randomizeCanvases()
-        hookInternalLinks(firstTime)
+        hookInternalLinks()
 
         jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(links.now1.path).toString())
         jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(links.now2.path).toString())
@@ -265,6 +275,7 @@ function make (now, fetcher) {
           const durationsByDays = {}
           Object.values(durations).forEach(duration => {
             durationsByDays[duration.days] = duration
+            anticipateNavigationTo(cityTimespan(citySlug, startDate, duration).path)
           })
           const dropdown = jQuery('#sp-timespan-duration')
           dropdown.val(duration.days)
@@ -363,7 +374,7 @@ function make (now, fetcher) {
     }
   }
 
-  function fromUrl (url) {
+  function fromPath (url) {
     const parts = URI.parse(url).path.split('/')
     assert(parts[0] === '', 'Unexpected path: ' + url)
     assert(parts.slice(-1)[0] === '', 'Unexpected path: ' + url)
@@ -379,7 +390,7 @@ function make (now, fetcher) {
     }
   }
 
-  return {index, cityIndex, cityTimespan, fromUrl}
+  return {index, cityIndex, cityTimespan, fromPath}
 }
 
 exports.durations = durations

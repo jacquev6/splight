@@ -6,6 +6,7 @@ const assert = require('assert')
 const bootstrap = require('bootstrap') // eslint-disable-line
 const jquery = require('jquery')
 const moment = require('moment')
+const URI = require('urijs')
 
 const pages = require('../pages')
 
@@ -35,5 +36,5 @@ const fetcher = (function () {
 }())
 
 jquery(function () {
-  pages.make(moment(), fetcher).fromUrl(window.location.href).initializeInBrowser(true)
+  pages.make(moment(), fetcher).fromPath(URI.parse(window.location.href).path).initializeInBrowser()
 })
