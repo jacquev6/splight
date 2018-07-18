@@ -1,6 +1,6 @@
 'use strict'
 
-/* global history */
+/* global history, Image */
 
 const assert = require('assert')
 const jQuery = require('jquery')
@@ -139,6 +139,9 @@ function make (now, fetcher) {
     const query = url.query
     if (!anticipatedNavigations[path]) {
       const page = fromPath(path)
+      page.images().then(images => images.forEach(image => {
+        new Image().src = image
+      }))
       anticipatedNavigations[path] = page.make().then(({title, jumbotron, content}) => ({title, jumbotron, content, page}))
     }
     return anticipatedNavigations[path].then(({title, jumbotron, content, page}) => ({title, jumbotron, content, page, path, query}))
@@ -182,6 +185,9 @@ function make (now, fetcher) {
         jumbotron: '<h1 class="display-4"><a href="/">Splight</a></h1><p class="lead">Votre agenda culturel régional</p>',
         content: mustache.render(require('./pages/index.html'), {cities})
       }
+    },
+    images: async function () {
+      return (await source.getCities()).map(city => '/' + city.slug + '.png')
     }
   }
 
@@ -220,6 +226,10 @@ function make (now, fetcher) {
             }
           )
         }
+      },
+      images: async function () {
+        const city = await source.getCity(citySlug)
+        return ['/all-tags.png'].concat(city.tags.map(tag => '/' + city.slug + '/' + tag.slug + '.png'))
       }
     }
   }
@@ -258,6 +268,7 @@ function make (now, fetcher) {
           dropdown.on('change', function () {
             // @todo Fix bug: display one day, navigate to last saturday or sunday, switch to three days: nothing happens
             // because this would display a date that's not published
+            // @todo Fix buf: tag filter is not preserved when changing displayed duration
             const duration = durationsByDays[dropdown.val()]
             navigateTo(cityTimespan(citySlug, startDate, duration).path)
           })
@@ -352,6 +363,9 @@ function make (now, fetcher) {
             }
           )
         }
+      },
+      images: async function () {
+        return []
       }
     }
   }
