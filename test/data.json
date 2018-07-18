@@ -1,7 +1,7 @@
 {
+  "artists": {"artist-1": {"name": "Seul artiste"}},
   "cities": [
     {
-      "artists": {"artist-1": {"name": "Seul artiste"}},
       "events": [
         {
           "artist": "artist-1",
@@ -17,7 +17,6 @@
       "tags": [{"slug": "tag-1", "title": "Seule catégorie"}]
     },
     {
-      "artists": {},
       "events": [
         {
           "location": "location-1",

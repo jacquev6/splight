@@ -8,6 +8,12 @@ const slug = Joi.string().required().min(1)
 const name = Joi.string().required().min(1)
 
 const schema = Joi.object({
+  artists: Joi.object().required().pattern(
+    Joi.string(),
+    Joi.object({
+      name
+    })
+  ),
   cities: Joi.array().required().min(1).items(Joi.object({
     slug,
     name,
@@ -15,12 +21,6 @@ const schema = Joi.object({
       slug,
       title: name
     })),
-    artists: Joi.object().required().pattern(
-      Joi.string(),
-      Joi.object({
-        name
-      })
-    ),
     locations: Joi.object().required().pattern(
       Joi.string(),
       Joi.object({
