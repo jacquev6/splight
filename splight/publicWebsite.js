@@ -12,6 +12,7 @@ const neatJSON = require('neatjson').neatJSON
 const path = require('path')
 const sass = require('node-sass')
 const terser = require('terser')
+const XmlSitemap = require('xml-sitemap')
 
 const pages_ = require('./publicWebsite/pages')
 const randomizeCanvas = require('../randomizeCanvas')
@@ -26,7 +27,6 @@ function * generate ({data, now, scripts}) {
   const dateAfter = now.clone().startOf('isoWeek').add(5, 'weeks')
 
   // @todo favicon.ico
-  // @todo robots.txt
 
   yield * generateSkeleton()
 
@@ -40,12 +40,22 @@ function * generate ({data, now, scripts}) {
 
   yield * generateImages({preparedData})
 
-  yield * generatePages({preparedData, now, dateAfter, scripts})
+  const sitemap = new XmlSitemap()
+  sitemap.setHost('https://splight.fr/')
+
+  for (var page of generatePages({preparedData, now, dateAfter, scripts})) {
+    const [name] = page
+    sitemap.add(name)
+    yield page
+  }
+
+  yield ['/sitemap.xml', Promise.resolve(sitemap.xml)]
 }
 
 function * generateSkeleton () {
   yield ['/CNAME', Promise.resolve('splight.fr')]
   yield ['/.nojekyll', Promise.resolve('')]
+  yield ['/robots.txt', Promise.resolve('Sitemap: https://splight.fr/sitemap.xml\n\nUser-agent: *\nAllow: /\n')]
 }
 
 function * generateAssets () {
@@ -92,7 +102,6 @@ function * generateAssets () {
   yield [
     '/index.js',
     new Promise((resolve, reject) =>
-      // @todo Use watchify when serving site using nodemon
       browserify('splight/publicWebsite/assets/index.js')
         .transform('stringify', ['.html'])
         .transform('uglifyify', {global: true})
