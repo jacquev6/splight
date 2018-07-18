@@ -4,7 +4,6 @@ const assert = require('assert').strict
 const browserify = require('browserify')
 const CleanCSS = require('clean-css')
 const deepcopy = require('deepcopy')
-const fs = require('fs-extra')
 const modernizr = require('modernizr')
 const moment = require('moment')
 const mustache = require('mustache')
@@ -40,8 +39,8 @@ function * generate ({data, now, scripts}) {
 }
 
 function * generateSkeleton () {
-  const skeleton = path.join(__dirname, 'publicWebsite/skeleton')
-  yield * fs.readdirSync(skeleton).map(fileName => ['/' + fileName, fs.readFile(path.join(skeleton, fileName))])
+  yield ['/CNAME', Promise.resolve('splight.fr')]
+  yield ['/.nojekyll', Promise.resolve('')]
 }
 
 function * generateAssets () {
