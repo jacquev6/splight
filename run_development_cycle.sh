@@ -6,6 +6,7 @@ PROJECT_ROOT=$(pwd)
 
 SERVE_DEVELOPER_SITE=false
 SERVE_WEBMASTER_SITE=false
+GENERATE=true
 
 SHOW_IN_BROWSER=false
 function show_in_browser {
@@ -23,6 +24,9 @@ do
   case $1 in
     -wb|--web-browser)
       SHOW_IN_BROWSER=true
+      ;;
+    -sg|--skip-generation)
+      GENERATE=false
       ;;
     -ds|--serve-developer-website)
       SERVE_DEVELOPER_SITE=true
@@ -43,7 +47,15 @@ npm test
 
 show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
 
-npm run generatePublicWebsite test/data.json test/site
+if $GENERATE
+then
+  npm run generatePublicWebsite test/data.json test/site
+
+  if [ -d ../splight.fr-data -a -d ../splight.fr ]
+  then
+    npm run generatePublicWebsite ../splight.fr-data/data.json ../splight.fr/docs
+  fi
+fi
 
 if $SERVE_DEVELOPER_SITE
 then
