@@ -2,6 +2,7 @@
 
 const assert = require('assert').strict
 const browserify = require('browserify')
+const Canvas = require('canvas')
 const CleanCSS = require('clean-css')
 const deepcopy = require('deepcopy')
 const modernizr = require('modernizr')
@@ -12,6 +13,7 @@ const path = require('path')
 const sass = require('node-sass')
 
 const pages_ = require('./publicWebsite/pages')
+const randomizeCanvas = require('../randomizeCanvas')
 
 const oneWeek = pages_.durations.oneWeek
 
@@ -34,6 +36,8 @@ function * generate ({data, now, scripts}) {
   yield * Object.entries(preparedData).map(
     ([name, content]) => ['/' + name + '.json', Promise.resolve(neatJSON(content, {sort: true, wrap: true, afterColon: 1}) + '\n')]
   )
+
+  yield * generateImages({preparedData})
 
   yield * generatePages({preparedData, now, dateAfter, scripts})
 }
@@ -194,6 +198,26 @@ function * _prepareData ({data, now, dateAfter}) {
       ]
     }
   }
+}
+
+function * generateImages ({preparedData}) {
+  yield ['/ads/468x60.png', generateImage({width: 468, height: 60, seed: 'Publicité 468x60'})]
+  yield ['/ads/160x600.png', generateImage({width: 160, height: 600, seed: 'Publicité 160x600'})]
+
+  yield ['/all-tags.png', generateImage({width: 1104, height: 200, seed: "Toute l'actualité"})]
+
+  for (const city of preparedData['cities']) {
+    yield ['/' + city.slug + '.png', generateImage({width: 253, height: 200, seed: city.name})]
+    for (const tag of city.tags) {
+      yield ['/' + city.slug + '/' + tag.slug + '.png', generateImage({width: 253, height: 200, seed: tag.title})]
+    }
+  }
+}
+
+function generateImage ({width, height, seed}) {
+  const canvas = new Canvas(width, height)
+  randomizeCanvas({canvas, seed, width, height})
+  return canvas.toBuffer()
 }
 
 function * generatePages ({preparedData, now, dateAfter, scripts}) {

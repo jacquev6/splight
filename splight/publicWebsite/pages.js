@@ -13,21 +13,7 @@ const URI = require('urijs')
 moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
 
-const randomizeCanvas = require('../../randomizeCanvas')
-
 moment.locale('fr')
-
-function randomizeCanvases () {
-  jQuery('canvas[data-sp-random-seed]').each(function () {
-    const c = jQuery(this)
-    randomizeCanvas({
-      canvas: this,
-      seed: c.data('sp-random-seed'),
-      width: c.attr('width'),
-      height: c.attr('height')
-    })
-  })
-}
 
 const durations = (function () {
   const oneDay = (function () {
@@ -187,7 +173,6 @@ function make (now, fetcher) {
   const index = {
     path: '/',
     initializeInBrowser: function () {
-      randomizeCanvases()
       hookInternalLinks()
     },
     make: async function () {
@@ -217,7 +202,6 @@ function make (now, fetcher) {
     return {
       path: ['', citySlug, ''].join('/'),
       initializeInBrowser: function () {
-        randomizeCanvases()
         jQuery('.sp-now-week-link').attr('href', (index, href) => URI(href).path(cityTimespan(citySlug, now, durations.oneWeek).path).toString())
         hookInternalLinks()
       },
@@ -258,8 +242,6 @@ function make (now, fetcher) {
     return {
       path: makePath(startDate),
       initializeInBrowser: function () {
-        randomizeCanvases()
-
         jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(links.now1.path).toString())
         jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(links.now2.path).toString())
 
