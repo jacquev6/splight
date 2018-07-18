@@ -147,9 +147,13 @@ function make (now, fetcher) {
     return anticipatedNavigations[path].then(({title, jumbotron, content, page}) => ({title, jumbotron, content, page, path, query}))
   }
 
-  function navigateTo (url) {
+  function navigateTo ({url, overrideQuery}) {
     anticipateNavigationTo(url).then(({title, jumbotron, content, page, path, query}) => {
-      history.replaceState(null, title, URI(window.location.href).path(path).query(query || '').toString())
+      const newUrl = URI(window.location.href).path(path)
+      if (overrideQuery) {
+        newUrl.query(query || '')
+      }
+      history.replaceState(null, title, newUrl.toString())
       jQuery('title').text(title)
       jQuery('#sp-jumbotron').html(jumbotron)
       jQuery('#sp-content').html(content)
@@ -164,7 +168,7 @@ function make (now, fetcher) {
       if (event.ctrlKey || event.altKey || event.metaKey) {
         return true
       } else {
-        navigateTo(jQuery(this).attr('href'))
+        navigateTo({url: jQuery(this).attr('href'), overrideQuery: true})
         return false
       }
     })
@@ -268,9 +272,8 @@ function make (now, fetcher) {
           dropdown.on('change', function () {
             // @todo Fix bug: display one day, navigate to last saturday or sunday, switch to three days: nothing happens
             // because this would display a date that's not published
-            // @todo Fix buf: tag filter is not preserved when changing displayed duration
             const duration = durationsByDays[dropdown.val()]
-            navigateTo(cityTimespan(citySlug, startDate, duration).path)
+            navigateTo({url: cityTimespan(citySlug, startDate, duration).path, overrideQuery: false})
           })
         }())
 
