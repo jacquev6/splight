@@ -11,6 +11,7 @@ const mustache = require('mustache')
 const neatJSON = require('neatjson').neatJSON
 const path = require('path')
 const sass = require('node-sass')
+const terser = require('terser')
 
 const pages_ = require('./publicWebsite/pages')
 const randomizeCanvas = require('../randomizeCanvas')
@@ -82,8 +83,7 @@ function * generateAssets () {
           'feature-detects': Array.from(modernizrFeatures.map(([detect]) => detect))
         },
         function (result) {
-          // @todo Minify/uglify result
-          resolve(result)
+          resolve(terser.minify(result).code)
         }
       )
     )
