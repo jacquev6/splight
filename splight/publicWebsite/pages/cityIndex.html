@@ -1,15 +1,17 @@
-<div class="row"><div class="col-md-3"></div><div class="col-md-6">
-  <p><a class="sp-now-week-link" href="{{{nowWeekUrl}}}"><canvas class="img-fluid" width="768" height="288" data-sp-random-seed="Toute l'actualité"></canvas></a></p>
+<div class="row"><div class="col">
+  <div class="sp-needs-js"><p><a class="sp-now-week-link" href="{{{nowWeekUrl}}}"><canvas class="img-fluid" width="1104" height="200" data-sp-random-seed="Toute l'actualité"></canvas></a></p></div>
   <p><a class="sp-now-week-link" href="{{{nowWeekUrl}}}">Toute l'actualité</a></p>
 </div></div>
-<div class="row"><div class="col">
-  <h1>Catégories</h1>
-</div></div>
-<div class="row">
-  {{#tags}}
-  <div class="col-6 col-md-3">
-    <p><a class="sp-now-week-link" href="{{{nowWeekUrl}}}?{{slug}}"><canvas class="img-fluid" width="320" height="240" data-sp-random-seed="{{title}}"></canvas></a></p>
-    <p><a class="sp-now-week-link" href="{{{nowWeekUrl}}}?{{slug}}">{{title}}</a></p>
+<div class="sp-needs-js">
+  <div class="row"><div class="col">
+    <h1>Catégories</h1>
+  </div></div>
+  <div class="row">
+    {{#tags}}
+    <div class="col-6 col-md-3">
+      <p class="sp-needs-js"><a class="sp-now-week-link" href="{{{nowWeekUrl}}}?{{slug}}"><canvas class="img-fluid" width="253" height="200" data-sp-random-seed="{{title}}"></canvas></a></p>
+      <p><a class="sp-now-week-link" href="{{{nowWeekUrl}}}?{{slug}}">{{title}}</a></p>
+    </div>
+    {{/tags}}
   </div>
-  {{/tags}}
 </div>

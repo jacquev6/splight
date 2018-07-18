@@ -11,6 +11,7 @@ $complement: #FFBA31;
 $complement_dark: #FFAA00;
 $complement_very_dark: #B17600;
 
+
 body {
   background-color: $primary_very_light;
 }
@@ -28,53 +29,9 @@ h1 {
   color: $primary_very_dark;
 }
 
+
 a {
   color: $primary;
-}
-
-.sp-advertisement {
-  color: gray;
-  padding-bottom: 20px;
-}
-
-.sp-advertisement p {
-  margin: 0;
-  font-size: .8em;
-}
-
-.mdrn-js .sp-noscript {
-    display: none;
-}
-
-.mdrn-no-js .sp-retro {
-    display: none;
-}
-
-#{$modernizr-features} .sp-retro {
-    display: none;
-}
-
-.sp-modern {
-    display: none;
-    min-height: 200px;
-}
-
-#{$modernizr-features} .sp-modern {
-    display: block;
-}
-
-#sp-admin-mode-dashboard {
-    display: none;
-    position: fixed;
-    top: 0;
-    right: 25px;
-    z-index: 100000;
-}
-
-#sp-tag-filtering .form-check-inline {
-    padding: 2px;
-    border-radius: 3px;
-    border: solid 1px;
 }
 
 // https://stackoverflow.com/a/25478589/905845
@@ -87,3 +44,44 @@ a[target=_blank] {
     background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' version='1.1'><path fill='%23fff' stroke='#{url-friendly-colour($primary)}' d='M 0.5 3.5 L 8.5 3.5 L 8.5 11.5 L 0.5 11.5 Z M 0.5 3.5'/><path fill='%23fff' stroke='#{url-friendly-colour($primary)}' d='M 5 9 L 9.5 4.5 L 11.5 6.5 L 11.5 0.5 L 5.5 0.5 L 7.5 2.5 L 3 7 Z M 5 9'/></svg>");
     padding-right: 18px;
 }
+
+
+.sp-advertisement {
+  color: gray;
+  padding-bottom: 20px;
+}
+
+.sp-advertisement p {
+  margin: 0;
+  font-size: .8em;
+}
+
+
+#sp-no-javascript-warning, #sp-old-javascript-warning {
+  border: 3px solid red;
+  padding: 1em;
+}
+
+.mdrn-js #sp-no-javascript-warning {
+  display: none;
+}
+
+.mdrn-no-js #sp-old-javascript-warning, #{$modernizr-features} #sp-old-javascript-warning {
+  display: none;
+}
+
+.sp-needs-js {
+  display: none;
+}
+
+.mdrn-js#{$modernizr-features} div.sp-needs-js {
+  display: block;
+}
+
+
+#sp-tag-filtering .form-check-inline {
+    padding: 2px;
+    border-radius: 3px;
+    border: solid 1px;
+}
+
