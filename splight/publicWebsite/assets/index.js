@@ -1,6 +1,6 @@
 'use strict'
 
-/* global setTimeout */
+/* global setTimeout, Modernizr */
 
 const assert = require('assert')
 const bootstrap = require('bootstrap') // eslint-disable-line
@@ -14,27 +14,39 @@ const pages = require('../pages')
 moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
 
-const fetcher = (function () {
-  const data = {}
+var hasModernJavascript = true
 
-  function get (key) {
-    if (!data[key]) {
-      data[key] = jquery.getJSON('/' + key + '.json')
-    }
-    return data[key]
-  }
-
-  return {
-    getCities: function () {
-      return get('cities')
-    },
-
-    getCityWeek: function (citySlug, week) {
-      return get(citySlug + '/' + week.format(moment.HTML5_FMT.WEEK))
+for (var k in Modernizr) {
+  if (Modernizr.hasOwnProperty(k)) {
+    if (!Modernizr[k]) {
+      hasModernJavascript = false
     }
   }
-}())
+}
 
-jquery(function () {
-  pages.make(moment(), fetcher).fromPath(URI.parse(window.location.href).path).initializeInBrowser()
-})
+if (hasModernJavascript) {
+  const fetcher = (function () {
+    const data = {}
+
+    function get (key) {
+      if (!data[key]) {
+        data[key] = jquery.getJSON('/' + key + '.json')
+      }
+      return data[key]
+    }
+
+    return {
+      getCities: function () {
+        return get('cities')
+      },
+
+      getCityWeek: function (citySlug, week) {
+        return get(citySlug + '/' + week.format(moment.HTML5_FMT.WEEK))
+      }
+    }
+  }())
+
+  jquery(function () {
+    pages.make(moment(), fetcher).fromPath(URI.parse(window.location.href).path).initializeInBrowser()
+  })
+}
