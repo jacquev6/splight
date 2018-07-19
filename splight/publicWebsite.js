@@ -26,11 +26,11 @@ assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
 function * generate ({data, now, scripts}) {
   const dateAfter = now.clone().startOf('isoWeek').add(5, 'weeks')
 
-  // @todo favicon.ico
-
   yield * generateSkeleton()
 
   yield * generateAssets()
+
+  yield generateFavicon()
 
   const preparedData = prepareData({data, now, dateAfter})
 
@@ -221,6 +221,40 @@ function * generateImages ({preparedData}) {
       yield ['/' + city.slug + '/' + tag.slug + '.png', generateImage({width: 253, height: 200, seed: tag.title})]
     }
   }
+}
+
+function generateFavicon () {
+  const width = 32
+  const height = 32
+  assert(width < 256)
+  assert(height < 256)
+
+  const png = generateImage({width, height, seed: 'favicon'})
+
+  const s0 = png.length % 256
+  const s1 = Math.floor(png.length / 256) % 256
+  const s2 = Math.floor(png.length / 256 / 256) % 256
+  const s3 = Math.floor(png.length / 256 / 256 / 256) % 256
+  assert.equal(png.length, s0 + (256 * s1 + 256 * (s2 + 256 * s3)))
+
+  const header = Buffer.from([
+    // https://en.wikipedia.org/wiki/ICO_%28file_format%29#Outline
+    // ICONDIR
+    0, 0, // Reserved
+    1, 0, // .ico
+    1, 0, // 1 image
+    // ICONDIRENTRY
+    width,
+    height,
+    0, // No palette
+    0, // Reserved
+    0, 0, // Color planes
+    0, 0, // Bits per pixels
+    s0, s1, s2, s3, // Size of data
+    22, 0, 0, 0 // Offset of data
+  ])
+
+  return ['/favicon.ico', Buffer.concat([header, png])]
 }
 
 function generateImage ({width, height, seed}) {
