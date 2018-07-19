@@ -5,6 +5,7 @@ const browserify = require('browserify')
 const Canvas = require('canvas')
 const CleanCSS = require('clean-css')
 const deepcopy = require('deepcopy')
+const htmlMinifier = require('html-minifier')
 const modernizr = require('modernizr')
 const moment = require('moment')
 const mustache = require('mustache')
@@ -264,14 +265,19 @@ function generateImage ({width, height, seed}) {
 }
 
 function * generatePages ({preparedData, now, dateAfter, scripts}) {
-  function renderContained ({title, jumbotron, content}) {
-    return mustache.render(require('./publicWebsite/container.html'), {title, scripts, jumbotron, content})
+  function render ({title, jumbotron, content}) {
+    return htmlMinifier.minify(
+      mustache.render(require('./publicWebsite/container.html'), {title, scripts, jumbotron, content}),
+      {
+        collapseWhitespace: true
+      }
+    )
   }
 
   for (var page of _generatePages({preparedData, now, dateAfter})) {
     yield [
       page.path,
-      page.make().then(renderContained)
+      page.make().then(render)
     ]
   }
 }
