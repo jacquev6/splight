@@ -21,14 +21,19 @@ const randomizeCanvas = require('../randomizeCanvas')
 
 const oneWeek = durations.oneWeek
 
-function * generate ({data, now, scripts}) {
-  const dateAfter = now.clone().startOf('isoWeek').add(5, 'weeks')
+function * generate (config) {
+  yield * generateConstants()
+  yield * generateDataDependent(config)
+}
 
+function * generateConstants () {
   yield * generateSkeleton()
-
   yield * generateAssets()
-
   yield generateFavicon()
+}
+
+function * generateDataDependent ({data, now, scripts}) {
+  const dateAfter = now.clone().startOf('isoWeek').add(5, 'weeks')
 
   const preparedData = prepareData({data, now, dateAfter})
 
@@ -319,3 +324,5 @@ exports.forTest = {
 }
 
 exports.generate = generate
+exports.generateConstants = generateConstants
+exports.generateDataDependent = generateDataDependent
