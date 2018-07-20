@@ -1,6 +1,6 @@
 'use strict'
 
-/* global history, Image */
+/* global history */
 
 const jQuery = require('jquery')
 const URI = require('urijs')
@@ -11,15 +11,12 @@ function make (pageOfPath) {
   async function preload (path) {
     const page = pageOfPath(path)
 
-    // @todo Could we render the title and content html instead of explicitly listing images?
-    // There could (will) be other resources than images, so a more generic method would be more robust
-    ;(await page.images()).forEach(image => {
-      new Image().src = image
-    })
+    await page.title.text
+    // Build DOM elements to pre-fetch external resources like images
+    const titleElement = jQuery(await page.title.html)
+    const contentElement = jQuery(await page.content.html)
 
-    await Promise.all([page.title.text, page.title.html, page.content.html])
-
-    return page
+    return {page, titleElement, contentElement}
   }
 
   function register (path) {
@@ -31,7 +28,7 @@ function make (pageOfPath) {
 
   async function go ({url, overrideQuery}) {
     url = URI.parse(url)
-    const page = await register(url.path)
+    const {page, titleElement, contentElement} = await register(url.path)
     const newUrl = URI(window.location.href).path(url.path)
     if (overrideQuery) {
       newUrl.query(url.query || '')
@@ -39,8 +36,8 @@ function make (pageOfPath) {
     history.replaceState(null, '', newUrl.toString())
     // @todo Should these updates be a method of the page object?
     jQuery('title').text(await page.title.text)
-    jQuery('#sp-jumbotron').html(await page.title.html)
-    jQuery('#sp-content').html(await page.content.html)
+    jQuery('#sp-jumbotron').html(titleElement)
+    jQuery('#sp-content').html(contentElement)
     page.initialize()
   }
 

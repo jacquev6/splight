@@ -31,9 +31,6 @@ function make ({fetcher, now}) {
         title.initialize()
         content.initialize()
         preBrowser.initialize()
-      },
-      images: async function () {
-        return (await source.getCities()).map(city => '/' + city.slug + '.png')
       }
     }
   }
@@ -50,10 +47,6 @@ function make ({fetcher, now}) {
         title.initialize()
         content.initialize()
         preBrowser.initialize()
-      },
-      images: async function () {
-        const city = await source.getCity(citySlug)
-        return ['/all-tags.png'].concat(city.tags.map(tag => '/' + city.slug + '/' + tag.slug + '.png'))
       }
     }
   }
@@ -70,9 +63,6 @@ function make ({fetcher, now}) {
         title.initialize()
         content.initialize()
         preBrowser.initialize()
-      },
-      images: async function () {
-        return []
       }
     }
   }
