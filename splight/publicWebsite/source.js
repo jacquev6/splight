@@ -8,47 +8,53 @@ function make ({fetcher, now}) {
     return now
   }
 
-  const cities = fetcher.getCities()
+  const cities = (async () =>
+    (await fetcher.cities).map(({slug, name}) => ({slug, name}))
+  )()
 
   function getCities () {
     return cities
   }
 
-  const citiesBySlug = cities.then(cities => {
+  const citiesBySlug = (async () => {
     const citiesBySlug = {}
-    cities.forEach(city => {
-      citiesBySlug[city.slug] = city
+    ;(await fetcher.cities).forEach(({slug, name, tags}) => {
+      citiesBySlug[slug] = {
+        slug,
+        name,
+        tags: tags.map(({slug, title}) => ({slug, title}))
+      }
     })
     return citiesBySlug
-  })
+  })()
 
   async function getCity (citySlug) {
     return (await citiesBySlug)[citySlug]
   }
 
-  const cityWeeks = {}
+  const events = {}
 
-  function getCityWeek (citySlug, week) {
+  function fetchEvents (citySlug, week) {
     assert(week.isSame(week.clone().startOf('isoWeek')))
     const key = citySlug + '/' + week.format()
-    if (!cityWeeks[key]) {
-      cityWeeks[key] = fetcher.getCityWeek(citySlug, week).then(cityWeek => {
-        cityWeek.events.forEach(event => {
-          event.start = moment(event.start, moment.HTML5_FMT.DATETIME_LOCAL, true)
-        })
-        return cityWeek
-      })
+    if (!events[key]) {
+      events[key] = (async () =>
+        (await fetcher.getCityWeek(citySlug, week)).events.map(({start, title, tags}) => ({
+          start: moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true),
+          title,
+          tags
+        }))
+      )()
     }
-    return cityWeeks[key]
+    return events[key]
   }
 
   async function getEvents (citySlug, startDate, dateAfter) {
-    const weeksToFetch = []
+    const weeks = []
     for (var week = startDate.clone().startOf('isoWeek'); week.isBefore(dateAfter); week.add(7, 'days')) {
-      weeksToFetch.push(getCityWeek(citySlug, week).then(({events}) => events))
+      weeks.push(fetchEvents(citySlug, week))
     }
-    const weeks = await Promise.all(weeksToFetch)
-    return weeks.reduce(
+    return (await Promise.all(weeks)).reduce(
       (a, b) => a.concat(b)
     ).filter(
       ({start}) => start.isBetween(startDate, dateAfter, null, '[)')

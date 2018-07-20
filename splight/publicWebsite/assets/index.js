@@ -39,9 +39,7 @@ if (hasModernJavascript) {
     }
 
     return {
-      getCities: function () {
-        return get('cities')
-      },
+      cities: get('cities'),
 
       getCityWeek: function (citySlug, week) {
         return get(citySlug + '/' + week.format(durations.oneWeek.slugFormat))

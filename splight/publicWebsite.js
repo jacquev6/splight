@@ -279,9 +279,7 @@ function * generatePages ({preparedData, now, dateAfter, scripts}) {
 
 function * _generatePages ({preparedData, now, dateAfter}) {
   const fetcher = {
-    getCities: async function () {
-      return deepcopy(preparedData['cities'])
-    },
+    cities: Promise.resolve(preparedData['cities']),
 
     getCityWeek: async function (citySlug, week) {
       return preparedData[path.join(citySlug, week.format(oneWeek.slugFormat))]
