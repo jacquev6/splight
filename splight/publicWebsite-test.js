@@ -1,10 +1,15 @@
 'use strict'
 
+require('stringify').registerWithRequire(['.html'])
+
 /* global describe, it */
 
 const assert = require('assert').strict
 const moment = require('moment')
 const path = require('path')
+
+// @todo Remove when fix for https://github.com/moment/moment/issues/4698 is on npm
+moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 
 const publicWebsite = require('./publicWebsite').forTest
 

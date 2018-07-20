@@ -8,21 +8,18 @@ const deepcopy = require('deepcopy')
 const htmlMinifier = require('html-minifier')
 const modernizr = require('modernizr')
 const moment = require('moment')
-const mustache = require('mustache')
 const neatJSON = require('neatjson').neatJSON
 const path = require('path')
 const sass = require('node-sass')
 const terser = require('terser')
 const XmlSitemap = require('xml-sitemap')
 
+const container = require('./publicWebsite/widgets/container')
 const pages_ = require('./publicWebsite/pages')
+const durations = require('./publicWebsite/durations')
 const randomizeCanvas = require('../randomizeCanvas')
 
-const oneWeek = pages_.durations.oneWeek
-
-// @todo Remove when https://github.com/moment/moment/issues/4698 is fixed on npm
-moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
-assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
+const oneWeek = durations.oneWeek
 
 function * generate ({data, now, scripts}) {
   const dateAfter = now.clone().startOf('isoWeek').add(5, 'weeks')
@@ -266,9 +263,9 @@ function generateImage ({width, height, seed}) {
 }
 
 function * generatePages ({preparedData, now, dateAfter, scripts}) {
-  function render ({title, jumbotron, content}) {
+  async function render (page) {
     return htmlMinifier.minify(
-      mustache.render(require('./publicWebsite/container.html'), {title, scripts, jumbotron, content}),
+      await container.make({page, scripts}).html,
       {
         collapseWhitespace: true
       }
@@ -276,10 +273,7 @@ function * generatePages ({preparedData, now, dateAfter, scripts}) {
   }
 
   for (var page of _generatePages({preparedData, now, dateAfter})) {
-    yield [
-      page.path,
-      page.make().then(render)
-    ]
+    yield [page.path, render(page)]
   }
 }
 
@@ -290,16 +284,16 @@ function * _generatePages ({preparedData, now, dateAfter}) {
     },
 
     getCityWeek: async function (citySlug, week) {
-      return preparedData[path.join(citySlug, week.format(moment.HTML5_FMT.WEEK))]
+      return preparedData[path.join(citySlug, week.format(oneWeek.slugFormat))]
     }
   }
 
-  const pages = pages_.make(now, fetcher)
+  const pages = pages_.make({fetcher, now})
 
-  yield pages.index
+  yield pages.root()
 
   for (var city of preparedData['cities']) {
-    yield pages.cityIndex(city.slug)
+    yield pages.city(city.slug)
   }
 
   for (var key in preparedData) {
@@ -309,13 +303,13 @@ function * _generatePages ({preparedData, now, dateAfter}) {
       const weekStartDate = moment(weekSlug, oneWeek.slugFormat, true)
       const weekDateAfter = oneWeek.dateAfter(weekStartDate)
       const isLastWeek = weekDateAfter.isSameOrAfter(dateAfter)
-      for (var duration of Object.values(pages_.durations)) {
+      for (var duration of durations.all) {
         for (
           var startDate = weekStartDate.clone();
           (isLastWeek ? duration.dateAfter(startDate).isSameOrBefore(dateAfter) : startDate.isBefore(weekDateAfter));
           startDate = duration.links.next.startDate(startDate)
         ) {
-          yield pages.cityTimespan(citySlug, startDate, duration)
+          yield pages.timespan(citySlug, startDate, duration)
         }
       }
     }

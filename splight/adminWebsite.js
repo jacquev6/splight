@@ -7,8 +7,9 @@ const path = require('path')
 const sass = require('node-sass')
 const util = require('util')
 
-const publicWebsite = require('./publicWebsite')
 const data_ = require('./data')
+const indexTemplate = require('./adminWebsite/index.html')
+const publicWebsite = require('./publicWebsite')
 
 exports.populateApp = async function ({app, inputDataFile, scripts}) {
   const now = moment().subtract(2, 'days') // Simulate a site generated 2 days ago
@@ -21,7 +22,7 @@ exports.populateApp = async function ({app, inputDataFile, scripts}) {
   }
 
   (function () {
-    const text = mustache.render(require('./adminWebsite/index.html'), {scripts})
+    const text = mustache.render(indexTemplate, {scripts})
     app.get('/admin/', (req, res) => res.type('.html').send(text))
   }())
 
