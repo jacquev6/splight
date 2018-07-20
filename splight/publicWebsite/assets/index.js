@@ -3,6 +3,8 @@
 /* global setTimeout, Modernizr */
 
 const assert = require('assert')
+assert(false) // This is removed by the unassertify plugin of browserify
+
 const bootstrap = require('bootstrap') // eslint-disable-line
 const jquery = require('jquery')
 const moment = require('moment')

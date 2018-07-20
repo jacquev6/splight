@@ -105,6 +105,7 @@ function * generateAssets () {
     new Promise((resolve, reject) =>
       browserify('splight/publicWebsite/assets/index.js')
         .transform('stringify', ['.html'])
+        .transform('unassertify')
         .transform('uglifyify', {global: true})
         .bundle(function (error, result) {
           if (error) {

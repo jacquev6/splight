@@ -34,6 +34,7 @@
     "stringify": "^5.2.0",
     "terser": "^3.8.0",
     "uglifyify": "^5.0.1",
+    "unassertify": "^2.1.1",
     "urijs": "^1.19.1",
     "xml-sitemap": "^0.3.2"
   },
