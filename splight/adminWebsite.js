@@ -6,68 +6,79 @@ const moment = require('moment')
 const mustache = require('mustache')
 const path = require('path')
 const sass = require('node-sass')
-const util = require('util')
 
 const data_ = require('./data')
-const durations = require('./publicWebsite/durations')
-const indexTemplate = require('./adminWebsite/index.html')
-const paths = require('./publicWebsite/paths')
+const indexTemplate = require('./adminWebsite/assets/index.html')
 const publicWebsite = require('./publicWebsite')
+const restApiServer = require('./adminWebsite/restApiServer')
 
-function addRoutes (router, routes) {
+function * generateAssets ({scripts}) {
+  yield ['/admin/', mustache.render(indexTemplate, {scripts})]
+
+  yield [
+    '/admin/index.js',
+    new Promise((resolve, reject) =>
+      browserify('splight/adminWebsite/assets/index.js')
+        .bundle(function (error, result) {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(result)
+          }
+        })
+    )
+  ]
+
+  yield [
+    '/admin/index.css',
+    new Promise((resolve, reject) =>
+      sass.render(
+        {file: 'splight/adminWebsite/assets/index.scss'},
+        function (error, result) {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(result.css)
+          }
+        }
+      )
+    )
+  ]
+}
+
+function addPrecomputedDocuments (router, routes) {
   const contents = []
   for (var [name, content] of routes) {
     const type = name.endsWith('/') ? '.html' : path.extname(name)
     contents.push(content)
-    router.get(name.replace('+', '\\+'), (content => (async (req, res) => res.type(type).send(await content)))(content))
+    router.get(name.replace('+', '\\+'), (content => async (req, res) => res.type(type).send(await content))(content))
   }
   return Promise.all(contents)
 }
 
-exports.populateApp = async function ({app, inputDataFile, scripts}) {
+async function populateApp ({app, inputDataFile, scripts}) {
   const now = moment().subtract(2, 'days') // Simulate a site generated 2 days ago
+
+  await addPrecomputedDocuments(app, generateAssets({scripts}))
+  await addPrecomputedDocuments(app, publicWebsite.generateConstants())
+
+  var router = null
+  app.use(function (req, res, next) { router(req, res, next) }) // https://github.com/expressjs/express/issues/2596
+
   const data = await data_.load(inputDataFile)
-
-  await addRoutes(app, publicWebsite.generateConstants())
-
-  var router = express.Router()
-  // https://github.com/expressjs/express/issues/2596
-  app.use(function (req, res, next) {
-    router(req, res, next)
-  })
-  await addRoutes(router, publicWebsite.generateDataDependent({data, now, scripts}))
-
-  ;(function () {
-    const text = mustache.render(indexTemplate, {scripts})
-    app.get('/admin/', (req, res) => res.type('.html').send(text))
-  }())
-
-  await (async function () {
-    const text = await util.promisify(cb => browserify('splight/adminWebsite/index.js').bundle(cb))()
-    app.get('/admin/index.js', (req, res) => res.type('.js').send(text))
-  }())
-
-  await (async function () {
-    const text = (await util.promisify(cb => sass.render({file: 'splight/adminWebsite/index.scss'}, cb))()).css
-    app.get('/admin/index.css', (req, res) => res.type('.css').send(text))
-  }())
-
-  app.post('/admin/api/cities/avalon/events/', async function (req, res) {
-    const start = moment()
-    const event = {
-      occurences: [
-        {start: start.format(moment.HTML5_FMT.DATETIME_LOCAL)}
-      ],
-      title: 'Foo bar baz',
-      tags: ['tag-1'],
-      location: 'location-1'
-    }
-    data.cities[1].events.push(event)
+  function handleDataChange () {
     data_.dump(data, inputDataFile)
-
     router = express.Router()
-    addRoutes(router, publicWebsite.generateDataDependent({data, now, scripts}))
+    return addPrecomputedDocuments(router, publicWebsite.generateDataDependent({data, now, scripts}))
+  }
+  await handleDataChange()
 
-    res.redirect('/admin/?public=' + paths.timespan('avalon', start, durations.oneWeek))
+  restApiServer.populateApp({
+    app,
+    prefix: '/admin/api',
+    handleDataChange,
+    data
   })
 }
+
+exports.populateApp = populateApp
