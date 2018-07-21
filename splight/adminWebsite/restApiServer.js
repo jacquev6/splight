@@ -7,22 +7,45 @@ const moment = require('moment')
 const durations = require('../publicWebsite/durations')
 const paths = require('../publicWebsite/paths')
 
-function populateApp ({app, prefix, handleDataChange, data}) {
+function populateApp ({app, handleDataChange, data}) {
   const router = express.Router()
   app.use(router)
 
   router.use(bodyParser.json())
 
+  router.get('/admin/api/artists/', function (req, res) {
+    res.send(Object.entries(data.artists).map(([slug, {name}]) => ({slug, name})))
+  })
+
+  router.get('/admin/api/cities/', function (req, res) {
+    res.send(data.cities.map(({slug, name}) => ({slug, name})))
+  })
+
+  function cityBySlug (citySlug) {
+    for (var city of data.cities) {
+      if (city.slug === citySlug) {
+        return city
+      }
+    }
+  }
+
+  router.get('/admin/api/cities/:citySlug/tags/', function (req, res) {
+    const citySlug = req.params.citySlug
+
+    res.send(cityBySlug(citySlug).tags.map(({slug, title}) => ({slug, title})))
+  })
+
+  router.get('/admin/api/cities/:citySlug/locations/', function (req, res) {
+    const citySlug = req.params.citySlug
+
+    res.send(Object.entries(cityBySlug(citySlug).locations).map(([slug, {name}]) => ({slug, name})))
+  })
+
   router.post('/admin/api/cities/:citySlug/events/', async function (req, res) {
     const citySlug = req.params.citySlug
     const event = req.body
 
-    for (var city of data.cities) {
-      if (city.slug === citySlug) {
-        city.events.push(event)
-        break
-      }
-    }
+    cityBySlug(citySlug).events.push(event)
 
     handleDataChange()
 

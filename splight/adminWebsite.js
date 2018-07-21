@@ -75,7 +75,6 @@ async function populateApp ({app, inputDataFile, scripts}) {
 
   restApiServer.populateApp({
     app,
-    prefix: '/admin/api',
     handleDataChange,
     data
   })
