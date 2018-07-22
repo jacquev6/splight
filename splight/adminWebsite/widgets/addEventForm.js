@@ -15,12 +15,16 @@ function make ({publicIFrame}) {
   async function submit() {
     const citySlug = jQuery('#spa-select-city').val()
     const event = {
+      artist: jQuery('#spa-add-event-artist').val(),
+      location: jQuery('#spa-add-event-location').val(),
       occurences: [
         {start: jQuery('#spa-add-event-start').val()}
       ],
-      title: jQuery('#spa-add-event-title').val(),
-      tags: [jQuery('#spa-add-event-main-tag').val()],
-      location: jQuery('#spa-add-event-location').val()
+      tags:
+        [jQuery('#spa-add-event-main-tag').val()].concat(
+          jQuery('#spa-add-event-secondary-tags input:checked').map((index, tag) => jQuery(tag).val()).get()
+        ),
+      title: jQuery('#spa-add-event-title').val()
     }
 
     const response = await restApiClient.addEvent({citySlug, event})
@@ -35,12 +39,24 @@ function make ({publicIFrame}) {
       )
     )
 
+    const tags = await restApiClient.getTags({citySlug})
+    const mainTag = jQuery('#spa-add-event-main-tag')
+    const secondaryTags = jQuery('#spa-add-event-secondary-tags')
     fillSelect(
-      jQuery('#spa-add-event-main-tag'),
-      (await restApiClient.getTags({citySlug})).map(({slug, title}) =>
+      mainTag,
+      tags.map(({slug, title}) =>
         ({value: slug, display: title})
       )
     )
+    secondaryTags.empty()
+    tags.forEach(({slug, title}) => {
+      secondaryTags.append('<label>' + title + ' <input type="checkbox" value="' + slug + '"></label>')
+    })
+    mainTag.on('change', () => {
+      secondaryTags
+        .find('input').attr("disabled", false)
+        .filter('[value=' + mainTag.val() + ']').prop("checked", false).attr("disabled", true)
+    })
 
     fillSelect(
       jQuery('#spa-add-event-location'),
