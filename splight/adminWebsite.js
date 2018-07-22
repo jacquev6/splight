@@ -8,17 +8,28 @@ const path = require('path')
 const sass = require('node-sass')
 
 const data_ = require('./data')
-const indexTemplate = require('./adminWebsite/assets/index.html')
+const page = require('./adminWebsite/page')
 const publicWebsite = require('./publicWebsite')
 const restApiServer = require('./adminWebsite/restApiServer')
+const template = require('./adminWebsite/assets/index.html')
 
 function * generateAssets ({scripts}) {
-  yield ['/admin/', mustache.render(indexTemplate, {scripts})]
+  yield [
+    '/admin/',
+    mustache.render(
+      template,
+      {
+        scripts,
+        body: page.make({scripts}).body
+      }
+    )
+  ]
 
   yield [
     '/admin/index.js',
     new Promise((resolve, reject) =>
       browserify('splight/adminWebsite/assets/index.js')
+        .transform('stringify', ['.html'])
         .bundle(function (error, result) {
           if (error) {
             reject(error)

@@ -9,27 +9,7 @@
     <title>Administration - Splight</title>
   </head>
   <body>
-    <div style="width: 100%; height: 50%; position: absolute; top: 0; overflow-y: scroll">
-      <div class="container-fluid">
-        <h1>Administration&nbsp;: ville de <select id="spa-select-city"></select></h1>
-        <div id="spa-city" style="display: none">
-          <div class="row">
-            <div class="col">
-              <h2><select><option>Ajouter</option></select> un <select><option>événement</option></select></h2>
-              <form id="spa-add-event">
-                <p><label>Titre&nbsp;: <input id="spa-add-event-title"></input></label></p>
-                <p><label>Lieu&nbsp;: <select id="spa-add-event-location"></select></label></p>
-                <p><label>Artiste&nbsp;: <select id="spa-add-event-artist"></select></label></p>
-                <p><label>Catégorie principale&nbsp;: <select id="spa-add-event-tag"></select></label></p>
-                <p><label>Date et heure&nbsp;: <input id="spa-add-event-start" type="datetime-local"></input></label></p>
-                <p><button type="submit">Ajouter un événement</button></p>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <iframe id="spa-public" style="width: 100%; height: 50%; position: absolute; bottom: 0" src="/"></iframe>
+{{{body.html}}}
     <script src="/admin/index.js"></script>{{#scripts}}<script src="{{{.}}}"></script>{{/scripts}}
   </body>
 </html>
