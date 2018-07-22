@@ -12,16 +12,16 @@ const {fillSelect} = utils
 function make ({publicIFrame}) {
   const html = mustache.render(template, {})
 
-  async function submit() {
+  async function submit () {
     const citySlug = jQuery('#spa-select-city').val()
     const event = {
       artist: jQuery('#spa-add-event-artist').val(),
       location: jQuery('#spa-add-event-location').val(),
-      occurences: [
-        {start: jQuery('#spa-add-event-start').val()}
-      ],
+      occurences: jQuery('#spa-add-event-occurences input').map((index, start) => ({start: jQuery(start).val()})).get(),
       tags:
-        [jQuery('#spa-add-event-main-tag').val()].concat(
+        [
+          jQuery('#spa-add-event-main-tag').val()
+        ].concat(
           jQuery('#spa-add-event-secondary-tags input:checked').map((index, tag) => jQuery(tag).val()).get()
         ),
       title: jQuery('#spa-add-event-title').val()
@@ -50,12 +50,12 @@ function make ({publicIFrame}) {
     )
     secondaryTags.empty()
     tags.forEach(({slug, title}) => {
-      secondaryTags.append('<label>' + title + ' <input type="checkbox" value="' + slug + '"></label>')
+      secondaryTags.append(' <label>' + title + ' <input type="checkbox" value="' + slug + '"></label>')
     })
     mainTag.on('change', () => {
       secondaryTags
-        .find('input').attr("disabled", false)
-        .filter('[value=' + mainTag.val() + ']').prop("checked", false).attr("disabled", true)
+        .find('input').attr('disabled', false)
+        .filter('[value=' + mainTag.val() + ']').prop('checked', false).attr('disabled', true)
     })
 
     fillSelect(
@@ -65,12 +65,19 @@ function make ({publicIFrame}) {
       )
     )
 
-    const form = jQuery('#spa-add-event')
-    form.off('submit')
-    form.on('submit', () => {
-      submit()
-      return false
-    })
+    const occurences = jQuery('#spa-add-event-occurences')
+    const occurenceInput = ' <input type="datetime-local"></input>'
+    occurences.html(occurenceInput)
+    jQuery('#spa-add-event-add-occurence')
+      .off('click')
+      .on('click', () => { occurences.append(occurenceInput) })
+
+    jQuery('#spa-add-event')
+      .off('submit')
+      .on('submit', () => {
+        submit()
+        return false
+      })
   }
 
   return {html, initialize}
