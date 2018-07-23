@@ -6,7 +6,7 @@
         {
           "artist": "artist-1",
           "location": "location-1",
-          "occurences": [{"start": "2018-07-18T12:00"}],
+          "occurences": [{"start": "2018-07-25T12:00"}],
           "tags": ["tag-1"],
           "title": "Seul événement"
         }
@@ -20,49 +20,49 @@
       "events": [
         {
           "location": "location-1",
-          "occurences": [{"start": "2018-07-10T13:00"}],
+          "occurences": [{"start": "2018-07-17T13:00"}],
           "tags": ["tag-1"],
           "title": "Événement 1"
         },
         {
           "location": "location-1",
-          "occurences": [{"start": "2018-07-17T14:00"}],
+          "occurences": [{"start": "2018-07-24T14:00"}],
           "tags": ["tag-1"],
           "title": "Événement 2-1"
         },
         {
           "location": "location-1",
-          "occurences": [{"start": "2018-07-18T14:00"}],
+          "occurences": [{"start": "2018-07-25T14:00"}],
           "tags": ["tag-2"],
           "title": "Événement 2-2"
         },
         {
           "location": "location-1",
-          "occurences": [{"start": "2018-07-19T14:00"}],
+          "occurences": [{"start": "2018-07-26T14:00"}],
           "tags": ["tag-1", "tag-2"],
           "title": "Événement 2-12"
         },
         {
           "location": "location-1",
-          "occurences": [{"start": "2018-07-24T15:00"}],
+          "occurences": [{"start": "2018-07-31T15:00"}],
           "tags": ["tag-1"],
           "title": "Événement 3"
         },
         {
           "location": "location-1",
-          "occurences": [{"start": "2018-07-31T16:00"}],
+          "occurences": [{"start": "2018-08-07T16:00"}],
           "tags": ["tag-1"],
           "title": "Événement 4"
         },
         {
           "location": "location-1",
-          "occurences": [{"start": "2018-08-07T17:00"}],
+          "occurences": [{"start": "2018-08-14T17:00"}],
           "tags": ["tag-1"],
           "title": "Événement 5"
         },
         {
           "location": "location-1",
-          "occurences": [{"start": "2018-08-14T18:00"}],
+          "occurences": [{"start": "2018-08-21T18:00"}],
           "tags": ["tag-1"],
           "title": "Événement 6"
         }

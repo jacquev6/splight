@@ -11,11 +11,11 @@ const path = require('path')
 moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 
 const publicWebsite = require('./splight/publicWebsite')
-const splightData = require('./splight/data')
+const data_ = require('./splight/data')
 
 async function main (inputDataFile, outputDirectory) {
-  const data = await splightData.load(inputDataFile)
-  await splightData.dump(data, inputDataFile)
+  const data = await data_.load(inputDataFile)
+  await data_.dump(data, inputDataFile)
   await fs.emptyDir(outputDirectory)
 
   for (var [name, content] of publicWebsite.generate({
