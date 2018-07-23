@@ -12,11 +12,22 @@ const {fillSelect} = utils
 function make ({publicIFrame}) {
   const html = mustache.render(template, {})
 
+  var citySlug = null
+
   async function submit () {
-    const citySlug = jQuery('#spa-select-city').val()
     const event = {
-      artist: jQuery('#spa-add-event-artist').val(),
-      location: jQuery('#spa-add-event-location').val(),
+      artist: jQuery('#spa-add-event-new-artist').is(':visible')
+        ? {
+          slug: jQuery('#spa-add-event-new-artist-slug').val(),
+          name: jQuery('#spa-add-event-new-artist-name').val()
+        }
+        : jQuery('#spa-add-event-artist').val(),
+      location: jQuery('#spa-add-event-new-location').is(':visible')
+        ? {
+          slug: jQuery('#spa-add-event-new-location-slug').val(),
+          name: jQuery('#spa-add-event-new-location-name').val()
+        }
+        : jQuery('#spa-add-event-location').val(),
       occurences: jQuery('#spa-add-event-occurences input').map((index, start) => ({start: jQuery(start).val()})).get(),
       tags:
         [
@@ -29,15 +40,28 @@ function make ({publicIFrame}) {
 
     const response = await restApiClient.addEvent({citySlug, event})
     publicIFrame.show(response.visible_at[0])
+    initialize(citySlug)
   }
 
-  async function initialize (citySlug) {
+  async function initialize (citySlug_) {
+    citySlug = citySlug_
+
     fillSelect(
       jQuery('#spa-add-event-artist'),
       (await restApiClient.getArtists()).map(({slug, name}) =>
         ({value: slug, display: name})
       )
     )
+    jQuery('#spa-add-event-artist').show()
+    jQuery('#spa-add-event-add-artist').show()
+    jQuery('#spa-add-event-new-artist').hide()
+    jQuery('#spa-add-event-add-artist')
+      .off('click')
+      .on('click', () => {
+        jQuery('#spa-add-event-artist').hide()
+        jQuery('#spa-add-event-add-artist').hide()
+        jQuery('#spa-add-event-new-artist').show()
+      })
 
     const tags = await restApiClient.getTags({citySlug})
     const mainTag = jQuery('#spa-add-event-main-tag')
@@ -64,6 +88,16 @@ function make ({publicIFrame}) {
         ({value: slug, display: name})
       )
     )
+    jQuery('#spa-add-event-location').show()
+    jQuery('#spa-add-event-add-location').show()
+    jQuery('#spa-add-event-new-location').hide()
+    jQuery('#spa-add-event-add-location')
+      .off('click')
+      .on('click', () => {
+        jQuery('#spa-add-event-location').hide()
+        jQuery('#spa-add-event-add-location').hide()
+        jQuery('#spa-add-event-new-location').show()
+      })
 
     const occurences = jQuery('#spa-add-event-occurences')
     const occurenceInput = ' <input type="datetime-local"></input>'
@@ -71,6 +105,10 @@ function make ({publicIFrame}) {
     jQuery('#spa-add-event-add-occurence')
       .off('click')
       .on('click', () => { occurences.append(occurenceInput) })
+
+    jQuery('#spa-add-event-cancel').on('click', () => {
+      initialize(citySlug)
+    })
 
     jQuery('#spa-add-event')
       .off('submit')

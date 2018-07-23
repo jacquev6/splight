@@ -45,7 +45,25 @@ function populateApp ({app, handleDataChange, data}) {
     const citySlug = req.params.citySlug
     const event = req.body
 
-    cityBySlug(citySlug).events.push(event)
+    if (typeof event.artist === 'object') {
+      const artist = event.artist
+      const artistSlug = artist.slug
+      delete artist.slug
+      event.artist = artistSlug
+      data.artists[artistSlug] = artist
+    }
+
+    const city = cityBySlug(citySlug)
+
+    if (typeof event.location === 'object') {
+      const location = event.location
+      const locationSlug = location.slug
+      delete location.slug
+      event.location = locationSlug
+      city.locations[locationSlug] = location
+    }
+
+    city.events.push(event)
 
     handleDataChange()
 
