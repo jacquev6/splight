@@ -195,7 +195,7 @@ function * _prepareData ({data, now, dateAfter}) {
         if (!eventsByWeek[weekSlug]) {
           eventsByWeek[weekSlug] = []
         }
-        eventsByWeek[weekSlug].push({title, start: start.format(moment.HTML5_FMT.DATETIME_LOCAL), tags})
+        eventsByWeek[weekSlug].push({title, start, tags})
       })
     })
     for (
@@ -204,7 +204,11 @@ function * _prepareData ({data, now, dateAfter}) {
       startDate = oneWeek.links.next.startDate(startDate)
     ) {
       const weekSlug = startDate.format(oneWeek.slugFormat)
-      const events = eventsByWeek[weekSlug] || []
+      const events = (eventsByWeek[weekSlug] || []).sort((a, b) =>
+        a.start.diff(b.start)
+      ).map(({title, start, tags}) =>
+        ({title, start: start.format(moment.HTML5_FMT.DATETIME_LOCAL), tags})
+      )
       yield [
         path.join(city.slug, weekSlug),
         {events}
