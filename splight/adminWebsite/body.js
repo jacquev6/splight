@@ -5,7 +5,7 @@ const mustache = require('mustache')
 
 const addEventForm_ = require('./widgets/addEventForm')
 const restApiClient = require('./restApiClient')
-const template = require('./page.html')
+const template = require('./body.html')
 const utils = require('./utils')
 
 const {fillSelect} = utils
@@ -45,7 +45,7 @@ function make () {
     )
   }
 
-  return {body: {html}, initialize}
+  return {html, initialize}
 }
 
 exports.make = make

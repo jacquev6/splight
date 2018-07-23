@@ -8,7 +8,7 @@ const path = require('path')
 const sass = require('node-sass')
 
 const data_ = require('./data')
-const page = require('./adminWebsite/page')
+const body = require('./adminWebsite/body')
 const publicWebsite = require('./publicWebsite')
 const restApiServer = require('./adminWebsite/restApiServer')
 const template = require('./adminWebsite/assets/index.html')
@@ -20,7 +20,7 @@ function * generateAssets ({scripts}) {
       template,
       {
         scripts,
-        body: page.make({scripts}).body
+        body: body.make({scripts})
       }
     )
   ]
