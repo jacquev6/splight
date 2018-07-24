@@ -10,7 +10,7 @@ const sass = require('node-sass')
 
 const body = require('./adminWebsite/body')
 const data_ = require('./data')
-const graphqlApi = require('./adminWebsite/graphqlApi')
+const graphqlApi = require('./graphqlApi')
 const publicWebsite = require('./publicWebsite')
 const restApiServer = require('./adminWebsite/restApiServer')
 const template = require('./adminWebsite/assets/index.html')
