@@ -40,7 +40,8 @@ const schema = Joi.object({
 }).strict()
 
 async function load (fileName) {
-  return Joi.attempt(await fs.readJSON(fileName), schema)
+  // @todo WHY does the async readJSON version sometimes seem to read zero bytes?
+  return Joi.attempt(await fs.readJSONSync(fileName), schema)
 }
 
 async function dump (data, fileName) {
