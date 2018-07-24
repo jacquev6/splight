@@ -1,7 +1,6 @@
 'use strict'
 
 const graphql = require('graphql')
-const Joi = require('joi')
 const moment = require('moment')
 
 const schema = graphql.buildSchema(`
@@ -52,43 +51,8 @@ const schema = graphql.buildSchema(`
   }
 `)
 
-const slug = Joi.string().required().min(1)
-const name = Joi.string().required().min(1)
-
-const dataSchema = Joi.object({
-  artists: Joi.object().required().pattern(
-    Joi.string(),
-    Joi.object({
-      name
-    })
-  ),
-  cities: Joi.array().required().items(Joi.object({
-    slug,
-    name,
-    tags: Joi.array().required().items(Joi.object({
-      slug,
-      title: name
-    })),
-    locations: Joi.object().required().pattern(
-      Joi.string(),
-      Joi.object({
-        name
-      })
-    ),
-    events: Joi.array().required().items(Joi.object({
-      artist: Joi.string(),
-      location: Joi.string().required(),
-      occurences: Joi.array().required().items(Joi.object({
-        start: Joi.string().regex(/^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]$/)
-      })),
-      tags: Joi.array().required().items(Joi.string()),
-      title: Joi.string()
-    }))
-  }))
-}).strict()
-
-function query_ ({load, save}) {
-  const data = load().then(data => Joi.attempt(data, dataSchema))
+function makeRoot ({load}) {
+  const data = load()
 
   const citiesBySlug = data.then(({cities}) => {
     const citiesBySlug = {}
@@ -199,4 +163,4 @@ function city_ (artists, city) {
   return {slug, name, tags, firstDate, dateAfter, days}
 }
 
-Object.assign(exports, {schema, makeRoot: query_})
+Object.assign(exports, {schema, makeRoot})
