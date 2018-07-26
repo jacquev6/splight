@@ -1,8 +1,7 @@
 'use strict'
 
-const assert = require('assert').strict
+// const assert = require('assert').strict
 const browserify = require('browserify')
-const Canvas = require('canvas')
 const CleanCSS = require('clean-css')
 const express = require('express')
 const expressGraphql = require('express-graphql')
@@ -21,13 +20,12 @@ const data_ = require('./data')
 // const durations = require('./publicWebsite/durations')
 const graphqlApi = require('./graphqlApi')
 const pages = require('./publicWebsite/pages')
-const randomizeCanvas = require('../randomizeCanvas')
 
-async function makeRouter ({inputDataFile, scripts}) {
+async function makeRouter ({dataDirectory, scripts}) {
   const router = express.Router()
 
   const schema = graphqlApi.schema
-  const rootValue = graphqlApi.makeRoot({load: () => data_.load(inputDataFile)})
+  const rootValue = graphqlApi.makeRoot({load: () => data_.load(path.join(dataDirectory, 'data.json'))})
   router.use('/graphql', expressGraphql({schema, rootValue, graphiql: true}))
   function query (requestString, variableValues) {
     return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
@@ -44,6 +42,8 @@ async function makeRouter ({inputDataFile, scripts}) {
     router.get(pageClass.path, pageClass.handler)
   }
 
+  router.use(express.static(path.join(dataDirectory, 'images')))
+
   return router
 }
 
@@ -57,7 +57,6 @@ function * generateAssets ({indexJsFlavor}) {
   ]
 
   yield makeRobotsTxt()
-  yield makeFaviconIco()
   yield makeModernizerJs({modernizrFeatures})
   yield makeIndexJs({indexJsFlavor})
   yield makeIndexCss({modernizrFeatures})
@@ -65,46 +64,6 @@ function * generateAssets ({indexJsFlavor}) {
 
 function makeRobotsTxt () {
   return ['/robots.txt', Promise.resolve('Sitemap: https://splight.fr/sitemap.xml\n\nUser-agent: *\nAllow: /\n')]
-}
-
-function makeFaviconIco () {
-  const width = 32
-  const height = 32
-  assert(width < 256)
-  assert(height < 256)
-
-  const png = makeImage({width, height, seed: 'favicon'})
-
-  const s0 = png.length % 256
-  const s1 = Math.floor(png.length / 256) % 256
-  const s2 = Math.floor(png.length / 256 / 256) % 256
-  const s3 = Math.floor(png.length / 256 / 256 / 256) % 256
-  assert.equal(png.length, s0 + (256 * s1 + 256 * (s2 + 256 * s3)))
-
-  const header = Buffer.from([
-    // https://en.wikipedia.org/wiki/ICO_%28file_format%29#Outline
-    // ICONDIR
-    0, 0, // Reserved
-    1, 0, // .ico
-    1, 0, // 1 image
-    // ICONDIRENTRY
-    width,
-    height,
-    0, // No palette
-    0, // Reserved
-    0, 0, // Color planes
-    0, 0, // Bits per pixels
-    s0, s1, s2, s3, // Size of data
-    22, 0, 0, 0 // Offset of data
-  ])
-
-  return ['/favicon.ico', Buffer.concat([header, png])]
-}
-
-function makeImage ({width, height, seed}) {
-  const canvas = new Canvas(width, height)
-  randomizeCanvas({canvas, seed, width, height})
-  return canvas.toBuffer()
 }
 
 function makeModernizerJs ({modernizrFeatures}) {

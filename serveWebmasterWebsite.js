@@ -14,12 +14,12 @@ moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 
 const adminWebsite = require('./splight/adminWebsite')
 
-async function main (inputDataFile) {
+async function main (dataDirectory) {
   console.log('Starting webmaster website...')
 
   const app = express()
 
-  app.use(await adminWebsite.makeRouter({inputDataFile, scripts: ['/shutdown/shutdown.js']}))
+  app.use(await adminWebsite.makeRouter({dataDirectory, scripts: ['/shutdown/shutdown.js']}))
 
   app.get(
     '/shutdown/shutdown.js',

@@ -11,6 +11,6 @@ moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 const publicWebsite = require('./splight/publicWebsite')
 
 publicWebsite.generate({
-  inputDataFile: process.argv[2],
+  dataDirectory: process.argv[2],
   outputDirectory: process.argv[3]
 })

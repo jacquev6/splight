@@ -104,8 +104,8 @@ const publicWebsite = require('./publicWebsite')
 //   return router
 // }
 
-function makeRouter ({inputDataFile, scripts}) {
-  return publicWebsite.makeRouter({inputDataFile, scripts})
+function makeRouter (config) {
+  return publicWebsite.makeRouter(config)
 }
 
 Object.assign(exports, {makeRouter})

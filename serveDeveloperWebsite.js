@@ -12,13 +12,13 @@ moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 
 const adminWebsite = require('./splight/adminWebsite')
 
-async function main (inputDataFile) {
+async function main (dataDirectory) {
   console.log('Starting developer website...')
 
   const app = express()
 
   app.use(await adminWebsite.makeRouter({
-    inputDataFile,
+    dataDirectory,
     scripts: [
       '/reload/reload.js',
       'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "test": "standard && nyc --reporter=html --reporter=text mocha $(find . -name '*-test.js' | grep -v node_modules)",
+    "generateMissingImages": "node generateMissingImages.js",
     "generatePublicWebsite": "node generatePublicWebsite.js",
     "serveDeveloperWebsite": "nodemon --ignore test --ext js,scss,html serveDeveloperWebsite.js",
     "serveWebmasterWebsite": "node serveWebmasterWebsite.js"
@@ -10,7 +11,6 @@
   "dependencies": {
     "bootstrap": "^4.1.2",
     "browserify": "^16.2.2",
-    "canvas": "^1.6.11",
     "clean-css": "^4.1.11",
     "deepcopy": "^1.0.0",
     "express": "^4.16.3",
@@ -44,5 +44,8 @@
     "ignore": [
       "test/site"
     ]
+  },
+  "devDependencies": {
+    "canvas": "^1.6.11"
   }
 }
