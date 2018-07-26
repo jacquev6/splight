@@ -1,15 +1,15 @@
 'use strict'
 
-// const assert = require('assert').strict
+const assert = require('assert').strict
 const browserify = require('browserify')
 const CleanCSS = require('clean-css')
 const express = require('express')
 const expressGraphql = require('express-graphql')
+const fs = require('fs-extra')
 const graphql = require('graphql')
 const htmlMinifier = require('html-minifier')
 const modernizr = require('modernizr')
-// const moment = require('moment')
-// const neatJSON = require('neatjson').neatJSON
+const moment = require('moment')
 const path = require('path')
 const sass = require('node-sass')
 const terser = require('terser')
@@ -17,34 +17,80 @@ const terser = require('terser')
 
 const container = require('./publicWebsite/widgets/container')
 const data_ = require('./data')
-// const durations = require('./publicWebsite/durations')
+const durations = require('./publicWebsite/durations')
 const graphqlApi = require('./graphqlApi')
 const pages = require('./publicWebsite/pages')
 
 async function makeRouter ({dataDirectory, scripts}) {
-  const router = express.Router()
-
   const schema = graphqlApi.schema
   const rootValue = graphqlApi.makeRoot({load: () => data_.load(path.join(dataDirectory, 'data.json'))})
-  router.use('/graphql', expressGraphql({schema, rootValue, graphiql: true}))
   function query (requestString, variableValues) {
     return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
   }
 
-  for (var [name, content] of generateAssets({indexJsFlavor: 'serve'})) {
-    const type = path.extname(name)
-    console.log('Preparing to serve', name, 'as', type)
-    router.get(name, (content => async (req, res) => res.type(type).send(content))(await content))
-  }
-
-  for (var pageClass of generatePageClasses({query, scripts})) {
-    console.log('Ready to serve', pageClass.path)
-    router.get(pageClass.path, pageClass.handler)
-  }
+  const router = express.Router()
 
   router.use(express.static(path.join(dataDirectory, 'images')))
 
+  for (var asset of generateAssets({indexJsFlavor: 'serve'})) {
+    const type = path.extname(asset.path)
+    console.log('Preparing to serve', asset.path, 'as', type)
+    router.get(asset.path, (content => async (req, res) => res.type(type).send(content))(await asset.content))
+  }
+
+  function handler (pageClass) {
+    return async (req, res, next) => {
+      const page = pageClass.makeOne(req)
+      if (page) {
+        const response = await query(page.dataRequest.requestString, page.dataRequest.variableValues)
+        // console.log('GraphQL error(s)', response.errors || response.error)
+        if (page.exists(response.data)) {
+          // console.log('Serving ' + page.path + ' as .html')
+          res.type('.html')
+          res.send(htmlMinifier.minify(container.make({page, scripts}).render(response.data), {collapseWhitespace: true}))
+          return
+        }
+      }
+      next('route')
+    }
+  }
+
+  for (var pageClass of generatePageClasses()) {
+    router.get(pageClass.path, handler(pageClass))
+    console.log('Ready to serve', pageClass.path)
+  }
+
+  router.use('/graphql', expressGraphql({schema, rootValue, graphiql: true}))
+
   return router
+}
+
+async function generate ({dataDirectory, outputDirectory}) {
+  const schema = graphqlApi.schema
+  const rootValue = graphqlApi.makeRoot({load: () => data_.load(path.join(dataDirectory, 'data.json'))})
+  function query (requestString, variableValues) {
+    return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
+  }
+
+  await fs.emptyDir(outputDirectory)
+
+  fs.copy(path.join(dataDirectory, 'images'), outputDirectory)
+
+  for (var asset of generateAssets({indexJsFlavor: 'generate'})) {
+    const fileName = path.join(outputDirectory, asset.path)
+    console.log('Generating', fileName)
+    fs.outputFile(fileName, await asset.content)
+  }
+
+  for (var pageClass of generatePageClasses({query, scripts: []})) {
+    for (var page of await pageClass.makeAll(query)) {
+      const fileName = path.join(outputDirectory, page.path, 'index.html')
+      console.log('Generating', fileName)
+      const response = await query(page.dataRequest.requestString, page.dataRequest.variableValues)
+      assert(page.exists(response.data))
+      fs.outputFile(fileName, htmlMinifier.minify(container.make({page, scripts: []}).render(response.data), {collapseWhitespace: true}))
+    }
+  }
 }
 
 function * generateAssets ({indexJsFlavor}) {
@@ -63,13 +109,16 @@ function * generateAssets ({indexJsFlavor}) {
 }
 
 function makeRobotsTxt () {
-  return ['/robots.txt', Promise.resolve('Sitemap: https://splight.fr/sitemap.xml\n\nUser-agent: *\nAllow: /\n')]
+  return {
+    path: '/robots.txt',
+    content: 'Sitemap: https://splight.fr/sitemap.xml\n\nUser-agent: *\nAllow: /\n'
+  }
 }
 
 function makeModernizerJs ({modernizrFeatures}) {
-  return [
-    '/modernizr.js',
-    new Promise((resolve, reject) =>
+  return {
+    path: '/modernizr.js',
+    content: new Promise((resolve, reject) =>
       modernizr.build(
         {
           'minify': false,
@@ -97,13 +146,13 @@ function makeModernizerJs ({modernizrFeatures}) {
         }
       )
     )
-  ]
+  }
 }
 
 function makeIndexJs ({indexJsFlavor}) {
-  return [
-    '/index.js',
-    new Promise((resolve, reject) =>
+  return {
+    path: '/index.js',
+    content: new Promise((resolve, reject) =>
       browserify('splight/publicWebsite/assets/index-' + indexJsFlavor + '.js')
         .transform('stringify', ['.html'])
         .transform('unassertify')
@@ -116,13 +165,13 @@ function makeIndexJs ({indexJsFlavor}) {
           }
         })
     )
-  ]
+  }
 }
 
 function makeIndexCss ({modernizrFeatures}) {
-  return [
-    '/index.css',
-    new Promise((resolve, reject) =>
+  return {
+    path: '/index.css',
+    content: new Promise((resolve, reject) =>
       sass.render(
         {
           data: '$modernizr-features: "' + modernizrFeatures.map(([detect, feature]) => '.mdrn-' + (feature || detect.split('/').slice(-1)[0])).join('') + '";\n\n@import "splight/publicWebsite/assets/index.scss"'
@@ -136,38 +185,46 @@ function makeIndexCss ({modernizrFeatures}) {
         }
       )
     )
-  ]
+  }
 }
 
-function * generatePageClasses ({query, scripts}) {
-  async function serve (page, res, next) {
-    if (page) {
-      const response = await query(page.dataRequest.requestString, page.dataRequest.variableValues)
-      console.log('GraphQL error(s)', response.errors || response.error)
-      if (page.exists(response.data)) {
-        console.log('Serving ' + page.path + ' as .html')
-        res.type('.html')
-        res.send(htmlMinifier.minify(container.make({page, scripts}).render(response.data), {collapseWhitespace: true}))
-        return
-      }
-    }
-    next('route')
-  }
-
+function * generatePageClasses () {
   yield {
     path: '/',
-    handler: (req, res, next) => serve(pages.root(), res, next)
+    makeOne: req => pages.root(),
+    makeAll: query => [pages.root()]
   }
 
   yield {
     path: '/:city/',
-    handler: async (req, res, next) => serve(pages.city(req.params.city), res, next)
+    makeOne: req => pages.city(req.params.city),
+    makeAll: async query => (await query('query{cities{slug}}')).data.cities.map(({slug}) => pages.city(slug))
+  }
+
+  function * makeAllTimespans_ (data) {
+    const dateAfter = durations.oneWeek.clip(moment()).add(5, 'weeks')
+    for (var city of data.cities) {
+      for (var duration of durations.all) {
+        for (
+          var startDate = durations.oneWeek.clip(moment(city.firstDate, moment.HTML5_FMT.DATE, true));
+          duration.dateAfter(startDate).isSameOrBefore(dateAfter);
+          startDate = duration.links.next.startDate(startDate)
+        ) {
+          yield pages.timespan(city.slug, startDate, duration)
+        }
+      }
+    }
+  }
+
+  async function makeAllTimespans (query) {
+    return Array.from(makeAllTimespans_((await query('query{cities{slug firstDate}}')).data))
   }
 
   yield {
     path: '/:city/:timespan/',
-    handler: async (req, res, next) => serve(pages.timespan.ofSlugs(req.params.city, req.params.timespan), res, next)
+    makeOne: req => pages.timespan.ofSlugs(req.params.city, req.params.timespan),
+    makeAll: makeAllTimespans
   }
 }
 
-Object.assign(exports, {makeRouter})
+Object.assign(exports, {makeRouter, generate})
