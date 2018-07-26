@@ -192,7 +192,15 @@ describe('graphqlApi', function () {
       )
     )
 
-    it('returns tags',
+    it('returns event mainTag',
+      test(
+        data,
+        '{cities{days(first:"2018-07-14", after:"2018-07-15"){events{mainTag{slug title}}}}}',
+        {data: {cities: [{days: [{events: [{mainTag: {slug: 'tag-3', title: 'Tag 3'}}]}]}]}}
+      )
+    )
+
+    it('returns event tags',
       test(
         data,
         '{cities{days(first:"2018-07-14", after:"2018-07-15"){events{tags{slug title}}}}}',

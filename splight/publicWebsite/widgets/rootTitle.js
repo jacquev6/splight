@@ -4,12 +4,12 @@ const title = require('./title')
 
 function make () {
   return title.make({
-    text: 'Splight',
+    text: data => 'Splight',
     header: {
-      html: '<a href="/">Splight</a>'
+      render: data => '<a href="/">Splight</a>'
     },
     lead: {
-      html: 'Votre agenda culturel régional'
+      render: data => 'Votre agenda culturel régional'
     }
   })
 }

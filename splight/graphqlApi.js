@@ -37,6 +37,7 @@ const schema = graphql.buildSchema(`
     title: String
     artist: Artist
     location: Location!
+    mainTag: Tag!
     tags: [Tag!]!
   }
 
@@ -105,13 +106,15 @@ function city_ (artists, city) {
     const dayEventsByDate = {}
 
     events.forEach(({location, artist, occurences, tags, title}) => {
+      tags = tags.map(tag => Object.assign({slug: tag}, tagsBySlug[tag]))
       occurences.forEach(({start}) => {
         start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
         const dayEvent = {
           time: start.format(moment.HTML5_FMT.TIME),
           title,
           location: Object.assign({slug: location}, locations[location]),
-          tags: tags.map(tag => Object.assign({slug: tag}, tagsBySlug[tag]))
+          tags,
+          mainTag: tags[0]
         }
         if (artist) {
           dayEvent.artist = Object.assign({slug: artist}, artists[artist])

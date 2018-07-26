@@ -19,7 +19,7 @@ async function main (inputDataFile) {
 
   const app = express()
 
-  await adminWebsite.populateApp({app, inputDataFile, scripts: ['/shutdown/shutdown.js']})
+  app.use(await adminWebsite.makeRouter({inputDataFile, scripts: ['/shutdown/shutdown.js']}))
 
   app.get(
     '/shutdown/shutdown.js',
