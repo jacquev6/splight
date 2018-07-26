@@ -104,6 +104,7 @@ async function generate ({dataDirectory, outputDirectory}) {
 
 function * generateAssets ({indexJsFlavor}) {
   const modernizrFeatures = [
+    // ['test/iframe/seamless'], // Not supported by Firefox 61. Uncomment to test hasModernJavascript in index-generate.js
     ['test/es6/arrow'],
     ['test/es6/collections', 'es6collections'],
     ['test/hashchange'],
