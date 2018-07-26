@@ -26,7 +26,7 @@ async function makeRouter ({dataDirectory, scripts}) {
 
   router.use(express.static(path.join(dataDirectory, 'images')))
 
-  for (var asset of generateAssets({indexJsFlavor: 'serve'})) {
+  for (var asset of generateAssets()) {
     const type = path.extname(asset.path)
     console.log('Preparing to serve', asset.path, 'as', type)
     router.get(asset.path, (content => async (req, res) => res.type(type).send(content))(await asset.content))
@@ -67,7 +67,7 @@ async function generate ({dataDirectory, outputDirectory}) {
 
   fs.copy(path.join(dataDirectory, 'images'), outputDirectory)
 
-  for (var asset of generateAssets({indexJsFlavor: 'generate'})) {
+  for (var asset of generateAssets()) {
     const fileName = path.join(outputDirectory, asset.path)
     console.log('Generating', fileName)
     fs.outputFile(fileName, await asset.content)
@@ -94,7 +94,7 @@ function makeApi ({dataDirectory}) {
   return graphqlApi.make({load: () => fs.readJSON(path.join(dataDirectory, 'data.json'))})
 }
 
-function * generateAssets ({indexJsFlavor}) {
+function * generateAssets () {
   const modernizrFeatures = [
     // ['test/iframe/seamless'], // Not supported by Firefox 61. Uncomment to test hasModernJavascript in index-generate.js
     ['test/es6/arrow'],
@@ -106,7 +106,7 @@ function * generateAssets ({indexJsFlavor}) {
 
   yield makeRobotsTxt()
   yield makeModernizerJs({modernizrFeatures})
-  yield makeIndexJs({indexJsFlavor})
+  yield makeIndexJs()
   yield makeIndexCss({modernizrFeatures})
 }
 
@@ -151,11 +151,11 @@ function makeModernizerJs ({modernizrFeatures}) {
   }
 }
 
-function makeIndexJs ({indexJsFlavor}) {
+function makeIndexJs () {
   return {
     path: '/index.js',
     content: new Promise((resolve, reject) =>
-      browserify('splight/publicWebsite/assets/index-' + indexJsFlavor + '.js')
+      browserify('splight/publicWebsite/assets/index.js')
         .transform('stringify', ['.html'])
         .transform('unassertify')
         .transform('uglifyify', {global: true})

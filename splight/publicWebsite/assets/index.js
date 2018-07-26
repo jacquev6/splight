@@ -27,13 +27,10 @@ if (hasModernJavascript) {
   moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 
   const pages = require('../pages')
-  // @todo Use preBrowser-generate
-  const preBrowser = require('../preBrowser-serve')
 
   jquery(function () {
-    const config = {preBrowser}
     const page = pages.fromPath(URI.parse(window.location.href).path)
-    page.title.initialize(config)
-    page.content.initialize(config)
+    page.title.initialize()
+    page.content.initialize()
   })
 }
