@@ -13,7 +13,7 @@ const moment = require('moment')
 const path = require('path')
 const sass = require('node-sass')
 const terser = require('terser')
-// const XmlSitemap = require('xml-sitemap')
+const XmlSitemap = require('xml-sitemap')
 
 const container = require('./publicWebsite/widgets/container')
 const data_ = require('./data')
@@ -74,6 +74,9 @@ async function generate ({dataDirectory, outputDirectory}) {
 
   await fs.emptyDir(outputDirectory)
 
+  fs.outputFile(path.join(outputDirectory, 'CNAME'), 'splight.fr')
+  fs.outputFile(path.join(outputDirectory, '.nojekyll'), '')
+
   fs.copy(path.join(dataDirectory, 'images'), outputDirectory)
 
   for (var asset of generateAssets({indexJsFlavor: 'generate'})) {
@@ -82,8 +85,12 @@ async function generate ({dataDirectory, outputDirectory}) {
     fs.outputFile(fileName, await asset.content)
   }
 
+  const sitemap = new XmlSitemap()
+  sitemap.setHost('https://splight.fr/')
+
   for (var pageClass of generatePageClasses({query, scripts: []})) {
     for (var page of await pageClass.makeAll(query)) {
+      sitemap.add(page.path)
       const fileName = path.join(outputDirectory, page.path, 'index.html')
       console.log('Generating', fileName)
       const response = await query(page.dataRequest.requestString, page.dataRequest.variableValues)
@@ -91,6 +98,8 @@ async function generate ({dataDirectory, outputDirectory}) {
       fs.outputFile(fileName, htmlMinifier.minify(container.make({page, scripts: []}).render(response.data), {collapseWhitespace: true}))
     }
   }
+
+  fs.outputFile(path.join(outputDirectory, 'sitemap.xml'), sitemap.xml)
 }
 
 function * generateAssets ({indexJsFlavor}) {

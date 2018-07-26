@@ -64,9 +64,9 @@ function timespan (citySlug, startDate, duration) {
       }
     },
     exists: data => (
-      data.city
-      && startDate.isSameOrAfter(durations.oneWeek.clip(moment(data.city.firstDate, moment.HTML5_FMT.DATE, true)))
-      && dateAfter.isSameOrBefore(durations.oneWeek.clip(moment()).add(5, 'weeks'))
+      data.city &&
+      startDate.isSameOrAfter(durations.oneWeek.clip(moment(data.city.firstDate, moment.HTML5_FMT.DATE, true))) &&
+      dateAfter.isSameOrBefore(durations.oneWeek.clip(moment()).add(5, 'weeks'))
     ),
     title,
     content
