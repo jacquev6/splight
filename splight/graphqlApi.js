@@ -166,4 +166,14 @@ function city_ (artists, city) {
   return {slug, name, tags, firstDate, dateAfter, days}
 }
 
-Object.assign(exports, {schema, makeRoot})
+function make (config) {
+  const rootValue = makeRoot(config)
+
+  function request ({requestString, variableValues}) {
+    return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
+  }
+
+  return {schema, rootValue, request}
+}
+
+Object.assign(exports, {make})

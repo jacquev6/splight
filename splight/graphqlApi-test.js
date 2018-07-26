@@ -3,23 +3,18 @@
 /* globals describe, context, it */
 
 const assert = require('assert') // Not strict because graphql's returned data doesn't have Object prototype
-const graphql = require('graphql')
 
 const graphqlApi = require('./graphqlApi')
 
 describe('graphqlApi', function () {
-  function run (data, save, query) {
-    return graphql.graphql(
-      graphqlApi.schema,
-      query,
-      graphqlApi.makeRoot({load: () => Promise.resolve(data), save})
-    )
+  function run (data, save, requestString) {
+    return graphqlApi.make({load: () => Promise.resolve(data), save}).request({requestString})
   }
 
-  function test (data, query, expected) {
+  function test (data, requestString, expected) {
     return async function () {
       assert.deepEqual(
-        await run(data, async () => undefined, query),
+        await run(data, async () => undefined, requestString),
         expected
       )
     }

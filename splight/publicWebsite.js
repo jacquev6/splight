@@ -6,7 +6,6 @@ const CleanCSS = require('clean-css')
 const express = require('express')
 const expressGraphql = require('express-graphql')
 const fs = require('fs-extra')
-const graphql = require('graphql')
 const htmlMinifier = require('html-minifier')
 const modernizr = require('modernizr')
 const moment = require('moment')
@@ -16,17 +15,12 @@ const terser = require('terser')
 const XmlSitemap = require('xml-sitemap')
 
 const container = require('./publicWebsite/widgets/container')
-const data_ = require('./data')
 const durations = require('./publicWebsite/durations')
 const graphqlApi = require('./graphqlApi')
 const pages = require('./publicWebsite/pages')
 
 async function makeRouter ({dataDirectory, scripts}) {
-  const schema = graphqlApi.schema
-  const rootValue = graphqlApi.makeRoot({load: () => data_.load(path.join(dataDirectory, 'data.json'))})
-  function query (requestString, variableValues) {
-    return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
-  }
+  const api = makeApi({dataDirectory})
 
   const router = express.Router()
 
@@ -42,12 +36,10 @@ async function makeRouter ({dataDirectory, scripts}) {
     return async (req, res, next) => {
       const page = pageClass.makeOne(req)
       if (page) {
-        const response = await query(page.dataRequest.requestString, page.dataRequest.variableValues)
-        // console.log('GraphQL error(s)', response.errors || response.error)
-        if (page.exists(response.data)) {
-          // console.log('Serving ' + page.path + ' as .html')
+        const {data} = await api.request(page.dataRequest)
+        if (page.exists(data)) {
           res.type('.html')
-          res.send(htmlMinifier.minify(container.make({page, scripts}).render(response.data), {collapseWhitespace: true}))
+          res.send(htmlMinifier.minify(container.make({page, scripts}).render(data), {collapseWhitespace: true}))
           return
         }
       }
@@ -60,17 +52,13 @@ async function makeRouter ({dataDirectory, scripts}) {
     console.log('Ready to serve', pageClass.path)
   }
 
-  router.use('/graphql', expressGraphql({schema, rootValue, graphiql: true}))
+  router.use('/graphql', expressGraphql(Object.assign({graphiql: true}, api)))
 
   return router
 }
 
 async function generate ({dataDirectory, outputDirectory}) {
-  const schema = graphqlApi.schema
-  const rootValue = graphqlApi.makeRoot({load: () => data_.load(path.join(dataDirectory, 'data.json'))})
-  function query (requestString, variableValues) {
-    return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
-  }
+  const api = makeApi({dataDirectory})
 
   await fs.emptyDir(outputDirectory)
 
@@ -88,18 +76,22 @@ async function generate ({dataDirectory, outputDirectory}) {
   const sitemap = new XmlSitemap()
   sitemap.setHost('https://splight.fr/')
 
-  for (var pageClass of generatePageClasses({query, scripts: []})) {
-    for (var page of await pageClass.makeAll(query)) {
+  for (var pageClass of generatePageClasses()) {
+    for (var page of pageClass.makeAll((await api.request(pageClass.dataRequest)).data)) {
       sitemap.add(page.path)
       const fileName = path.join(outputDirectory, page.path, 'index.html')
       console.log('Generating', fileName)
-      const response = await query(page.dataRequest.requestString, page.dataRequest.variableValues)
-      assert(page.exists(response.data))
-      fs.outputFile(fileName, htmlMinifier.minify(container.make({page, scripts: []}).render(response.data), {collapseWhitespace: true}))
+      const {data} = await api.request(page.dataRequest)
+      assert(page.exists(data))
+      fs.outputFile(fileName, htmlMinifier.minify(container.make({page, scripts: []}).render(data), {collapseWhitespace: true}))
     }
   }
 
   fs.outputFile(path.join(outputDirectory, 'sitemap.xml'), sitemap.xml)
+}
+
+function makeApi ({dataDirectory}) {
+  return graphqlApi.make({load: () => fs.readJSON(path.join(dataDirectory, 'data.json'))})
 }
 
 function * generateAssets ({indexJsFlavor}) {
@@ -202,38 +194,41 @@ function * generatePageClasses () {
   yield {
     path: '/',
     makeOne: req => pages.root(),
-    makeAll: query => [pages.root()]
+    dataRequest: {
+      requestString: ''
+    },
+    makeAll: data => [pages.root()]
   }
 
   yield {
     path: '/:city/',
     makeOne: req => pages.city(req.params.city),
-    makeAll: async query => (await query('query{cities{slug}}')).data.cities.map(({slug}) => pages.city(slug))
-  }
-
-  function * makeAllTimespans_ (data) {
-    const dateAfter = durations.oneWeek.clip(moment()).add(5, 'weeks')
-    for (var city of data.cities) {
-      for (var duration of durations.all) {
-        for (
-          var startDate = durations.oneWeek.clip(moment(city.firstDate, moment.HTML5_FMT.DATE, true));
-          duration.dateAfter(startDate).isSameOrBefore(dateAfter);
-          startDate = duration.links.next.startDate(startDate)
-        ) {
-          yield pages.timespan(city.slug, startDate, duration)
-        }
-      }
-    }
-  }
-
-  async function makeAllTimespans (query) {
-    return Array.from(makeAllTimespans_((await query('query{cities{slug firstDate}}')).data))
+    dataRequest: {
+      requestString: 'query{cities{slug}}'
+    },
+    makeAll: ({cities}) => cities.map(({slug}) => pages.city(slug))
   }
 
   yield {
     path: '/:city/:timespan/',
     makeOne: req => pages.timespan.ofSlugs(req.params.city, req.params.timespan),
-    makeAll: makeAllTimespans
+    dataRequest: {
+      requestString: 'query{cities{slug firstDate}}'
+    },
+    makeAll: function * ({cities}) {
+      const dateAfter = durations.oneWeek.clip(moment()).add(5, 'weeks')
+      for (var {slug, firstDate} of cities) {
+        for (var duration of durations.all) {
+          for (
+            var startDate = durations.oneWeek.clip(moment(firstDate, moment.HTML5_FMT.DATE, true));
+            duration.dateAfter(startDate).isSameOrBefore(dateAfter);
+            startDate = duration.links.next.startDate(startDate)
+          ) {
+            yield pages.timespan(slug, startDate, duration)
+          }
+        }
+      }
+    }
   }
 }
 
