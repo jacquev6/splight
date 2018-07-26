@@ -80,9 +80,19 @@ a[target=_blank] {
 }
 
 
-#sp-tag-filtering .form-check-inline {
-    padding: 2px;
-    border-radius: 3px;
-    border: solid 1px;
+#sp-tag-filtering .form-check-inline, .sp-event {
+  border-radius: 3px;
+  border-width: 1px;
+  border-style: solid;
 }
 
+.sp-event {
+  margin-top: 3px;
+  margin-bottom: 3px;
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
+#sp-tag-filtering .form-check-inline > *, .sp-event > * {
+  margin: 3px;
+}

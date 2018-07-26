@@ -13,6 +13,7 @@ const path = require('path')
 const sass = require('node-sass')
 const terser = require('terser')
 const XmlSitemap = require('xml-sitemap')
+const colorConvert = require('color-convert')
 
 const container = require('./publicWebsite/widgets/container')
 const durations = require('./publicWebsite/durations')
@@ -26,7 +27,7 @@ async function makeRouter ({dataDirectory, scripts}) {
 
   router.use(express.static(path.join(dataDirectory, 'images')))
 
-  for (var asset of generateAssets()) {
+  for (var asset of generateAssets({api})) {
     const type = path.extname(asset.path)
     console.log('Preparing to serve', asset.path, 'as', type)
     router.get(asset.path, (content => async (req, res) => res.type(type).send(content))(await asset.content))
@@ -67,7 +68,7 @@ async function generate ({dataDirectory, outputDirectory}) {
 
   fs.copy(path.join(dataDirectory, 'images'), outputDirectory)
 
-  for (var asset of generateAssets()) {
+  for (var asset of generateAssets({api})) {
     const fileName = path.join(outputDirectory, asset.path)
     console.log('Generating', fileName)
     fs.outputFile(fileName, await asset.content)
@@ -94,7 +95,7 @@ function makeApi ({dataDirectory}) {
   return graphqlApi.make({load: () => fs.readJSON(path.join(dataDirectory, 'data.json'))})
 }
 
-function * generateAssets () {
+function * generateAssets ({api}) {
   const modernizrFeatures = [
     // ['test/iframe/seamless'], // Not supported by Firefox 61. Uncomment to test hasModernJavascript in index-generate.js
     ['test/es6/arrow'],
@@ -107,7 +108,7 @@ function * generateAssets () {
   yield makeRobotsTxt()
   yield makeModernizerJs({modernizrFeatures})
   yield makeIndexJs()
-  yield makeIndexCss({modernizrFeatures})
+  yield makeIndexCss({modernizrFeatures, api})
 }
 
 function makeRobotsTxt () {
@@ -170,24 +171,43 @@ function makeIndexJs () {
   }
 }
 
-function makeIndexCss ({modernizrFeatures}) {
+function makeIndexCss (config) {
   return {
     path: '/index.css',
-    content: new Promise((resolve, reject) =>
-      sass.render(
-        {
-          data: '$modernizr-features: "' + modernizrFeatures.map(([detect, feature]) => '.mdrn-' + (feature || detect.split('/').slice(-1)[0])).join('') + '";\n\n@import "splight/publicWebsite/assets/index.scss"'
-        },
-        function (error, result) {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(new CleanCSS({}).minify(result.css).styles)
-          }
-        }
-      )
-    )
+    content: makeIndexCss_(config)
   }
+}
+
+async function makeIndexCss_({modernizrFeatures, api}) {
+  const sassData = [
+    '$modernizr-features: "' + modernizrFeatures.map(([detect, feature]) => '.mdrn-' + (feature || detect.split('/').slice(-1)[0])).join('') + '";',
+    '',
+    '@import "splight/publicWebsite/assets/index.scss";',
+    ''
+  ]
+
+  for (var {slug, tags} of (await api.request({requestString:'query{cities{slug tags{slug}}}'})).data.cities) {
+    for (var i = 0; i != tags.length; ++i) {
+      const tag = tags[i]
+      const class_ = 'sp-main-tag-' + slug + '-' + tag.slug
+      const borderColor = colorConvert.hsv.hex(360 * i / tags.length, 50, 50)
+      const backgroundColor = colorConvert.hsv.hex(360 * i / tags.length, 30, 90)
+      sassData.push('.' + class_ + '{border-color:#' + borderColor + ';background-color:#' + backgroundColor + ';}')
+    }
+  }
+
+  return new Promise((resolve, reject) =>
+    sass.render(
+      {data: sassData.join('\n')},
+      function (error, result) {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(new CleanCSS({}).minify(result.css).styles)
+        }
+      }
+    )
+  )
 }
 
 function * generatePageClasses () {
