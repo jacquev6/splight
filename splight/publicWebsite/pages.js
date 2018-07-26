@@ -37,7 +37,7 @@ function city (citySlug) {
   return {
     path: paths.city(citySlug),
     dataRequest: {
-      requestString: 'query City($citySlug: ID!){city(slug:$citySlug){slug name tags{slug title}}}',
+      requestString: 'query($citySlug:ID!){city(slug:$citySlug){slug name tags{slug title}}}',
       variableValues: {citySlug}
     },
     exists: data => !!data.city,
@@ -56,7 +56,7 @@ function timespan (citySlug, startDate, duration) {
   return {
     path: paths.timespan(citySlug, startDate, duration),
     dataRequest: {
-      requestString: 'query City($citySlug: ID!, $first: Date!, $after: Date!){city(slug:$citySlug){slug name tags{slug title} days(first:$first,after:$after){date events{time title mainTag{slug} tags{slug}}}}}',
+      requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){city(slug:$citySlug){slug name tags{slug title} days(first:$first,after:$after){date events{time title mainTag{slug} tags{slug}}}}}',
       variableValues: {
         citySlug,
         first: startDate.format(moment.HTML5_FMT.DATE),
