@@ -56,14 +56,18 @@ function timespan (citySlug, startDate, duration) {
   return {
     path: paths.timespan(citySlug, startDate, duration),
     dataRequest: {
-      requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){city(slug:$citySlug){slug name tags{slug title} days(first:$first,after:$after){date events{time title mainTag{slug} tags{slug}}}}}',
+      requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){city(slug:$citySlug){slug name tags{slug title} firstDate days(first:$first,after:$after){date events{time title mainTag{slug} tags{slug}}}}}',
       variableValues: {
         citySlug,
         first: startDate.format(moment.HTML5_FMT.DATE),
         after: dateAfter.format(moment.HTML5_FMT.DATE)
       }
     },
-    exists: data => !!data.city,
+    exists: data => (
+      data.city
+      && startDate.isSameOrAfter(durations.oneWeek.clip(moment(data.city.firstDate, moment.HTML5_FMT.DATE, true)))
+      && dateAfter.isSameOrBefore(durations.oneWeek.clip(moment()).add(5, 'weeks'))
+    ),
     title,
     content
   }

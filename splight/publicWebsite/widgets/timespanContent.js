@@ -7,6 +7,7 @@ const moment = require('moment')
 const mustache = require('mustache')
 const URI = require('urijs')
 
+const pages = require('../pages')
 const paths = require('../paths')
 const durationSelector_ = require('./durationSelector')
 const template = require('./timespanContent.html')
@@ -37,9 +38,8 @@ function make ({citySlug, startDate, duration}) {
     const now = moment()
     const links = makeLinks(now)
     // @todo Hide link to previous before now
-    links.previous.exists = true
-    // @todo Hide link to next after now + 5 weeks
-    links.next.exists = true
+    links.previous.exists = pages.timespan(citySlug, duration.links.previous.startDate(startDate), duration).exists(data)
+    links.next.exists = pages.timespan(citySlug, duration.links.next.startDate(startDate), duration).exists(data)
 
     return mustache.render(
       template,
