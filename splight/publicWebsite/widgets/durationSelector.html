@@ -1,5 +1,8 @@
-<div class="sp-needs-js"><div class="form-group text-center">
-  <label>Afficher&nbsp;: <select id="sp-timespan-duration" class="form-control">
-    {{#durations}}<option value="{{value}}">{{name}}</option>{{/durations}}
-  </select></label>
+<div class="sp-needs-js"><div class="dropdown text-center">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+    Durée affichée
+  </button>
+  <div class="dropdown-menu">
+    {{#durations}}<a class="dropdown-item{{#active}} active{{/active}}" href="{{href}}">{{display}}</a>{{/durations}}
+  </div>
 </div></div>

@@ -55,13 +55,11 @@ function make ({citySlug, startDate, duration}) {
     )
   }
 
-  function initialize (config) {
+  function initialize () {
     const links = makeLinks(moment())
 
     jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(links.now1.path).toString())
     jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(links.now2.path).toString())
-
-    durationSelector.initialize(config)
 
     const allTags = new Set(jQuery('#sp-tag-filtering input').map((index, input) => jQuery(input).val()).toArray())
     const query = URI.parseQuery(URI.parse(window.location.href).query)
