@@ -41,8 +41,8 @@ function make ({citySlug, startDate, duration}) {
     const now = moment()
     const links = makeLinks(now)
     // @todo Hide link to previous before now
-    links.previous.exists = pages.timespan(citySlug, duration.links.previous.startDate(startDate), duration).exists(data)
-    links.next.exists = pages.timespan(citySlug, duration.links.next.startDate(startDate), duration).exists(data)
+    links.previous.path = pages.timespan(citySlug, duration.links.previous.startDate(startDate), duration).exists(data) && links.previous.path
+    links.next.path = pages.timespan(citySlug, duration.links.next.startDate(startDate), duration).exists(data) && links.next.path
 
     return mustache.render(
       template,
