@@ -10,6 +10,7 @@ var hasModernJavascript = true
 for (var k in Modernizr) {
   if (Modernizr.hasOwnProperty(k)) {
     if (!Modernizr[k]) {
+      console.log('Not running JavaScript because of missing feature:', k)
       hasModernJavascript = false
     }
   }
@@ -25,29 +26,14 @@ if (hasModernJavascript) {
   // @todo Remove when fix for https://github.com/moment/moment/issues/4698 is on npm
   moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 
-  const durations = require('../durations')
   const pages = require('../pages')
-
-  const fetcher = (function () {
-    const data = {}
-
-    function get (key) {
-      if (!data[key]) {
-        data[key] = jquery.getJSON('/' + key + '.json')
-      }
-      return data[key]
-    }
-
-    return {
-      cities: get('cities'),
-
-      getCityWeek: function (citySlug, week) {
-        return get(citySlug + '/' + week.format(durations.oneWeek.slugFormat))
-      }
-    }
-  }())
+  // @todo Use preBrowser-generate
+  const preBrowser = require('../preBrowser-serve')
 
   jquery(function () {
-    pages.make({fetcher, now: moment()}).fromPath(URI.parse(window.location.href).path).initialize()
+    const config = {preBrowser}
+    const page = pages.fromPath(URI.parse(window.location.href).path)
+    page.title.initialize(config)
+    page.content.initialize(config)
   })
 }

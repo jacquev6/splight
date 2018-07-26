@@ -41,16 +41,16 @@
     </div></div>
 
     <div id="sp-calendar" class="row">
-      {{#days}}
+      {{#city.days}}
       <div class="col-md">
         <p><strong>{{date}}</strong></p>
         {{#events}}
-        <div class="sp-event sp-main-tag-{{city.slug}}-{{mainTag}}{{#tags}} sp-tag-{{city.slug}}-{{.}}{{/tags}}">
+        <div class="sp-event sp-main-tag-{{city.slug}}-{{mainTag.slug}}{{#tags}} sp-tag-{{city.slug}}-{{slug}}{{/tags}}">
           <p><strong>{{time}}</strong> {{title}}</p>
         </div>
         {{/events}}
       </div>
-      {{/days}}
+      {{/city.days}}
     </div>
   </div>
 

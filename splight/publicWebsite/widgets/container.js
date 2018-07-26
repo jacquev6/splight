@@ -5,23 +5,23 @@ const mustache = require('mustache')
 const template = require('./container.html')
 
 function make ({page, scripts}) {
-  return {
-    html: (async () => {
-      return mustache.render(
-        template,
-        {
-          title: {
-            text: await page.title.text,
-            html: await page.title.html
-          },
-          scripts,
-          content: {
-            html: await page.content.html
-          }
+  function render (data) {
+    return mustache.render(
+      template,
+      {
+        title: {
+          text: page.title.text(data),
+          html: page.title.render(data)
+        },
+        scripts,
+        content: {
+          html: page.content.render(data)
         }
-      )
-    })()
+      }
+    )
   }
+
+  return {render}
 }
 
 exports.make = make

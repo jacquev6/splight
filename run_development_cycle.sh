@@ -47,9 +47,14 @@ npm test
 
 show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
 
+if $GENERATE || $SERVE_DEVELOPER_SITE || $SERVE_WEBMASTER_SITE
+then
+  npm run generateMissingImages test/data
+fi
+
 if $GENERATE
 then
-  npm run generatePublicWebsite test/data.json test/site
+  npm run generatePublicWebsite test/data test/site
 
   if [ -d ../splight.fr-data -a -d ../splight.fr ]
   then
@@ -59,12 +64,12 @@ fi
 
 if $SERVE_DEVELOPER_SITE
 then
-  npm run serveDeveloperWebsite test/data.json
+  npm run serveDeveloperWebsite test/data
 fi
 
 if $SERVE_WEBMASTER_SITE
 then
-  npm run serveWebmasterWebsite test/data.json
+  npm run serveWebmasterWebsite test/data
 fi
 
 echo
