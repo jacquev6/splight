@@ -1,6 +1,5 @@
 'use strict'
 
-const jQuery = require('jquery')
 const mustache = require('mustache')
 
 const durations = require('../durations')
