@@ -178,7 +178,7 @@ function makeIndexCss (config) {
   }
 }
 
-async function makeIndexCss_({modernizrFeatures, api}) {
+async function makeIndexCss_ ({modernizrFeatures, api}) {
   const sassData = [
     '$modernizr-features: "' + modernizrFeatures.map(([detect, feature]) => '.mdrn-' + (feature || detect.split('/').slice(-1)[0])).join('') + '";',
     '',
@@ -186,8 +186,8 @@ async function makeIndexCss_({modernizrFeatures, api}) {
     ''
   ]
 
-  for (var {slug, tags} of (await api.request({requestString:'query{cities{slug tags{slug}}}'})).data.cities) {
-    for (var i = 0; i != tags.length; ++i) {
+  for (var {slug, tags} of (await api.request({requestString: 'query{cities{slug tags{slug}}}'})).data.cities) {
+    for (var i = 0; i !== tags.length; ++i) {
       const tag = tags[i]
       const class_ = 'sp-main-tag-' + slug + '-' + tag.slug
       const borderColor = colorConvert.hsv.hex(360 * i / tags.length, 50, 50)
