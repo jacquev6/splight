@@ -31,23 +31,25 @@ async function main (dataDirectory) {
     perMessageDeflate: false
   })
 
+  var timeoutId = null
   var connectedUsers = 0
   wss.on('connection', socket => {
     connectedUsers++
     console.log('Log in =>', connectedUsers, 'connected users')
+    if (timeoutId) {
+      console.log('Saving server')
+      clearTimeout(timeoutId)
+      timeoutId = null
+    }
     socket.on('close', () => {
       connectedUsers--
       console.log('Log out =>', connectedUsers, 'connected users')
       if (connectedUsers === 0) {
         console.log('Maybe closing server soon')
-        setTimeout(() => {
-          if (connectedUsers === 0) {
-            console.log('Closing server')
-            wss.close(() => console.log('WS server closed'))
-            server.close(() => console.log('HTTP Server closed'))
-          } else {
-            console.log('Saving server')
-          }
+        timeoutId = setTimeout(() => {
+          console.log('Closing server')
+          wss.close(() => console.log('WS server closed'))
+          server.close(() => console.log('HTTP Server closed'))
         }, 3000)
       }
     })
@@ -56,7 +58,7 @@ async function main (dataDirectory) {
   const server = http.Server(app)
 
   server.listen(8000, () => {
-    const address = 'http://localhost:8000/admin/'
+    const address = 'http://localhost:8000/'
     console.log('Webmaster website live at', address)
     opn(address)
   })
