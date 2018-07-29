@@ -1,10 +1,14 @@
 'use strict'
 
+require('stringify').registerWithRequire(['.gqls'])
+
 const assert = require('assert').strict
 const Canvas = require('canvas')
 const fs = require('fs-extra')
 const path = require('path')
 const seedrandom = require('seedrandom')
+
+const graphqlApi = require('./splight/graphqlApi')
 
 function randomGenerator (seed) {
   const rng = seedrandom(seed)
@@ -113,7 +117,9 @@ async function main (dataDirectory) {
     () => makePng({width: 1104, height: 200, seed: "Toute l'actualité"})
   )
 
-  const data = await fs.readJSON(path.join(dataDirectory, 'data.json'))
+  const api = graphqlApi.make({load: () => fs.readJSON(path.join(dataDirectory, 'data.json'))})
+
+  const {data} = await api.request({requestString: 'query{cities{slug name tags{slug title}}}'})
 
   for (var city of data.cities) {
     ensure(p(city.slug + '.png'), (seed => () => makePng({width: 253, height: 200, seed}))(city.name))
