@@ -1,7 +1,7 @@
 'use strict'
 
 // const browserify = require('browserify')
-// const express = require('express')
+const express = require('express')
 // const expressGraphql = require('express-graphql')
 // const moment = require('moment')
 // const mustache = require('mustache')
@@ -104,8 +104,12 @@ const publicWebsite = require('./publicWebsite')
 //   return router
 // }
 
-function makeRouter (config) {
-  return publicWebsite.makeRouter(config)
+async function makeRouter (config) {
+  const router = express.Router()
+
+  router.use(await publicWebsite.makeRouter(config))
+
+  return router
 }
 
 Object.assign(exports, {makeRouter})
