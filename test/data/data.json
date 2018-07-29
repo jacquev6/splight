@@ -1,20 +1,6 @@
 {
   "artists": {"artist-1": {"name": "Artiste 1"}, "artist-2": {"name": "Artiste 2"}},
   "cities": {
-    "shangri-la": {
-      "events": [
-        {
-          "artist": "artist-1",
-          "location": "location-1",
-          "occurences": [{"start": "2018-07-25T12:00"}],
-          "tags": ["tag-1"],
-          "title": "Seul événement"
-        }
-      ],
-      "locations": {"location-1": {"name": "Lieu à Shangri-La 1"}, "location-2": {"name": "Lieu à Shangri-La 2"}},
-      "name": "Shangri-La",
-      "tags": {"tag-1": {"title": "Seule catégorie"}}
-    },
     "avalon": {
       "events": [
         {
@@ -81,6 +67,20 @@
       "locations": {"location-1": {"name": "Lieu à Avalon 1"}, "location-2": {"name": "Lieu à Avalon 2"}},
       "name": "Avalon",
       "tags": {"tag-1": {"title": "Catégorie 1"}, "tag-2": {"title": "Catégorie 2"}}
+    },
+    "shangri-la": {
+      "events": [
+        {
+          "artist": "artist-1",
+          "location": "location-1",
+          "occurences": [{"start": "2018-07-25T12:00"}],
+          "tags": ["tag-1"],
+          "title": "Seul événement"
+        }
+      ],
+      "locations": {"location-1": {"name": "Lieu à Shangri-La 1"}, "location-2": {"name": "Lieu à Shangri-La 2"}},
+      "name": "Shangri-La",
+      "tags": {"tag-1": {"title": "Seule catégorie"}}
     }
   }
 }

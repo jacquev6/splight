@@ -3,17 +3,18 @@
 const assert = require('assert').strict
 const browserify = require('browserify')
 const CleanCSS = require('clean-css')
+const colorConvert = require('color-convert')
 const express = require('express')
 const expressGraphql = require('express-graphql')
 const fs = require('fs-extra')
 const htmlMinifier = require('html-minifier')
 const modernizr = require('modernizr')
 const moment = require('moment')
+const neatJSON = require('neatjson')
 const path = require('path')
 const sass = require('node-sass')
 const terser = require('terser')
 const XmlSitemap = require('xml-sitemap')
-const colorConvert = require('color-convert')
 
 const container = require('./publicWebsite/widgets/container')
 const durations = require('./publicWebsite/durations')
@@ -92,7 +93,11 @@ async function generate ({dataDirectory, outputDirectory}) {
 }
 
 function makeApi ({dataDirectory}) {
-  return graphqlApi.make({load: () => fs.readJSON(path.join(dataDirectory, 'data.json'))})
+  const fileName = path.join(dataDirectory, 'data.json')
+  return graphqlApi.make({
+    load: () => fs.readJSON(fileName),
+    save: data => fs.outputFile(fileName, neatJSON.neatJSON(data, {sort: true, wrap: 120, afterColon: 1, afterComma: 1}) + '\n')
+  })
 }
 
 function * generateAssets ({api}) {

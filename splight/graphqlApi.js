@@ -5,6 +5,7 @@ const moment = require('moment')
 
 const schema = graphql.buildSchema(`
   type Query {
+    artists: [Artist!]!
     cities: [City!]!
     city(slug: ID!): City
   }
@@ -13,10 +14,17 @@ const schema = graphql.buildSchema(`
   scalar Time
   scalar DateTime
 
+  type Artist {
+    slug: ID!
+    name: String!
+  }
+
   type City {
     slug: ID!
     name: String!
     tags: [Tag!]!
+    locations: [Location!]!
+    # events: [Events!]!
     firstDate: Date!
     dateAfter: Date!
     days(first: Date!, after: Date!): [Day!]!
@@ -25,6 +33,23 @@ const schema = graphql.buildSchema(`
   type Tag {
     slug: ID!
     title: String!
+  }
+
+  type Location {
+    slug: ID!
+    name: String!
+  }
+
+  type Event {
+    title: String
+    artist: Artist
+    location: Location!
+    tags: [Tag!]!
+    occurences: [Occurence!]!
+  }
+
+  type Occurence {
+    start: DateTime!
   }
 
   type Day {
@@ -41,34 +66,71 @@ const schema = graphql.buildSchema(`
     tags: [Tag!]!
   }
 
-  type Artist {
+  type Mutation {
+    putArtist(artist: IArtist): Artist!
+    city(slug: ID!): MCity
+  }
+
+  input IArtist {
     slug: ID!
     name: String!
   }
 
-  type Location {
+  type MCity {
+    putLocation(location: ILocation): Location!
+    addEvent(event: IEvent): Event!
+  }
+
+  input ILocation {
     slug: ID!
     name: String!
+  }
+
+  input IEvent {
+    title: String
+    artist: ID
+    location: ID!
+    tags: [ID!]!
+    occurences: [IOccurence!]!
+  }
+
+  input IOccurence {
+    start: DateTime!
   }
 `)
 
-function makeRoot ({load}) {
+function makeRoot ({load, save}) {
   const data = load()
+
+  async function save_ () {
+    save(await data)
+  }
+
+  async function artists () {
+    const {artists} = (await data)
+    return Object.entries(artists).map(([slug, artist]) => Object.assign({slug}, artist))
+  }
+
+  async function putArtist ({artist: {slug, name}}) {
+    (await data).artists[slug] = {name}
+    await save_()
+    return {slug, name}
+  }
 
   async function cities () {
     const {artists, cities} = (await data)
-    return Object.entries(cities).map(([slug, city]) => city_(artists, slug, city))
+    return Object.entries(cities).map(([slug, city]) => city_(save_, artists, slug, city))
   }
 
   async function city ({slug}) {
     const {artists, cities} = (await data)
     const city = cities[slug]
     if (city) {
-      return city_(artists, slug, city)
+      return city_(save_, artists, slug, city)
     }
   }
 
-  return {cities, city}
+  return {artists, putArtist, cities, city}
 }
 
 function lazy (thunk) {
@@ -86,10 +148,12 @@ function lazy (thunk) {
   return {force}
 }
 
-function city_ (artists, slug, city) {
-  const {name, locations, events} = city
+function city_ (save_, artists, slug, city) {
+  const {name, events} = city
   const tagsBySlug = city.tags
   const tags = Object.entries(tagsBySlug).map(([slug, tag]) => Object.assign({slug}, tag))
+  const locationsBySlug = city.locations
+  const locations = Object.entries(locationsBySlug).map(([slug, location]) => Object.assign({slug}, location))
 
   const dayEventsByDate = lazy(() => {
     const dayEventsByDate = {}
@@ -101,7 +165,7 @@ function city_ (artists, slug, city) {
         const dayEvent = {
           time: start.format(moment.HTML5_FMT.TIME),
           title,
-          location: Object.assign({slug: location}, locations[location]),
+          location: Object.assign({slug: location}, locationsBySlug[location]),
           tags,
           mainTag: tags[0]
         }
@@ -152,7 +216,36 @@ function city_ (artists, slug, city) {
     return days
   }
 
-  return {slug, name, tags, firstDate, dateAfter, days}
+  async function putLocation ({location: {slug, name}}) {
+    city.locations[slug] = {name}
+    await save_()
+    return {slug, name}
+  }
+
+  async function addEvent ({event}) {
+    function resolve(slug, things, name) {
+      const thing = things[slug]
+      if (thing) {
+        return Object.assign({slug}, thing)
+      } else {
+        throw new Error('No ' + name + ' with slug "' + slug + '"')
+      }
+    }
+
+    const {title, artist, location, tags, occurences} = event
+    const ret = {
+      title,
+      artist: resolve(artist, artists, 'artist'),
+      location: resolve(location, locationsBySlug, 'location'),
+      tags: tags.map(tag => resolve(tag, tagsBySlug, 'tag')),
+      occurences
+    }
+    city.events.push(event)
+    await save_()
+    return ret
+  }
+
+  return {slug, name, tags, locations, firstDate, dateAfter, days, putLocation, addEvent}
 }
 
 function make (config) {
