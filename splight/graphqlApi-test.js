@@ -23,7 +23,7 @@ describe('graphqlApi', function () {
   context('with empty data', function () {
     const data = {
       artists: {},
-      cities: []
+      cities: {}
     }
 
     it('returns no cities', test(data, '{ cities { slug } }', {data: {cities: []}}))
@@ -34,29 +34,26 @@ describe('graphqlApi', function () {
   context('with several empty cities', function () {
     const data = {
       artists: {},
-      cities: [
-        {
-          slug: 'foo',
+      cities: {
+        'foo': {
           name: 'Foo',
           locations: {},
-          tags: [],
+          tags: {},
           events: []
         },
-        {
-          slug: 'baz',
+        'baz': {
           name: 'Baz',
           locations: {},
-          tags: [],
+          tags: {},
           events: []
         },
-        {
-          slug: 'bar',
+        'bar': {
           name: 'Bar',
           locations: {},
-          tags: [],
+          tags: {},
           events: []
         }
-      ]
+      }
     }
 
     it('returns cities', test(data, '{cities{slug}}', {data: {cities: [{slug: 'foo'}, {slug: 'baz'}, {slug: 'bar'}]}}))
@@ -73,19 +70,18 @@ describe('graphqlApi', function () {
         'artist-3': {name: 'Artist 3'},
         'artist-2': {name: 'Artist 2'}
       },
-      cities: [{
-        slug: 'foo',
+      cities: {'foo': {
         name: 'Foo',
         locations: {
           'location-1': {name: 'Location 1'},
           'location-3': {name: 'Location 3'},
           'location-2': {name: 'Location 2'}
         },
-        tags: [
-          {slug: 'tag-1', title: 'Tag 1'},
-          {slug: 'tag-3', title: 'Tag 3'},
-          {slug: 'tag-2', title: 'Tag 2'}
-        ],
+        tags: {
+          'tag-1': {title: 'Tag 1'},
+          'tag-3': {title: 'Tag 3'},
+          'tag-2': {title: 'Tag 2'}
+        },
         events: [
           {
             location: 'location-2',
@@ -115,7 +111,7 @@ describe('graphqlApi', function () {
             ]
           }
         ]
-      }]
+      }}
     }
 
     it('returns tags', test(data, '{cities{tags{slug title}}}', {data: {cities: [{tags: [

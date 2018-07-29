@@ -55,24 +55,16 @@ const schema = graphql.buildSchema(`
 function makeRoot ({load}) {
   const data = load()
 
-  const citiesBySlug = data.then(({cities}) => {
-    const citiesBySlug = {}
-    cities.forEach(c => {
-      citiesBySlug[c.slug] = c
-    })
-    return citiesBySlug
-  })
-
   async function cities () {
     const {artists, cities} = (await data)
-    return cities.map(city => city_(artists, city))
+    return Object.entries(cities).map(([slug, city]) => city_(artists, slug, city))
   }
 
   async function city ({slug}) {
-    const {artists} = (await data)
-    const city = (await citiesBySlug)[slug]
+    const {artists, cities} = (await data)
+    const city = cities[slug]
     if (city) {
-      return city_(artists, city)
+      return city_(artists, slug, city)
     }
   }
 
@@ -94,15 +86,12 @@ function lazy (thunk) {
   return {force}
 }
 
-function city_ (artists, city) {
-  const {slug, name, tags, locations, events} = city
+function city_ (artists, slug, city) {
+  const {name, locations, events} = city
+  const tagsBySlug = city.tags
+  const tags = Object.entries(tagsBySlug).map(([slug, tag]) => Object.assign({slug}, tag))
 
   const dayEventsByDate = lazy(() => {
-    const tagsBySlug = {}
-    tags.forEach(tag => {
-      tagsBySlug[tag.slug] = tag
-    })
-
     const dayEventsByDate = {}
 
     events.forEach(({location, artist, occurences, tags, title}) => {

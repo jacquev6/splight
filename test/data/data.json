@@ -1,7 +1,7 @@
 {
   "artists": {"artist-1": {"name": "Artiste 1"}, "artist-2": {"name": "Artiste 2"}},
-  "cities": [
-    {
+  "cities": {
+    "shangri-la": {
       "events": [
         {
           "artist": "artist-1",
@@ -13,10 +13,9 @@
       ],
       "locations": {"location-1": {"name": "Lieu à Shangri-La 1"}, "location-2": {"name": "Lieu à Shangri-La 2"}},
       "name": "Shangri-La",
-      "slug": "shangri-la",
-      "tags": [{"slug": "tag-1", "title": "Seule catégorie"}]
+      "tags": {"tag-1": {"title": "Seule catégorie"}}
     },
-    {
+    "avalon": {
       "events": [
         {
           "location": "location-1",
@@ -81,8 +80,7 @@
       ],
       "locations": {"location-1": {"name": "Lieu à Avalon 1"}, "location-2": {"name": "Lieu à Avalon 2"}},
       "name": "Avalon",
-      "slug": "avalon",
-      "tags": [{"slug": "tag-1", "title": "Catégorie 1"}, {"slug": "tag-2", "title": "Catégorie 2"}]
+      "tags": {"tag-1": {"title": "Catégorie 1"}, "tag-2": {"title": "Catégorie 2"}}
     }
-  ]
+  }
 }
