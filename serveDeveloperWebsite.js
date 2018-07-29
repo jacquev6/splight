@@ -1,6 +1,6 @@
 'use strict'
 
-require('stringify').registerWithRequire(['.html'])
+require('stringify').registerWithRequire(['.html', '.gqls'])
 
 const express = require('express')
 const moment = require('moment')

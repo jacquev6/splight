@@ -1,6 +1,6 @@
 'use strict'
 
-require('stringify').registerWithRequire(['.html'])
+require('stringify').registerWithRequire(['.html', '.gqls'])
 
 const moment = require('moment')
 const moment_fr = require('moment/locale/fr') // eslint-disable-line

@@ -1,0 +1,93 @@
+type Query {
+  artists: [Artist!]!
+  cities: [City!]!
+  city(slug: ID!): City
+}
+
+scalar Date
+scalar Time
+scalar DateTime
+
+type Artist {
+  slug: ID!
+  name: String!
+}
+
+type City {
+  slug: ID!
+  name: String!
+  tags: [Tag!]!
+  locations: [Location!]!
+  # events: [Events!]!
+  firstDate: Date!
+  dateAfter: Date!
+  days(first: Date!, after: Date!): [Day!]!
+}
+
+type Tag {
+  slug: ID!
+  title: String!
+}
+
+type Location {
+  slug: ID!
+  name: String!
+}
+
+type Event {
+  title: String
+  artist: Artist
+  location: Location!
+  tags: [Tag!]!
+  occurences: [Occurence!]!
+}
+
+type Occurence {
+  start: DateTime!
+}
+
+type Day {
+  date: Date!
+  events: [DayEvent!]!
+}
+
+type DayEvent {
+  time: Time!
+  title: String
+  artist: Artist
+  location: Location!
+  mainTag: Tag!
+  tags: [Tag!]!
+}
+
+type Mutation {
+  putArtist(artist: IArtist): Artist!
+  city(slug: ID!): MCity
+}
+
+input IArtist {
+  slug: ID!
+  name: String!
+}
+
+type MCity {
+  putLocation(location: ILocation): Location!
+  addEvent(event: IEvent): Event!
+}
+
+input ILocation {
+  slug: ID!
+  name: String!
+}
+
+input IEvent {
+  title: String
+  artist: ID
+  location: ID!
+  tags: [ID!]!
+  occurences: [IOccurence!]!
+}
+
+input IOccurence {
+  start: DateTime!
+}

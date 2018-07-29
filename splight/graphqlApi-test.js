@@ -2,6 +2,8 @@
 
 /* globals describe, it */
 
+require('stringify').registerWithRequire(['.gqls'])
+
 const assert = require('assert') // Not strict because graphql's returned data doesn't have Object prototype
 const deepcopy = require('deepcopy')
 
@@ -12,7 +14,7 @@ describe('graphqlApi', function () {
     function test (data, requestString, expected) {
       return async function () {
         assert.deepEqual(
-          await graphqlApi.make({load: () => deepcopy(data)}).request({requestString}),
+          await graphqlApi.make({load: () => deepcopy(data), save: () => undefined}).request({requestString}),
           expected
         )
       }
@@ -122,7 +124,14 @@ describe('graphqlApi', function () {
     })
 
     describe('city', function () {
-      it('has no city to return', test(emptyData, '{city(slug:"foo"){slug}}', {data: {city: null}}))
+      it('has no city to return', test(emptyData, '{city(slug:"foo"){slug}}', {
+        data: {city: null},
+        errors: [{
+          locations: [{column: 2, line: 1}],
+          message: 'No city with slug "foo"',
+          path: ['city']
+        }]
+      }))
 
       it('finds city foo', test(emptyCitiesData, '{city(slug:"foo"){slug}}', {data: {city: {slug: 'foo'}}}))
 
@@ -130,7 +139,14 @@ describe('graphqlApi', function () {
 
       it('finds city baz', test(emptyCitiesData, '{city(slug:"baz"){slug}}', {data: {city: {slug: 'baz'}}}))
 
-      it('finds no city', test(emptyCitiesData, '{city(slug:"toto"){slug}}', {data: {city: null}}))
+      it('finds no city', test(emptyCitiesData, '{city(slug:"toto"){slug}}', {
+        data: {city: null},
+        errors: [{
+          locations: [{column: 2, line: 1}],
+          message: 'No city with slug "toto"',
+          path: ['city']
+        }]
+      }))
     })
 
     describe('cities (with full data)', function () {
@@ -258,8 +274,8 @@ describe('graphqlApi', function () {
           newData = null
 
           await assert.deepEqual(
-            await run('mutation{putArtist(artist:{slug:"artist",name:"Artist"}){slug}}'),
-            {data: {putArtist: {slug: 'artist'}}}
+            await run('mutation{putArtist(artist:{slug:"artist",name:"Artist"}){slug, name}}'),
+            {data: {putArtist: {slug: 'artist', name: 'Artist'}}}
           )
 
           assert.deepEqual(
@@ -611,7 +627,7 @@ describe('graphqlApi', function () {
         const result = await run('mutation{city(slug:"city"){addEvent(event:{location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title}}}')
         await assert.strictEqual(result.errors[0].message, 'No artist with slug "artist"')
 
-        assert.deepEqual(newData, null)
+        assert.deepEqual(newData, initialData)
 
         await assert.deepEqual(
           await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
@@ -648,7 +664,7 @@ describe('graphqlApi', function () {
         const result = await run('mutation{city(slug:"city"){addEvent(event:{location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title}}}')
         await assert.strictEqual(result.errors[0].message, 'No location with slug "loc"')
 
-        assert.deepEqual(newData, null)
+        assert.deepEqual(newData, initialData)
 
         await assert.deepEqual(
           await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
@@ -685,7 +701,7 @@ describe('graphqlApi', function () {
         const result = await run('mutation{city(slug:"city"){addEvent(event:{location:"loc",artist:"artist",tags:["tag","tageuh"],occurences:[{start:"2018-07-14T12:00"}]}){title}}}')
         await assert.strictEqual(result.errors[0].message, 'No tag with slug "tageuh"')
 
-        assert.deepEqual(newData, null)
+        assert.deepEqual(newData, initialData)
 
         await assert.deepEqual(
           await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
