@@ -18,7 +18,7 @@ for (var k in Modernizr) {
 
 if (hasModernJavascript) {
   const bootstrap = require('bootstrap') // eslint-disable-line
-  const jquery = require('jquery')
+  const jQuery = require('jquery')
   const moment = require('moment')
   const moment_fr = require('moment/locale/fr') // eslint-disable-line
   const URI = require('urijs')
@@ -28,7 +28,7 @@ if (hasModernJavascript) {
 
   const pages = require('../pages')
 
-  jquery(function () {
+  jQuery(function () {
     const page = pages.fromPath(URI.parse(window.location.href).path)
     page.title.initialize()
     page.content.initialize()

@@ -404,8 +404,8 @@ describe('graphqlApi', function () {
         )
 
         await assert.deepEqual(
-          await run('mutation{city(slug:"city"){putLocation(location:{slug:"loc",name:"Location"}){slug}}}'),
-          {data: {city: {putLocation: {slug: 'loc'}}}}
+          await run('mutation{putLocation(location:{citySlug:"city",slug:"loc",name:"Location"}){slug}}'),
+          {data: {putLocation: {slug: 'loc'}}}
         )
 
         assert.deepEqual(
@@ -456,8 +456,8 @@ describe('graphqlApi', function () {
         )
 
         await assert.deepEqual(
-          await run('mutation{city(slug:"city"){putLocation(location:{slug:"loc",name:"New name"}){slug}}}'),
-          {data: {city: {putLocation: {slug: 'loc'}}}}
+          await run('mutation{putLocation(location:{citySlug:"city",slug:"loc",name:"New name"}){slug}}'),
+          {data: {putLocation: {slug: 'loc'}}}
         )
 
         assert.deepEqual(
@@ -514,8 +514,8 @@ describe('graphqlApi', function () {
         )
 
         await assert.deepEqual(
-          await run('mutation{city(slug:"city"){putLocation(location:{slug:"loc",name:"New name"}){slug}}}'),
-          {data: {city: {putLocation: {slug: 'loc'}}}}
+          await run('mutation{putLocation(location:{citySlug:"city",slug:"loc",name:"New name"}){slug}}'),
+          {data: {putLocation: {slug: 'loc'}}}
         )
 
         await assert.deepEqual(
@@ -553,8 +553,8 @@ describe('graphqlApi', function () {
         )
 
         await assert.deepEqual(
-          await run('mutation{city(slug:"city"){addEvent(event:{location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurences{start}}}}'),
-          {data: {city: {addEvent: {title: null, artist: {name: 'Artist'}, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurences: [{start: '2018-07-14T12:00'}]}}}}
+          await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurences{start}}}'),
+          {data: {addEvent: {title: null, artist: {name: 'Artist'}, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurences: [{start: '2018-07-14T12:00'}]}}}
         )
 
         assert.deepEqual(
@@ -624,7 +624,7 @@ describe('graphqlApi', function () {
           {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
         )
 
-        const result = await run('mutation{city(slug:"city"){addEvent(event:{location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title}}}')
+        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title}}')
         await assert.strictEqual(result.errors[0].message, 'No artist with slug "artist"')
 
         assert.deepEqual(newData, initialData)
@@ -661,7 +661,7 @@ describe('graphqlApi', function () {
           {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
         )
 
-        const result = await run('mutation{city(slug:"city"){addEvent(event:{location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title}}}')
+        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title}}')
         await assert.strictEqual(result.errors[0].message, 'No location with slug "loc"')
 
         assert.deepEqual(newData, initialData)
@@ -698,7 +698,7 @@ describe('graphqlApi', function () {
           {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
         )
 
-        const result = await run('mutation{city(slug:"city"){addEvent(event:{location:"loc",artist:"artist",tags:["tag","tageuh"],occurences:[{start:"2018-07-14T12:00"}]}){title}}}')
+        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag","tageuh"],occurences:[{start:"2018-07-14T12:00"}]}){title}}')
         await assert.strictEqual(result.errors[0].message, 'No tag with slug "tageuh"')
 
         assert.deepEqual(newData, initialData)

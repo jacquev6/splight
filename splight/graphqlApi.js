@@ -20,7 +20,7 @@ function makeRoot ({load, save}) {
 
   const ret = {}
 
-  for (var name of ['artists', 'putArtist', 'cities', 'city']) {
+  for (var name of ['artists', 'putArtist', 'cities', 'city', 'putLocation', 'addEvent']) {
     ret[name] = forward(name)
   }
 
@@ -47,6 +47,28 @@ function makeSyncRoot (data) {
 
   function city ({slug}) {
     return city_(getCity(slug))
+  }
+
+  function putLocation ({location: {citySlug, slug, name}}) {
+    getCity(citySlug).locations[slug] = {name}
+    return {slug, name}
+  }
+
+  function addEvent ({event}) {
+    const {citySlug, title, artist, location, tags, occurences} = event
+    delete event.citySlug
+    const city = getCity(citySlug)
+    const [tags_, getTag] = slugify(city.tags, 'tag') // eslint-disable-line
+    const [locations, getLocation] = slugify(city.locations, 'location') // eslint-disable-line
+    const ret = {
+      title,
+      artist: getArtist(artist),
+      location: getLocation(location),
+      tags: tags.map(getTag),
+      occurences
+    }
+    city.events.push(event)
+    return ret
   }
 
   function city_ (city) {
@@ -115,28 +137,10 @@ function makeSyncRoot (data) {
       return days
     }
 
-    function putLocation ({location: {slug, name}}) {
-      city.locations[slug] = {name}
-      return {slug, name}
-    }
-
-    function addEvent ({event}) {
-      const {title, artist, location, tags, occurences} = event
-      const ret = {
-        title,
-        artist: getArtist(artist),
-        location: getLocation(location),
-        tags: tags.map(getTag),
-        occurences
-      }
-      city.events.push(event)
-      return ret
-    }
-
-    return {slug, name, tags, locations, firstDate, dateAfter, days, putLocation, addEvent}
+    return {slug, name, tags, locations, firstDate, dateAfter, days, addEvent}
   }
 
-  return {artists, putArtist, cities, city}
+  return {artists, putArtist, cities, city, putLocation, addEvent}
 }
 
 function slugify (thingsBySlug, name) {

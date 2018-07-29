@@ -4,7 +4,6 @@ const jQuery = require('jquery')
 const mustache = require('mustache')
 
 const addEventForm_ = require('./widgets/addEventForm')
-const restApiClient = require('./restApiClient')
 const template = require('./body.html')
 const utils = require('./utils')
 
@@ -39,7 +38,7 @@ function make () {
 
     fillSelect(
       select,
-      (await restApiClient.getCities()).map(({slug, name}) =>
+      (await utils.request({requestString: '{cities{slug name}}'})).cities.map(({slug, name}) =>
         ({value: slug, display: name})
       )
     )

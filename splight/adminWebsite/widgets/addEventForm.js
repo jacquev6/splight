@@ -4,7 +4,6 @@ const jQuery = require('jquery')
 const mustache = require('mustache')
 
 const template = require('./addEventForm.html')
-const restApiClient = require('../restApiClient')
 const utils = require('../utils')
 
 const {fillSelect} = utils
@@ -15,19 +14,21 @@ function make ({publicIFrame}) {
   var citySlug = null
 
   async function submit () {
+    const hasArtist = jQuery('#spa-add-event-new-artist').is(':visible')
+    const artist = hasArtist ? {
+      slug: jQuery('#spa-add-event-new-artist-slug').val(),
+      name: jQuery('#spa-add-event-new-artist-name').val()
+    } : {slug: jQuery('#spa-add-event-artist').val(), name: ''}
+
+    const hasLocation = jQuery('#spa-add-event-new-location').is(':visible')
+    const location = hasLocation ? {
+      citySlug,
+      slug: jQuery('#spa-add-event-new-location-slug').val(),
+      name: jQuery('#spa-add-event-new-location-name').val()
+    } : {citySlug, slug: jQuery('#spa-add-event-location').val(), name: ''}
+
     const event = {
-      artist: jQuery('#spa-add-event-new-artist').is(':visible')
-        ? {
-          slug: jQuery('#spa-add-event-new-artist-slug').val(),
-          name: jQuery('#spa-add-event-new-artist-name').val()
-        }
-        : jQuery('#spa-add-event-artist').val(),
-      location: jQuery('#spa-add-event-new-location').is(':visible')
-        ? {
-          slug: jQuery('#spa-add-event-new-location-slug').val(),
-          name: jQuery('#spa-add-event-new-location-name').val()
-        }
-        : jQuery('#spa-add-event-location').val(),
+      citySlug,
       occurences: jQuery('#spa-add-event-occurences input').map((index, start) => ({start: jQuery(start).val()})).get(),
       tags:
         [
@@ -35,12 +36,15 @@ function make ({publicIFrame}) {
         ].concat(
           jQuery('#spa-add-event-secondary-tags input:checked').map((index, tag) => jQuery(tag).val()).get()
         ),
-      title: jQuery('#spa-add-event-title').val()
+      title: jQuery('#spa-add-event-title').val(),
+      artist: artist.slug,
+      location: location.slug
     }
 
-    const response = await restApiClient.addEvent({citySlug, event})
-    publicIFrame.show(response.visible_at[0])
-    initialize(citySlug)
+    await utils.request({
+      requestString: 'mutation($hasArtist:Boolean!,$artist:IArtist!,$hasLocation:Boolean!,$location:ILocation!,$event:IEvent!){putArtist(artist:$artist)@include(if:$hasArtist){slug}putLocation(location:$location)@include(if:$hasLocation){slug}addEvent(event:$event){title}}',
+      variableValues: {hasArtist, artist, hasLocation, location, event}
+    })
   }
 
   async function initialize (citySlug_) {
@@ -48,7 +52,7 @@ function make ({publicIFrame}) {
 
     fillSelect(
       jQuery('#spa-add-event-artist'),
-      (await restApiClient.getArtists()).map(({slug, name}) =>
+      (await utils.request({requestString: '{artists {slug name}}'})).artists.map(({slug, name}) =>
         ({value: slug, display: name})
       )
     )
@@ -63,7 +67,7 @@ function make ({publicIFrame}) {
         jQuery('#spa-add-event-new-artist').show()
       })
 
-    const tags = await restApiClient.getTags({citySlug})
+    const tags = (await utils.request({requestString: 'query($citySlug:ID!){city(slug:$citySlug){tags{slug title}}}', variableValues: {citySlug}})).city.tags
     const mainTag = jQuery('#spa-add-event-main-tag')
     const secondaryTags = jQuery('#spa-add-event-secondary-tags')
     fillSelect(
@@ -84,7 +88,7 @@ function make ({publicIFrame}) {
 
     fillSelect(
       jQuery('#spa-add-event-location'),
-      (await restApiClient.getLocations({citySlug})).map(({slug, name}) =>
+      (await utils.request({requestString: 'query($citySlug:ID!){city(slug:$citySlug){locations{slug name}}}', variableValues: {citySlug}})).city.locations.map(({slug, name}) =>
         ({value: slug, display: name})
       )
     )
