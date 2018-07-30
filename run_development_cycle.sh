@@ -58,7 +58,8 @@ then
 
   if [ -d ../splight.fr-data -a -d ../splight.fr ]
   then
-    npm run generatePublicWebsite ../splight.fr-data/data.json ../splight.fr/docs
+    npm run generateMissingImages ../splight.fr-data
+    npm run generatePublicWebsite ../splight.fr-data ../splight.fr/docs
   fi
 fi
 

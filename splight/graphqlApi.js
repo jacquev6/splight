@@ -175,8 +175,16 @@ function lazy (thunk) {
 function make (config) {
   const rootValue = makeRoot(config)
 
-  function request ({requestString, variableValues}) {
-    return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
+  async function request ({requestString, variableValues}) {
+    const response = await graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
+
+    if (response.errors) {
+      console.log('GraphQL requestString:', requestString)
+      console.log('GraphQL variableValues:', variableValues)
+      console.log('GraphQL errors:', response.errors)
+    }
+
+    return response
   }
 
   return {schema, rootValue, request}

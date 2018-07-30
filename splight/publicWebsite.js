@@ -79,7 +79,8 @@ async function generate ({dataDirectory, outputDirectory}) {
   sitemap.setHost('https://splight.fr/')
 
   for (var pageClass of generatePageClasses()) {
-    for (var page of pageClass.makeAll((await api.request(pageClass.dataRequest)).data)) {
+    const pageClassData = pageClass.dataRequest && (await api.request(pageClass.dataRequest)).data
+    for (var page of pageClass.makeAll(pageClassData)) {
       sitemap.add(page.path)
       const fileName = path.join(outputDirectory, page.path, 'index.html')
       console.log('Generating', fileName)
@@ -219,9 +220,7 @@ function * generatePageClasses () {
   yield {
     path: '/',
     makeOne: req => pages.root(),
-    dataRequest: {
-      requestString: ''
-    },
+    dataRequest: null,
     makeAll: data => [pages.root()]
   }
 
