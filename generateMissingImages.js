@@ -117,7 +117,7 @@ async function main (dataDirectory) {
     () => makePng({width: 1104, height: 200, seed: "Toute l'actualité"})
   )
 
-  const api = graphqlApi.make({load: () => fs.readJSON(path.join(dataDirectory, 'data.json'))})
+  const api = graphqlApi.make({load: () => fs.readJSON(path.join(dataDirectory, 'data.json')), save: d => undefined})
 
   const {data} = await api.request({requestString: 'query{cities{slug name tags{slug title}}}'})
 
