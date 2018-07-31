@@ -30,7 +30,6 @@ if (hasModernJavascript) {
 
   jQuery(function () {
     const page = pages.fromPath(URI.parse(window.location.href).path)
-    page.title.initialize()
     page.content.initialize()
   })
 }

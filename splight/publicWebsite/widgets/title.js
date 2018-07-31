@@ -15,10 +15,7 @@ function make ({text, header, lead}) {
     )
   }
 
-  function initialize () {
-  }
-
-  return {text, render, initialize}
+  return {text, render}
 }
 
 exports.make = make
