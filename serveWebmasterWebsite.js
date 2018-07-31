@@ -23,7 +23,7 @@ async function main (dataDirectory) {
 
   app.get(
     '/shutdown/shutdown.js',
-    (req, res) => res.type('.js').send("new WebSocket('ws://localhost:8080/')")
+    (req, res) => res.type('.js').send("const shutdown = new WebSocket('ws://localhost:8080/')")
   )
 
   const wss = new ws.Server({
@@ -58,7 +58,7 @@ async function main (dataDirectory) {
   const server = http.Server(app)
 
   server.listen(8000, () => {
-    const address = 'http://localhost:8000/'
+    const address = 'http://localhost:8000/admin/'
     console.log('Webmaster website live at', address)
     opn(address)
   })
