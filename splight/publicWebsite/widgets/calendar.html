@@ -1,0 +1,12 @@
+<div id="sp-calendar" class="row">
+  {{#city.days}}
+  <div class="col-md">
+    <p><strong>{{date}}</strong></p>
+    {{#events}}
+    <div class="sp-event sp-main-tag-{{city.slug}}-{{mainTag.slug}}{{#tags}} sp-tag-{{city.slug}}-{{slug}}{{/tags}}">
+      <p><strong>{{time}}</strong> {{title}}</p>
+    </div>
+    {{/events}}
+  </div>
+  {{/city.days}}
+</div>

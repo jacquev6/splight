@@ -10,60 +10,9 @@
 <div class="row">
   <div class="col">
     <h1>{{title}}</h1>
-
-    <div class="sp-needs-js"><div class="row"><div class="col"><div id="sp-tag-filtering" class="form-group">
-      {{#city.tags}}
-      <div class="form-check form-check-inline sp-main-tag-{{city.slug}}-{{slug}}">
-        <label class="form-check-label"><input class="form-check-input" type="checkbox" value="{{slug}}" />{{title}}</label>
-      </div>
-      {{/city.tags}}
-    </div></div></div></div>
-
-    <div class="row">
-      <div class="col">
-        {{#links.previous.path}}
-        <a class="btn btn-secondary sp-tag-filtering-tagged-link" href="{{{links.previous.path}}}">&lt; {{links.previous.text}}</a>
-        {{/links.previous.path}}
-        {{^links.previous.path}}
-        <button class="btn btn-secondary disabled">&lt; {{links.previous.text}}</a>
-        {{/links.previous.path}}
-      </div>
-      <div class="col">
-{{{durationSelector.html}}}
-      </div>
-      <div class="col">
-        <div class="sp-needs-js"><div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-            Aller à
-          </button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item sp-timespan-now-1 sp-tag-filtering-tagged-link" href="{{{links.now1.path}}}">{{links.now1.text}}</a>
-            <a class="dropdown-item sp-timespan-now-2 sp-tag-filtering-tagged-link" href="{{{links.now2.path}}}">{{links.now2.text}}</a>
-          </div>
-        </div></div>
-      </div>
-      <div class="col">
-        {{#links.next.path}}
-        <a class="btn btn-secondary sp-tag-filtering-tagged-link" href="{{{links.next.path}}}">{{links.next.text}} &gt;</a>
-        {{/links.next.path}}
-        {{^links.next.path}}
-        <button class="btn btn-secondary disabled">{{links.next.text}} &gt;</a>
-        {{/links.next.path}}
-      </div>
-    </div>
-
-    <div id="sp-calendar" class="row">
-      {{#city.days}}
-      <div class="col-md">
-        <p><strong>{{date}}</strong></p>
-        {{#events}}
-        <div class="sp-event sp-main-tag-{{city.slug}}-{{mainTag.slug}}{{#tags}} sp-tag-{{city.slug}}-{{slug}}{{/tags}}">
-          <p><strong>{{time}}</strong> {{title}}</p>
-        </div>
-        {{/events}}
-      </div>
-      {{/city.days}}
-    </div>
+{{{tagFilter.html}}}
+{{{linksToolbar.html}}}
+{{{calendar.html}}}
   </div>
 
   <div class="col-lg-3 col-xl-2 d-none d-lg-inline-block">
