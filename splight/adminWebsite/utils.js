@@ -19,11 +19,12 @@ async function request ({requestString, variableValues}) {
     contentType: 'application/json',
     type: 'POST',
     dataType: 'json'
+  }).fail((jqXHR, textStatus, errorThrown) => {
+    console.log('Error while calling GraphQL:')
+    console.log('jqXHR', jqXHR)
+    console.log('textStatus', textStatus)
+    console.log('errorThrown', errorThrown)
   })
-
-  if (response.errors) {
-    throw new Error(response.errors)
-  }
 
   return response.data
 }

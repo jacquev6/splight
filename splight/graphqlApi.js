@@ -60,13 +60,15 @@ function makeSyncRoot (data) {
     const city = getCity(citySlug)
     const [tags_, getTag] = slugify(city.tags, 'tag') // eslint-disable-line
     const [locations, getLocation] = slugify(city.locations, 'location') // eslint-disable-line
-    const ret = {
-      title,
-      artist: getArtist(artist),
-      location: getLocation(location),
-      tags: tags.map(getTag),
-      occurences
-    }
+    const ret = Object.assign(
+      {
+        title,
+        location: getLocation(location),
+        tags: tags.map(getTag),
+        occurences
+      },
+      artist ? {artist: getArtist(artist)} : {}
+    )
     city.events.push(event)
     return ret
   }
@@ -178,11 +180,11 @@ function make (config) {
   async function request ({requestString, variableValues}) {
     const response = await graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
 
-    if (response.errors) {
-      console.log('GraphQL requestString:', requestString)
-      console.log('GraphQL variableValues:', variableValues)
-      console.log('GraphQL errors:', response.errors)
-    }
+    // if (response.errors) {
+    //   console.log('GraphQL requestString:', requestString)
+    //   console.log('GraphQL variableValues:', variableValues)
+    //   console.log('GraphQL errors:', response.errors)
+    // }
 
     return response
   }

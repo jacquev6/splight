@@ -14,14 +14,14 @@ function make ({publicIFrame}) {
   var citySlug = null
 
   async function submit () {
-    const hasArtist = jQuery('#spa-add-event-new-artist').is(':visible')
-    const artist = hasArtist ? {
+    const putArtist = jQuery('#spa-add-event-new-artist').is(':visible')
+    const artist = putArtist ? {
       slug: jQuery('#spa-add-event-new-artist-slug').val(),
       name: jQuery('#spa-add-event-new-artist-name').val()
     } : {slug: jQuery('#spa-add-event-artist').val(), name: ''}
 
-    const hasLocation = jQuery('#spa-add-event-new-location').is(':visible')
-    const location = hasLocation ? {
+    const putLocation = jQuery('#spa-add-event-new-location').is(':visible')
+    const location = putLocation ? {
       citySlug,
       slug: jQuery('#spa-add-event-new-location-slug').val(),
       name: jQuery('#spa-add-event-new-location-name').val()
@@ -37,13 +37,16 @@ function make ({publicIFrame}) {
           jQuery('#spa-add-event-secondary-tags input:checked').map((index, tag) => jQuery(tag).val()).get()
         ),
       title: jQuery('#spa-add-event-title').val(),
-      artist: artist.slug,
-      location: location.slug
+      location: location.slug,
+      artist: artist.slug === '-' ? undefined : artist.slug
     }
 
+    const variableValues = {putArtist, artist, putLocation, location, event}
+    console.log('addEventForm.submit', variableValues)
+
     await utils.request({
-      requestString: 'mutation($hasArtist:Boolean!,$artist:IArtist!,$hasLocation:Boolean!,$location:ILocation!,$event:IEvent!){putArtist(artist:$artist)@include(if:$hasArtist){slug}putLocation(location:$location)@include(if:$hasLocation){slug}addEvent(event:$event){title}}',
-      variableValues: {hasArtist, artist, hasLocation, location, event}
+      requestString: 'mutation($putArtist:Boolean!,$artist:IArtist!,$putLocation:Boolean!,$location:ILocation!,$event:IEvent!){putArtist(artist:$artist)@include(if:$putArtist){slug}putLocation(location:$location)@include(if:$putLocation){slug}addEvent(event:$event){title}}',
+      variableValues
     })
   }
 

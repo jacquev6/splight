@@ -555,6 +555,80 @@ describe('graphqlApi', function () {
         )
 
         await assert.deepEqual(
+          await run('mutation{addEvent(event:{citySlug:"city",title:"Title",location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurences{start}}}'),
+          {data: {addEvent: {title: 'Title', artist: {name: 'Artist'}, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurences: [{start: '2018-07-14T12:00'}]}}}
+        )
+
+        assert.deepEqual(
+          newData,
+          {
+            artists: {'artist': {name: 'Artist'}},
+            cities: {
+              'city': {
+                name: 'City',
+                locations: {'loc': {name: 'Location'}},
+                tags: {'tag': {title: 'Tag'}},
+                events: [
+                  {
+                    location: 'loc',
+                    artist: 'artist',
+                    tags: ['tag'],
+                    occurences: [
+                      {start: '2018-07-14T12:00'}
+                    ],
+                    title: 'Title'
+                  }
+                ]
+              }
+            }
+          }
+        )
+
+        await assert.deepEqual(
+          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{title time artist{name} location{name} tags{title}}}}}'),
+          {data: {cities: [{
+            slug: 'city',
+            days: [{
+              date: '2018-07-14',
+              events: [{
+                title: 'Title',
+                time: '12:00',
+                artist: {name: 'Artist'},
+                location: {name: 'Location'},
+                tags: [{title: 'Tag'}]
+              }]
+            }]
+          }]}}
+        )
+      })
+
+      it('adds an event without title', async function () {
+        const initialData = {
+          artists: {'artist': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'loc': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: []
+            }
+          }
+        }
+
+        var newData = null
+
+        const api = graphqlApi.make({load: () => deepcopy(initialData), save: d => { newData = d }})
+
+        function run (requestString) {
+          return api.request({requestString})
+        }
+
+        await assert.deepEqual(
+          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
+          {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
+        )
+
+        await assert.deepEqual(
           await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurences{start}}}'),
           {data: {addEvent: {title: null, artist: {name: 'Artist'}, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurences: [{start: '2018-07-14T12:00'}]}}}
         )
@@ -584,14 +658,88 @@ describe('graphqlApi', function () {
         )
 
         await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time artist{name} location{name} tags{title}}}}}'),
+          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{title time artist{name} location{name} tags{title}}}}}'),
           {data: {cities: [{
             slug: 'city',
             days: [{
               date: '2018-07-14',
               events: [{
+                title: null,
                 time: '12:00',
                 artist: {name: 'Artist'},
+                location: {name: 'Location'},
+                tags: [{title: 'Tag'}]
+              }]
+            }]
+          }]}}
+        )
+      })
+
+      it('adds an event without artist', async function () {
+        const initialData = {
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'loc': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: []
+            }
+          }
+        }
+
+        var newData = null
+
+        const api = graphqlApi.make({load: () => deepcopy(initialData), save: d => { newData = d }})
+
+        function run (requestString) {
+          return api.request({requestString})
+        }
+
+        await assert.deepEqual(
+          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
+          {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
+        )
+
+        await assert.deepEqual(
+          await run('mutation{addEvent(event:{citySlug:"city",title:"Title",location:"loc",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurences{start}}}'),
+          {data: {addEvent: {title: 'Title', artist: null, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurences: [{start: '2018-07-14T12:00'}]}}}
+        )
+
+        assert.deepEqual(
+          newData,
+          {
+            artists: {},
+            cities: {
+              'city': {
+                name: 'City',
+                locations: {'loc': {name: 'Location'}},
+                tags: {'tag': {title: 'Tag'}},
+                events: [
+                  {
+                    title: 'Title',
+                    location: 'loc',
+                    tags: ['tag'],
+                    occurences: [
+                      {start: '2018-07-14T12:00'}
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        )
+
+        await assert.deepEqual(
+          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{title time artist{name} location{name} tags{title}}}}}'),
+          {data: {cities: [{
+            slug: 'city',
+            days: [{
+              date: '2018-07-14',
+              events: [{
+                title: 'Title',
+                time: '12:00',
+                artist: null,
                 location: {name: 'Location'},
                 tags: [{title: 'Tag'}]
               }]
