@@ -90,7 +90,8 @@ function makeSyncRoot (data) {
             title,
             location: getLocation(location),
             tags,
-            mainTag: tags[0]
+            mainTag: tags[0],
+            occurences
           }
           if (artist) {
             dayEvent.artist = getArtist(artist)

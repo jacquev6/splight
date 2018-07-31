@@ -58,6 +58,7 @@ type DayEvent {
   location: Location!
   mainTag: Tag!
   tags: [Tag!]!
+  occurences: [Occurence!]!
 }
 
 type Mutation {

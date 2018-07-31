@@ -14,11 +14,6 @@ function make ({citySlug, startDate, duration}) {
   const calendar = calendar_.make({citySlug, startDate, duration})
 
   function render (data) {
-    const city = data.city
-    city.days.forEach(day => {
-      day.date = moment(day.date, moment.HTML5_FMT.DATE, true).format('ddd Do MMM')
-    })
-
     return mustache.render(
       template,
       {

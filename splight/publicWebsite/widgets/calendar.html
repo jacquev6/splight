@@ -1,5 +1,5 @@
 <div id="sp-calendar" class="row">
-  {{#city.days}}
+  {{#days}}
   <div class="col-md">
     <p><strong>{{date}}</strong></p>
     {{#events}}
@@ -7,7 +7,9 @@
       <p><strong>{{time}}</strong> <span class="sp-event-title">{{title}}</span></p>
       <div class="sp-event-details">
         <h3>Quand&nbsp;?</h3>
-        <p>Le {{date}} à {{time}}.</p>
+        <ul>
+          {{#occurences}}<li>Le {{date}} à {{time}}</li>{{/occurences}}
+        </ul>
         <div class="row">
           <div class="col">
             <h3>Quoi, qui&nbsp;?</h3>
@@ -23,7 +25,7 @@
     </div>
     {{/events}}
   </div>
-  {{/city.days}}
+  {{/days}}
 </div>
 
 <div class="modal" id="sp-event-modal">
