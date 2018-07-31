@@ -47,4 +47,4 @@ function make () {
   return {html, initialize}
 }
 
-exports.make = make
+Object.assign(exports, {make})

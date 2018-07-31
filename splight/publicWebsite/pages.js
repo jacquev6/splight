@@ -8,10 +8,8 @@ const cityContent = require('./widgets/cityContent')
 const cityTitle = require('./widgets/cityTitle')
 const durations = require('./durations')
 const paths = require('./paths')
-// const preBrowser_ = require('./preBrowser')
 const rootContent = require('./widgets/rootContent')
 const rootTitle = require('./widgets/rootTitle')
-// const source_ = require('./source')
 const timespanContent = require('./widgets/timespanContent')
 
 function root () {

@@ -14,4 +14,4 @@ function make () {
   })
 }
 
-exports.make = make
+Object.assign(exports, {make})

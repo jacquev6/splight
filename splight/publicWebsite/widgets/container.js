@@ -24,4 +24,4 @@ function make ({page, scripts}) {
   return {render}
 }
 
-exports.make = make
+Object.assign(exports, {make})

@@ -12,6 +12,4 @@ function timespan (citySlug, startDate, duration) {
   return '/' + citySlug + '/' + startDate.format(duration.slugFormat) + '/'
 }
 
-exports.root = root
-exports.city = city
-exports.timespan = timespan
+Object.assign(exports, {root, city, timespan})

@@ -22,4 +22,4 @@ function make ({citySlug}) {
   })
 }
 
-exports.make = make
+Object.assign(exports, {make})

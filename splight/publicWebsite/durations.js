@@ -69,14 +69,12 @@ const oneWeek = (function () {
   }
 }())
 
-exports.oneDay = oneDay
-exports.threeDays = threeDays
-exports.oneWeek = oneWeek
+const allByName = {oneDay, threeDays, oneWeek}
+const all = Object.values(allByName)
 
-exports.all = Object.values(exports)
+const byDays = {}
+all.forEach(d => {
+  byDays[d.days] = d
+})
 
-exports.byDays = Object.assign(...exports.all.map(d => {
-  const o = {}
-  o[d.days] = d
-  return o
-}))
+Object.assign(exports, allByName, {all, byDays})

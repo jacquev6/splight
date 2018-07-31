@@ -18,4 +18,4 @@ function make ({text, header, lead}) {
   return {text, render}
 }
 
-exports.make = make
+Object.assign(exports, {make})

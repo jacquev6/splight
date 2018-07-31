@@ -25,4 +25,4 @@ function make ({citySlug}) {
   return {render, initialize}
 }
 
-exports.make = make
+Object.assign(exports, {make})

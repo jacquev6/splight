@@ -42,4 +42,4 @@ function make ({citySlug, startDate, duration}) {
   }
 }
 
-exports.make = make
+Object.assign(exports, {make})
