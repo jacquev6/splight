@@ -4,9 +4,37 @@
     <p><strong>{{date}}</strong></p>
     {{#events}}
     <div class="sp-event sp-main-tag-{{city.slug}}-{{mainTag.slug}}{{#tags}} sp-tag-{{city.slug}}-{{slug}}{{/tags}}">
-      <p><strong>{{time}}</strong> {{title}}</p>
+      <p><strong>{{time}}</strong> <span class="sp-event-title">{{title}}</span></p>
+      <div class="sp-event-details">
+        <h3>Quand&nbsp;?</h3>
+        <p>Le {{date}} à {{time}}.</p>
+        <div class="row">
+          <div class="col">
+            <h3>Quoi, qui&nbsp;?</h3>
+            <p>{{title}}</p>
+            <p>{{artist.name}}</p>
+          </div>
+          <div class="col">
+            <h3>Où&nbsp;?</h3>
+            <p>{{location.name}}</p>
+          </div>
+        </div>
+      </div>
     </div>
     {{/events}}
   </div>
   {{/city.days}}
+</div>
+
+<div class="modal" id="sp-event-modal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"></h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+      </div>
+    </div>
+  </div>
 </div>
