@@ -1,6 +1,5 @@
 'use strict'
 
-const moment = require('moment')
 const mustache = require('mustache')
 
 const calendar_ = require('./calendar')

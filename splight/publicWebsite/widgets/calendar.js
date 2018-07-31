@@ -45,7 +45,7 @@ function make ({citySlug}) {
     jQuery('.sp-event')
       .css('cursor', 'pointer')
       .on('click', function () {
-        const clicked = $(this)
+        const clicked = jQuery(this)
         modal.find('.modal-title').text(clicked.find('.sp-event-title').text())
         modal.find('.modal-body').html(clicked.find('.sp-event-details').html())
         modal.modal()
