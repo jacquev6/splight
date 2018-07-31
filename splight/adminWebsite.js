@@ -59,12 +59,12 @@ function * generateAssets ({scripts}) {
 async function makeRouter ({dataDirectory, scripts}) {
   const router = express.Router()
 
-  router.use(await publicWebsite.makeRouter({dataDirectory, scripts}))
-
   for (var asset of generateAssets({scripts})) {
     console.log('Preparing to serve', asset.path, 'as', asset.type)
     router.get(asset.path, ((content, type) => async (req, res) => res.type(type).send(content))(await asset.content, asset.type))
   }
+
+  router.use(await publicWebsite.makeRouter({dataDirectory, scripts}))
 
   return router
 }
