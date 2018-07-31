@@ -16,7 +16,9 @@ function make ({citySlug}) {
         time,
         title,
         mainTag,
-        tags,
+        // This is base on the knowledge that mainTag is first in the list. This could change.
+        // @todo Change API to return mainTag, secondaryTags and allTags (if needed elsewhere), and use tag = [mainTag].concat(secondaryTags)
+        tags: tags.map(({slug, title}) => ({slug, title, first: slug === mainTag.slug})),
         artist,
         location,
         occurrences: occurrences.map(({start}) => {
