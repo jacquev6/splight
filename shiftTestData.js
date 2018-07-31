@@ -10,8 +10,8 @@ async function main (dataFile) {
 
   Object.values(data.cities).forEach(city => {
     city.events.forEach(event => {
-      event.occurences.forEach(occurence => {
-        occurence.start = moment(occurence.start, moment.HTML5_FMT.DATETIME_LOCAL, true).add(1, 'week').format(moment.HTML5_FMT.DATETIME_LOCAL)
+      event.occurrences.forEach(occurrence => {
+        occurrence.start = moment(occurrence.start, moment.HTML5_FMT.DATETIME_LOCAL, true).add(1, 'week').format(moment.HTML5_FMT.DATETIME_LOCAL)
       })
     })
   })

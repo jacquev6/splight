@@ -55,7 +55,7 @@ function makeSyncRoot (data) {
   }
 
   function addEvent ({event}) {
-    const {citySlug, title, artist, location, tags, occurences} = event
+    const {citySlug, title, artist, location, tags, occurrences} = event
     delete event.citySlug
     const city = getCity(citySlug)
     const [tags_, getTag] = slugify(city.tags, 'tag') // eslint-disable-line
@@ -65,7 +65,7 @@ function makeSyncRoot (data) {
         title,
         location: getLocation(location),
         tags: tags.map(getTag),
-        occurences
+        occurrences
       },
       artist ? {artist: getArtist(artist)} : {}
     )
@@ -81,9 +81,9 @@ function makeSyncRoot (data) {
     const dayEventsByDate = lazy(() => {
       const dayEventsByDate = {}
 
-      events.forEach(({location, artist, occurences, tags, title}) => {
+      events.forEach(({location, artist, occurrences, tags, title}) => {
         tags = tags.map(getTag)
-        occurences.forEach(({start}) => {
+        occurrences.forEach(({start}) => {
           start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
           const dayEvent = {
             time: start.format(moment.HTML5_FMT.TIME),
@@ -91,7 +91,7 @@ function makeSyncRoot (data) {
             location: getLocation(location),
             tags,
             mainTag: tags[0],
-            occurences
+            occurrences
           }
           if (artist) {
             dayEvent.artist = getArtist(artist)

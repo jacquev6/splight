@@ -29,7 +29,7 @@ function make ({publicIFrame}) {
 
     const event = {
       citySlug,
-      occurences: jQuery('#spa-add-event-occurences input').map((index, start) => ({start: jQuery(start).val()})).get(),
+      occurrences: jQuery('#spa-add-event-occurrences input').map((index, start) => ({start: jQuery(start).val()})).get(),
       tags:
         [
           jQuery('#spa-add-event-main-tag').val()
@@ -106,12 +106,12 @@ function make ({publicIFrame}) {
         jQuery('#spa-add-event-new-location').show()
       })
 
-    const occurences = jQuery('#spa-add-event-occurences')
-    const occurenceInput = ' <input type="datetime-local"></input>'
-    occurences.html(occurenceInput)
-    jQuery('#spa-add-event-add-occurence')
+    const occurrences = jQuery('#spa-add-event-occurrences')
+    const occurrenceInput = ' <input type="datetime-local"></input>'
+    occurrences.html(occurrenceInput)
+    jQuery('#spa-add-event-add-occurrence')
       .off('click')
-      .on('click', () => { occurences.append(occurenceInput) })
+      .on('click', () => { occurrences.append(occurrenceInput) })
 
     jQuery('#spa-add-event-cancel').on('click', () => {
       initialize(citySlug)

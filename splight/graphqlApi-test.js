@@ -72,7 +72,7 @@ describe('graphqlApi', function () {
             location: 'location-2',
             tags: ['tag-1', 'tag-3'],
             title: 'Title 1',
-            occurences: [
+            occurrences: [
               {start: '2018-07-12T12:00'},
               {start: '2018-07-15T13:00'}
             ]
@@ -82,7 +82,7 @@ describe('graphqlApi', function () {
             artist: 'artist-2',
             tags: ['tag-3', 'tag-2'],
             title: 'Title 2',
-            occurences: [
+            occurrences: [
               {start: '2018-07-12T11:00'},
               {start: '2018-07-14T19:00'}
             ]
@@ -91,7 +91,7 @@ describe('graphqlApi', function () {
             location: 'location-3',
             artist: 'artist-1',
             tags: ['tag-2'],
-            occurences: [
+            occurrences: [
               {start: '2018-07-13T19:00'}
             ]
           }
@@ -346,7 +346,7 @@ describe('graphqlApi', function () {
                   artist: 'artist',
                   location: 'loc',
                   tags: [],
-                  occurences: [
+                  occurrences: [
                     {start: '2018-07-14T12:00'}
                   ]
                 }
@@ -495,7 +495,7 @@ describe('graphqlApi', function () {
                 {
                   location: 'loc',
                   tags: [],
-                  occurences: [
+                  occurrences: [
                     {start: '2018-07-14T12:00'}
                   ]
                 }
@@ -555,8 +555,8 @@ describe('graphqlApi', function () {
         )
 
         await assert.deepEqual(
-          await run('mutation{addEvent(event:{citySlug:"city",title:"Title",location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurences{start}}}'),
-          {data: {addEvent: {title: 'Title', artist: {name: 'Artist'}, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurences: [{start: '2018-07-14T12:00'}]}}}
+          await run('mutation{addEvent(event:{citySlug:"city",title:"Title",location:"loc",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurrences{start}}}'),
+          {data: {addEvent: {title: 'Title', artist: {name: 'Artist'}, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurrences: [{start: '2018-07-14T12:00'}]}}}
         )
 
         assert.deepEqual(
@@ -573,7 +573,7 @@ describe('graphqlApi', function () {
                     location: 'loc',
                     artist: 'artist',
                     tags: ['tag'],
-                    occurences: [
+                    occurrences: [
                       {start: '2018-07-14T12:00'}
                     ],
                     title: 'Title'
@@ -629,8 +629,8 @@ describe('graphqlApi', function () {
         )
 
         await assert.deepEqual(
-          await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurences{start}}}'),
-          {data: {addEvent: {title: null, artist: {name: 'Artist'}, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurences: [{start: '2018-07-14T12:00'}]}}}
+          await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurrences{start}}}'),
+          {data: {addEvent: {title: null, artist: {name: 'Artist'}, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurrences: [{start: '2018-07-14T12:00'}]}}}
         )
 
         assert.deepEqual(
@@ -647,7 +647,7 @@ describe('graphqlApi', function () {
                     location: 'loc',
                     artist: 'artist',
                     tags: ['tag'],
-                    occurences: [
+                    occurrences: [
                       {start: '2018-07-14T12:00'}
                     ]
                   }
@@ -702,8 +702,8 @@ describe('graphqlApi', function () {
         )
 
         await assert.deepEqual(
-          await run('mutation{addEvent(event:{citySlug:"city",title:"Title",location:"loc",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurences{start}}}'),
-          {data: {addEvent: {title: 'Title', artist: null, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurences: [{start: '2018-07-14T12:00'}]}}}
+          await run('mutation{addEvent(event:{citySlug:"city",title:"Title",location:"loc",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurrences{start}}}'),
+          {data: {addEvent: {title: 'Title', artist: null, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurrences: [{start: '2018-07-14T12:00'}]}}}
         )
 
         assert.deepEqual(
@@ -720,7 +720,7 @@ describe('graphqlApi', function () {
                     title: 'Title',
                     location: 'loc',
                     tags: ['tag'],
-                    occurences: [
+                    occurrences: [
                       {start: '2018-07-14T12:00'}
                     ]
                   }
@@ -774,7 +774,7 @@ describe('graphqlApi', function () {
           {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
         )
 
-        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title}}')
+        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){title}}')
         await assert.strictEqual(result.errors[0].message, 'No artist with slug "artist"')
 
         assert.deepEqual(newData, initialData)
@@ -811,7 +811,7 @@ describe('graphqlApi', function () {
           {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
         )
 
-        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurences:[{start:"2018-07-14T12:00"}]}){title}}')
+        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){title}}')
         await assert.strictEqual(result.errors[0].message, 'No location with slug "loc"')
 
         assert.deepEqual(newData, initialData)
@@ -848,7 +848,7 @@ describe('graphqlApi', function () {
           {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
         )
 
-        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag","tageuh"],occurences:[{start:"2018-07-14T12:00"}]}){title}}')
+        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag","tageuh"],occurrences:[{start:"2018-07-14T12:00"}]}){title}}')
         await assert.strictEqual(result.errors[0].message, 'No tag with slug "tageuh"')
 
         assert.deepEqual(newData, initialData)

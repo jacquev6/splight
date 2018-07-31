@@ -12,14 +12,14 @@ function make ({citySlug}) {
 
     const days = data.city.days.map(({date, events}) => ({
       date: moment(date, moment.HTML5_FMT.DATE, true).format('ddd Do MMM'),
-      events: events.map(({time, title, mainTag, tags, artist, location, occurences}) => ({
+      events: events.map(({time, title, mainTag, tags, artist, location, occurrences}) => ({
         time,
         title,
         mainTag,
         tags,
         artist,
         location,
-        occurences: occurences.map(({start}) => {
+        occurrences: occurrences.map(({start}) => {
           start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
 
           return {

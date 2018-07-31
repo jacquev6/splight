@@ -39,10 +39,10 @@ type Event {
   artist: Artist
   location: Location!
   tags: [Tag!]!
-  occurences: [Occurence!]!
+  occurrences: [Occurrence!]!
 }
 
-type Occurence {
+type Occurrence {
   start: DateTime!
 }
 
@@ -58,7 +58,7 @@ type DayEvent {
   location: Location!
   mainTag: Tag!
   tags: [Tag!]!
-  occurences: [Occurence!]!
+  occurrences: [Occurrence!]!
 }
 
 type Mutation {
@@ -84,9 +84,9 @@ input IEvent {
   artist: ID
   location: ID!
   tags: [ID!]!
-  occurences: [IOccurence!]!
+  occurrences: [IOccurrence!]!
 }
 
-input IOccurence {
+input IOccurrence {
   start: DateTime!
 }
