@@ -1,13 +1,14 @@
 'use strict'
 
+const fs = require('fs-extra')
 const moment = require('moment')
-
-const data_ = require('./splight/data')
+const path = require('path')
+const neatJSON = require('neatjson')
 
 async function main (dataFile) {
-  const data = await data_.load(dataFile)
+  const data = await fs.readJSON(dataFile)
 
-  data.cities.forEach(city => {
+  Object.values(data.cities).forEach(city => {
     city.events.forEach(event => {
       event.occurences.forEach(occurence => {
         occurence.start = moment(occurence.start, moment.HTML5_FMT.DATETIME_LOCAL, true).add(1, 'week').format(moment.HTML5_FMT.DATETIME_LOCAL)
@@ -15,7 +16,7 @@ async function main (dataFile) {
     })
   })
 
-  await data_.dump(data, dataFile)
+  await fs.outputFile(dataFile, neatJSON.neatJSON(data, {sort: true, wrap: 120, afterColon: 1, afterComma: 1}) + '\n')
 }
 
-main(process.argv[2])
+main(path.join(process.argv[2], 'data.json'))
