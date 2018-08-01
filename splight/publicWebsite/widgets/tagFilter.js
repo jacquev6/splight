@@ -19,22 +19,26 @@ function make ({citySlug}) {
   }
 
   function initialize () {
-    const allTags = new Set(jQuery('#sp-tag-filtering input').map((index, input) => jQuery(input).val()).toArray())
-    const query = URI.parseQuery(URI.parse(window.location.href).query)
-    if (Object.keys(query).length === 0) {
-      jQuery('#sp-tag-filtering input').prop('checked', true)
+    const inputs = jQuery('#sp-tag-filtering input')
+    const allTags = new Set(inputs.map((index, input) => jQuery(input).val()).toArray())
+    const queryKeys = Object.keys(URI.parseQuery(URI.parse(window.location.href).query))
+    if (queryKeys.length === 0) {
+      // Default checked state cannot be done in markup because some browsers will cache and restore checkboxes' state
+      inputs.prop('checked', true)
+      inputs.parent('label').addClass('active')
     } else {
-      const displayedTags = new Set(Object.keys(query))
-      jQuery('#sp-tag-filtering input').each(function (index, input) {
+      const displayedTags = new Set(queryKeys)
+      inputs.each(function (index, input) {
         input = jQuery(input)
         input.prop('checked', displayedTags.has(input.val()))
+        input.parent('label').toggleClass('active', displayedTags.has(input.val()))
       })
     }
 
     function filterEvents () {
       jQuery('.sp-event').hide()
       const displayedTags = new Set()
-      jQuery('#sp-tag-filtering input').each(function (index, input) {
+      inputs.each(function (index, input) {
         input = jQuery(input)
         const tag = input.val()
         if (input.prop('checked')) {
@@ -51,7 +55,7 @@ function make ({citySlug}) {
     }
 
     filterEvents()
-    jQuery('#sp-tag-filtering input').on('change', filterEvents)
+    inputs.on('change', filterEvents)
   }
 
   return {render, initialize}
