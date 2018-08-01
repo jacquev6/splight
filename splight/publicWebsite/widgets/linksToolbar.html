@@ -1,39 +1,35 @@
 <div class="row">
   <div class="col">
-    {{#links.previous.path}}
-    <a class="btn btn-secondary sp-tag-filtering-tagged-link" href="{{{links.previous.path}}}">&lt; {{links.previous.text}}</a>
-    {{/links.previous.path}}
-    {{^links.previous.path}}
-    <button class="btn btn-secondary disabled">&lt; {{links.previous.text}}</a>
-    {{/links.previous.path}}
-  </div>
-  <div class="col">
-    <div class="sp-needs-js"><div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-        Durée affichée
-      </button>
-      <div class="dropdown-menu">
-        {{#durations}}<a class="dropdown-item{{#active}} active{{/active}}" href="{{href}}">{{display}}</a>{{/durations}}
+    <div class="btn-group">
+      {{#links.previous.path}}
+      <a class="btn btn-secondary sp-tag-filtering-tagged-link" href="{{{links.previous.path}}}">&lt; {{links.previous.text}}</a>
+      {{/links.previous.path}}
+      {{^links.previous.path}}
+      <button class="btn btn-secondary disabled">&lt; {{links.previous.text}}</a>
+      {{/links.previous.path}}
+      <div class="btn-group sp-needs-js">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+          Durée affichée
+        </button>
+        <div class="dropdown-menu">
+          {{#durations}}<a class="dropdown-item{{#active}} active{{/active}}" href="{{href}}">{{display}}</a>{{/durations}}
+        </div>
       </div>
-    </div></div>
-  </div>
-  <div class="col">
-    <div class="sp-needs-js"><div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-        Aller à
-      </button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item sp-timespan-now-1 sp-tag-filtering-tagged-link" href="{{{links.now1.path}}}">{{links.now1.text}}</a>
-        <a class="dropdown-item sp-timespan-now-2 sp-tag-filtering-tagged-link" href="{{{links.now2.path}}}">{{links.now2.text}}</a>
+      <div class="btn-group sp-needs-js">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+          Aller à
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item sp-timespan-now-1 sp-tag-filtering-tagged-link" href="{{{links.now1.path}}}">{{links.now1.text}}</a>
+          <a class="dropdown-item sp-timespan-now-2 sp-tag-filtering-tagged-link" href="{{{links.now2.path}}}">{{links.now2.text}}</a>
+        </div>
       </div>
-    </div></div>
-  </div>
-  <div class="col">
-    {{#links.next.path}}
-    <a class="btn btn-secondary sp-tag-filtering-tagged-link" href="{{{links.next.path}}}">{{links.next.text}} &gt;</a>
-    {{/links.next.path}}
-    {{^links.next.path}}
-    <button class="btn btn-secondary disabled">{{links.next.text}} &gt;</a>
-    {{/links.next.path}}
+      {{#links.next.path}}
+      <a class="btn btn-secondary sp-tag-filtering-tagged-link" href="{{{links.next.path}}}">{{links.next.text}} &gt;</a>
+      {{/links.next.path}}
+      {{^links.next.path}}
+      <button class="btn btn-secondary disabled">{{links.next.text}} &gt;</a>
+      {{/links.next.path}}
+    </div>
   </div>
 </div>
