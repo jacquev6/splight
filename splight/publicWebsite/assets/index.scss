@@ -95,6 +95,13 @@ a[target=_blank] {
   margin-right: -10px;
 }
 
+@each $slugs, $color in $sp-tag-colors {
+  .sp-main-tag-#{$slugs} {
+    background-color: lighten($color, 40%);
+    border-color: lighten($color, 20%);
+  }
+}
+
 #sp-tag-filtering .form-check-inline > *, .sp-event > * {
   margin: 3px;
 }

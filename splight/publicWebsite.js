@@ -185,22 +185,21 @@ function makeIndexCss (config) {
 }
 
 async function makeIndexCss_ ({modernizrFeatures, api}) {
-  const sassData = [
-    '$modernizr-features: "' + modernizrFeatures.map(([detect, feature]) => '.mdrn-' + (feature || detect.split('/').slice(-1)[0])).join('') + '";',
-    '',
-    '@import "splight/publicWebsite/assets/index.scss";',
-    ''
-  ]
+  const sassData = []
 
+  sassData.push('$modernizr-features: "' + modernizrFeatures.map(([detect, feature]) => '.mdrn-' + (feature || detect.split('/').slice(-1)[0])).join('') + '";')
+
+  sassData.push('$sp-tag-colors: (')
   for (var {slug, tags} of (await api.request({requestString: 'query{cities{slug tags{slug}}}'})).data.cities) {
     for (var i = 0; i !== tags.length; ++i) {
-      const tag = tags[i]
-      const class_ = 'sp-main-tag-' + slug + '-' + tag.slug
-      const borderColor = colorConvert.hsv.hex(360 * i / tags.length, 50, 50)
-      const backgroundColor = colorConvert.hsv.hex(360 * i / tags.length, 30, 90)
-      sassData.push('.' + class_ + '{border-color:#' + borderColor + ';background-color:#' + backgroundColor + ';}')
+      const slugs = slug + '-' + tags[i].slug
+      const color = colorConvert.hsv.hex(360 * i / tags.length, 100, 100)
+      sassData.push('  "' + slugs + '": #' + color + ',')
     }
   }
+  sassData.push(');')
+
+  sassData.push('@import "splight/publicWebsite/assets/index.scss";')
 
   return new Promise((resolve, reject) =>
     sass.render(
