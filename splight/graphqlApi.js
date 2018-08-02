@@ -113,15 +113,25 @@ function makeSyncRoot (data) {
     })
 
     function firstDate () {
-      return Object.keys(dayEventsByDate.force()).reduce((a, b) => a < b ? a : b)
+      const dayEventsByDate_ = Object.keys(dayEventsByDate.force())
+      if (dayEventsByDate_.length) {
+        return dayEventsByDate_.reduce((a, b) => a < b ? a : b)
+      } else {
+        return null
+      }
     }
 
     function dateAfter () {
-      return moment(
-        Object.keys(dayEventsByDate.force()).reduce((a, b) => a > b ? a : b),
-        moment.HTML5_FMT.DATE,
-        true
-      ).add(1, 'day').format(moment.HTML5_FMT.DATE)
+      const dayEventsByDate_ = Object.keys(dayEventsByDate.force())
+      if (dayEventsByDate_.length) {
+        return moment(
+          dayEventsByDate_.reduce((a, b) => a > b ? a : b),
+          moment.HTML5_FMT.DATE,
+          true
+        ).add(1, 'day').format(moment.HTML5_FMT.DATE)
+      } else {
+        return null
+      }
     }
 
     function days ({first, after}) {

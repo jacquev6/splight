@@ -148,7 +148,9 @@ describe('graphqlApi', function () {
         }]
       }))
 
-      // @todo it('gets dates of city with no events', test(emptyCitiesData, '{city(slug:"foo"){firstDate dateAfter}}', {data: {city: {firstDate: '???', dateAfter: '???'}}}))
+      it('returns no dates', test(emptyCitiesData, '{city(slug:"foo"){firstDate dateAfter}}', {
+        data: {city: {firstDate: null, dateAfter: null}}
+      }))
     })
 
     describe('cities (with full data)', function () {

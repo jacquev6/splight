@@ -19,8 +19,8 @@ type City {
   tags: [Tag!]!
   locations: [Location!]!
   # events: [Events!]!
-  firstDate: Date!
-  dateAfter: Date!
+  firstDate: Date
+  dateAfter: Date
   days(first: Date!, after: Date!): [Day!]!
 }
 
