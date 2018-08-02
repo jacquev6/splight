@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="/admin/index.css">
+
+    <title>Administration - Splight</title>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-4">
+          <div class="form-group">
+            <label>Ville&nbsp;: <select id="spa-select-city" class="form-control"></select></label>
+          </div>
+          <hr />
+          <div class="spa-needs-city">
+            <div class="form-group">
+              <label>Lieu&nbsp;: <select id="spa-filter-location" class="form-control"></select></label>
+            </div>
+            <div class="form-group">
+              <label>Artiste&nbsp;: <select id="spa-filter-artist" class="form-control"></select></label>
+            </div>
+            <div class="form-group">
+              <label>Titre&nbsp;: <input id="spa-filter-title" class="form-control" /></label>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div id="spa-filtered-events" class="spa-needs-city">
+          </div>
+        </div>
+    </div>
+
+    <script src="/admin/index.js"></script>{{#scripts}}<script src="{{{.}}}"></script>{{/scripts}}
+  </body>
+</html>

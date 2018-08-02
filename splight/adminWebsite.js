@@ -5,21 +5,14 @@ const express = require('express')
 const mustache = require('mustache')
 const sass = require('node-sass')
 
-const body = require('./adminWebsite/body')
+const page = require('./adminWebsite/page')
 const publicWebsite = require('./publicWebsite')
-const template = require('./adminWebsite/assets/index.html')
 
 function * generateAssets ({scripts}) {
   yield {
     path: '/admin/',
     type: '.html',
-    content: mustache.render(
-      template,
-      {
-        scripts,
-        body: body.make({scripts})
-      }
-    )
+    content: page.render({scripts})
   }
 
   yield {

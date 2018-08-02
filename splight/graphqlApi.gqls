@@ -18,7 +18,7 @@ type City {
   name: String!
   tags: [Tag!]!
   locations: [Location!]!
-  # events: [Events!]!
+  events(location: ID, artist: ID, title: String): [Event!]!
   firstDate: Date
   dateAfter: Date
   days(first: Date!, after: Date!): [Day!]!

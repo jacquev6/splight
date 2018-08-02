@@ -10,7 +10,8 @@
           "title": "Événement 1"
         },
         {
-          "location": "location-1",
+          "artist": "artist-1",
+          "location": "location-2",
           "occurrences": [{"start": "2018-07-31T14:00"}],
           "tags": ["tag-1"],
           "title": "Événement 2-1"
@@ -22,7 +23,8 @@
           "title": "Événement 2-2"
         },
         {
-          "location": "location-1",
+          "artist": "artist-2",
+          "location": "location-2",
           "occurrences": [{"start": "2018-08-02T14:00"}],
           "tags": ["tag-1", "tag-2"],
           "title": "Événement 2-12"
@@ -53,7 +55,7 @@
           "title": "Événement 3"
         },
         {
-          "location": "location-1",
+          "location": "location-2",
           "occurrences": [{"start": "2018-08-14T16:00"}],
           "tags": ["tag-1"],
           "title": "Événement 4"
@@ -71,7 +73,11 @@
           "title": "Événement 6"
         }
       ],
-      "locations": {"location-1": {"name": "Lieu à Avalon 1"}, "location-2": {"name": "Lieu à Avalon 2"}},
+      "locations": {
+        "location-1": {"name": "Lieu à Avalon 1"},
+        "location-2": {"name": "Lieu à Avalon 2"},
+        "location-3": {"name": "Lieu à Avalon 3"}
+      },
       "name": "Avalon",
       "tags": {"tag-1": {"title": "Catégorie 1"}, "tag-2": {"title": "Catégorie 2"}}
     },

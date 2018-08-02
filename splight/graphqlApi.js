@@ -74,14 +74,13 @@ function makeSyncRoot (data) {
   }
 
   function city_ (city) {
-    const {slug, name, events} = city
     const [tags, getTag] = slugify(city.tags, 'tag')
     const [locations, getLocation] = slugify(city.locations, 'location')
 
     const dayEventsByDate = lazy(() => {
       const dayEventsByDate = {}
 
-      events.forEach(({location, artist, occurrences, tags, title}) => {
+      city.events.forEach(({location, artist, occurrences, tags, title}) => {
         tags = tags.map(getTag)
         occurrences.forEach(({start}) => {
           start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
@@ -150,7 +149,23 @@ function makeSyncRoot (data) {
       return days
     }
 
-    return {slug, name, tags, locations, firstDate, dateAfter, days, addEvent}
+    function events ({location, artist, title}) {
+      return city.events
+        // @todo Filter by title
+        .filter(event => (!location || event.location === location) && (!artist || event.artist === artist))
+        .map(({title, artist, location, occurrences}) => (Object.assign(
+          {
+            title,
+            location: getLocation(location),
+            occurrences
+          },
+          artist ? {artist: getArtist(artist)} : {}
+        )))
+    }
+
+    const {slug, name} = city
+
+    return {slug, name, tags, locations, firstDate, dateAfter, days, events}
   }
 
   return {artists, putArtist, cities, city, putLocation, addEvent}
