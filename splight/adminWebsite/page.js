@@ -1,10 +1,17 @@
 'use strict'
 
+const moment = require('moment')
 const mustache = require('mustache')
 
 const template = require('./page.html')
 const eventsTemplate = require('./widgets/events.html')
 
+const eventDetails_ = require('../publicWebsite/widgets/eventDetails')
+const what = require('../publicWebsite/widgets/eventDetails/what')
+const when = require('../publicWebsite/widgets/eventDetails/when')
+const where = require('../publicWebsite/widgets/eventDetails/where')
+
+const eventDetails = eventDetails_.make({when, what, where})
 
 const filteredEvents = (function () {
   var citySlug
@@ -36,7 +43,7 @@ const filteredEvents = (function () {
 
     if (Object.values(filter).some(x => x)) {
       const {city: {events}} = await request({
-        requestString: 'query($citySlug:ID!,$location:ID,$artist:ID,$title:String){city(slug:$citySlug){events(location:$location,artist:$artist,title:$title){title artist{name} location{name} occurrences{start}}}}',
+        requestString: 'query($citySlug:ID!,$location:ID,$artist:ID,$title:String){city(slug:$citySlug){events(location:$location,artist:$artist,title:$title){title artist{name} location{name} occurrences{start} tags{slug title}}}}',
         variableValues: Object.assign({citySlug}, filter)
       })
 
@@ -51,7 +58,35 @@ const filteredEvents = (function () {
   }
 
   function displayEvents (events) {
-    jQuery('#spa-filtered-events').html(mustache.render(eventsTemplate, {events}))
+    jQuery('#spa-filtered-events').html(mustache.render(
+      eventsTemplate,
+      {
+        events: events.map(({time, title, tags, artist, location, occurrences}) => {
+          const mainTag = tags[0]
+          // @todo Deduplicate with publicWebsite/widgets/calendar.js
+          const event = {
+            time,
+            title,
+            mainTag,
+            // This is based on the knowledge that mainTag is first in the list. This could change.
+            // @todo Change API to return mainTag, secondaryTags and allTags (if needed elsewhere), and use tag = [mainTag].concat(secondaryTags)
+            tags: tags.map(({slug, title}) => ({slug, title, first: slug === mainTag.slug})),
+            artist,
+            location,
+            occurrences: occurrences.map(({start}) => {
+              start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
+
+              return {
+                date: start.format('ddd Do MMM'),
+                time: start.format('LT')
+              }
+            })
+          }
+
+          return {details: {html: eventDetails.render({city: {slug: citySlug}, event})}}
+        })
+      }
+    ))
   }
 
   function displayNoMatchingEvents () {

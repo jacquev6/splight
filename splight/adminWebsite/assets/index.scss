@@ -1,5 +1,9 @@
 @import "../../../node_modules/bootstrap/scss/bootstrap";
 
 .spa-needs-city {
-  display: none
+  display: none;
+}
+
+.spa-filtered-event {
+  border: solid black 1px;
 }

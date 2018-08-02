@@ -1,10 +1,5 @@
-<dl>
 {{#events}}
-  <dt>{{ title }}</dt>
-  <dd>
-    <p>Lieu&nbsp;: {{ location.name }}</p>
-    <p>Artiste&nbsp;: {{ artist.name }}</p>
-    <p>Représentations&nbsp;: <ul>{{#occurrences}}<li>{{start}}</li>{{/occurrences}}</ul></p>
-  </dd>
+<div class="spa-filtered-event">
+  {{{details.html}}}
+</div>
 {{/events}}
-</dl>
