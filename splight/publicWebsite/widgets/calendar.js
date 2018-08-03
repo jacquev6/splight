@@ -1,8 +1,11 @@
 'use strict'
 
+/* global history */
+
 const jQuery = require('jquery')
 const moment = require('moment')
 const mustache = require('mustache')
+const URI = require('urijs')
 
 const eventDetails_ = require('./eventDetails')
 const template = require('./calendar.html')
@@ -83,14 +86,27 @@ function make ({citySlug, startDate, dateAfter, duration}) {
   function initialize () {
     const modal = jQuery('#sp-event-modal')
 
+    modal.on('hidden.bs.modal', function (e) {
+      history.replaceState(null, '', URI(window.location.href).fragment('').toString())
+    })
+
+    function showModal (eventId) {
+      modal.find('.sp-event-details').hide()
+      modal.find('#sp-event-details-' + eventId).show()
+      modal.modal()
+      history.replaceState(null, '', URI(window.location.href).fragment(eventId).toString())
+    }
+
     jQuery('.sp-event')
       .css('cursor', 'pointer')
       .on('click', function () {
-        const clicked = jQuery(this)
-        modal.find('.sp-event-details').hide()
-        modal.find('#sp-event-details-' + clicked.data('sp-event-id')).show()
-        modal.modal()
+        showModal(jQuery(this).data('sp-event-id'))
       })
+
+    const eventId = URI.parse(window.location.href).fragment
+    if (eventId) {
+      showModal(eventId)
+    }
   }
 
   return {render, initialize}
