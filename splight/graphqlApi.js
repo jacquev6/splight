@@ -127,22 +127,24 @@ function makeSyncRoot (data) {
     })
 
     function firstDate () {
-      const dayEventsByDate_ = Object.keys(dayEventsByDate.force())
-      if (dayEventsByDate_.length) {
-        return dayEventsByDate_.reduce((a, b) => a < b ? a : b)
-      } else {
-        return null
-      }
+      const d = reduceOccurrencesStarts((a, b) => a < b ? a : b)
+      return d && moment(d, moment.HTML5_FMT.DATETIME_LOCAL, true).format(moment.HTML5_FMT.DATE)
     }
 
     function dateAfter () {
-      const dayEventsByDate_ = Object.keys(dayEventsByDate.force())
-      if (dayEventsByDate_.length) {
-        return moment(
-          dayEventsByDate_.reduce((a, b) => a > b ? a : b),
-          moment.HTML5_FMT.DATE,
-          true
-        ).add(1, 'day').format(moment.HTML5_FMT.DATE)
+      const d = reduceOccurrencesStarts((a, b) => a < b ? b : a)
+      return d && moment(d, moment.HTML5_FMT.DATETIME_LOCAL, true).add(1, 'day').format(moment.HTML5_FMT.DATE)
+    }
+
+    function reduceOccurrencesStarts (f) {
+      if (city.events.length) {
+        var ret = city.events[0].occurrences[0].start
+        city.events.forEach(event => {
+          event.occurrences.forEach(occurrence => {
+            ret = f(ret, occurrence.start)
+          })
+        })
+        return ret
       } else {
         return null
       }
@@ -165,12 +167,12 @@ function makeSyncRoot (data) {
     }
 
     function events ({location, artist, dates}) {
-      function selectOccurence ({start, after}) {
-        return function (occurence) {
-          if (start && occurence.start < start) {
+      function selectOccurrence ({start, after}) {
+        return function (occurrence) {
+          if (start && occurrence.start < start) {
             return false
           }
-          if (after && occurence.start >= after) {
+          if (after && occurrence.start >= after) {
             return false
           }
           return true
@@ -183,7 +185,7 @@ function makeSyncRoot (data) {
         if (artist && event.artist !== artist) {
           return false
         }
-        if (dates && !event.occurrences.some(selectOccurence(dates))) {
+        if (dates && !event.occurrences.some(selectOccurrence(dates))) {
           return false
         }
         return true
