@@ -6,15 +6,110 @@ require('stringify').registerWithRequire(['.gqls'])
 
 const assert = require('assert') // Not strict because graphql's returned data doesn't have Object prototype
 const deepcopy = require('deepcopy')
+const graphql = require('graphql')
+const Hashids = require('hashids')
 
 const graphqlApi = require('./graphqlApi')
 
+const hashids = new Hashids('', 10)
+
 describe('graphqlApi', function () {
+  describe('make', function () {
+    it('computes first event id', function () {
+      const data = {
+        artists: {'artist': {name: 'Artist'}},
+        cities: {'city': {
+          name: 'City',
+          locations: {'location': {name: 'Location'}},
+          tags: {'tag': {title: 'Tag'}},
+          events: [{
+            location: 'location',
+            tags: ['tag'],
+            title: 'Title',
+            occurrences: [
+              {start: '2018-07-12T12:00'}
+            ]
+          }]
+        }}
+      }
+
+      graphqlApi.forTest.makeRoot(data)
+
+      assert.deepStrictEqual(
+        data,
+        {
+          _: {sequences: {events: 1}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {'city': {
+            name: 'City',
+            locations: {'location': {name: 'Location'}},
+            tags: {'tag': {title: 'Tag'}},
+            events: [{
+              id: hashids.encode(0),
+              location: 'location',
+              tags: ['tag'],
+              title: 'Title',
+              occurrences: [
+                {start: '2018-07-12T12:00'}
+              ]
+            }]
+          }}
+        }
+      )
+    })
+
+    it('computes next event id', function () {
+      const data = {
+        _: {sequences: {events: 10}},
+        artists: {'artist': {name: 'Artist'}},
+        cities: {'city': {
+          name: 'City',
+          locations: {'location': {name: 'Location'}},
+          tags: {'tag': {title: 'Tag'}},
+          events: [{
+            location: 'location',
+            tags: ['tag'],
+            title: 'Title',
+            occurrences: [
+              {start: '2018-07-12T12:00'}
+            ]
+          }]
+        }}
+      }
+
+      graphqlApi.forTest.makeRoot(data)
+
+      assert.deepStrictEqual(
+        data,
+        {
+          _: {sequences: {events: 11}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {'city': {
+            name: 'City',
+            locations: {'location': {name: 'Location'}},
+            tags: {'tag': {title: 'Tag'}},
+            events: [{
+              id: hashids.encode(10),
+              location: 'location',
+              tags: ['tag'],
+              title: 'Title',
+              occurrences: [
+                {start: '2018-07-12T12:00'}
+              ]
+            }]
+          }}
+        }
+      )
+    })
+  })
+
   describe('queries', function () {
     function test (data, requestString, expected) {
+      const rootValue = graphqlApi.forTest.makeRoot(deepcopy(data))
+
       return async function () {
         assert.deepEqual(
-          await graphqlApi.make({load: () => deepcopy(data), save: () => undefined}).request({requestString}),
+          await graphql.graphql(graphqlApi.forTest.schema, requestString, rootValue),
           expected
         )
       }
@@ -125,7 +220,7 @@ describe('graphqlApi', function () {
 
     describe('city', function () {
       it('has no city to return', test(emptyData, '{city(slug:"foo"){slug}}', {
-        data: {city: null},
+        data: null,
         errors: [{
           locations: [{column: 2, line: 1}],
           message: 'No city with slug "foo"',
@@ -140,7 +235,7 @@ describe('graphqlApi', function () {
       it('finds city baz', test(emptyCitiesData, '{city(slug:"baz"){slug}}', {data: {city: {slug: 'baz'}}}))
 
       it('finds no city', test(emptyCitiesData, '{city(slug:"toto"){slug}}', {
-        data: {city: null},
+        data: null,
         errors: [{
           locations: [{column: 2, line: 1}],
           message: 'No city with slug "toto"',
@@ -248,141 +343,117 @@ describe('graphqlApi', function () {
   })
 
   describe('mutations', function () {
+    function make (data) {
+      const rootValue = graphqlApi.forTest.makeRoot(data)
+
+      async function checkRequest (requestString, variableValues, expected) {
+        if (!expected) { // A poor man's variadic function
+          expected = variableValues
+          variableValues = undefined
+        }
+        assert.deepEqual(
+          await graphql.graphql(graphqlApi.forTest.schema, requestString, rootValue, undefined, variableValues),
+          expected
+        )
+      }
+
+      function checkData (expected) {
+        assert.deepStrictEqual(data, expected)
+      }
+
+      return {checkRequest, checkData}
+    }
+
     describe('putArtist', function () {
+      const fields = 'slug name'
+      const get = `{artists{${fields}}}`
+      const put = `mutation($artist:IArtist!){putArtist(artist:$artist){${fields}}}`
+
       it('adds an artist', async function () {
-        const initialData = {
-          artists: {},
+        const {checkRequest, checkData} = make({artists: {}, cities: {}})
+
+        await checkRequest(get, {data: {artists: []}})
+
+        await checkRequest(
+          put,
+          {artist: {slug: 'artist', name: 'Artist'}},
+          {data: {putArtist: {slug: 'artist', name: 'Artist'}}}
+        )
+
+        checkData({
+          _: {sequences: {events: 0}},
+          artists: {'artist': {name: 'Artist'}},
           cities: {}
-        }
+        })
 
-        var newData = null
-
-        // Test with and without promises
-        const configs = [
-          {load: () => deepcopy(initialData), save: d => { newData = d }},
-          {load: async () => deepcopy(initialData), save: async d => { newData = d }}
-        ]
-
-        for (var config of configs) {
-          const api = graphqlApi.make(config)
-
-          function run (requestString) { // eslint-disable-line
-            return api.request({requestString})
-          }
-
-          await assert.deepEqual(
-            await run('{artists{slug}}'),
-            {data: {artists: []}}
-          )
-
-          newData = null
-
-          await assert.deepEqual(
-            await run('mutation{putArtist(artist:{slug:"artist",name:"Artist"}){slug, name}}'),
-            {data: {putArtist: {slug: 'artist', name: 'Artist'}}}
-          )
-
-          assert.deepEqual(
-            newData,
-            {
-              artists: {artist: {name: 'Artist'}},
-              cities: {}
-            }
-          )
-
-          await assert.deepEqual(
-            await run('{artists{slug}}'),
-            {data: {artists: [{slug: 'artist'}]}}
-          )
-        }
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist'}]}})
       })
 
       it('modifies an artist', async function () {
-        const initialData = {
-          artists: {'artist': {name: 'Artist'}},
+        const {checkRequest, checkData} = make({artists: {'artist': {name: 'Artist'}}, cities: {}})
+
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist'}]}})
+
+        await checkRequest(
+          put,
+          {artist: {slug: 'artist', name: 'New name'}},
+          {data: {putArtist: {slug: 'artist', name: 'New name'}}}
+        )
+
+        checkData({
+          _: {sequences: {events: 0}},
+          artists: {'artist': {name: 'New name'}},
           cities: {}
-        }
+        })
 
-        var newData = null
-
-        const api = graphqlApi.make({load: () => deepcopy(initialData), save: d => { newData = d }})
-
-        function run (requestString) {
-          return api.request({requestString})
-        }
-
-        await assert.deepEqual(
-          await run('{artists{slug name}}'),
-          {data: {artists: [{slug: 'artist', name: 'Artist'}]}}
-        )
-
-        await assert.deepEqual(
-          await run('mutation{putArtist(artist:{slug:"artist",name:"New name"}){slug}}'),
-          {data: {putArtist: {slug: 'artist'}}}
-        )
-
-        assert.deepEqual(
-          newData,
-          {
-            artists: {'artist': {name: 'New name'}},
-            cities: {}
-          }
-        )
-
-        await assert.deepEqual(
-          await run('{artists{slug name}}'),
-          {data: {artists: [{slug: 'artist', name: 'New name'}]}}
-        )
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name'}]}})
       })
 
       it('propagates changes to events', async function () {
-        const initialData = {
-          artists: {artist: {name: 'Artist'}},
+        const {checkRequest} = make({
+          artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
               name: 'City',
-              locations: {loc: {name: 'Location'}},
+              locations: {'location': {name: 'Location'}},
               tags: {},
-              events: [
-                {
-                  artist: 'artist',
-                  location: 'loc',
-                  tags: [],
-                  occurrences: [
-                    {start: '2018-07-14T12:00'}
-                  ]
-                }
-              ]
+              events: [{
+                artist: 'artist',
+                location: 'location',
+                tags: [],
+                occurrences: [{start: '2018-07-14T12:00'}]
+              }]
             }
           }
-        }
+        })
 
-        const api = graphqlApi.make({load: () => initialData, save: () => undefined})
+        const getEvents = `{cities{days(first:"2018-07-14",after:"2018-07-15"){events{artist{${fields}}}}}}`
 
-        function run (requestString) {
-          return api.request({requestString})
-        }
-
-        await assert.deepEqual(
-          await run('{cities{days(first:"2018-07-14",after:"2018-07-15"){events{artist{slug name}}}}}'),
+        await checkRequest(
+          getEvents,
           {data: {cities: [{days: [{events: [{artist: {slug: 'artist', name: 'Artist'}}]}]}]}}
         )
 
-        await assert.deepEqual(
-          await run('mutation{putArtist(artist:{slug:"artist",name:"New name"}){slug}}'),
-          {data: {putArtist: {slug: 'artist'}}}
+        await checkRequest(
+          put,
+          {artist: {slug: 'artist', name: 'New name'}},
+          {data: {putArtist: {slug: 'artist', name: 'New name'}}}
         )
 
-        await assert.deepEqual(
-          await run('{cities{days(first:"2018-07-14",after:"2018-07-15"){events{artist{slug name}}}}}'),
+        await checkRequest(
+          getEvents,
           {data: {cities: [{days: [{events: [{artist: {slug: 'artist', name: 'New name'}}]}]}]}}
         )
       })
     })
 
     describe('putLocation', function () {
+      const fields = 'slug name'
+      const get = `{cities{slug locations{${fields}}}}`
+      const put = `mutation($location:ILocation!){putLocation(location:$location){${fields}}}`
+
       it('adds a location', async function () {
-        const initialData = {
+        const {checkRequest, checkData} = make({
           artists: {},
           cities: {
             'city': {
@@ -392,110 +463,80 @@ describe('graphqlApi', function () {
               events: []
             }
           }
-        }
+        })
 
-        var newData = null
+        await checkRequest(get, {data: {cities: [{slug: 'city', locations: []}]}})
 
-        const api = graphqlApi.make({load: () => deepcopy(initialData), save: d => { newData = d }})
-
-        function run (requestString) {
-          return api.request({requestString})
-        }
-
-        await assert.deepEqual(
-          await run('{cities{slug locations{slug}}}'),
-          {data: {cities: [{slug: 'city', locations: []}]}}
+        await checkRequest(
+          put,
+          {location: {citySlug: 'city', slug: 'location', name: 'Location'}},
+          {data: {putLocation: {slug: 'location', name: 'Location'}}}
         )
 
-        await assert.deepEqual(
-          await run('mutation{putLocation(location:{citySlug:"city",slug:"loc",name:"Location"}){slug}}'),
-          {data: {putLocation: {slug: 'loc'}}}
-        )
-
-        assert.deepEqual(
-          newData,
-          {
-            artists: {},
-            cities: {
-              'city': {
-                name: 'City',
-                locations: {loc: {name: 'Location'}},
-                tags: {},
-                events: []
-              }
-            }
-          }
-        )
-
-        await assert.deepEqual(
-          await run('{cities{slug locations{slug}}}'),
-          {data: {cities: [{slug: 'city', locations: [{slug: 'loc'}]}]}}
-        )
-      })
-
-      it('modifies a location', async function () {
-        const initialData = {
+        checkData({
+          _: {sequences: {events: 0}},
           artists: {},
           cities: {
             'city': {
               name: 'City',
-              locations: {loc: {name: 'Location'}},
+              locations: {'location': {name: 'Location'}},
               tags: {},
               events: []
             }
           }
-        }
+        })
 
-        var newData = null
-
-        const api = graphqlApi.make({load: () => deepcopy(initialData), save: d => { newData = d }})
-
-        function run (requestString) {
-          return api.request({requestString})
-        }
-
-        await assert.deepEqual(
-          await run('{cities{slug locations{slug name}}}'),
-          {data: {cities: [{slug: 'city', locations: [{slug: 'loc', name: 'Location'}]}]}}
-        )
-
-        await assert.deepEqual(
-          await run('mutation{putLocation(location:{citySlug:"city",slug:"loc",name:"New name"}){slug}}'),
-          {data: {putLocation: {slug: 'loc'}}}
-        )
-
-        assert.deepEqual(
-          newData,
-          {
-            artists: {},
-            cities: {
-              'city': {
-                name: 'City',
-                locations: {loc: {name: 'New name'}},
-                tags: {},
-                events: []
-              }
-            }
-          }
-        )
-
-        await assert.deepEqual(
-          await run('{cities{slug locations{slug name}}}'),
-          {data: {cities: [{slug: 'city', locations: [{slug: 'loc', name: 'New name'}]}]}}
-        )
+        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location'}]}]}})
       })
 
-      it('propagates changes to events', async function () {
-        const initialData = {
+      it('modifies a location', async function () {
+        const {checkRequest, checkData} = make({
           artists: {},
           cities: {
             'city': {
               name: 'City',
-              locations: {loc: {name: 'Location'}},
+              locations: {'location': {name: 'Location'}},
+              tags: {},
+              events: []
+            }
+          }
+        })
+
+        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location'}]}]}})
+
+        await checkRequest(
+          put,
+          {location: {citySlug: 'city', slug: 'location', name: 'New name'}},
+          {data: {putLocation: {slug: 'location', name: 'New name'}}}
+        )
+
+        checkData({
+          _: {sequences: {events: 0}},
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'New name'}},
+              tags: {},
+              events: []
+            }
+          }
+        })
+
+        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'New name'}]}]}})
+      })
+
+      it('propagates changes to events', async function () {
+        const {checkRequest} = make({
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
               tags: {},
               events: [
                 {
-                  location: 'loc',
+                  location: 'location',
                   tags: [],
                   occurrences: [
                     {start: '2018-07-14T12:00'}
@@ -504,90 +545,93 @@ describe('graphqlApi', function () {
               ]
             }
           }
-        }
+        })
 
-        const api = graphqlApi.make({load: () => initialData, save: () => undefined})
+        const getEvents = `{cities{days(first:"2018-07-14",after:"2018-07-15"){events{location{${fields}}}}}}`
 
-        function run (requestString) {
-          return api.request({requestString})
-        }
-
-        await assert.deepEqual(
-          await run('{cities{days(first:"2018-07-14",after:"2018-07-15"){events{location{slug name}}}}}'),
-          {data: {cities: [{days: [{events: [{location: {slug: 'loc', name: 'Location'}}]}]}]}}
+        await checkRequest(
+          getEvents,
+          {data: {cities: [{days: [{events: [{location: {slug: 'location', name: 'Location'}}]}]}]}}
         )
 
-        await assert.deepEqual(
-          await run('mutation{putLocation(location:{citySlug:"city",slug:"loc",name:"New name"}){slug}}'),
-          {data: {putLocation: {slug: 'loc'}}}
+        await checkRequest(
+          put,
+          {location: {citySlug: 'city', slug: 'location', name: 'New name'}},
+          {data: {putLocation: {slug: 'location', name: 'New name'}}}
         )
 
-        await assert.deepEqual(
-          await run('{cities{days(first:"2018-07-14",after:"2018-07-15"){events{location{slug name}}}}}'),
-          {data: {cities: [{days: [{events: [{location: {slug: 'loc', name: 'New name'}}]}]}]}}
+        await checkRequest(
+          getEvents,
+          {data: {cities: [{days: [{events: [{location: {slug: 'location', name: 'New name'}}]}]}]}}
         )
       })
     })
 
     describe('addEvent', function () {
+      const fields = 'id title artist{name} location{name} tags{title} occurrences{start}'
+      // @todo get events instead of days
+      const get = '{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{title time artist{name} location{name} tags{title}}}}}'
+      const put = `mutation($event:IEvent!){addEvent(event:$event){${fields}}}`
+
       it('adds an event', async function () {
-        const initialData = {
+        const {checkRequest, checkData} = make({
           artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
               name: 'City',
-              locations: {'loc': {name: 'Location'}},
+              locations: {'location': {name: 'Location'}},
               tags: {'tag': {title: 'Tag'}},
               events: []
             }
           }
-        }
+        })
 
-        var newData = null
+        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
 
-        const api = graphqlApi.make({load: () => deepcopy(initialData), save: d => { newData = d }})
-
-        function run (requestString) {
-          return api.request({requestString})
-        }
-
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
-          {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
+        await checkRequest(
+          put,
+          {event: {
+            citySlug: 'city',
+            title: 'Title',
+            location: 'location',
+            artist: 'artist',
+            tags: ['tag'],
+            occurrences: [{start: '2018-07-14T12:00'}]
+          }},
+          {data: {addEvent: {
+            id: hashids.encode(0),
+            title: 'Title',
+            artist: {name: 'Artist'},
+            location: {name: 'Location'},
+            tags: [{title: 'Tag'}],
+            occurrences: [{start: '2018-07-14T12:00'}]
+          }}}
         )
 
-        await assert.deepEqual(
-          await run('mutation{addEvent(event:{citySlug:"city",title:"Title",location:"loc",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurrences{start}}}'),
-          {data: {addEvent: {title: 'Title', artist: {name: 'Artist'}, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurrences: [{start: '2018-07-14T12:00'}]}}}
-        )
-
-        assert.deepEqual(
-          newData,
-          {
-            artists: {'artist': {name: 'Artist'}},
-            cities: {
-              'city': {
-                name: 'City',
-                locations: {'loc': {name: 'Location'}},
-                tags: {'tag': {title: 'Tag'}},
-                events: [
-                  {
-                    location: 'loc',
-                    artist: 'artist',
-                    tags: ['tag'],
-                    occurrences: [
-                      {start: '2018-07-14T12:00'}
-                    ],
-                    title: 'Title'
-                  }
-                ]
-              }
+        checkData({
+          _: {sequences: {events: 1}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: [{
+                id: hashids.encode(0),
+                location: 'location',
+                artist: 'artist',
+                tags: ['tag'],
+                occurrences: [
+                  {start: '2018-07-14T12:00'}
+                ],
+                title: 'Title'
+              }]
             }
           }
-        )
+        })
 
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{title time artist{name} location{name} tags{title}}}}}'),
+        await checkRequest(
+          get,
           {data: {cities: [{
             slug: 'city',
             days: [{
@@ -605,62 +649,65 @@ describe('graphqlApi', function () {
       })
 
       it('adds an event without title', async function () {
-        const initialData = {
+        const {checkRequest, checkData} = make({
           artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
               name: 'City',
-              locations: {'loc': {name: 'Location'}},
+              locations: {'location': {name: 'Location'}},
               tags: {'tag': {title: 'Tag'}},
               events: []
             }
           }
-        }
+        })
 
-        var newData = null
-
-        const api = graphqlApi.make({load: () => deepcopy(initialData), save: d => { newData = d }})
-
-        function run (requestString) {
-          return api.request({requestString})
-        }
-
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
+        await checkRequest(
+          get,
           {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
         )
 
-        await assert.deepEqual(
-          await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurrences{start}}}'),
-          {data: {addEvent: {title: null, artist: {name: 'Artist'}, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurrences: [{start: '2018-07-14T12:00'}]}}}
+        await checkRequest(
+          put,
+          {event: {
+            citySlug: 'city',
+            location: 'location',
+            artist: 'artist',
+            tags: ['tag'],
+            occurrences: [{start: '2018-07-14T12:00'}]
+          }},
+          {data: {addEvent: {
+            id: hashids.encode(0),
+            title: null,
+            artist: {name: 'Artist'},
+            location: {name: 'Location'},
+            tags: [{title: 'Tag'}],
+            occurrences: [{start: '2018-07-14T12:00'}]
+          }}}
         )
 
-        assert.deepEqual(
-          newData,
-          {
-            artists: {'artist': {name: 'Artist'}},
-            cities: {
-              'city': {
-                name: 'City',
-                locations: {'loc': {name: 'Location'}},
-                tags: {'tag': {title: 'Tag'}},
-                events: [
-                  {
-                    location: 'loc',
-                    artist: 'artist',
-                    tags: ['tag'],
-                    occurrences: [
-                      {start: '2018-07-14T12:00'}
-                    ]
-                  }
+        checkData({
+          _: {sequences: {events: 1}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: [{
+                id: hashids.encode(0),
+                location: 'location',
+                artist: 'artist',
+                tags: ['tag'],
+                occurrences: [
+                  {start: '2018-07-14T12:00'}
                 ]
-              }
+              }]
             }
           }
-        )
+        })
 
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{title time artist{name} location{name} tags{title}}}}}'),
+        await checkRequest(
+          get,
           {data: {cities: [{
             slug: 'city',
             days: [{
@@ -678,62 +725,65 @@ describe('graphqlApi', function () {
       })
 
       it('adds an event without artist', async function () {
-        const initialData = {
+        const {checkRequest, checkData} = make({
           artists: {},
           cities: {
             'city': {
               name: 'City',
-              locations: {'loc': {name: 'Location'}},
+              locations: {'location': {name: 'Location'}},
               tags: {'tag': {title: 'Tag'}},
               events: []
             }
           }
-        }
+        })
 
-        var newData = null
-
-        const api = graphqlApi.make({load: () => deepcopy(initialData), save: d => { newData = d }})
-
-        function run (requestString) {
-          return api.request({requestString})
-        }
-
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
+        await checkRequest(
+          get,
           {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
         )
 
-        await assert.deepEqual(
-          await run('mutation{addEvent(event:{citySlug:"city",title:"Title",location:"loc",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){title artist{name} location{name} tags{title} occurrences{start}}}'),
-          {data: {addEvent: {title: 'Title', artist: null, location: {name: 'Location'}, tags: [{title: 'Tag'}], occurrences: [{start: '2018-07-14T12:00'}]}}}
+        await checkRequest(
+          put,
+          {event: {
+            citySlug: 'city',
+            title: 'Title',
+            location: 'location',
+            tags: ['tag'],
+            occurrences: [{start: '2018-07-14T12:00'}]
+          }},
+          {data: {addEvent: {
+            id: hashids.encode(0),
+            title: 'Title',
+            artist: null,
+            location: {name: 'Location'},
+            tags: [{title: 'Tag'}],
+            occurrences: [{start: '2018-07-14T12:00'}]
+          }}}
         )
 
-        assert.deepEqual(
-          newData,
-          {
-            artists: {},
-            cities: {
-              'city': {
-                name: 'City',
-                locations: {'loc': {name: 'Location'}},
-                tags: {'tag': {title: 'Tag'}},
-                events: [
-                  {
-                    title: 'Title',
-                    location: 'loc',
-                    tags: ['tag'],
-                    occurrences: [
-                      {start: '2018-07-14T12:00'}
-                    ]
-                  }
+        checkData({
+          _: {sequences: {events: 1}},
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: [{
+                id: hashids.encode(0),
+                title: 'Title',
+                location: 'location',
+                tags: ['tag'],
+                occurrences: [
+                  {start: '2018-07-14T12:00'}
                 ]
-              }
+              }]
             }
           }
-        )
+        })
 
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{title time artist{name} location{name} tags{title}}}}}'),
+        await checkRequest(
+          get,
           {data: {cities: [{
             slug: 'city',
             days: [{
@@ -751,44 +801,57 @@ describe('graphqlApi', function () {
       })
 
       it("doesn't add event with unexisting artist", async function () {
-        const initialData = {
+        const {checkRequest, checkData} = make({
           artists: {},
           cities: {
             'city': {
               name: 'City',
-              locations: {'loc': {name: 'Location'}},
+              locations: {'location': {name: 'Location'}},
               tags: {'tag': {title: 'Tag'}},
               events: []
             }
           }
-        }
+        })
 
-        var newData = null
+        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
 
-        const api = graphqlApi.make({load: () => deepcopy(initialData), save: d => { newData = d }})
-
-        function run (requestString) {
-          return api.request({requestString})
-        }
-
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
-          {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
+        await checkRequest(
+          put,
+          {event: {
+            citySlug: 'city',
+            location: 'location',
+            artist: 'artist',
+            tags: ['tag'],
+            occurrences: [{start: '2018-07-14T12:00'}]
+          }},
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 26}],
+              message: 'No artist with slug "artist"',
+              path: ['addEvent']
+            }]
+          }
         )
 
-        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){title}}')
-        await assert.strictEqual(result.errors[0].message, 'No artist with slug "artist"')
+        checkData({
+          _: {sequences: {events: 0}},
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: []
+            }
+          }
+        })
 
-        assert.deepEqual(newData, initialData)
-
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
-          {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
-        )
+        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
       })
 
       it("doesn't add event with unexisting location", async function () {
-        const initialData = {
+        const {checkRequest, checkData} = make({
           artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
@@ -798,67 +861,144 @@ describe('graphqlApi', function () {
               events: []
             }
           }
-        }
+        })
 
-        var newData = null
+        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
 
-        const api = graphqlApi.make({load: () => deepcopy(initialData), save: d => { newData = d }})
-
-        function run (requestString) {
-          return api.request({requestString})
-        }
-
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
-          {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
+        await checkRequest(
+          put,
+          {event: {
+            citySlug: 'city',
+            location: 'location',
+            artist: 'artist',
+            tags: ['tag'],
+            occurrences: [{start: '2018-07-14T12:00'}]
+          }},
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 26}],
+              message: 'No location with slug "location"',
+              path: ['addEvent']
+            }]
+          }
         )
 
-        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){title}}')
-        await assert.strictEqual(result.errors[0].message, 'No location with slug "loc"')
-
-        assert.deepEqual(newData, initialData)
-
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
-          {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
-        )
-      })
-
-      it("doesn't add event with unexisting tag", async function () {
-        const initialData = {
+        checkData({
+          _: {sequences: {events: 0}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
               name: 'City',
-              locations: {'loc': {name: 'Location'}},
+              locations: {},
               tags: {'tag': {title: 'Tag'}},
               events: []
             }
           }
-        }
+        })
 
-        var newData = null
+        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
+      })
 
-        const api = graphqlApi.make({load: () => deepcopy(initialData), save: d => { newData = d }})
+      it("doesn't add event with unexisting tag", async function () {
+        const {checkRequest, checkData} = make({
+          artists: {'artist': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {},
+              events: []
+            }
+          }
+        })
 
-        function run (requestString) {
-          return api.request({requestString})
-        }
+        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
 
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
-          {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
+        await checkRequest(
+          put,
+          {event: {
+            citySlug: 'city',
+            location: 'location',
+            artist: 'artist',
+            tags: ['tag'],
+            occurrences: [{start: '2018-07-14T12:00'}]
+          }},
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 26}],
+              message: 'No tag with slug "tag"',
+              path: ['addEvent']
+            }]
+          }
         )
 
-        const result = await run('mutation{addEvent(event:{citySlug:"city",location:"loc",artist:"artist",tags:["tag","tageuh"],occurrences:[{start:"2018-07-14T12:00"}]}){title}}')
-        await assert.strictEqual(result.errors[0].message, 'No tag with slug "tageuh"')
+        checkData({
+          _: {sequences: {events: 0}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {},
+              events: []
+            }
+          }
+        })
 
-        assert.deepEqual(newData, initialData)
+        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
+      })
+    })
 
-        await assert.deepEqual(
-          await run('{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{time}}}}'),
-          {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
-        )
+    it('adds artist, location and event in a single call', async function () {
+      const {checkRequest, checkData} = make({
+        artists: {},
+        cities: {'city': {
+          name: 'City',
+          locations: {},
+          events: [],
+          tags: {'tag': {title: 'Tag'}}
+        }}
+      })
+
+      await checkRequest(
+        'mutation{' +
+          'putArtist(artist:{slug:"artist",name:"Artist"}){slug name}' +
+          'putLocation(location:{citySlug:"city",slug:"location",name:"Location"}){slug name}' +
+          'addEvent(event:{citySlug:"city",location:"location",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){id artist{slug name} location{slug name} tags{slug title}}' +
+        '}',
+        {data: {
+          putArtist: {slug: 'artist', name: 'Artist'},
+          putLocation: {slug: 'location', name: 'Location'},
+          addEvent: {
+            id: hashids.encode(0),
+            artist: {slug: 'artist', name: 'Artist'},
+            location: {slug: 'location', name: 'Location'},
+            tags: [{slug: 'tag', title: 'Tag'}]
+          }
+        }}
+      )
+
+      checkData({
+        _: {
+          sequences: {
+            events: 1
+          }
+        },
+        artists: {artist: {name: 'Artist'}},
+        cities: {'city': {
+          name: 'City',
+          locations: {'location': {name: 'Location'}},
+          events: [{
+            id: hashids.encode(0),
+            artist: 'artist',
+            location: 'location',
+            tags: ['tag'],
+            occurrences: [{start: '2018-07-14T12:00'}]
+          }],
+          tags: {'tag': {title: 'Tag'}}
+        }}
       })
     })
   })

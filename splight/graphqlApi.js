@@ -1,11 +1,15 @@
 'use strict'
 
 const graphql = require('graphql')
+const Hashids = require('hashids')
+const Joi = require('joi')
 const moment = require('moment')
 
 const schemaString = require('./graphqlApi.gqls')
 
 const schema = graphql.buildSchema(schemaString)
+
+const hashids = new Hashids('', 10)
 
 function makeRoot ({load, save}) {
   const data = Promise.resolve(load()) // @todo Reload data on each request?
@@ -28,7 +32,9 @@ function makeRoot ({load, save}) {
 }
 
 function makeSyncRoot (data) {
-  const [artists_, getArtist] = slugify(data.artists, 'artist')
+  fixData(data)
+
+  var [artists_, getArtist] = slugify(data.artists, 'artist')
 
   function artists () {
     return artists_
@@ -36,6 +42,7 @@ function makeSyncRoot (data) {
 
   function putArtist ({artist: {slug, name}}) {
     data.artists[slug] = {name}
+    ;[artists_, getArtist] = slugify(data.artists, 'artist')
     return {slug, name}
   }
 
@@ -54,9 +61,16 @@ function makeSyncRoot (data) {
     return {slug, name}
   }
 
-  function addEvent ({event}) {
-    const {citySlug, title, artist, location, tags, occurrences} = event
-    delete event.citySlug
+  function addEvent ({event: {citySlug, title, artist, location, tags, occurrences}}) {
+    const dataEvent = Object.assign(
+      {
+        location,
+        tags: tags.map(tag => tag),
+        occurrences: occurrences.map(({start}) => ({start}))
+      },
+      artist ? {artist} : {},
+      title ? {title} : {}
+    )
     const city = getCity(citySlug)
     const [tags_, getTag] = slugify(city.tags, 'tag') // eslint-disable-line
     const [locations, getLocation] = slugify(city.locations, 'location') // eslint-disable-line
@@ -69,7 +83,8 @@ function makeSyncRoot (data) {
       },
       artist ? {artist: getArtist(artist)} : {}
     )
-    city.events.push(event)
+    ret.id = dataEvent.id = nextEventId(data)
+    city.events.push(dataEvent)
     return ret
   }
 
@@ -171,6 +186,67 @@ function makeSyncRoot (data) {
   return {artists, putArtist, cities, city, putLocation, addEvent}
 }
 
+function fixData (data) {
+  data._ = data._ || {}
+  data._.sequences = data._.sequences || {}
+  data._.sequences.events = data._.sequences.events || 0
+
+  Joi.attempt(data, dataSchema)
+
+  const getArtist = slugify(data.artists, 'artist')[1]
+
+  Object.values(data.cities).forEach(city => {
+    city.events.forEach(event => {
+      if (!event.id) {
+        event.id = nextEventId(data)
+      }
+      if (event.artist) {
+        getArtist(event.artist)
+      }
+    })
+  })
+}
+
+function nextEventId (data) {
+  const id = hashids.encode(data._.sequences.events)
+  data._.sequences.events++
+  return id
+}
+
+function makeSlugSchema () {
+  return Joi.string().min(1)
+}
+
+const dataSchema = Joi.object({
+  _: Joi.object().required().keys({
+    sequences: Joi.object().required().keys({
+      events: Joi.number().integer().required()
+    })
+  }),
+  artists: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
+    name: Joi.string().required()
+  })),
+  cities: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
+    name: Joi.string().required(),
+    locations: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
+      name: Joi.string().required()
+    })),
+    tags: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
+      title: Joi.string().required()
+    })),
+    events: Joi.array().items(Joi.object({
+      id: makeSlugSchema(),
+      artist: makeSlugSchema(),
+      title: Joi.string(),
+      location: makeSlugSchema().required(),
+      tags: Joi.array().items(makeSlugSchema()),
+      occurrences: Joi.array().items(Joi.object({
+        start: Joi.string().required()
+      }))
+    }))
+  }))
+})
+
 function slugify (thingsBySlug, name) {
   return [
     Object.entries(thingsBySlug).map(([slug, thing]) => Object.assign({slug}, thing)),
@@ -218,4 +294,4 @@ function make (config) {
   return {schema, rootValue, request}
 }
 
-Object.assign(exports, {make})
+Object.assign(exports, {make, forTest: {makeRoot: makeSyncRoot, schema}})
