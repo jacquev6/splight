@@ -427,11 +427,11 @@ describe('graphqlApi', function () {
           }
         })
 
-        const getEvents = `{cities{days(first:"2018-07-14",after:"2018-07-15"){events{artist{${fields}}}}}}`
+        const getEvents = `{cities{events{artist{${fields}}}}}`
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{days: [{events: [{artist: {slug: 'artist', name: 'Artist'}}]}]}]}}
+          {data: {cities: [{events: [{artist: {slug: 'artist', name: 'Artist'}}]}]}}
         )
 
         await checkRequest(
@@ -442,7 +442,7 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{days: [{events: [{artist: {slug: 'artist', name: 'New name'}}]}]}]}}
+          {data: {cities: [{events: [{artist: {slug: 'artist', name: 'New name'}}]}]}}
         )
       })
     })
@@ -547,11 +547,11 @@ describe('graphqlApi', function () {
           }
         })
 
-        const getEvents = `{cities{days(first:"2018-07-14",after:"2018-07-15"){events{location{${fields}}}}}}`
+        const getEvents = `{cities{events{location{${fields}}}}}`
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{days: [{events: [{location: {slug: 'location', name: 'Location'}}]}]}]}}
+          {data: {cities: [{events: [{location: {slug: 'location', name: 'Location'}}]}]}}
         )
 
         await checkRequest(
@@ -562,19 +562,19 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{days: [{events: [{location: {slug: 'location', name: 'New name'}}]}]}]}}
+          {data: {cities: [{events: [{location: {slug: 'location', name: 'New name'}}]}]}}
         )
       })
     })
 
     describe('addEvent', function () {
       const fields = 'id title artist{name} location{name} tags{title} occurrences{start}'
-      // @todo get events instead of days
-      const get = '{cities{slug days(first:"2018-07-14",after:"2018-07-15"){date events{title time artist{name} location{name} tags{title}}}}}'
+      const get = `{cities{slug events{${fields}}}}`
       const put = `mutation($event:IEvent!){addEvent(event:$event){${fields}}}`
 
       it('adds an event', async function () {
         const {checkRequest, checkData} = make({
+          _: {sequences: {events: 12}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
@@ -586,7 +586,7 @@ describe('graphqlApi', function () {
           }
         })
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
+        await checkRequest(get, {data: {cities: [{slug: 'city', events: []}]}})
 
         await checkRequest(
           put,
@@ -599,7 +599,7 @@ describe('graphqlApi', function () {
             occurrences: [{start: '2018-07-14T12:00'}]
           }},
           {data: {addEvent: {
-            id: hashids.encode(0),
+            id: hashids.encode(12),
             title: 'Title',
             artist: {name: 'Artist'},
             location: {name: 'Location'},
@@ -609,7 +609,7 @@ describe('graphqlApi', function () {
         )
 
         checkData({
-          _: {sequences: {events: 1}},
+          _: {sequences: {events: 13}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
@@ -617,7 +617,7 @@ describe('graphqlApi', function () {
               locations: {'location': {name: 'Location'}},
               tags: {'tag': {title: 'Tag'}},
               events: [{
-                id: hashids.encode(0),
+                id: hashids.encode(12),
                 location: 'location',
                 artist: 'artist',
                 tags: ['tag'],
@@ -634,15 +634,13 @@ describe('graphqlApi', function () {
           get,
           {data: {cities: [{
             slug: 'city',
-            days: [{
-              date: '2018-07-14',
-              events: [{
-                title: 'Title',
-                time: '12:00',
-                artist: {name: 'Artist'},
-                location: {name: 'Location'},
-                tags: [{title: 'Tag'}]
-              }]
+            events: [{
+              id: hashids.encode(12),
+              title: 'Title',
+              occurrences: [{start: '2018-07-14T12:00'}],
+              artist: {name: 'Artist'},
+              location: {name: 'Location'},
+              tags: [{title: 'Tag'}]
             }]
           }]}}
         )
@@ -663,7 +661,7 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           get,
-          {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
+          {data: {cities: [{slug: 'city', events: []}]}}
         )
 
         await checkRequest(
@@ -698,9 +696,7 @@ describe('graphqlApi', function () {
                 location: 'location',
                 artist: 'artist',
                 tags: ['tag'],
-                occurrences: [
-                  {start: '2018-07-14T12:00'}
-                ]
+                occurrences: [{start: '2018-07-14T12:00'}]
               }]
             }
           }
@@ -710,15 +706,13 @@ describe('graphqlApi', function () {
           get,
           {data: {cities: [{
             slug: 'city',
-            days: [{
-              date: '2018-07-14',
-              events: [{
-                title: null,
-                time: '12:00',
-                artist: {name: 'Artist'},
-                location: {name: 'Location'},
-                tags: [{title: 'Tag'}]
-              }]
+            events: [{
+              id: hashids.encode(0),
+              title: null,
+              occurrences: [{start: '2018-07-14T12:00'}],
+              artist: {name: 'Artist'},
+              location: {name: 'Location'},
+              tags: [{title: 'Tag'}]
             }]
           }]}}
         )
@@ -739,7 +733,7 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           get,
-          {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}}
+          {data: {cities: [{slug: 'city', events: []}]}}
         )
 
         await checkRequest(
@@ -786,15 +780,13 @@ describe('graphqlApi', function () {
           get,
           {data: {cities: [{
             slug: 'city',
-            days: [{
-              date: '2018-07-14',
-              events: [{
-                title: 'Title',
-                time: '12:00',
-                artist: null,
-                location: {name: 'Location'},
-                tags: [{title: 'Tag'}]
-              }]
+            events: [{
+              id: hashids.encode(0),
+              title: 'Title',
+              occurrences: [{start: '2018-07-14T12:00'}],
+              artist: null,
+              location: {name: 'Location'},
+              tags: [{title: 'Tag'}]
             }]
           }]}}
         )
@@ -813,7 +805,7 @@ describe('graphqlApi', function () {
           }
         })
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
+        await checkRequest(get, {data: {cities: [{slug: 'city', events: []}]}})
 
         await checkRequest(
           put,
@@ -847,7 +839,7 @@ describe('graphqlApi', function () {
           }
         })
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
+        await checkRequest(get, {data: {cities: [{slug: 'city', events: []}]}})
       })
 
       it("doesn't add event with unexisting location", async function () {
@@ -863,7 +855,7 @@ describe('graphqlApi', function () {
           }
         })
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
+        await checkRequest(get, {data: {cities: [{slug: 'city', events: []}]}})
 
         await checkRequest(
           put,
@@ -897,7 +889,7 @@ describe('graphqlApi', function () {
           }
         })
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
+        await checkRequest(get, {data: {cities: [{slug: 'city', events: []}]}})
       })
 
       it("doesn't add event with unexisting tag", async function () {
@@ -913,7 +905,7 @@ describe('graphqlApi', function () {
           }
         })
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
+        await checkRequest(get, {data: {cities: [{slug: 'city', events: []}]}})
 
         await checkRequest(
           put,
@@ -947,7 +939,7 @@ describe('graphqlApi', function () {
           }
         })
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', days: [{date: '2018-07-14', events: []}]}]}})
+        await checkRequest(get, {data: {cities: [{slug: 'city', events: []}]}})
       })
     })
 

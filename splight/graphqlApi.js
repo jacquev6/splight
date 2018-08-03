@@ -168,8 +168,9 @@ function makeSyncRoot (data) {
       return city.events
         // @todo Filter by title
         .filter(event => (!location || event.location === location) && (!artist || event.artist === artist))
-        .map(({title, artist, location, tags, occurrences}) => (Object.assign(
+        .map(({id, title, artist, location, tags, occurrences}) => (Object.assign(
           {
+            id,
             title,
             location: getLocation(location),
             tags: tags.map(getTag),
