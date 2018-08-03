@@ -15,6 +15,21 @@ const hashids = new Hashids('', 10)
 
 describe('graphqlApi', function () {
   describe('make', function () {
+    it('works', async function () {
+      var data = {artists: {}, cities: {}}
+      const {request} = graphqlApi.make({
+        load: async () => data,
+        save: async d => { data = d }
+      })
+
+      assert.deepEqual(
+        await request({requestString: '{cities{slug}}'}),
+        {data: {cities: []}}
+      )
+    })
+  })
+
+  describe('makeRoot', function () {
     it('computes first event id', function () {
       const data = {
         artists: {'artist': {name: 'Artist'}},
@@ -90,6 +105,51 @@ describe('graphqlApi', function () {
             tags: {'tag': {title: 'Tag'}},
             events: [{
               id: hashids.encode(10),
+              location: 'location',
+              tags: ['tag'],
+              title: 'Title',
+              occurrences: [
+                {start: '2018-07-12T12:00'}
+              ]
+            }]
+          }}
+        }
+      )
+    })
+
+    it("doesn't touch existing event ids", function () {
+      const data = {
+        _: {sequences: {events: 10}},
+        artists: {'artist': {name: 'Artist'}},
+        cities: {'city': {
+          name: 'City',
+          locations: {'location': {name: 'Location'}},
+          tags: {'tag': {title: 'Tag'}},
+          events: [{
+            id: 'foobarbaz',
+            location: 'location',
+            tags: ['tag'],
+            title: 'Title',
+            occurrences: [
+              {start: '2018-07-12T12:00'}
+            ]
+          }]
+        }}
+      }
+
+      graphqlApi.forTest.makeRoot(data)
+
+      assert.deepStrictEqual(
+        data,
+        {
+          _: {sequences: {events: 10}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {'city': {
+            name: 'City',
+            locations: {'location': {name: 'Location'}},
+            tags: {'tag': {title: 'Tag'}},
+            events: [{
+              id: 'foobarbaz',
               location: 'location',
               tags: ['tag'],
               title: 'Title',
