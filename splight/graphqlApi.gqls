@@ -22,7 +22,6 @@ type City {
   events(location: ID, artist: ID, title: String, dates: IDateInterval): [Event!]!
   firstDate: Date
   dateAfter: Date
-  days(first: Date!, after: Date!): [Day!]!
 }
 
 type Tag {
@@ -48,20 +47,6 @@ type Occurrence {
   start: DateTime!
 }
 
-type Day {
-  date: Date!
-  events: [DayEvent!]!
-}
-
-type DayEvent {
-  time: Time!
-  title: String
-  artist: Artist
-  location: Location!
-  mainTag: Tag!
-  tags: [Tag!]!
-  occurrences: [Occurrence!]!
-}
 
 type Mutation {
   putArtist(artist: IArtist!): Artist!

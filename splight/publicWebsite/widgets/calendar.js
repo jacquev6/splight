@@ -12,22 +12,22 @@ const where = require('./eventDetails/where')
 
 const eventDetails = eventDetails_.make({when, what, where})
 
-function make ({citySlug}) {
+function make ({citySlug, startDate, dateAfter, duration}) {
   function render (data) {
     const city = {slug: data.city.slug}
 
-    const days = data.city.days.map(({date, events}) => ({
-      date: moment(date, moment.HTML5_FMT.DATE, true).format('ddd Do MMM'),
-      events: events.map(({time, title, mainTag, tags, artist, location, occurrences}) => {
+    const dayEventsByDate = {}
+
+    data.city.events.forEach(({location, artist, occurrences, tags, title}) => {
+      occurrences.forEach(({start}) => {
+        start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
+        const mainTag = tags[0]
         const event = {
-          time,
+          time: start.format(moment.HTML5_FMT.TIME),
           title,
-          mainTag,
-          // This is based on the knowledge that mainTag is first in the list. This could change.
-          // @todo Change API to return mainTag, secondaryTags and allTags (if needed elsewhere), and use tag = [mainTag].concat(secondaryTags)
-          tags: tags.map(({slug, title}) => ({slug, title, first: slug === mainTag.slug})),
-          artist,
           location,
+          tags: tags.map(({slug, title}) => ({slug, title, first: slug === mainTag.slug})),
+          mainTag,
           occurrences: occurrences.map(({start}) => {
             start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
 
@@ -35,14 +35,34 @@ function make ({citySlug}) {
               date: start.format('ddd Do MMM'),
               time: start.format('LT')
             }
-          })
+          }),
+          artist
         }
 
         event.details = {html: eventDetails.render({city, event})}
 
-        return event
+        const day = start.format(moment.HTML5_FMT.DATE)
+        var dayEvents = dayEventsByDate[day]
+        if (!dayEvents) {
+          dayEventsByDate[day] = dayEvents = []
+        }
+
+        dayEvents.push(event)
       })
-    }))
+    })
+
+    for (var date in dayEventsByDate) {
+      dayEventsByDate[date] = dayEventsByDate[date].sort((a, b) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0)
+    }
+
+    const days = []
+    for (var d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
+      const date = d.format(moment.HTML5_FMT.DATE)
+      days.push({
+        date: d.format('ddd Do MMM'),
+        events: dayEventsByDate[date] || []
+      })
+    }
 
     return mustache.render(
       template,

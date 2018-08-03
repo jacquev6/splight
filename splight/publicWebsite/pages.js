@@ -49,12 +49,12 @@ function timespan (citySlug, startDate, duration) {
   const dateAfter = duration.dateAfter(startDate)
 
   const title = cityTitle.make({citySlug})
-  const content = timespanContent.make({citySlug, startDate, duration})
+  const content = timespanContent.make({citySlug, startDate, dateAfter, duration})
 
   return {
     path: paths.timespan(citySlug, startDate, duration),
     dataRequest: {
-      requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){city(slug:$citySlug){slug name tags{slug title} firstDate days(first:$first,after:$after){date events{time title mainTag{slug} tags{slug title} artist{name} location{name} occurrences{start}}}}}',
+      requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){city(slug:$citySlug){slug name tags{slug title} firstDate events(dates:{start:$first, after:$after}){id title tags{slug title} artist{name} location{name} occurrences{start}}}}',
       variableValues: {
         citySlug,
         first: startDate.format(moment.HTML5_FMT.DATE),

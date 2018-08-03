@@ -92,40 +92,6 @@ function makeSyncRoot (data) {
     const [tags, getTag] = slugify(city.tags, 'tag')
     const [locations, getLocation] = slugify(city.locations, 'location')
 
-    const dayEventsByDate = lazy(() => {
-      const dayEventsByDate = {}
-
-      city.events.forEach(({location, artist, occurrences, tags, title}) => {
-        tags = tags.map(getTag)
-        occurrences.forEach(({start}) => {
-          start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
-          const dayEvent = {
-            time: start.format(moment.HTML5_FMT.TIME),
-            title,
-            location: getLocation(location),
-            tags,
-            mainTag: tags[0],
-            occurrences
-          }
-          if (artist) {
-            dayEvent.artist = getArtist(artist)
-          }
-          const day = start.format(moment.HTML5_FMT.DATE)
-          var dayEvents = dayEventsByDate[day]
-          if (!dayEvents) {
-            dayEventsByDate[day] = dayEvents = []
-          }
-          dayEvents.push(dayEvent)
-        })
-      })
-
-      for (var date in dayEventsByDate) {
-        dayEventsByDate[date] = dayEventsByDate[date].sort((a, b) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0)
-      }
-
-      return dayEventsByDate
-    })
-
     function firstDate () {
       const d = reduceOccurrencesStarts((a, b) => a < b ? a : b)
       return d && moment(d, moment.HTML5_FMT.DATETIME_LOCAL, true).format(moment.HTML5_FMT.DATE)
@@ -148,22 +114,6 @@ function makeSyncRoot (data) {
       } else {
         return null
       }
-    }
-
-    function days ({first, after}) {
-      first = moment(first, moment.HTML5_FMT.DATE, true)
-      after = moment(after, moment.HTML5_FMT.DATE, true)
-      const dayEventsByDate_ = dayEventsByDate.force()
-
-      const days = []
-      for (var d = first.clone(); d.isBefore(after); d.add(1, 'day')) {
-        const date = d.format(moment.HTML5_FMT.DATE)
-        days.push({
-          date,
-          events: dayEventsByDate_[date] || []
-        })
-      }
-      return days
     }
 
     function events ({location, artist, dates}) {
@@ -207,7 +157,7 @@ function makeSyncRoot (data) {
 
     const {slug, name} = city
 
-    return {slug, name, tags, locations, firstDate, dateAfter, days, events}
+    return {slug, name, tags, locations, firstDate, dateAfter, events}
   }
 
   return {artists, putArtist, cities, city, putLocation, addEvent}
@@ -286,21 +236,6 @@ function slugify (thingsBySlug, name) {
       }
     }
   ]
-}
-
-function lazy (thunk) {
-  var computed = false
-  var value = null
-
-  function force () {
-    if (!computed) {
-      value = thunk()
-      computed = true
-    }
-    return value
-  }
-
-  return {force}
 }
 
 function make (config) {

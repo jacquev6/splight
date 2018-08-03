@@ -7,10 +7,10 @@ const linksToolbar_ = require('./linksToolbar')
 const tagFilter_ = require('./tagFilter')
 const template = require('./timespanContent.html')
 
-function make ({citySlug, startDate, duration}) {
-  const tagFilter = tagFilter_.make({citySlug})
-  const linksToolbar = linksToolbar_.make({citySlug, startDate, duration})
-  const calendar = calendar_.make({citySlug, startDate, duration})
+function make ({citySlug, startDate, dateAfter, duration}) {
+  const tagFilter = tagFilter_.make({citySlug, startDate, dateAfter, duration})
+  const linksToolbar = linksToolbar_.make({citySlug, startDate, dateAfter, duration})
+  const calendar = calendar_.make({citySlug, startDate, dateAfter, duration})
 
   function render (data) {
     return mustache.render(
