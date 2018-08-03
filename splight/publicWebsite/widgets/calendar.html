@@ -3,11 +3,8 @@
   <div class="col-md">
     <p><strong>{{date}}</strong></p>
     {{#events}}
-    <div class="sp-event sp-main-tag-{{city.slug}}-{{mainTag.slug}}{{#tags}} sp-tag-{{city.slug}}-{{slug}}{{/tags}}">
+    <div class="sp-event sp-main-tag-{{city.slug}}-{{mainTag.slug}}{{#tags}} sp-tag-{{city.slug}}-{{slug}}{{/tags}}" data-sp-event-id={{id}}>
       <p><strong>{{time}}</strong> <span class="sp-event-title">{{title}}</span></p>
-      <div class="sp-event-details">
-        {{{details.html}}}
-      </div>
     </div>
     {{/events}}
   </div>
@@ -17,12 +14,15 @@
 <div class="modal" id="sp-event-modal">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title"></h5>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      {{#events}}
+      <div id="sp-event-details-{{id}}" class="sp-event-details">
+        <div class="modal-header">
+          <h5 class="modal-title">{{title}}</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">{{{details.html}}}</div>
       </div>
-      <div class="modal-body">
-      </div>
+      {{/events}}
     </div>
   </div>
 </div>

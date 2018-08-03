@@ -18,28 +18,9 @@ function make ({citySlug, startDate, dateAfter, duration}) {
 
     const dayEventsByDate = {}
 
-    data.city.events.forEach(({location, artist, occurrences, tags, title}) => {
+    data.city.events.forEach(({id, location, artist, occurrences, tags, title}) => {
       occurrences.forEach(({start}) => {
         start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
-        const mainTag = tags[0]
-        const event = {
-          time: start.format(moment.HTML5_FMT.TIME),
-          title,
-          location,
-          tags: tags.map(({slug, title}) => ({slug, title, first: slug === mainTag.slug})),
-          mainTag,
-          occurrences: occurrences.map(({start}) => {
-            start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
-
-            return {
-              date: start.format('ddd Do MMM'),
-              time: start.format('LT')
-            }
-          }),
-          artist
-        }
-
-        event.details = {html: eventDetails.render({city, event})}
 
         const day = start.format(moment.HTML5_FMT.DATE)
         var dayEvents = dayEventsByDate[day]
@@ -47,28 +28,54 @@ function make ({citySlug, startDate, dateAfter, duration}) {
           dayEventsByDate[day] = dayEvents = []
         }
 
-        dayEvents.push(event)
+        dayEvents.push({
+          id,
+          time: start.format(moment.HTML5_FMT.TIME),
+          title,
+          mainTag: tags[0],
+          tags
+        })
       })
     })
 
-    for (var date in dayEventsByDate) {
-      dayEventsByDate[date] = dayEventsByDate[date].sort((a, b) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0)
-    }
-
     const days = []
     for (var d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
-      const date = d.format(moment.HTML5_FMT.DATE)
       days.push({
         date: d.format('ddd Do MMM'),
-        events: dayEventsByDate[date] || []
+        events: (dayEventsByDate[d.format(moment.HTML5_FMT.DATE)] || []).sort(
+          (a, b) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0
+        )
       })
     }
+
+    const events = data.city.events.map(({id, location, artist, occurrences, tags, title}) => {
+      const event = {
+        id,
+        title,
+        location,
+        tags: tags.map(({slug, title}) => ({slug, title, first: slug === tags[0].slug})),
+        occurrences: occurrences.map(({start}) => {
+          start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
+
+          return {
+            date: start.format('ddd Do MMM'),
+            time: start.format('LT')
+          }
+        }),
+        artist
+      }
+
+      event.details = {html: eventDetails.render({city, event})}
+
+      return event
+    })
 
     return mustache.render(
       template,
       {
         city,
-        days
+        days,
+        events
       }
     )
   }
@@ -80,8 +87,8 @@ function make ({citySlug, startDate, dateAfter, duration}) {
       .css('cursor', 'pointer')
       .on('click', function () {
         const clicked = jQuery(this)
-        modal.find('.modal-title').text(clicked.find('.sp-event-title').text())
-        modal.find('.modal-body').html(clicked.find('.sp-event-details').html())
+        modal.find('.sp-event-details').hide()
+        modal.find('#sp-event-details-' + clicked.data('sp-event-id')).show()
         modal.modal()
       })
   }
