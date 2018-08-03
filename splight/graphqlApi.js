@@ -164,10 +164,33 @@ function makeSyncRoot (data) {
       return days
     }
 
-    function events ({location, artist, title}) {
+    function events ({location, artist, dates}) {
+      function selectOccurence ({start, after}) {
+        return function (occurence) {
+          if (start && occurence.start < start) {
+            return false
+          }
+          if (after && occurence.start >= after) {
+            return false
+          }
+          return true
+        }
+      }
+      function select (event) {
+        if (location && event.location !== location) {
+          return false
+        }
+        if (artist && event.artist !== artist) {
+          return false
+        }
+        if (dates && !event.occurrences.some(selectOccurence(dates))) {
+          return false
+        }
+        return true
+      }
+
       return city.events
-        // @todo Filter by title
-        .filter(event => (!location || event.location === location) && (!artist || event.artist === artist))
+        .filter(select)
         .map(({id, title, artist, location, tags, occurrences}) => (Object.assign(
           {
             id,
@@ -236,13 +259,13 @@ const dataSchema = Joi.object({
     tags: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
       title: Joi.string().required()
     })),
-    events: Joi.array().items(Joi.object({
+    events: Joi.array().required().items(Joi.object({
       id: makeSlugSchema(),
       artist: makeSlugSchema(),
       title: Joi.string(),
       location: makeSlugSchema().required(),
-      tags: Joi.array().items(makeSlugSchema()),
-      occurrences: Joi.array().items(Joi.object({
+      tags: Joi.array().required().min(1).items(makeSlugSchema()),
+      occurrences: Joi.array().required().min(1).items(Joi.object({
         start: Joi.string().required()
       }))
     }))

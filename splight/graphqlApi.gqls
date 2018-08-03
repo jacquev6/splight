@@ -19,7 +19,7 @@ type City {
   tags: [Tag!]!
   locations: [Location!]!
   # event(id: ID!): Event!
-  events(location: ID, artist: ID, title: String): [Event!]!
+  events(location: ID, artist: ID, title: String, dates: IDateInterval): [Event!]!
   firstDate: Date
   dateAfter: Date
   days(first: Date!, after: Date!): [Day!]!
@@ -91,4 +91,9 @@ input IEvent {
 
 input IOccurrence {
   start: DateTime!
+}
+
+input IDateInterval {
+  start: Date!
+  after: Date!
 }

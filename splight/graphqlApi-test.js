@@ -402,28 +402,315 @@ describe('graphqlApi', function () {
     })
   })
 
-  describe('mutations', function () {
-    function make (data) {
-      const rootValue = graphqlApi.forTest.makeRoot(data)
+  function make (data) {
+    const rootValue = graphqlApi.forTest.makeRoot(data)
 
-      async function checkRequest (requestString, variableValues, expected) {
-        if (!expected) { // A poor man's variadic function
-          expected = variableValues
-          variableValues = undefined
-        }
-        assert.deepEqual(
-          await graphql.graphql(graphqlApi.forTest.schema, requestString, rootValue, undefined, variableValues),
-          expected
-        )
+    async function checkRequest (requestString, variableValues, expected) {
+      if (!expected) { // A poor man's variadic function
+        expected = variableValues
+        variableValues = undefined
       }
-
-      function checkData (expected) {
-        assert.deepStrictEqual(data, expected)
-      }
-
-      return {checkRequest, checkData}
+      assert.deepEqual(
+        await graphql.graphql(graphqlApi.forTest.schema, requestString, rootValue, undefined, variableValues),
+        expected
+      )
     }
 
+    function checkData (expected) {
+      assert.deepStrictEqual(data, expected)
+    }
+
+    return {checkRequest, checkData}
+  }
+
+  describe('full query', function () {
+    const get = `{
+      artists{slug name}
+      cities{
+        slug
+        name
+        tags{slug title}
+        locations{slug name}
+        events{
+          id
+          title
+          artist{slug name}
+          location{slug name}
+          tags{slug title}
+          occurrences{start}
+        }
+        firstDate
+        dateAfter
+      }
+    }`
+
+    it('returns everything on single city without events', async function () {
+      const {checkRequest} = make({
+        artists: {
+          'artist-1': {name: 'Artist 1'},
+          'artist-2': {name: 'Artist 2'}
+        },
+        cities: {
+          'city': {
+            name: 'City',
+            locations: {
+              'location-1': {name: 'Location 1'},
+              'location-2': {name: 'Location 2'}
+            },
+            tags: {
+              'tag-1': {title: 'Tag 1'},
+              'tag-2': {title: 'Tag 2'}
+            },
+            events: []
+          }
+        }
+      })
+
+      await checkRequest(
+        get,
+        {data: {
+          artists: [
+            {slug: 'artist-1', name: 'Artist 1'},
+            {slug: 'artist-2', name: 'Artist 2'}
+          ],
+          cities: [{
+            slug: 'city',
+            name: 'City',
+            tags: [
+              {slug: 'tag-1', title: 'Tag 1'},
+              {slug: 'tag-2', title: 'Tag 2'}
+            ],
+            locations: [
+              {slug: 'location-1', name: 'Location 1'},
+              {slug: 'location-2', name: 'Location 2'}
+            ],
+            events: [],
+            firstDate: null,
+            dateAfter: null
+          }]
+        }}
+      )
+    })
+
+    it('returns everything on single city with single minimal event', async function () {
+      const {checkRequest} = make({
+        artists: {
+          'artist-1': {name: 'Artist 1'},
+          'artist-2': {name: 'Artist 2'}
+        },
+        cities: {
+          'city': {
+            name: 'City',
+            locations: {
+              'location-1': {name: 'Location 1'},
+              'location-2': {name: 'Location 2'}
+            },
+            tags: {
+              'tag-1': {title: 'Tag 1'},
+              'tag-2': {title: 'Tag 2'}
+            },
+            events: [{
+              location: 'location-1',
+              tags: ['tag-1'],
+              occurrences: [{start: '2018-07-14T12:00'}]
+            }]
+          }
+        }
+      })
+
+      await checkRequest(
+        get,
+        {data: {
+          artists: [
+            {slug: 'artist-1', name: 'Artist 1'},
+            {slug: 'artist-2', name: 'Artist 2'}
+          ],
+          cities: [{
+            slug: 'city',
+            name: 'City',
+            tags: [
+              {slug: 'tag-1', title: 'Tag 1'},
+              {slug: 'tag-2', title: 'Tag 2'}
+            ],
+            locations: [
+              {slug: 'location-1', name: 'Location 1'},
+              {slug: 'location-2', name: 'Location 2'}
+            ],
+            events: [{
+              id: hashids.encode(0),
+              artist: null,
+              title: null,
+              location: {slug: 'location-1', name: 'Location 1'},
+              tags: [{slug: 'tag-1', title: 'Tag 1'}],
+              occurrences: [{start: '2018-07-14T12:00'}]
+            }],
+            firstDate: '2018-07-14',
+            dateAfter: '2018-07-15'
+          }]
+        }}
+      )
+    })
+  })
+
+  describe('filtering queries', function () {
+    describe('city', function () {
+      const get = 'query($slug:ID!){city(slug:$slug){name}}'
+
+      it("doesn't find city", async function () {
+        const {checkRequest} = make({artists: {}, cities: {}})
+
+        await checkRequest(
+          get,
+          {slug: 'foo'},
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 18}],
+              message: 'No city with slug "foo"',
+              path: ['city']
+            }]
+          }
+        )
+      })
+
+      it('finds cities', async function () {
+        const {checkRequest} = make({
+          artists: {},
+          cities: {
+            'city-1': {name: 'City 1', locations: {}, tags: {}, events: []},
+            'city-2': {name: 'City 2', locations: {}, tags: {}, events: []},
+            'city-3': {name: 'City 3', locations: {}, tags: {}, events: []}
+          }
+        })
+
+        await checkRequest(get, {slug: 'city-1'}, {data: {city: {name: 'City 1'}}})
+        await checkRequest(get, {slug: 'city-2'}, {data: {city: {name: 'City 2'}}})
+        await checkRequest(get, {slug: 'city-3'}, {data: {city: {name: 'City 3'}}})
+      })
+    })
+
+    describe('city.events', function () {
+      it('filters by location', async function () {
+        const {checkRequest} = make({
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}, 'other-location': {name: 'Other location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: [
+                {
+                  id: 'ok',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  id: 'ko-other-location',
+                  location: 'other-location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                }
+              ]
+            }
+          }
+        })
+
+        await checkRequest(
+          '{cities{events(location:"location"){id}}}',
+          {data: {cities: [{events: [{id: 'ok'}]}]}}
+        )
+      })
+
+      it('filters by artist', async function () {
+        const {checkRequest} = make({
+          artists: {'artist': {name: 'Artist'}, 'artist-2': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: [
+                {
+                  id: 'ok',
+                  artist: 'artist',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  id: 'ko-other-artist',
+                  artist: 'artist-2',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  id: 'ko-no-artist',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                }
+              ]
+            }
+          }
+        })
+
+        await checkRequest(
+          '{cities{events(artist:"artist"){id}}}',
+          {data: {cities: [{events: [{id: 'ok'}]}]}}
+        )
+      })
+
+      it('filters by title') // @todo Implement
+
+      it('filters by dates', async function () {
+        const {checkRequest} = make({
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: [
+                {
+                  id: 'ko-before',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-13T23:59'}]
+                },
+                {
+                  id: 'ok-1',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-12T12:00'}, {start: '2018-07-14T00:00'}, {start: '2018-07-16T12:00'}]
+                },
+                {
+                  id: 'ok-2',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-15T23:59'}]
+                },
+                {
+                  id: 'ko-after',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-16T00:00'}]
+                }
+              ]
+            }
+          }
+        })
+
+        await checkRequest(
+          '{cities{events(dates:{start:"2018-07-14", after:"2018-07-16"}){id}}}',
+          {data: {cities: [{events: [{id: 'ok-1'}, {id: 'ok-2'}]}]}}
+        )
+      })
+    })
+  })
+
+  describe('mutations', function () {
     describe('putArtist', function () {
       const fields = 'slug name'
       const get = `{artists{${fields}}}`
@@ -476,11 +763,11 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {},
+              tags: {'tag': {title: 'Tag'}},
               events: [{
                 artist: 'artist',
                 location: 'location',
-                tags: [],
+                tags: ['tag'],
                 occurrences: [{start: '2018-07-14T12:00'}]
               }]
             }
@@ -593,11 +880,11 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {},
+              tags: {'tag': {title: 'Tag'}},
               events: [
                 {
                   location: 'location',
-                  tags: [],
+                  tags: ['tag'],
                   occurrences: [
                     {start: '2018-07-14T12:00'}
                   ]
