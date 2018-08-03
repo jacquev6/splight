@@ -28,6 +28,8 @@ async function makeRouter ({dataDirectory, scripts}) {
 
   router.use(express.static(path.join(dataDirectory, 'images')))
 
+  router.use('/graphql', expressGraphql(Object.assign({graphiql: true}, api)))
+
   for (var asset of generateAssets({api})) {
     const type = path.extname(asset.path)
     console.log('Preparing to serve', asset.path, 'as', type)
@@ -53,8 +55,6 @@ async function makeRouter ({dataDirectory, scripts}) {
     router.get(pageClass.path, handler(pageClass))
     console.log('Ready to serve', pageClass.path)
   }
-
-  router.use('/graphql', expressGraphql(Object.assign({graphiql: true}, api)))
 
   return router
 }

@@ -1,5 +1,6 @@
 'use strict'
 
+const jQuery = require('jquery')
 const moment = require('moment')
 const mustache = require('mustache')
 
@@ -38,7 +39,7 @@ const filteredEvents = (function () {
     const filter = {
       location: location === '-' ? undefined : location,
       artist: artist === '-' ? undefined : artist,
-      title: title === '' ? undefined : title,
+      title: title === '' ? undefined : title
     }
 
     if (Object.values(filter).some(x => x)) {
