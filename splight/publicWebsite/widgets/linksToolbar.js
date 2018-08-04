@@ -10,6 +10,9 @@ const pages = require('../pages')
 const paths = require('../paths')
 const template = require('./linksToolbar.html')
 
+// @todo Make responsive! Maybe use a Navbar (https://getbootstrap.com/docs/4.1/components/navbar/#responsive-behaviors)?
+// @todo Maybe use https://fontawesome.com/icons?d=gallery&q=angle-double&m=free instead of plain &gt; and &lt;?
+
 function make ({citySlug, startDate, duration}) {
   function makeLinks (now) {
     function make (desc, d) {
