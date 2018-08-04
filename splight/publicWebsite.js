@@ -3,7 +3,6 @@
 const assert = require('assert').strict
 const browserify = require('browserify')
 const CleanCSS = require('clean-css')
-const colorConvert = require('color-convert')
 const express = require('express')
 const expressGraphql = require('express-graphql')
 const fs = require('fs-extra')
@@ -20,6 +19,7 @@ const container = require('./publicWebsite/widgets/container')
 const durations = require('./publicWebsite/durations')
 const graphqlApi = require('./graphqlApi')
 const pages = require('./publicWebsite/pages')
+const tagColoring = require('./tagColoring')
 
 async function makeRouter ({dataDirectory, scripts}) {
   const api = makeApi({dataDirectory})
@@ -56,7 +56,7 @@ async function makeRouter ({dataDirectory, scripts}) {
     console.log('Ready to serve', pageClass.path)
   }
 
-  return router
+  return {router, api}
 }
 
 async function generate ({dataDirectory, outputDirectory}) {
@@ -189,15 +189,9 @@ async function makeIndexCss_ ({modernizrFeatures, api}) {
 
   sassData.push('$modernizr-features: "' + modernizrFeatures.map(([detect, feature]) => '.mdrn-' + (feature || detect.split('/').slice(-1)[0])).join('') + '";')
 
-  sassData.push('$sp-tag-colors: (')
-  for (var {slug, tags} of (await api.request({requestString: 'query{cities{slug tags{slug}}}'})).data.cities) {
-    for (var i = 0; i !== tags.length; ++i) {
-      const slugs = slug + '-' + tags[i].slug
-      const color = colorConvert.hsv.hex(360 * i / tags.length, 100, 100)
-      sassData.push('  "' + slugs + '": #' + color + ',')
-    }
+  for (var line of tagColoring.makeSassPreamble({cities: (await api.request({requestString: 'query{cities{slug tags{slug}}}'})).data.cities})) {
+    sassData.push(line)
   }
-  sassData.push(');')
 
   sassData.push('@import "splight/publicWebsite/assets/index.scss";')
 

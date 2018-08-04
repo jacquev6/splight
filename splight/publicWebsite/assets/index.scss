@@ -82,48 +82,24 @@ a[target=_blank] {
 }
 
 
-#sp-tag-filtering .form-check-inline, .sp-event {
+.sp-event {
   border-radius: 3px;
   border-width: 1px;
   border-style: solid;
-}
 
-.sp-event {
   margin-top: 3px;
   margin-bottom: 3px;
   margin-left: -10px;
   margin-right: -10px;
 }
 
-@each $slugs, $color in $sp-tag-colors {
-  .sp-main-tag-#{$slugs} {
-    background-color: lighten($color, 40%);
-    border-color: lighten($color, 20%);
-  }
-
-  .sp-btn-#{$slugs} {
-    @include button-variant(
-      lighten($color, 50%), lighten($color, 20%), // Normal (background, border)
-      lighten($color, 45%), lighten($color, 20%), // Hover (background, border)
-      lighten($color, 40%), lighten($color, 20%), // Active (background, border)
-    );
-  }
-}
-
-#sp-tag-filtering .form-check-inline > *, .sp-event > * {
+.sp-event > * {
   margin: 3px;
 }
 
 
+@import "../../tagColoring";
+
 .sp-event-details {
   display: none;
-}
-
-.sp-small-tag {
-  font-size: 90%;
-  border-radius: 3px;
-  border-width: 1px;
-  border-style: solid;
-  padding-left: 3px;
-  padding-right: 3px;
 }
