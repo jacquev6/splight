@@ -162,6 +162,17 @@ async function initialize () {
     function refreshContent () {
       modal.find('.modal-title').text(active.event.title)
       modal.find('.modal-body').html(eventDetailsForEdit.render({city: {slug: active.citySlug}, event: active.event}))
+      const message = validateEvent()
+      modal.find('#spa-modify-event-message').text(message)
+      jQuery('#spa-modify-event-save').attr('disabled', message !== '')
+    }
+
+    function validateEvent () {
+      if (active.event.occurrences.length == 0) {
+        return 'Il faut au moins une représentation'
+      } else {
+        return ''
+      }
     }
 
     async function save () {
