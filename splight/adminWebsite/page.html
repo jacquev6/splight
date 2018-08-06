@@ -16,7 +16,7 @@
             <label>Ville&nbsp;: <select id="spa-select-city" class="form-control"></select></label>
           </div>
           <hr />
-          <div class="spa-needs-city">
+          <div id="spa-events-filter">
             <div class="form-group">
               <label>Lieu&nbsp;: <select id="spa-filter-location" class="form-control"></select></label>
             </div>
@@ -29,8 +29,7 @@
           </div>
         </div>
         <div class="col">
-          <div id="spa-filtered-events" class="spa-needs-city">
-          </div>
+          <div id="spa-filtered-events"></div>
         </div>
       </div>
     </div>
@@ -44,7 +43,7 @@
       </div>
       <div class="modal-body"></div>
       <div class="modal-footer">
-        <button class="btn btn-primary">Enregistrer</button>
+        <button id="spa-modify-event-save" class="btn btn-primary">Enregistrer</button>
         <button class="btn btn-secondary" data-dismiss="modal">Annuler</button>
       </div>
     </div>

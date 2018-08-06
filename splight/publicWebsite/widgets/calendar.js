@@ -54,35 +54,14 @@ function make ({citySlug, startDate, dateAfter, duration}) {
     }
 
     const events = data.city.events.map(({id, location, artist, occurrences, tags, title}) => {
-      const event = {
-        id,
-        title,
-        location,
-        tags: tags.map(({slug, title}) => ({slug, title, first: slug === tags[0].slug})),
-        occurrences: occurrences.map(({start}) => {
-          start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
-
-          return {
-            date: start.format('ddd Do MMM'),
-            time: start.format('LT')
-          }
-        }),
-        artist
-      }
+      const event = {id, location, artist, occurrences, tags, title}
 
       event.details = {html: eventDetails.render({city, event})}
 
       return event
     })
 
-    return mustache.render(
-      template,
-      {
-        city,
-        days,
-        events
-      }
-    )
+    return mustache.render(template, {city, days, events})
   }
 
   function initialize () {

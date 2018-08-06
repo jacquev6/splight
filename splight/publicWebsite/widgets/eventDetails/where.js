@@ -2,10 +2,10 @@
 
 const mustache = require('mustache')
 
-const template = '<p>{{event.location.name}}</p>'
+const template = '<p>{{location.name}}</p>'
 
-function render ({event}) {
-  return mustache.render(template, {event})
+function render ({event: {location}}) {
+  return mustache.render(template, {location})
 }
 
 Object.assign(exports, {render})
