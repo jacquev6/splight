@@ -2,16 +2,10 @@
 
 const mustache = require('mustache')
 
-const template = require('./where.html')
+const template = '<p>{{event.location.name}}</p>'
 
-function render ({city, event}) {
-  return mustache.render(
-    template,
-    {
-      city,
-      event
-    }
-  )
+function render ({event}) {
+  return mustache.render(template, {event})
 }
 
 Object.assign(exports, {render})
