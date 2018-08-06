@@ -1,26 +1,28 @@
 'use strict'
 
 const jQuery = require('jquery')
-// const moment = require('moment')
+const moment = require('moment')
 const mustache = require('mustache')
 
 const eventDetails_ = require('../publicWebsite/widgets/eventDetails')
 const eventsTemplate = require('./widgets/events.html')
 const template = require('./page.html')
 const utils = require('./utils')
-const what = require('../publicWebsite/widgets/eventDetails/what')
-const when = require('../publicWebsite/widgets/eventDetails/when')
-const where = require('../publicWebsite/widgets/eventDetails/where')
+const whatForDisplay = require('../publicWebsite/widgets/eventDetails/what')
+const whenForDisplay = require('../publicWebsite/widgets/eventDetails/when')
+const whereForDisplay = require('../publicWebsite/widgets/eventDetails/where')
 
 const {fillSelect, request} = utils
 
-const eventDetailsForDisplay = eventDetails_.make({when, what, where})
+const eventDetailsForDisplay = eventDetails_.make({when: whenForDisplay, what: whatForDisplay, where: whereForDisplay})
 
 function render ({scripts}) {
   return mustache.render(template, {scripts})
 }
 
 async function initialize () {
+  const doc = jQuery(document)
+
   const eventEditor = (function () {
     var active
     const modal = jQuery('#spa-modify-event-modal')
@@ -29,28 +31,140 @@ async function initialize () {
     modal.on('hide.bs.modal', deactivate)
     jQuery('#spa-modify-event-save').on('click', save)
 
-    deactivate
+    doc.on('click', '#spa-edit-event-edit-when, #spa-edit-event-preview-when', function () {
+      active.editingWhen = !active.editingWhen
+      refreshContent()
+    })
+    doc.on('click', '.spa-delete-occurrence', function () {
+      const index = jQuery('.spa-delete-occurrence').index(this)
+      active.event.occurrences.splice(index, 1)
+      refreshContent()
+    })
+    doc.on('input', '#spa-new-occurrence', function () {
+      const m = moment(jQuery('#spa-new-occurrence').val(), moment.HTML5_FMT.DATETIME_LOCAL, true)
+      jQuery('#spa-add-occurrence').attr('disabled', !m.isValid())
+    })
+    doc.on('click', '#spa-add-occurrence', function () {
+      const start = jQuery('#spa-new-occurrence').val()
+      active.event.occurrences.push({start})
+      refreshContent()
+    })
+
+    doc.on('click', '#spa-edit-event-edit-what, #spa-edit-event-preview-what', function () {
+      active.editingWhat = !active.editingWhat
+      refreshContent()
+    })
+
+    doc.on('click', '#spa-edit-event-edit-where, #spa-edit-event-preview-where', function () {
+      active.editingWhere = !active.editingWhere
+      refreshContent()
+    })
+
+    const eventDetailsForEdit = (function () {
+      const whenForEdit = (function () {
+        const template = `<ul>
+          {{#occurrences}}<li>{{start}} <button class="btn btn-secondary btn-sm spa-delete-occurrence">Supprimer</button></li>{{/occurrences}}
+          <li><input id="spa-new-occurrence" type="text" placeholder="2018-07-14T12:00"/> <button id="spa-add-occurrence" class="btn btn-secondary btn-sm" disabled="disabled">Ajouter</button></li>
+        </ul>`
+
+        function render ({event: {occurrences}}) {
+          return mustache.render(template, {occurrences})
+        }
+
+        return {render}
+      }())
+
+      // @todo Factorize
+      const whenForEditPreview = (function () {
+        function render (data) {
+          if (active.editingWhen) {
+            return whenForEdit.render(data)
+          } else {
+            return whenForDisplay.render(data)
+          }
+        }
+
+        function renderPostTitle () {
+          if (active.editingWhen) {
+            return ' <button id="spa-edit-event-preview-when" class="btn btn-secondary btn-sm">Prévisualiser</button>'
+          } else {
+            return ' <button id="spa-edit-event-edit-when" class="btn btn-secondary btn-sm">Modifier</button>'
+          }
+        }
+
+        return {render, renderPostTitle}
+      }())
+
+      const whatForEditPreview = (function () {
+        function render (data) {
+          if (active.editingWhat) {
+            return whatForDisplay.render(data)
+          } else {
+            return whatForDisplay.render(data)
+          }
+        }
+
+        function renderPostTitle () {
+          if (active.editingWhat) {
+            return ' <button id="spa-edit-event-preview-what" class="btn btn-secondary btn-sm">Prévisualiser</button>'
+          } else {
+            return ' <button id="spa-edit-event-edit-what" class="btn btn-secondary btn-sm">Modifier</button>'
+          }
+        }
+
+        return {render, renderPostTitle}
+      }())
+
+      const whereForEditPreview = (function () {
+        function render (data) {
+          if (active.editingWhere) {
+            return whereForDisplay.render(data)
+          } else {
+            return whereForDisplay.render(data)
+          }
+        }
+
+        function renderPostTitle () {
+          if (active.editingWhere) {
+            return ' <button id="spa-edit-event-preview-where" class="btn btn-secondary btn-sm">Prévisualiser</button>'
+          } else {
+            return ' <button id="spa-edit-event-edit-where" class="btn btn-secondary btn-sm">Modifier</button>'
+          }
+        }
+
+        return {render, renderPostTitle}
+      }())
+
+      return eventDetails_.make({when: whenForEditPreview, what: whatForEditPreview, where: whereForEditPreview})
+    }())
+
+    deactivate()
 
     return {activate}
 
     async function activate ({citySlug, eventId}) {
-      console.log('eventEditor.activate', {citySlug, eventId})
-
       const {city: {event}} = await request({
         requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){id title location{slug name} tags{slug title} artist{slug name} occurrences{start}}}}',
         variableValues: {citySlug, eventId}
       })
-      active = {citySlug, event}
+      active = {
+        citySlug,
+        event,
+        editingWhen: false,
+        editingWhat: false,
+        editingWhere: false
+      }
 
-      modal.find('.modal-title').text(event.title)
-      modal.find('.modal-body').html(eventDetailsForDisplay.render({city: {slug: citySlug}, event}))
-
+      refreshContent()
       modal.modal('show')
     }
 
-    async function save () {
-      console.log('eventEditor.save', active)
+    function refreshContent () {
+      modal.find('.modal-title').text(active.event.title)
+      modal.find('.modal-body').html(eventDetailsForEdit.render({city: {slug: active.citySlug}, event: active.event}))
+    }
 
+    async function save () {
       const event = {
         citySlug: active.citySlug,
         eventId: active.event.id,
@@ -61,17 +175,18 @@ async function initialize () {
         occurrences: active.event.occurrences
       }
 
-      modal.modal('hide')
-
       await request({
         requestString: 'mutation($event:IEvent!){putEvent(event:$event){id}}',
         variableValues: {event}
       })
+
+      modal.modal('hide')
+
+      eventsFilter.refreshContent()
     }
 
     function deactivate () {
       active = null
-      console.log('eventEditor.deactivate')
     }
   }())
 
@@ -83,22 +198,22 @@ async function initialize () {
     const filterArtist = jQuery('#spa-filter-artist')
     const filterTitle = jQuery('#spa-filter-title')
 
-    filterLocation.on('change', handleFilterChange)
-    filterArtist.on('change', handleFilterChange)
+    filterLocation.on('change', refreshContent)
+    filterArtist.on('change', refreshContent)
     var filterTitleTimeoutId = null
     filterTitle.on('input', () => {
       clearTimeout(filterTitleTimeoutId)
-      filterTitleTimeoutId = setTimeout(handleFilterChange, 200)
+      filterTitleTimeoutId = setTimeout(refreshContent, 200)
     })
 
-    jQuery(document).on('click', '.spa-modify-event', function () {
+    doc.on('click', '.spa-modify-event', function () {
       const eventId = jQuery(this).data('spa-event-id')
       eventEditor.activate({citySlug: active.citySlug, eventId})
     })
 
     deactivate()
 
-    return {activate, deactivate}
+    return {activate, deactivate, refreshContent}
 
     async function activate ({citySlug}) {
       deactivate()
@@ -126,7 +241,7 @@ async function initialize () {
       filteredEvents.hide()
     }
 
-    async function handleFilterChange () {
+    async function refreshContent () {
       const location = filterLocation.val()
       const artist = filterArtist.val()
       const title = filterTitle.val()
