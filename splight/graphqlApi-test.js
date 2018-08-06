@@ -633,6 +633,58 @@ describe('graphqlApi', function () {
         )
       })
     })
+
+    describe('city.event', function () {
+      it('find event by id', async function () {
+        const {checkRequest} = make({
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: [{
+                id: 'event',
+                location: 'location',
+                tags: ['tag'],
+                occurrences: [{start: '2018-07-13T23:59'}]
+              }]
+            }
+          }
+        })
+
+        await checkRequest(
+          '{cities{event(id:"event"){id}}}',
+          {data: {cities: [{event: {id: 'event'}}]}}
+        )
+      })
+
+      it("doesn't find event by id", async function () {
+        const {checkRequest} = make({
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: []
+            }
+          }
+        })
+
+        await checkRequest(
+          '{cities{event(id:"event"){id}}}',
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 9}],
+              message: 'No event with id "event"',
+              path: ['cities', 0, 'event']
+            }]
+          }
+        )
+      })
+    })
   })
 
   describe('mutations', function () {
@@ -839,10 +891,10 @@ describe('graphqlApi', function () {
       })
     })
 
-    describe('addEvent', function () {
+    describe('putEvent', function () {
       const fields = 'id title artist{name} location{name} tags{title} occurrences{start}'
       const get = `{cities{slug events{${fields}}}}`
-      const put = `mutation($event:IEvent!){addEvent(event:$event){${fields}}}`
+      const put = `mutation($event:IEvent!){putEvent(event:$event){${fields}}}`
 
       it('adds an event', async function () {
         const {checkRequest, checkData} = make({
@@ -870,7 +922,7 @@ describe('graphqlApi', function () {
             tags: ['tag'],
             occurrences: [{start: '2018-07-14T12:00'}]
           }},
-          {data: {addEvent: {
+          {data: {putEvent: {
             id: hashids.encode(12),
             title: 'Title',
             artist: {name: 'Artist'},
@@ -945,7 +997,7 @@ describe('graphqlApi', function () {
             tags: ['tag'],
             occurrences: [{start: '2018-07-14T12:00'}]
           }},
-          {data: {addEvent: {
+          {data: {putEvent: {
             id: hashids.encode(0),
             title: null,
             artist: {name: 'Artist'},
@@ -1017,7 +1069,7 @@ describe('graphqlApi', function () {
             tags: ['tag'],
             occurrences: [{start: '2018-07-14T12:00'}]
           }},
-          {data: {addEvent: {
+          {data: {putEvent: {
             id: hashids.encode(0),
             title: 'Title',
             artist: null,
@@ -1093,7 +1145,7 @@ describe('graphqlApi', function () {
             errors: [{
               locations: [{line: 1, column: 26}],
               message: 'No artist with slug "artist"',
-              path: ['addEvent']
+              path: ['putEvent']
             }]
           }
         )
@@ -1143,7 +1195,7 @@ describe('graphqlApi', function () {
             errors: [{
               locations: [{line: 1, column: 26}],
               message: 'No location with slug "location"',
-              path: ['addEvent']
+              path: ['putEvent']
             }]
           }
         )
@@ -1193,7 +1245,7 @@ describe('graphqlApi', function () {
             errors: [{
               locations: [{line: 1, column: 26}],
               message: 'No tag with slug "tag"',
-              path: ['addEvent']
+              path: ['putEvent']
             }]
           }
         )
@@ -1213,6 +1265,146 @@ describe('graphqlApi', function () {
 
         await checkRequest(get, {data: {cities: [{slug: 'city', events: []}]}})
       })
+
+      it('modifies an event', async function () {
+        const {checkRequest, checkData} = make({
+          _: {sequences: {events: 12}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: [{
+                id: 'event',
+                location: 'location',
+                tags: ['tag'],
+                occurrences: [{start: '2018-07-14T12:00'}]
+              }]
+            }
+          }
+        })
+
+        await checkRequest(
+          get,
+          {data: {cities: [{
+            slug: 'city',
+            events: [{
+              id: 'event',
+              title: null,
+              occurrences: [{start: '2018-07-14T12:00'}],
+              artist: null,
+              location: {name: 'Location'},
+              tags: [{title: 'Tag'}]
+            }]
+          }]}}
+        )
+
+        await checkRequest(
+          put,
+          {event: {
+            citySlug: 'city',
+            eventId: 'event',
+            title: 'Title',
+            location: 'location',
+            artist: 'artist',
+            tags: ['tag'],
+            occurrences: [{start: '2018-07-14T13:00'}]
+          }},
+          {data: {putEvent: {
+            id: 'event',
+            title: 'Title',
+            artist: {name: 'Artist'},
+            location: {name: 'Location'},
+            tags: [{title: 'Tag'}],
+            occurrences: [{start: '2018-07-14T13:00'}]
+          }}}
+        )
+
+        checkData({
+          _: {sequences: {events: 12}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: [{
+                id: 'event',
+                location: 'location',
+                artist: 'artist',
+                tags: ['tag'],
+                occurrences: [{start: '2018-07-14T13:00'}],
+                title: 'Title'
+              }]
+            }
+          }
+        })
+
+        await checkRequest(
+          get,
+          {data: {cities: [{
+            slug: 'city',
+            events: [{
+              id: 'event',
+              title: 'Title',
+              occurrences: [{start: '2018-07-14T13:00'}],
+              artist: {name: 'Artist'},
+              location: {name: 'Location'},
+              tags: [{title: 'Tag'}]
+            }]
+          }]}}
+        )
+      })
+
+      it("doesn't modify unexisting event", async function () {
+        const {checkRequest, checkData} = make({
+          _: {sequences: {events: 12}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: []
+            }
+          }
+        })
+
+        await checkRequest(
+          put,
+          {event: {
+            citySlug: 'city',
+            eventId: 'event',
+            title: 'Title',
+            location: 'location',
+            artist: 'artist',
+            tags: ['tag'],
+            occurrences: [{start: '2018-07-14T13:00'}]
+          }},
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 26}],
+              message: 'No event with id "event"',
+              path: ['putEvent']
+            }]
+          }
+        )
+
+        checkData({
+          _: {sequences: {events: 12}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: []
+            }
+          }
+        })
+      })
     })
 
     it('adds artist, location and event in a single call', async function () {
@@ -1230,12 +1422,12 @@ describe('graphqlApi', function () {
         'mutation{' +
           'putArtist(artist:{slug:"artist",name:"Artist"}){slug name}' +
           'putLocation(location:{citySlug:"city",slug:"location",name:"Location"}){slug name}' +
-          'addEvent(event:{citySlug:"city",location:"location",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){id artist{slug name} location{slug name} tags{slug title}}' +
+          'putEvent(event:{citySlug:"city",location:"location",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){id artist{slug name} location{slug name} tags{slug title}}' +
         '}',
         {data: {
           putArtist: {slug: 'artist', name: 'Artist'},
           putLocation: {slug: 'location', name: 'Location'},
-          addEvent: {
+          putEvent: {
             id: hashids.encode(0),
             artist: {slug: 'artist', name: 'Artist'},
             location: {slug: 'location', name: 'Location'},

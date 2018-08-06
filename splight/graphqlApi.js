@@ -24,7 +24,7 @@ function makeRoot ({load, save}) {
 
   const ret = {}
 
-  for (var name of ['artists', 'putArtist', 'cities', 'city', 'putLocation', 'addEvent']) {
+  for (var name of ['artists', 'putArtist', 'cities', 'city', 'putLocation', 'putEvent']) {
     ret[name] = forward(name)
   }
 
@@ -61,7 +61,7 @@ function makeSyncRoot (data) {
     return {slug, name}
   }
 
-  function addEvent ({event: {citySlug, title, artist, location, tags, occurrences}}) {
+  function putEvent ({event: {citySlug, eventId, title, artist, location, tags, occurrences}}) {
     const dataEvent = Object.assign(
       {
         location,
@@ -83,8 +83,22 @@ function makeSyncRoot (data) {
       },
       artist ? {artist: getArtist(artist)} : {}
     )
-    ret.id = dataEvent.id = nextEventId(data)
-    city.events.push(dataEvent)
+    if (eventId) {
+      dataEvent.id = ret.id = eventId
+      var found = false
+      for (var i = 0; i !== city.events.length; ++i) {
+        if (city.events[i].id === eventId) {
+          found = true
+          city.events[i] = dataEvent
+        }
+      }
+      if (!found) {
+        throw new Error('No event with id "' + eventId + '"')
+      }
+    } else {
+      ret.id = dataEvent.id = nextEventId(data)
+      city.events.push(dataEvent)
+    }
     return ret
   }
 
@@ -116,31 +130,7 @@ function makeSyncRoot (data) {
       }
     }
 
-    function events ({location, artist, dates}) {
-      function selectOccurrence ({start, after}) {
-        return function (occurrence) {
-          if (start && occurrence.start < start) {
-            return false
-          }
-          if (after && occurrence.start >= after) {
-            return false
-          }
-          return true
-        }
-      }
-      function select (event) {
-        if (location && event.location !== location) {
-          return false
-        }
-        if (artist && event.artist !== artist) {
-          return false
-        }
-        if (dates && !event.occurrences.some(selectOccurrence(dates))) {
-          return false
-        }
-        return true
-      }
-
+    function selectEvents (select) {
       return city.events
         .filter(select)
         .map(({id, title, artist, location, tags, occurrences}) => (Object.assign(
@@ -155,12 +145,50 @@ function makeSyncRoot (data) {
         )))
     }
 
+    function events ({location, artist, dates}) {
+      function selectOccurrence ({start, after}) {
+        return function (occurrence) {
+          if (start && occurrence.start < start) {
+            return false
+          }
+          if (after && occurrence.start >= after) {
+            return false
+          }
+          return true
+        }
+      }
+
+      function select (event) {
+        if (location && event.location !== location) {
+          return false
+        }
+        if (artist && event.artist !== artist) {
+          return false
+        }
+        if (dates && !event.occurrences.some(selectOccurrence(dates))) {
+          return false
+        }
+        return true
+      }
+
+      return selectEvents(select)
+    }
+
+    function event ({id}) {
+      const events = selectEvents(event => event.id === id)
+      if (events.length) {
+        return events[0]
+      } else {
+        throw new Error('No event with id "' + id + '"')
+      }
+    }
+
     const {slug, name} = city
 
-    return {slug, name, tags, locations, firstDate, dateAfter, events}
+    return {slug, name, tags, locations, firstDate, dateAfter, events, event}
   }
 
-  return {artists, putArtist, cities, city, putLocation, addEvent}
+  return {artists, putArtist, cities, city, putLocation, putEvent}
 }
 
 function fixData (data) {
