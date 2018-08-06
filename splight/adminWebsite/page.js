@@ -12,7 +12,7 @@ const what = require('../publicWebsite/widgets/eventDetails/what')
 const when = require('../publicWebsite/widgets/eventDetails/when')
 const where = require('../publicWebsite/widgets/eventDetails/where')
 
-const eventDetails = eventDetails_.make({when, what, where})
+const eventDetailsForDisplay = eventDetails_.make({when, what, where})
 
 const filteredEvents = (function () {
   var citySlug
@@ -80,7 +80,7 @@ const filteredEvents = (function () {
             })
           }
 
-          event.details = {html: eventDetails.render({city: {slug: citySlug}, event})}
+          event.details = {html: eventDetailsForDisplay.render({city: {slug: citySlug}, event})}
 
           return event
         })
@@ -97,6 +97,62 @@ const filteredEvents = (function () {
   }
 
   return {initialize}
+}())
+
+const eventDetailsForEdit = (function () {
+  const when = (function () {
+    const template = `
+      <ul>{{#event.occurrences}}<li>Le {{date}} à {{time}} <button class="btn btn-secondary btn-sm spa-delete-occurrence">Supprimer</button></li>{{/event.occurrences}}
+      <li><input type="text" placeholder="2018-07-14T12:00"/> <button class="btn btn-secondary btn-sm spa-add-occurrence">Ajouter</button></li>
+      </ul>
+    `
+
+    function render ({event}) {
+      return mustache.render(
+        template,
+        {event}
+      )
+    }
+
+    function initialize () {
+      jQuery(document).on('click', 'button.spa-delete-occurrence', function () {
+        console.log('Delete occurrence', jQuery('button.spa-delete-occurrence').index(this))
+      })
+      jQuery(document).on('click', 'button.spa-add-occurrence', function () {
+        console.log('Add occurrence')
+      })
+    }
+
+    return {render, initialize}
+  }())
+
+  const what = (function () {
+    function render (data) {
+      return ""
+    }
+
+    return {render}
+  }())
+
+  const where = (function () {
+    function render (data) {
+      return ""
+    }
+
+    return {render}
+  }())
+
+  const eventDetails = eventDetails_.make({when: when, what: what, where: where})
+
+  function render (data) {
+    return eventDetails.render(data)
+  }
+
+  function initialize () {
+    when.initialize()
+  }
+
+  return {render, initialize}
 }())
 
 function render ({scripts}) {
@@ -142,8 +198,39 @@ async function initialize () {
     }
   })
 
-  jQuery(document).on('click', '.spa-modify-event', function () {
-    console.log('Modify event', $(this).data('spa-event-id'))
+  eventDetailsForEdit.initialize()
+
+  const modal = jQuery('#spa-modify-event-modal')
+
+  jQuery(document).on('click', '.spa-modify-event', async function () {
+    const citySlug = selectCity.val()
+    const eventId = jQuery(this).data('spa-event-id')
+    console.log('Modify event', eventId, 'in', citySlug)
+
+    const {city: {event: {title, location, tags, artist, occurrences}}} = await request({
+      requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){title location{name} tags{slug title} artist{name} occurrences{start}}}}',
+      variableValues: {citySlug, eventId}
+    })
+
+    // @todo Deduplicate with publicWebsite/widgets/calendar.js
+    const event = {
+      title,
+      location,
+      tags: tags.map(({slug, title}) => ({slug, title, first: slug === tags[0].slug})),
+      artist,
+      occurrences: occurrences.map(({start}) => {
+        start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
+
+        return {
+          date: start.format('ddd Do MMM'),
+          time: start.format('LT')
+        }
+      })
+    }
+
+    modal.find('.modal-title').text(title)
+    modal.find('.modal-body').html(eventDetailsForEdit.render({city: {slug: citySlug}, event}))
+    modal.modal({backdrop: 'static'})
   })
 }
 
@@ -173,7 +260,5 @@ async function request ({requestString, variableValues}) {
 
   return response.data
 }
-
-Object.assign(exports, {fillSelect, request})
 
 Object.assign(exports, {render, initialize})
