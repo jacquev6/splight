@@ -90,6 +90,28 @@ async function initialize () {
       active.event.artist = active.artistsBySlug[jQuery('#spa-edit-event-artist').val()]
       refreshHeaderAndFooter()
     })
+    doc.on('click', '#spa-edit-event-new-artist', function () {
+      if (!active.newArtist) {
+        active.cachedExistingArtist = active.event.artist
+        active.event.artist = active.newArtist = active.cachedNewArtist
+        refreshContent()
+      }
+    })
+    doc.on('click', '#spa-edit-event-choose-artist', function () {
+      if (active.newArtist) {
+        active.newArtist = null
+        active.event.artist = active.cachedExistingArtist
+        refreshContent()
+      }
+    })
+    doc.on('input', '#spa-edit-event-new-artist-slug', function () {
+      active.newArtist.slug = jQuery('#spa-edit-event-new-artist-slug').val()
+      refreshHeaderAndFooter()
+    })
+    doc.on('input', '#spa-edit-event-new-artist-name', function () {
+      active.newArtist.name = jQuery('#spa-edit-event-new-artist-name').val()
+      refreshHeaderAndFooter()
+    })
 
     doc.on('click', '#spa-edit-event-edit-preview-where', function () {
       active.editingWhen = false
@@ -139,11 +161,29 @@ async function initialize () {
       }())
 
       const whatForEdit = (function () {
-        const template = '<div class="form-group"><label>Catégorie principale&nbsp;: <select id="spa-edit-event-main-tag">{{#tags}}<option value="{{slug}}"{{#isMain}} selected="selected"{{/isMain}}>{{title}}</option>{{/tags}}</select></label></div>' +
-          '<p>Catégories secondaires&nbsp;:</p>' +
-          '<ul>{{#tags}}{{^isMain}}<li><label>{{title}} <input class="spa-edit-event-secondary-tag" type="checkbox" value="{{slug}}"{{#isSecondary}} checked="checked"{{/isSecondary}} /></label></li>{{/isMain}}{{/tags}}</ul>' +
-          '<div class="form-group"><label>Titre&nbsp;: <input id="spa-edit-event-title" value="{{title}}" /></label></div>' +
-          '<div class="form-group"><label>Choisir un artiste&nbsp;: <select id="spa-edit-event-artist"><option value="-">-</option>{{#artists}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/artists}}</select></label></div>'
+        const template = `
+          <div class="form-group"><label>Catégorie principale&nbsp;: <select id="spa-edit-event-main-tag">{{#tags}}<option value="{{slug}}"{{#isMain}} selected="selected"{{/isMain}}>{{title}}</option>{{/tags}}</select></label></div>
+          <p>Catégories secondaires&nbsp;:</p>
+          <ul>{{#tags}}{{^isMain}}<li><label>{{title}} <input class="spa-edit-event-secondary-tag" type="checkbox" value="{{slug}}"{{#isSecondary}} checked="checked"{{/isSecondary}} /></label></li>{{/isMain}}{{/tags}}</ul>
+          <div class="form-group"><label>Titre&nbsp;: <input id="spa-edit-event-title" value="{{title}}" /></label></div>
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a id="spa-edit-event-choose-artist" class="nav-link{{^newArtist}} active{{/newArtist}}" data-toggle="tab" href="#spa-edit-event-artist-tab-existing">Artiste existant</a>
+            </li>
+            <li class="nav-item">
+              <a id="spa-edit-event-new-artist" class="nav-link{{#newArtist}} active{{/newArtist}}" data-toggle="tab" href="#spa-edit-event-artist-tab-new">Nouvel artiste</a>
+            </li>
+          </ul>
+          <div class="tab-content border border-top-0 pt-2 px-2" id="spa-edit-event-artist-tabs">
+            <div class="tab-pane{{^newArtist}} show active{{/newArtist}}" id="spa-edit-event-artist-tab-existing">
+              <div class="form-group"><label>Choisir un artiste&nbsp;: <select id="spa-edit-event-artist"><option value="-">-</option>{{#artists}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/artists}}</select></label></div>
+            </div>
+            <div class="tab-pane{{#newArtist}} show active{{/newArtist}}" id="spa-edit-event-artist-tab-new">
+              <div class="form-group"><label>Slug&nbsp;: <input id="spa-edit-event-new-artist-slug" value="{{newArtist.slug}}"/></label></div>
+              <div class="form-group"><label>Nom&nbsp;: <input id="spa-edit-event-new-artist-name" value="{{newArtist.name}}"/></label></div>
+            </div>
+          </div>
+        `
 
         function render ({event: {tags: eventTags, artist, title}}) {
           const artists = active.artists.map(({slug, name}) => (
@@ -157,7 +197,7 @@ async function initialize () {
             {slug, title, isMain: slug === mainTag, isSecondary: secondaryTags.has(slug)}
           ))
 
-          return mustache.render(template, {tags, title, artists})
+          return mustache.render(template, {tags, title, artists, newArtist: active.newArtist})
         }
 
         return {render}
@@ -273,7 +313,9 @@ async function initialize () {
         editingWhat: false,
         editingWhere: false,
         newLocation: null,
-        cachedNewLocation: {slug: '', name: ''}
+        cachedNewLocation: {slug: '', name: ''},
+        newArtist: null,
+        cachedNewArtist: {slug: '', name: ''}
       }
 
       refreshContent()
@@ -294,6 +336,7 @@ async function initialize () {
       const message = validateEvent()
       modal.find('#spa-modify-event-message').text(message)
       jQuery('#spa-modify-event-save').attr('disabled', message !== '')
+      modal.modal('handleUpdate')
     }
 
     function validateEvent () {
@@ -307,12 +350,22 @@ async function initialize () {
         return "Le slug d'un nouveau lieu doit être différent de tous les slugs des lieux existants"
       } else if (active.newLocation && !active.newLocation.name) {
         return "Le nom d'un nouveau lieu ne peut pas être vide"
+      } else if (active.newArtist && !active.newArtist.slug.match(/^[a-z][-a-z0-9]*$/)) {
+        return "Le slug d'un nouvel artiste doit être constitué d'un caractère parmi 'a-z' suivi de caractères parmi 'a-z', '0-9' et '-'"
+      } else if (active.newArtist && active.artistsBySlug[active.newArtist.slug]) {
+        return "Le slug d'un nouvel artiste doit être différent de tous les slugs des artistes existants"
+      } else if (active.newArtist && !active.newArtist.name) {
+        return "Le nom d'un nouvel artiste ne peut pas être vide"
       } else {
         return ''
       }
     }
 
     async function save () {
+      const hasArtist = !!active.newArtist
+
+      const artist = active.newArtist || {slug: '', name: ''}
+
       const hasLocation = !!active.newLocation
 
       const location = active.newLocation || {slug: '', name: ''}
@@ -329,11 +382,12 @@ async function initialize () {
       }
 
       await request({
-        requestString: `mutation($hasLocation:Boolean!,$location:ILocation!,$event:IEvent!){
+        requestString: `mutation($hasArtist:Boolean!,$artist:IArtist!,$hasLocation:Boolean!,$location:ILocation!,$event:IEvent!){
+          putArtist(artist:$artist)@include(if:$hasArtist){slug}
           putLocation(location:$location)@include(if:$hasLocation){slug}
           putEvent(event:$event){id}
         }`,
-        variableValues: {hasLocation, location, event}
+        variableValues: {hasArtist, artist, hasLocation, location, event}
       })
 
       modal.modal('hide')
