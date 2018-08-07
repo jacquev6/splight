@@ -433,7 +433,7 @@ async function initialize () {
 
     return {activate, deactivate, refreshContent}
 
-    async function activate ({citySlug, eventId}) {
+    async function activate ({citySlug}) {
       deactivate()
       active = {citySlug}
 
@@ -442,6 +442,7 @@ async function initialize () {
         variableValues: {citySlug}
       })
 
+      // @todo Refill selects when an event is edited, as it may add or modify artists and locations
       // Maybe use a https://jqueryui.com/autocomplete/#combobox for these selects
       fillSelect(filterTag, data.city.tags.map(({slug, title}) => ({value: slug, display: title})))
       fillSelect(filterLocation, data.city.locations.map(({slug, name}) => ({value: slug, display: name})))
