@@ -100,6 +100,24 @@ async function initialize () {
       active.event.location = active.locationsBySlug[jQuery('#spa-edit-event-location').val()]
       refreshHeaderAndFooter()
     })
+    doc.on('click', '#spa-edit-event-new-location', function () {
+      active.newLocation = {slug: '', name: ''}
+      active.event.location = active.newLocation
+      refreshContent()
+    })
+    doc.on('click', '#spa-edit-event-choose-location', function () {
+      active.newLocation = null
+      active.event.location = active.locations[0]
+      refreshContent()
+    })
+    doc.on('input', '#spa-edit-event-new-location-slug', function () {
+      active.newLocation.slug = jQuery('#spa-edit-event-new-location-slug').val()
+      refreshHeaderAndFooter()
+    })
+    doc.on('input', '#spa-edit-event-new-location-name', function () {
+      active.newLocation.name = jQuery('#spa-edit-event-new-location-name').val()
+      refreshHeaderAndFooter()
+    })
 
     const eventDetailsForEdit = (function () {
       const whenForEdit = (function () {
@@ -141,14 +159,26 @@ async function initialize () {
       }())
 
       const whereForEdit = (function () {
-        const template = '<div class="form-group"><label>Choisir un lieu&nbsp;: <select id="spa-edit-event-location">{{#locations}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/locations}}</select></label></div>'
+        const templateForChoose =
+          '<div class="form-group"><label>Choisir un lieu existant&nbsp;: <select id="spa-edit-event-location">{{#locations}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/locations}}</select></label></div>' +
+          '<div class="form-group"><label>Ou&nbsp;: <button id="spa-edit-event-new-location" class="btn btn-secondary btn-sm">Ajouter un nouveau lieu</button></label></div>'
+
+        const templateForNew =
+          '<p>Ajouter un nouveau lieu&nbsp;:</p>' +
+          '<div class="form-group"><label>Slug&nbsp;: <input id="spa-edit-event-new-location-slug" value="{{slug}}"/></label></div>' +
+          '<div class="form-group"><label>Nom&nbsp;: <input id="spa-edit-event-new-location-name" value="{{name}}"/></label></div>' +
+          '<div class="form-group"><label>Ou&nbsp;: <button id="spa-edit-event-choose-location" class="btn btn-secondary btn-sm">Choisir un lieu existant</button></label></div>'
 
         function render ({event: {location}}) {
-          const locations = active.locations.map(({slug, name}) => {
-            return {slug, name, selected: slug === location.slug}
-          })
+          if (active.newLocation) {
+            return mustache.render(templateForNew, active.newLocation)
+          } else {
+            const locations = active.locations.map(({slug, name}) => {
+              return {slug, name, selected: slug === location.slug}
+            })
 
-          return mustache.render(template, {locations})
+            return mustache.render(templateForChoose, {locations})
+          }
         }
 
         return {render}
@@ -230,7 +260,8 @@ async function initialize () {
         event,
         editingWhen: false,
         editingWhat: false,
-        editingWhere: false
+        editingWhere: false,
+        newLocation: null
       }
 
       refreshContent()
@@ -258,12 +289,21 @@ async function initialize () {
         return 'Il faut au moins une représentation'
       } else if (!active.event.title && !active.event.artist) {
         return 'Il faut un titre ou un artiste'
+      } else if (active.newLocation && !active.newLocation.slug.match(/[-a-z]+/)) {
+        return "Le slug d'un nouveau lieu doit être constitué d'un ou plusieurs caractères parmi 'a-z', '0-9' et '-'"
+      } else if (active.newLocation && !active.newLocation.name) {
+        return "Le nom d'un nouveau lieu ne peut pas être vide"
       } else {
         return ''
       }
     }
 
     async function save () {
+      const hasLocation = !!active.newLocation
+
+      const location = active.newLocation || {slug: '', name: ''}
+      location.citySlug = active.citySlug
+
       const event = {
         citySlug: active.citySlug,
         eventId: active.event.id,
@@ -275,8 +315,11 @@ async function initialize () {
       }
 
       await request({
-        requestString: 'mutation($event:IEvent!){putEvent(event:$event){id}}',
-        variableValues: {event}
+        requestString: `mutation($hasLocation:Boolean!,$location:ILocation!,$event:IEvent!){
+          putLocation(location:$location)@include(if:$hasLocation){slug}
+          putEvent(event:$event){id}
+        }`,
+        variableValues: {hasLocation, location, event}
       })
 
       modal.modal('hide')
