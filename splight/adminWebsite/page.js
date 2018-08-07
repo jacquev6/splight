@@ -22,6 +22,7 @@ function render ({scripts}) {
 
 async function initialize () {
   const doc = jQuery(document)
+  const isDebug = window.location.href.indexOf('?debug') !== -1
 
   const eventEditor = (function () {
     var active
@@ -365,7 +366,7 @@ async function initialize () {
 
     return {activate, deactivate, refreshContent}
 
-    async function activate ({citySlug}) {
+    async function activate ({citySlug, eventId}) {
       deactivate()
       active = {citySlug}
 
@@ -385,6 +386,11 @@ async function initialize () {
 
       filter.show()
       filteredEvents.show()
+
+      if(isDebug) {
+        filterTag.val('tag-1').trigger('change')
+        eventEditor.activate({citySlug: active.citySlug, eventId: 'WjnegYbwZ1'})
+      }
     }
 
     function deactivate () {
@@ -474,6 +480,10 @@ async function initialize () {
       eventsFilter.activate({citySlug})
     }
   })
+
+  if(isDebug) {
+    selectCity.val('avalon').trigger('change')
+  }
 }
 
 Object.assign(exports, {render, initialize})
