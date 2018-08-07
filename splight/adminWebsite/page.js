@@ -102,14 +102,18 @@ async function initialize () {
       refreshHeaderAndFooter()
     })
     doc.on('click', '#spa-edit-event-new-location', function () {
-      active.newLocation = {slug: '', name: ''}
-      active.event.location = active.newLocation
-      refreshContent()
+      if (!active.newLocation) {
+        active.cachedExistingLocation = active.event.location
+        active.event.location = active.newLocation = active.cachedNewLocation
+        refreshContent()
+      }
     })
     doc.on('click', '#spa-edit-event-choose-location', function () {
-      active.newLocation = null
-      active.event.location = active.locations[0]
-      refreshContent()
+      if (active.newLocation) {
+        active.newLocation = null
+        active.event.location = active.cachedExistingLocation
+        refreshContent()
+      }
     })
     doc.on('input', '#spa-edit-event-new-location-slug', function () {
       active.newLocation.slug = jQuery('#spa-edit-event-new-location-slug').val()
@@ -160,26 +164,32 @@ async function initialize () {
       }())
 
       const whereForEdit = (function () {
-        const templateForChoose =
-          '<div class="form-group"><label>Choisir un lieu existant&nbsp;: <select id="spa-edit-event-location">{{#locations}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/locations}}</select></label></div>' +
-          '<div class="form-group"><label>Ou&nbsp;: <button id="spa-edit-event-new-location" class="btn btn-secondary btn-sm">Ajouter un nouveau lieu</button></label></div>'
-
-        const templateForNew =
-          '<p>Ajouter un nouveau lieu&nbsp;:</p>' +
-          '<div class="form-group"><label>Slug&nbsp;: <input id="spa-edit-event-new-location-slug" value="{{slug}}"/></label></div>' +
-          '<div class="form-group"><label>Nom&nbsp;: <input id="spa-edit-event-new-location-name" value="{{name}}"/></label></div>' +
-          '<div class="form-group"><label>Ou&nbsp;: <button id="spa-edit-event-choose-location" class="btn btn-secondary btn-sm">Choisir un lieu existant</button></label></div>'
+        const template = `
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a id="spa-edit-event-choose-location" class="nav-link{{^newLocation}} active{{/newLocation}}" data-toggle="tab" href="#spa-edit-event-location-tab-existing">Lieu existant</a>
+            </li>
+            <li class="nav-item">
+              <a id="spa-edit-event-new-location" class="nav-link{{#newLocation}} active{{/newLocation}}" data-toggle="tab" href="#spa-edit-event-location-tab-new">Nouveau lieu</a>
+            </li>
+          </ul>
+          <div class="tab-content border border-top-0 pt-2 px-2" id="spa-edit-event-location-tabs">
+            <div class="tab-pane{{^newLocation}} show active{{/newLocation}}" id="spa-edit-event-location-tab-existing">
+              <div class="form-group"><label>Choisir un lieu&nbsp;: <select id="spa-edit-event-location">{{#locations}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/locations}}</select></label></div>
+            </div>
+            <div class="tab-pane{{#newLocation}} show active{{/newLocation}}" id="spa-edit-event-location-tab-new">
+              <div class="form-group"><label>Slug&nbsp;: <input id="spa-edit-event-new-location-slug" value="{{newLocation.slug}}"/></label></div>
+              <div class="form-group"><label>Nom&nbsp;: <input id="spa-edit-event-new-location-name" value="{{newLocation.name}}"/></label></div>
+            </div>
+          </div>
+        `
 
         function render ({event: {location}}) {
-          if (active.newLocation) {
-            return mustache.render(templateForNew, active.newLocation)
-          } else {
-            const locations = active.locations.map(({slug, name}) => {
-              return {slug, name, selected: slug === location.slug}
-            })
+          const locations = active.locations.map(({slug, name}) => (
+            {slug, name, selected: slug === location.slug}
+          ))
 
-            return mustache.render(templateForChoose, {locations})
-          }
+          return mustache.render(template, {locations, newLocation: active.newLocation})
         }
 
         return {render}
@@ -262,7 +272,8 @@ async function initialize () {
         editingWhen: false,
         editingWhat: false,
         editingWhere: false,
-        newLocation: null
+        newLocation: null,
+        cachedNewLocation: {slug: '', name: ''}
       }
 
       refreshContent()
@@ -290,8 +301,10 @@ async function initialize () {
         return 'Il faut au moins une représentation'
       } else if (!active.event.title && !active.event.artist) {
         return 'Il faut un titre ou un artiste'
-      } else if (active.newLocation && !active.newLocation.slug.match(/[-a-z]+/)) {
-        return "Le slug d'un nouveau lieu doit être constitué d'un ou plusieurs caractères parmi 'a-z', '0-9' et '-'"
+      } else if (active.newLocation && !active.newLocation.slug.match(/^[a-z][-a-z0-9]*$/)) {
+        return "Le slug d'un nouveau lieu doit être constitué d'un caractère parmi 'a-z' suivi de caractères parmi 'a-z', '0-9' et '-'"
+      } else if (active.newLocation && active.locationsBySlug[active.newLocation.slug]) {
+        return "Le slug d'un nouveau lieu doit être différent de tous les slugs des lieux existants"
       } else if (active.newLocation && !active.newLocation.name) {
         return "Le nom d'un nouveau lieu ne peut pas être vide"
       } else {
