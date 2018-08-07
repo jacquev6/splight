@@ -19,7 +19,7 @@ type City {
   tags: [Tag!]!
   locations: [Location!]!
   event(id: ID!): Event!
-  events(location: ID, artist: ID, title: String, dates: IDateInterval): [Event!]!
+  events(tag: ID, location: ID, artist: ID, title: String, dates: IDateInterval): [Event!]!
   firstDate: Date
   dateAfter: Date
 }

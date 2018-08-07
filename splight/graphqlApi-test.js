@@ -515,6 +515,50 @@ describe('graphqlApi', function () {
     })
 
     describe('city.events', function () {
+      it('filters by tag', async function () {
+        const {checkRequest} = make({
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}, 'other-tag': {title: 'Other tag'}},
+              events: [
+                {
+                  id: 'ok-single',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  id: 'ok-main',
+                  location: 'location',
+                  tags: ['tag', 'other-tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  id: 'ok-secondary',
+                  location: 'location',
+                  tags: ['other-tag', 'tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  id: 'ko',
+                  location: 'location',
+                  tags: ['other-tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                }
+              ]
+            }
+          }
+        })
+
+        await checkRequest(
+          '{cities{events(tag:"tag"){id}}}',
+          {data: {cities: [{events: [{id: 'ok-single'}, {id: 'ok-main'}, {id: 'ok-secondary'}]}]}}
+        )
+      })
+
       it('filters by location', async function () {
         const {checkRequest} = make({
           artists: {},
@@ -587,7 +631,73 @@ describe('graphqlApi', function () {
         )
       })
 
-      it('filters by title') // @todo Implement
+      it('filters by title', async function () {
+        const {checkRequest} = make({
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: [
+                {
+                  title: 'title aeiou',
+                  id: 'ok-literal',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  title: 'aeiou title',
+                  id: 'ok-reversed',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  title: 'TITLE AEIOU',
+                  id: 'ok-uppercase',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  title: 'title àéïôù',
+                  id: 'ok-accentuated',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  id: 'ko-no-title',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  title: 'title',
+                  id: 'ko-not-all-words',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  title: 'foobar',
+                  id: 'ko-title-no-match',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                }
+              ]
+            }
+          }
+        })
+
+        await checkRequest(
+          '{cities{events(title:"title aeiou"){id}}}',
+          {data: {cities: [{events: [{id: 'ok-literal'}, {id: 'ok-reversed'}, {id: 'ok-uppercase'}, {id: 'ok-accentuated'}]}]}}
+        )
+      })
 
       it('filters by dates', async function () {
         const {checkRequest} = make({

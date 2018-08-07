@@ -145,7 +145,7 @@ function makeSyncRoot (data) {
         )))
     }
 
-    function events ({location, artist, dates}) {
+    function events ({tag, location, artist, title, dates}) {
       function selectOccurrence ({start, after}) {
         return function (occurrence) {
           if (start && occurrence.start < start) {
@@ -158,11 +158,27 @@ function makeSyncRoot (data) {
         }
       }
 
+      function normalize (s) {
+        // https://stackoverflow.com/a/37511463/905845
+        return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+      }
+
+      var words
+      if (title) {
+        words = normalize(title).split(/\s+/)
+      }
+
       function select (event) {
+        if (tag && !(new Set(event.tags).has(tag))) {
+          return false
+        }
         if (location && event.location !== location) {
           return false
         }
         if (artist && event.artist !== artist) {
+          return false
+        }
+        if (words && !(event.title && words.every(word => normalize(event.title).indexOf(word) !== -1))) {
           return false
         }
         if (dates && !event.occurrences.some(selectOccurrence(dates))) {

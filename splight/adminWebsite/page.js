@@ -105,7 +105,7 @@ async function initialize () {
       const whenForEdit = (function () {
         const template = `<ul>
           {{#occurrences}}<li>{{start}} <button class="btn btn-secondary btn-sm spa-delete-occurrence">Supprimer</button></li>{{/occurrences}}
-          <li><input id="spa-new-occurrence" type="text" placeholder="2018-07-14T12:00"/> <button id="spa-add-occurrence" class="btn btn-secondary btn-sm" disabled="disabled">Ajouter</button></li>
+          <li><input id="spa-new-occurrence" type="text" placeholder="Format&nbsp;: 2018-07-14T12:00"/> <button id="spa-add-occurrence" class="btn btn-secondary btn-sm" disabled="disabled">Ajouter</button></li>
         </ul>`
 
         function render ({event: {occurrences}}) {
@@ -293,16 +293,24 @@ async function initialize () {
     var active
     const filter = jQuery('#spa-events-filter')
     const filteredEvents = jQuery('#spa-filtered-events')
+    const filterTag = jQuery('#spa-filter-tag')
     const filterLocation = jQuery('#spa-filter-location')
     const filterArtist = jQuery('#spa-filter-artist')
+    const filterDate = jQuery('#spa-filter-date')
     const filterTitle = jQuery('#spa-filter-title')
 
+    filterTag.on('change', refreshContent)
     filterLocation.on('change', refreshContent)
     filterArtist.on('change', refreshContent)
     var filterTitleTimeoutId = null
     filterTitle.on('input', () => {
       clearTimeout(filterTitleTimeoutId)
       filterTitleTimeoutId = setTimeout(refreshContent, 200)
+    })
+    var filterDateTimeoutId = null
+    filterDate.on('input', () => {
+      clearTimeout(filterDateTimeoutId)
+      filterDateTimeoutId = setTimeout(refreshContent, 200)
     })
 
     doc.on('click', '.spa-modify-event', function () {
@@ -319,13 +327,15 @@ async function initialize () {
       active = {citySlug}
 
       const data = await request({
-        requestString: 'query($citySlug:ID!){artists{slug name} city(slug:$citySlug){locations{slug name}}}',
+        requestString: 'query($citySlug:ID!){artists{slug name} city(slug:$citySlug){tags{slug title} locations{slug name}}}',
         variableValues: {citySlug}
       })
 
       // Maybe use a https://jqueryui.com/autocomplete/#combobox for these selects
+      fillSelect(filterTag, data.city.tags.map(({slug, title}) => ({value: slug, display: title})))
       fillSelect(filterLocation, data.city.locations.map(({slug, name}) => ({value: slug, display: name})))
       fillSelect(filterArtist, data.artists.map(({slug, name}) => ({value: slug, display: name})))
+      filterDate.val('')
       filterTitle.val('')
 
       displayDisclaimer()
@@ -341,19 +351,31 @@ async function initialize () {
     }
 
     async function refreshContent () {
+      const tag = filterTag.val()
       const location = filterLocation.val()
       const artist = filterArtist.val()
+      const date = moment(filterDate.val(), moment.HTML5_FMT.DATE, true)
       const title = filterTitle.val()
 
+      var dates
+      if (date.isValid()) {
+        dates = {
+          start: date.format(moment.HTML5_FMT.DATE),
+          after: date.clone().add(1, 'day').format(moment.HTML5_FMT.DATE)
+        }
+      }
+
       const filter = {
+        tag: tag === '-' ? undefined : tag,
         location: location === '-' ? undefined : location,
         artist: artist === '-' ? undefined : artist,
-        title: title === '' ? undefined : title
+        title: title === '' ? undefined : title,
+        dates
       }
 
       if (Object.values(filter).some(x => x)) {
         const {city: {events}} = await request({
-          requestString: 'query($citySlug:ID!,$location:ID,$artist:ID,$title:String){city(slug:$citySlug){events(location:$location,artist:$artist,title:$title){id title artist{name} location{name} occurrences{start} tags{slug title}}}}',
+          requestString: 'query($citySlug:ID!,$tag:ID,$location:ID,$artist:ID,$title:String,$dates:IDateInterval){city(slug:$citySlug){events(tag:$tag,location:$location,artist:$artist,title:$title,dates:$dates){id title artist{name} location{name} occurrences{start} tags{slug title}}}}',
           variableValues: Object.assign({citySlug: active.citySlug}, filter)
         })
 
