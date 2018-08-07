@@ -48,8 +48,20 @@ async function main (dataDirectory) {
         console.log('Maybe closing server soon')
         timeoutId = setTimeout(() => {
           console.log('Closing server')
-          wss.close(() => console.log('WS server closed'))
-          server.close(() => console.log('HTTP Server closed'))
+          var closed = 0
+          function exitWhenClosed (server) {
+            return function () {
+              console.log(server, 'server closed')
+              if (++closed === 2) {
+                console.log('Exiting')
+                // I don't know why sometimes the server's process doesn't exit after both servers are closed.
+                // I need to investigate that, but in the mean time, let's ensure we don't hit that case in production.
+                process.exit(0)
+              }
+            }
+          }
+          wss.close(exitWhenClosed('WS'))
+          server.close(exitWhenClosed('HTTP'))
         }, 3000)
       }
     })
