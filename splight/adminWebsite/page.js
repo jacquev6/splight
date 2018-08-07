@@ -28,7 +28,7 @@ async function initialize () {
     var active
     const modal = jQuery('#spa-modify-event-modal')
 
-    modal.modal({backdrop: 'static', show: false})
+    modal.modal({backdrop: 'static', keyboard: false, show: false})
     modal.on('hide.bs.modal', deactivate)
     jQuery('#spa-modify-event-save').on('click', save)
 
