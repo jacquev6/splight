@@ -5,7 +5,6 @@
 require('stringify').registerWithRequire(['.gqls'])
 
 const assert = require('assert') // Not strict because graphql's returned data doesn't have Object prototype
-const deepcopy = require('deepcopy')
 const graphql = require('graphql')
 const Hashids = require('hashids')
 
@@ -163,170 +162,6 @@ describe('graphqlApi', function () {
     })
   })
 
-  describe('queries', function () {
-    function test (data, requestString, expected) {
-      const rootValue = graphqlApi.forTest.makeRoot(deepcopy(data))
-
-      return async function () {
-        assert.deepEqual(
-          await graphql.graphql(graphqlApi.forTest.schema, requestString, rootValue),
-          expected
-        )
-      }
-    }
-
-    const emptyData = {
-      artists: {},
-      cities: {}
-    }
-
-    const emptyCitiesData = {
-      artists: {},
-      cities: {
-        'foo': {
-          name: 'Foo',
-          locations: {},
-          tags: {},
-          events: []
-        },
-        'baz': {
-          name: 'Baz',
-          locations: {},
-          tags: {},
-          events: []
-        },
-        'bar': {
-          name: 'Bar',
-          locations: {},
-          tags: {},
-          events: []
-        }
-      }
-    }
-
-    const fullCityData = {
-      artists: {
-        'artist-1': {name: 'Artist 1'},
-        'artist-3': {name: 'Artist 3'},
-        'artist-2': {name: 'Artist 2'}
-      },
-      cities: {'foo': {
-        name: 'Foo',
-        locations: {
-          'location-1': {name: 'Location 1'},
-          'location-3': {name: 'Location 3'},
-          'location-2': {name: 'Location 2'}
-        },
-        tags: {
-          'tag-1': {title: 'Tag 1'},
-          'tag-3': {title: 'Tag 3'},
-          'tag-2': {title: 'Tag 2'}
-        },
-        events: [
-          {
-            location: 'location-2',
-            tags: ['tag-1', 'tag-3'],
-            title: 'Title 1',
-            occurrences: [
-              {start: '2018-07-12T12:00'},
-              {start: '2018-07-15T13:00'}
-            ]
-          },
-          {
-            location: 'location-1',
-            artist: 'artist-2',
-            tags: ['tag-3', 'tag-2'],
-            title: 'Title 2',
-            occurrences: [
-              {start: '2018-07-12T11:00'},
-              {start: '2018-07-14T19:00'}
-            ]
-          },
-          {
-            location: 'location-3',
-            artist: 'artist-1',
-            tags: ['tag-2'],
-            occurrences: [
-              {start: '2018-07-13T19:00'}
-            ]
-          }
-        ]
-      }}
-    }
-
-    describe('artists', function () {
-      it('has no artist to return', test(emptyData, '{artists{slug}}', {data: {artists: []}}))
-
-      it('returns artists', test(fullCityData, '{artists{slug}}', {data: {artists: [{slug: 'artist-1'}, {slug: 'artist-3'}, {slug: 'artist-2'}]}}))
-
-      it('returns artists names', test(fullCityData, '{artists{slug name}}', {data: {artists: [
-        {slug: 'artist-1', name: 'Artist 1'},
-        {slug: 'artist-3', name: 'Artist 3'},
-        {slug: 'artist-2', name: 'Artist 2'}
-      ]}}))
-    })
-
-    describe('cities', function () {
-      it('has no city to return', test(emptyData, '{cities{slug}}', {data: {cities: []}}))
-
-      it('returns cities', test(emptyCitiesData, '{cities{slug}}', {data: {cities: [{slug: 'foo'}, {slug: 'baz'}, {slug: 'bar'}]}}))
-
-      it('returns cities names', test(emptyCitiesData, '{cities{slug name}}', {data: {cities: [
-        {slug: 'foo', name: 'Foo'},
-        {slug: 'baz', name: 'Baz'},
-        {slug: 'bar', name: 'Bar'}
-      ]}}))
-    })
-
-    describe('city', function () {
-      it('has no city to return', test(emptyData, '{city(slug:"foo"){slug}}', {
-        data: null,
-        errors: [{
-          locations: [{column: 2, line: 1}],
-          message: 'No city with slug "foo"',
-          path: ['city']
-        }]
-      }))
-
-      it('finds city foo', test(emptyCitiesData, '{city(slug:"foo"){slug}}', {data: {city: {slug: 'foo'}}}))
-
-      it('finds city bar', test(emptyCitiesData, '{city(slug:"bar"){slug}}', {data: {city: {slug: 'bar'}}}))
-
-      it('finds city baz', test(emptyCitiesData, '{city(slug:"baz"){slug}}', {data: {city: {slug: 'baz'}}}))
-
-      it('finds no city', test(emptyCitiesData, '{city(slug:"toto"){slug}}', {
-        data: null,
-        errors: [{
-          locations: [{column: 2, line: 1}],
-          message: 'No city with slug "toto"',
-          path: ['city']
-        }]
-      }))
-
-      it('returns no dates', test(emptyCitiesData, '{city(slug:"foo"){firstDate dateAfter}}', {
-        data: {city: {firstDate: null, dateAfter: null}}
-      }))
-    })
-
-    describe('cities (with full data)', function () {
-      it('returns tags', test(fullCityData, '{cities{tags{slug title}}}', {data: {cities: [{tags: [
-        {slug: 'tag-1', title: 'Tag 1'},
-        {slug: 'tag-3', title: 'Tag 3'},
-        {slug: 'tag-2', title: 'Tag 2'}
-      ]}]}}))
-
-      it('returns locations', test(fullCityData, '{cities{locations{slug name}}}', {data: {cities: [{locations: [
-        {slug: 'location-1', name: 'Location 1'},
-        {slug: 'location-3', name: 'Location 3'},
-        {slug: 'location-2', name: 'Location 2'}
-      ]}]}}))
-
-      it('returns dates', test(fullCityData, '{cities{firstDate dateAfter}}', {data: {cities: [{
-        firstDate: '2018-07-12', dateAfter: '2018-07-16'
-      }]}}))
-    })
-  })
-
   function make (data) {
     const rootValue = graphqlApi.forTest.makeRoot(data)
 
@@ -473,6 +308,76 @@ describe('graphqlApi', function () {
             dateAfter: '2018-07-15'
           }]
         }}
+      )
+    })
+  })
+
+  describe('city.dates', function () {
+    const get = '{cities{slug firstDate dateAfter}}'
+
+    it('returns dates', async function () {
+      const {checkRequest} = make({
+        artists: {},
+        cities: {
+          'no-events': {
+            name: 'City',
+            locations: {'location': {name: 'Location'}},
+            tags: {'tag': {title: 'Tag'}},
+            events: []
+          },
+          'single-occurrence': {
+            name: 'City',
+            locations: {'location': {name: 'Location'}},
+            tags: {'tag': {title: 'Tag'}},
+            events: [{
+              location: 'location',
+              tags: ['tag'],
+              occurrences: [{start: '2018-07-14T12:00'}]
+            }]
+          },
+          'several-occurrences': {
+            name: 'City',
+            locations: {'location': {name: 'Location'}},
+            tags: {'tag': {title: 'Tag'}},
+            events: [{
+              location: 'location',
+              tags: ['tag'],
+              occurrences: [{start: '2018-07-14T12:00'}, {start: '2018-07-13T12:00'}, {start: '2018-07-15T12:00'}]
+            }]
+          },
+          'several-events': {
+            name: 'City',
+            locations: {'location': {name: 'Location'}},
+            tags: {'tag': {title: 'Tag'}},
+            events: [
+              {
+                location: 'location',
+                tags: ['tag'],
+                occurrences: [{start: '2018-07-14T12:00'}]
+              },
+              {
+                location: 'location',
+                tags: ['tag'],
+                occurrences: [{start: '2018-07-13T12:00'}]
+              },
+              {
+                location: 'location',
+                tags: ['tag'],
+                occurrences: [{start: '2018-07-15T12:00'}]
+              }
+            ]
+          }
+        }
+      })
+
+      await checkRequest(
+        get,
+        {data: {cities: [
+          {slug: 'no-events', firstDate: null, dateAfter: null},
+          {slug: 'single-occurrence', firstDate: '2018-07-14', dateAfter: '2018-07-15'},
+          {slug: 'several-occurrences', firstDate: '2018-07-13', dateAfter: '2018-07-16'},
+          {slug: 'several-events', firstDate: '2018-07-13', dateAfter: '2018-07-16'}
+        ]}}
       )
     })
   })
