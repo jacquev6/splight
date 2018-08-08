@@ -1385,12 +1385,20 @@ describe('graphqlApi', function () {
               name: 'City',
               locations: {'location': {name: 'Location'}},
               tags: {'tag': {title: 'Tag'}},
-              events: [{
-                id: 'event',
-                location: 'location',
-                tags: ['tag'],
-                occurrences: [{start: '2018-07-14T12:00'}]
-              }]
+              events: [
+                {
+                  id: 'other-event',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T11:00'}]
+                },
+                {
+                  id: 'event',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                }
+              ]
             }
           }
         })
@@ -1399,14 +1407,24 @@ describe('graphqlApi', function () {
           get,
           {data: {cities: [{
             slug: 'city',
-            events: [{
-              id: 'event',
-              title: null,
-              occurrences: [{start: '2018-07-14T12:00'}],
-              artist: null,
-              location: {name: 'Location'},
-              tags: [{title: 'Tag'}]
-            }]
+            events: [
+              {
+                id: 'other-event',
+                title: null,
+                occurrences: [{start: '2018-07-14T11:00'}],
+                artist: null,
+                location: {name: 'Location'},
+                tags: [{title: 'Tag'}]
+              },
+              {
+                id: 'event',
+                title: null,
+                occurrences: [{start: '2018-07-14T12:00'}],
+                artist: null,
+                location: {name: 'Location'},
+                tags: [{title: 'Tag'}]
+              }
+            ]
           }]}}
         )
 
@@ -1439,14 +1457,22 @@ describe('graphqlApi', function () {
               name: 'City',
               locations: {'location': {name: 'Location'}},
               tags: {'tag': {title: 'Tag'}},
-              events: [{
-                id: 'event',
-                location: 'location',
-                artist: 'artist',
-                tags: ['tag'],
-                occurrences: [{start: '2018-07-14T13:00'}],
-                title: 'Title'
-              }]
+              events: [
+                {
+                  id: 'other-event',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T11:00'}]
+                },
+                {
+                  id: 'event',
+                  location: 'location',
+                  artist: 'artist',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T13:00'}],
+                  title: 'Title'
+                }
+              ]
             }
           }
         })
@@ -1455,14 +1481,24 @@ describe('graphqlApi', function () {
           get,
           {data: {cities: [{
             slug: 'city',
-            events: [{
-              id: 'event',
-              title: 'Title',
-              occurrences: [{start: '2018-07-14T13:00'}],
-              artist: {name: 'Artist'},
-              location: {name: 'Location'},
-              tags: [{title: 'Tag'}]
-            }]
+            events: [
+              {
+                id: 'other-event',
+                title: null,
+                occurrences: [{start: '2018-07-14T11:00'}],
+                artist: null,
+                location: {name: 'Location'},
+                tags: [{title: 'Tag'}]
+              },
+              {
+                id: 'event',
+                title: 'Title',
+                occurrences: [{start: '2018-07-14T13:00'}],
+                artist: {name: 'Artist'},
+                location: {name: 'Location'},
+                tags: [{title: 'Tag'}]
+              }
+            ]
           }]}}
         )
       })
