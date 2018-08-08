@@ -647,6 +647,65 @@ describe('graphqlApi', function () {
           {data: {cities: [{events: [{id: 'ok-1'}, {id: 'ok-2'}]}]}}
         )
       })
+
+      it('limits events returned', async function () {
+        const {checkRequest} = make({
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: {'tag': {title: 'Tag'}},
+              events: [
+                {
+                  id: '1',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  id: '2',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  id: '3',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                },
+                {
+                  id: '4',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                }
+              ]
+            }
+          }
+        })
+
+        await checkRequest(
+          '{cities{events(max:2){id}}}',
+          {data: {cities: [{events: null}]}}
+        )
+
+        await checkRequest(
+          '{cities{events(max:3){id}}}',
+          {data: {cities: [{events: null}]}}
+        )
+
+        await checkRequest(
+          '{cities{events(max:4){id}}}',
+          {data: {cities: [{events: [{id: '1'}, {id: '2'}, {id: '3'}, {id: '4'}]}]}}
+        )
+
+        await checkRequest(
+          '{cities{events(max:25){id}}}',
+          {data: {cities: [{events: [{id: '1'}, {id: '2'}, {id: '3'}, {id: '4'}]}]}}
+        )
+      })
     })
 
     describe('city.event', function () {

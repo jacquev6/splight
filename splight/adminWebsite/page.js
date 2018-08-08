@@ -5,7 +5,6 @@ const moment = require('moment')
 const mustache = require('mustache')
 
 const eventDetails_ = require('../publicWebsite/widgets/eventDetails')
-const eventsTemplate = require('./widgets/events.html')
 const template = require('./page.html')
 const utils = require('./utils')
 const whatForDisplay = require('../publicWebsite/widgets/eventDetails/what')
@@ -60,7 +59,7 @@ async function initialize () {
       refreshContent()
     })
     doc.on('change', '#spa-edit-event-main-tag', function () {
-      const previousMainTag = active.event.tags[0].slug
+      const previousMainTag = active.event.tags.length > 0 && active.event.tags[0].slug
       const previousSecondaryTags = new Set(active.event.tags.slice(1).map(({slug}) => slug))
 
       const newMainTag = jQuery('#spa-edit-event-main-tag').val()
@@ -162,7 +161,10 @@ async function initialize () {
 
       const whatForEdit = (function () {
         const template = `
-          <div class="form-group"><label>Catégorie principale&nbsp;: <select id="spa-edit-event-main-tag">{{#tags}}<option value="{{slug}}"{{#isMain}} selected="selected"{{/isMain}}>{{title}}</option>{{/tags}}</select></label></div>
+          <div class="form-group"><label>Catégorie principale&nbsp;: <select id="spa-edit-event-main-tag">
+            {{#untagged}}<option disabled="disabled" selected="selected">-</option>{{/untagged}}
+            {{#tags}}<option value="{{slug}}"{{#isMain}} selected="selected"{{/isMain}}>{{title}}</option>{{/tags}}
+          </select></label></div>
           <p>Catégories secondaires&nbsp;:</p>
           <ul>{{#tags}}{{^isMain}}<li><label>{{title}} <input class="spa-edit-event-secondary-tag" type="checkbox" value="{{slug}}"{{#isSecondary}} checked="checked"{{/isSecondary}} /></label></li>{{/isMain}}{{/tags}}</ul>
           <div class="form-group"><label>Titre&nbsp;: <input id="spa-edit-event-title" value="{{title}}" /></label></div>
@@ -190,14 +192,15 @@ async function initialize () {
             {slug, name, selected: artist && slug === artist.slug}
           ))
 
-          const mainTag = eventTags[0].slug
+          const untagged = eventTags.length === 0
+          const mainTag = !untagged && eventTags[0].slug
           const secondaryTags = new Set(eventTags.slice(1).map(({slug}) => slug))
 
           const tags = active.tags.map(({slug, title}) => (
             {slug, title, isMain: slug === mainTag, isSecondary: secondaryTags.has(slug)}
           ))
 
-          return mustache.render(template, {tags, title, artists, newArtist: active.newArtist})
+          return mustache.render(template, {untagged, tags, title, artists, newArtist: active.newArtist})
         }
 
         return {render}
@@ -215,7 +218,10 @@ async function initialize () {
           </ul>
           <div class="tab-content border border-top-0 pt-2 px-2" id="spa-edit-event-location-tabs">
             <div class="tab-pane{{^newLocation}} show active{{/newLocation}}" id="spa-edit-event-location-tab-existing">
-              <div class="form-group"><label>Choisir un lieu&nbsp;: <select id="spa-edit-event-location">{{#locations}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/locations}}</select></label></div>
+              <div class="form-group"><label>Choisir un lieu&nbsp;: <select id="spa-edit-event-location">
+                {{#unlocated}}<option disabled="disabled" selected="selected">-</option>{{/unlocated}}
+                {{#locations}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/locations}}
+              </select></label></div>
             </div>
             <div class="tab-pane{{#newLocation}} show active{{/newLocation}}" id="spa-edit-event-location-tab-new">
               <div class="form-group"><label>Slug&nbsp;: <input id="spa-edit-event-new-location-slug" value="{{newLocation.slug}}"/></label></div>
@@ -225,11 +231,13 @@ async function initialize () {
         `
 
         function render ({event: {location}}) {
+          const unlocated = !location
+
           const locations = active.locations.map(({slug, name}) => (
-            {slug, name, selected: slug === location.slug}
+            {slug, name, selected: slug === (location && location.slug)}
           ))
 
-          return mustache.render(template, {locations, newLocation: active.newLocation})
+          return mustache.render(template, {unlocated, locations, newLocation: active.newLocation})
         }
 
         return {render}
@@ -283,12 +291,32 @@ async function initialize () {
 
     deactivate()
 
-    return {activate}
+    return {create, modify}
 
-    async function activate ({citySlug, eventId}) {
-      const {artists, city: {locations, tags, event}} = await request({
-        requestString: 'query($citySlug:ID!, $eventId:ID!){artists{slug name} city(slug:$citySlug){locations{slug name} tags{slug title} event(id:$eventId){id title location{slug name} tags{slug title} artist{slug name} occurrences{start}}}}',
+    async function create ({citySlug}) {
+      // @todo Initialize event with values from filter
+      const event = {
+        title: null,
+        location: null,
+        tags: [],
+        artist: null,
+        occurrences: []
+      }
+      await activate({citySlug, event})
+    }
+
+    async function modify ({citySlug, eventId}) {
+      const {city: {event}} = await request({
+        requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){id title location{slug name} tags{slug title} artist{slug name} occurrences{start}}}}',
         variableValues: {citySlug, eventId}
+      })
+      await activate({citySlug, event})
+    }
+
+    async function activate ({citySlug, event}) {
+      const {artists, city: {locations, tags}} = await request({
+        requestString: 'query($citySlug:ID!){artists{slug name} city(slug:$citySlug){locations{slug name} tags{slug title}}}',
+        variableValues: {citySlug}
       })
 
       const artistsBySlug = {}
@@ -342,20 +370,24 @@ async function initialize () {
     function validateEvent () {
       if (active.event.occurrences.length === 0) {
         return 'Il faut au moins une représentation'
+      } else if (active.event.tags.length === 0) {
+        return 'Choisir une catégorie principale'
       } else if (!active.event.title && !active.event.artist) {
         return 'Il faut un titre ou un artiste'
-      } else if (active.newLocation && !active.newLocation.slug.match(/^[a-z][-a-z0-9]*$/)) {
-        return "Le slug d'un nouveau lieu doit être constitué d'un caractère parmi 'a-z' suivi de caractères parmi 'a-z', '0-9' et '-'"
-      } else if (active.newLocation && active.locationsBySlug[active.newLocation.slug]) {
-        return "Le slug d'un nouveau lieu doit être différent de tous les slugs des lieux existants"
-      } else if (active.newLocation && !active.newLocation.name) {
-        return "Le nom d'un nouveau lieu ne peut pas être vide"
       } else if (active.newArtist && !active.newArtist.slug.match(/^[a-z][-a-z0-9]*$/)) {
         return "Le slug d'un nouvel artiste doit être constitué d'un caractère parmi 'a-z' suivi de caractères parmi 'a-z', '0-9' et '-'"
       } else if (active.newArtist && active.artistsBySlug[active.newArtist.slug]) {
         return "Le slug d'un nouvel artiste doit être différent de tous les slugs des artistes existants"
       } else if (active.newArtist && !active.newArtist.name) {
         return "Le nom d'un nouvel artiste ne peut pas être vide"
+      } else if (!active.event.location) {
+        return 'Choisir un lieu'
+      } else if (active.newLocation && !active.newLocation.slug.match(/^[a-z][-a-z0-9]*$/)) {
+        return "Le slug d'un nouveau lieu doit être constitué d'un caractère parmi 'a-z' suivi de caractères parmi 'a-z', '0-9' et '-'"
+      } else if (active.newLocation && active.locationsBySlug[active.newLocation.slug]) {
+        return "Le slug d'un nouveau lieu doit être différent de tous les slugs des lieux existants"
+      } else if (active.newLocation && !active.newLocation.name) {
+        return "Le nom d'un nouveau lieu ne peut pas être vide"
       } else {
         return ''
       }
@@ -424,9 +456,16 @@ async function initialize () {
       filterDateTimeoutId = setTimeout(refreshContent, 200)
     })
 
+    doc.on('click', '#spa-create-event', function () {
+      eventEditor.create({
+        citySlug: active.citySlug
+      })
+    })
     doc.on('click', '.spa-modify-event', function () {
-      const eventId = jQuery(this).data('spa-event-id')
-      eventEditor.activate({citySlug: active.citySlug, eventId})
+      eventEditor.modify({
+        citySlug: active.citySlug,
+        eventId: jQuery(this).data('spa-event-id')
+      })
     })
 
     deactivate()
@@ -450,7 +489,7 @@ async function initialize () {
       filterDate.val('')
       filterTitle.val('')
 
-      displayDisclaimer()
+      refreshContent()
 
       filter.show()
       filteredEvents.show()
@@ -482,51 +521,66 @@ async function initialize () {
         }
       }
 
-      const filter = {
-        tag: tag === '-' ? undefined : tag,
-        location: location === '-' ? undefined : location,
-        artist: artist === '-' ? undefined : artist,
-        title: title === '' ? undefined : title,
-        dates
-      }
-
-      if (Object.values(filter).some(x => x)) {
-        const {city: {events}} = await request({
-          requestString: 'query($citySlug:ID!,$tag:ID,$location:ID,$artist:ID,$title:String,$dates:IDateInterval){city(slug:$citySlug){events(tag:$tag,location:$location,artist:$artist,title:$title,dates:$dates){id title artist{name} location{name} occurrences{start} tags{slug title}}}}',
-          variableValues: Object.assign({citySlug: active.citySlug}, filter)
-        })
-
-        if (events.length) {
-          displayEvents(events)
-        } else {
-          displayNoMatchingEvents()
+      const {city: {events}} = await request({
+        requestString: 'query($citySlug:ID!,$tag:ID,$location:ID,$artist:ID,$title:String,$dates:IDateInterval){city(slug:$citySlug){events(tag:$tag,location:$location,artist:$artist,title:$title,dates:$dates,max:10){id title artist{name} location{name} occurrences{start} tags{slug title}}}}',
+        variableValues: {
+          citySlug: active.citySlug,
+          tag: tag === '-' ? undefined : tag,
+          location: location === '-' ? undefined : location,
+          artist: artist === '-' ? undefined : artist,
+          title: title === '' ? undefined : title,
+          dates
         }
-      } else {
-        displayDisclaimer()
-      }
+      })
+
+      displayEvents(events)
     }
 
     function displayEvents (events) {
-      filteredEvents.html(mustache.render(
-        eventsTemplate,
-        {
-          events: events.map(({id, title, tags, artist, location, occurrences}) => {
-            const event = {id, title, location, tags, artist, occurrences}
+      const template = `
+        {{#zero}}<p>Aucun événement ne correspond au filtre.</p>{{/zero}}
+        {{#one}}<p>L'événement suivant est le seul correspondant au filtre.</p>{{/one}}
+        {{#several}}<p>Les {{events.length}} événements suivants correspondent au filtre.</p>{{/several}}
+        {{^tooMany}}<p><button id="spa-create-event" class="btn btn-primary">Nouvel événement</button></p>{{/tooMany}}
+        {{#tooMany}}<p>Trop d'événements correspondent. Utiliser le filtre pour raffiner la sélection.</p>{{/tooMany}}
+        {{#events}}
+        <div class="card m-1">
+          <div class="card-header">
+            {{title}}
+          </div>
+          <div class="card-body">
+            {{{details.html}}}
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary spa-modify-event" data-spa-event-id="{{id}}">Modifier</button>
+          </div>
+        </div>
+        {{/events}}
+      `
 
-            event.details = {html: eventDetailsForDisplay.render({city: {slug: active.citySlug}, event})}
+      var zero, one, several, tooMany
+      if (events) {
+        tooMany = false
 
-            return event
-          })
-        }
-      ))
-    }
+        events = events.map(({id, title, tags, artist, location, occurrences}) => {
+          const event = {id, title, location, tags, artist, occurrences}
 
-    function displayNoMatchingEvents () {
-      filteredEvents.html('<p>Aucun événement ne correspond.</p>')
-    }
+          event.details = {html: eventDetailsForDisplay.render({city: {slug: active.citySlug}, event})}
 
-    function displayDisclaimer () {
-      filteredEvents.html('<p>Utiliser le filtre sur la gauche pour afficher les événements qui correspondent.</p>')
+          return event
+        })
+
+        zero = events.length == 0
+        one = events.length == 1
+        several = events.length > 1
+      } else {
+        zero = false
+        one = false
+        several = false
+        tooMany = true
+      }
+
+      filteredEvents.html(mustache.render(template, {zero, one, several, tooMany, events}))
     }
   }())
 

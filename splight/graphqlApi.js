@@ -145,7 +145,7 @@ function makeSyncRoot (data) {
         )))
     }
 
-    function events ({tag, location, artist, title, dates}) {
+    function events ({tag, location, artist, title, dates, max}) {
       function selectOccurrence ({start, after}) {
         return function (occurrence) {
           if (start && occurrence.start < start) {
@@ -187,7 +187,12 @@ function makeSyncRoot (data) {
         return true
       }
 
-      return selectEvents(select)
+      const events = selectEvents(select)
+      if (max && events.length > max) {
+        return null
+      } else {
+        return events
+      }
     }
 
     function event ({id}) {
