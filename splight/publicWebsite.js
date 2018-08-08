@@ -235,9 +235,13 @@ function * generatePageClasses () {
     makeAll: function * ({cities}) {
       const dateAfter = durations.oneWeek.clip(moment()).add(5, 'weeks')
       for (var {slug, firstDate} of cities) {
+        var globalStartDate = durations.oneWeek.clip(moment())
+        if (firstDate) {
+          globalStartDate = durations.oneWeek.clip(moment(firstDate, moment.HTML5_FMT.DATE, true))
+        }
         for (var duration of durations.all) {
           for (
-            var startDate = durations.oneWeek.clip(moment(firstDate, moment.HTML5_FMT.DATE, true));
+            var startDate = globalStartDate.clone();
             duration.dateAfter(startDate).isSameOrBefore(dateAfter);
             startDate = duration.links.next.startDate(startDate)
           ) {

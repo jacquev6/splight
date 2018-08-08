@@ -61,12 +61,24 @@ function timespan (citySlug, startDate, duration) {
         after: dateAfter.format(moment.HTML5_FMT.DATE)
       }
     },
-    exists: data => (
-      data &&
-      data.city &&
-      startDate.isSameOrAfter(durations.oneWeek.clip(moment(data.city.firstDate, moment.HTML5_FMT.DATE, true))) &&
-      dateAfter.isSameOrBefore(durations.oneWeek.clip(moment()).add(5, 'weeks'))
-    ),
+    exists: data => {
+      if (!data || !data.city) {
+        return false
+      }
+
+      const now = moment()
+      const maxDateAfter = durations.oneWeek.clip(now).add(5, 'weeks')
+      var minStartDate = durations.oneWeek.clip(now)
+
+      if (data.city.firstDate) {
+        minStartDate = moment.min(
+          minStartDate,
+          durations.oneWeek.clip(moment(data.city.firstDate, moment.HTML5_FMT.DATE, true))
+        )
+      }
+
+      return startDate.isSameOrAfter(minStartDate) && dateAfter.isSameOrBefore(maxDateAfter)
+    },
     title,
     content
   }
