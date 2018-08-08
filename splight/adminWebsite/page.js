@@ -43,12 +43,13 @@ async function initialize () {
       refreshContent()
     })
     doc.on('input', '#spa-new-occurrence', function () {
-      const m = moment(jQuery('#spa-new-occurrence').val(), moment.HTML5_FMT.DATETIME_LOCAL, true)
+      active.newOccurrence = jQuery('#spa-new-occurrence').val()
+      const m = moment(active.newOccurrence, moment.HTML5_FMT.DATETIME_LOCAL, true)
       jQuery('#spa-add-occurrence').attr('disabled', !m.isValid())
     })
     doc.on('click', '#spa-add-occurrence', function () {
-      const start = jQuery('#spa-new-occurrence').val()
-      active.event.occurrences.push({start})
+      active.event.occurrences.push({start: active.newOccurrence})
+      active.newOccurrence = null
       refreshContent()
     })
 
@@ -149,11 +150,15 @@ async function initialize () {
       const whenForEdit = (function () {
         const template = `<ul>
           {{#occurrences}}<li>{{start}} <button class="btn btn-secondary btn-sm spa-delete-occurrence">Supprimer</button></li>{{/occurrences}}
-          <li><input id="spa-new-occurrence" type="text" placeholder="Format&nbsp;: 2018-07-14T12:00"/> <button id="spa-add-occurrence" class="btn btn-secondary btn-sm" disabled="disabled">Ajouter</button></li>
+          <li><input id="spa-new-occurrence" type="text" placeholder="Format&nbsp;: 2018-07-14T12:00"{{#newOccurrence}} value="{{.}}"{{/newOccurrence}}/> <button id="spa-add-occurrence" class="btn btn-secondary btn-sm"{{#addDisabled}} disabled="disabled"{{/addDisabled}}>Ajouter</button></li>
         </ul>`
 
         function render ({event: {occurrences}}) {
-          return mustache.render(template, {occurrences})
+          return mustache.render(template, {
+            newOccurrence: active.newOccurrence,
+            addDisabled: !moment(active.newOccurrence, moment.HTML5_FMT.DATETIME_LOCAL, true).isValid(),
+            occurrences
+          })
         }
 
         return {render}
@@ -343,7 +348,8 @@ async function initialize () {
         newLocation: null,
         cachedNewLocation: {slug: '', name: ''},
         newArtist: null,
-        cachedNewArtist: {slug: '', name: ''}
+        cachedNewArtist: {slug: '', name: ''},
+        newOccurrence: null
       }
 
       refreshContent()
