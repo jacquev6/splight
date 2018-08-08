@@ -455,7 +455,7 @@ async function initialize () {
       filter.show()
       filteredEvents.show()
 
-      if(isDebug) {
+      if (isDebug) {
         filterTag.val('tag-1').trigger('change')
         eventEditor.activate({citySlug: active.citySlug, eventId: 'WjnegYbwZ1'})
       }
@@ -549,7 +549,7 @@ async function initialize () {
     }
   })
 
-  if(isDebug) {
+  if (isDebug) {
     selectCity.val('avalon').trigger('change')
   }
 }
