@@ -576,8 +576,8 @@ async function initialize () {
           return event
         })
 
-        zero = events.length == 0
-        one = events.length == 1
+        zero = events.length === 0
+        one = events.length === 1
         several = events.length > 1
       } else {
         zero = false
