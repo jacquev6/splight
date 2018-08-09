@@ -1,5 +1,5 @@
 type Query {
-  artists: [Artist!]!
+  artists(name: String, max: Int): [Artist!]
   cities: [City!]!
   city(slug: ID!): City!
 }
@@ -17,7 +17,7 @@ type City {
   slug: ID!
   name: String!
   tags: [Tag!]!
-  locations: [Location!]!
+  locations(name: String, max: Int): [Location!]
   event(id: ID!): Event!
   events(tag: ID, location: ID, artist: ID, title: String, dates: IDateInterval, max: Int): [Event!]
   firstDate: Date

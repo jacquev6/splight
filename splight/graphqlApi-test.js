@@ -383,6 +383,69 @@ describe('graphqlApi', function () {
   })
 
   describe('filtering queries', function () {
+    describe('artists', function () {
+      it('filters by name', async function () {
+        const {checkRequest} = make({
+          artists: {
+            'ok-literal': {name: 'name aeiou'},
+            'ok-reversed': {name: 'aeiou name'},
+            'ok-uppercase': {name: 'NAME AEIOU'},
+            'ok-accentuated': {name: 'name àéïôù'},
+            'ko-not-all-words': {name: 'name'},
+            'ko-title-no-match': {name: 'foobar'}
+          },
+          cities: {}
+        })
+
+        await checkRequest(
+          '{artists(name:"name aeiou"){slug}}',
+          {
+            data: {artists: [{slug: 'ok-literal'}, {slug: 'ok-reversed'}, {slug: 'ok-uppercase'}, {slug: 'ok-accentuated'}]}
+          }
+        )
+      })
+
+      it('limits artists returned', async function () {
+        const {checkRequest} = make({
+          artists: {
+            '1': {name: '1'},
+            '2': {name: '2'},
+            '3': {name: '3'},
+            '4': {name: '4'}
+          },
+          cities: {}
+        })
+
+        await checkRequest(
+          '{artists(max:2){slug}}',
+          {
+            data: {artists: null}
+          }
+        )
+
+        await checkRequest(
+          '{artists(max:3){slug}}',
+          {
+            data: {artists: null}
+          }
+        )
+
+        await checkRequest(
+          '{artists(max:4){slug}}',
+          {
+            data: {artists: [{slug: '1'}, {slug: '2'}, {slug: '3'}, {slug: '4'}]}
+          }
+        )
+
+        await checkRequest(
+          '{artists(max:25){slug}}',
+          {
+            data: {artists: [{slug: '1'}, {slug: '2'}, {slug: '3'}, {slug: '4'}]}
+          }
+        )
+      })
+    })
+
     describe('city', function () {
       const get = 'query($slug:ID!){city(slug:$slug){name}}'
 
@@ -416,6 +479,85 @@ describe('graphqlApi', function () {
         await checkRequest(get, {slug: 'city-1'}, {data: {city: {name: 'City 1'}}})
         await checkRequest(get, {slug: 'city-2'}, {data: {city: {name: 'City 2'}}})
         await checkRequest(get, {slug: 'city-3'}, {data: {city: {name: 'City 3'}}})
+      })
+    })
+
+    describe('city.location', function () {
+      it('filters by name', async function () {
+        const {checkRequest} = make({
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              tags: {},
+              events: [],
+              locations: {
+                'ok-literal': {name: 'name aeiou'},
+                'ok-reversed': {name: 'aeiou name'},
+                'ok-uppercase': {name: 'NAME AEIOU'},
+                'ok-accentuated': {name: 'name àéïôù'},
+                'ko-not-all-words': {name: 'name'},
+                'ko-title-no-match': {name: 'foobar'}
+              }
+            }
+          }
+        })
+
+        await checkRequest(
+          '{cities{locations(name:"name aeiou"){slug}}}',
+          {
+            data: {cities: [{
+              locations: [{slug: 'ok-literal'}, {slug: 'ok-reversed'}, {slug: 'ok-uppercase'}, {slug: 'ok-accentuated'}]
+            }]}
+          }
+        )
+      })
+
+      it('limits locations returned', async function () {
+        const {checkRequest} = make({
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              tags: {},
+              events: [],
+              locations: {
+                '1': {name: '1'},
+                '2': {name: '2'},
+                '3': {name: '3'},
+                '4': {name: '4'}
+              }
+            }
+          }
+        })
+
+        await checkRequest(
+          '{cities{locations(max:2){slug}}}',
+          {
+            data: {cities: [{locations: null}]}
+          }
+        )
+
+        await checkRequest(
+          '{cities{locations(max:3){slug}}}',
+          {
+            data: {cities: [{locations: null}]}
+          }
+        )
+
+        await checkRequest(
+          '{cities{locations(max:4){slug}}}',
+          {
+            data: {cities: [{locations: [{slug: '1'}, {slug: '2'}, {slug: '3'}, {slug: '4'}]}]}
+          }
+        )
+
+        await checkRequest(
+          '{cities{locations(max:25){slug}}}',
+          {
+            data: {cities: [{locations: [{slug: '1'}, {slug: '2'}, {slug: '3'}, {slug: '4'}]}]}
+          }
+        )
       })
     })
 

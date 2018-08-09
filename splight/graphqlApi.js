@@ -36,8 +36,25 @@ function makeSyncRoot (data) {
 
   var [artists_, getArtist] = slugify(data.artists, 'artist')
 
-  function artists () {
-    return artists_
+  function artists ({name, max}) {
+    var words
+    if (name) {
+      words = normalizeString(name).split(/\s+/)
+    }
+
+    function select (artist) {
+      if (words && !(artist.name && words.every(word => normalizeString(artist.name).indexOf(word) !== -1))) {
+        return false
+      }
+      return true
+    }
+
+    const artists = artists_.filter(select)
+    if (max && artists.length > max) {
+      return null
+    } else {
+      return artists
+    }
   }
 
   function putArtist ({artist: {slug, name}}) {
@@ -104,7 +121,28 @@ function makeSyncRoot (data) {
 
   function city_ (city) {
     const [tags, getTag] = slugify(city.tags, 'tag')
-    const [locations, getLocation] = slugify(city.locations, 'location')
+    const [locations_, getLocation] = slugify(city.locations, 'location')
+
+    function locations ({name, max}) {
+      var words
+      if (name) {
+        words = normalizeString(name).split(/\s+/)
+      }
+
+      function select (location) {
+        if (words && !(location.name && words.every(word => normalizeString(location.name).indexOf(word) !== -1))) {
+          return false
+        }
+        return true
+      }
+
+      const locations = locations_.filter(select)
+      if (max && locations.length > max) {
+        return null
+      } else {
+        return locations
+      }
+    }
 
     function firstDate () {
       const d = reduceOccurrencesStarts((a, b) => a < b ? a : b)
@@ -130,7 +168,7 @@ function makeSyncRoot (data) {
       }
     }
 
-    function selectEvents (select) {
+    function filterEvents (select) {
       return city.events
         .filter(select)
         .map(({id, title, artist, location, tags, occurrences}) => (Object.assign(
@@ -158,14 +196,9 @@ function makeSyncRoot (data) {
         }
       }
 
-      function normalize (s) {
-        // https://stackoverflow.com/a/37511463/905845
-        return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
-      }
-
       var words
       if (title) {
-        words = normalize(title).split(/\s+/)
+        words = normalizeString(title).split(/\s+/)
       }
 
       function select (event) {
@@ -178,7 +211,7 @@ function makeSyncRoot (data) {
         if (artist && event.artist !== artist) {
           return false
         }
-        if (words && !(event.title && words.every(word => normalize(event.title).indexOf(word) !== -1))) {
+        if (words && !(event.title && words.every(word => normalizeString(event.title).indexOf(word) !== -1))) {
           return false
         }
         if (dates && !event.occurrences.some(selectOccurrence(dates))) {
@@ -187,7 +220,7 @@ function makeSyncRoot (data) {
         return true
       }
 
-      const events = selectEvents(select)
+      const events = filterEvents(select)
       if (max && events.length > max) {
         return null
       } else {
@@ -196,7 +229,7 @@ function makeSyncRoot (data) {
     }
 
     function event ({id}) {
-      const events = selectEvents(event => event.id === id)
+      const events = filterEvents(event => event.id === id)
       if (events.length) {
         return events[0]
       } else {
@@ -210,6 +243,11 @@ function makeSyncRoot (data) {
   }
 
   return {artists, putArtist, cities, city, putLocation, putEvent}
+}
+
+function normalizeString (s) {
+  // https://stackoverflow.com/a/37511463/905845
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
 function fixData (data) {
