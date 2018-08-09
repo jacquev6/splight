@@ -32,116 +32,61 @@ function makeRoot ({load, save}) {
 }
 
 function makeSyncRoot (data) {
-  fixData(data)
-
-  var [artists_, getArtist] = slugify(data.artists, 'artist')
+  data = encapsulateData(data)
 
   function artists ({name, max}) {
-    var words
-    if (name) {
-      words = normalizeString(name).split(/\s+/)
-    }
-
-    function select (artist) {
-      if (words && !(artist.name && words.every(word => normalizeString(artist.name).indexOf(word) !== -1))) {
-        return false
-      }
-      return true
-    }
-
-    const artists = artists_.filter(select)
-    if (max && artists.length > max) {
-      return null
-    } else {
-      return artists
-    }
+    const nameMatches = matches(name)
+    return data.artists.filter(artist => nameMatches(artist.name), max)
   }
 
   function putArtist ({artist: {slug, name}}) {
-    data.artists[slug] = {name}
-    ;[artists_, getArtist] = slugify(data.artists, 'artist')
-    return {slug, name}
+    return data.artists.put({slug, name})
   }
 
-  const [cities_, getCity] = slugify(data.cities, 'city')
-
   function cities () {
-    return cities_.map(city_)
+    return data.cities.all().map(makeCity)
   }
 
   function city ({slug}) {
-    return city_(getCity(slug))
+    return makeCity(data.cities.get(slug))
   }
 
   function putLocation ({location: {citySlug, slug, name}}) {
-    getCity(citySlug).locations[slug] = {name}
-    return {slug, name}
+    return data.cities.get(citySlug).locations.put({slug, name})
   }
 
   function putEvent ({event: {citySlug, eventId, title, artist, location, tags, occurrences}}) {
-    const dataEvent = Object.assign(
+    return makeEvent(data.cities.get(citySlug).events.put(Object.assign(
       {
+        id: eventId,
         location,
         tags: tags.map(tag => tag),
         occurrences: occurrences.map(({start}) => ({start}))
       },
       artist ? {artist} : {},
       title ? {title} : {}
-    )
-    const city = getCity(citySlug)
-    const [tags_, getTag] = slugify(city.tags, 'tag') // eslint-disable-line
-    const [locations, getLocation] = slugify(city.locations, 'location') // eslint-disable-line
-    const ret = Object.assign(
-      {
-        title,
-        location: getLocation(location),
-        tags: tags.map(getTag),
-        occurrences
-      },
-      artist ? {artist: getArtist(artist)} : {}
-    )
-    if (eventId) {
-      dataEvent.id = ret.id = eventId
-      var found = false
-      for (var i = 0; i !== city.events.length; ++i) {
-        if (city.events[i].id === eventId) {
-          found = true
-          city.events[i] = dataEvent
-        }
-      }
-      if (!found) {
-        throw new Error('No event with id "' + eventId + '"')
-      }
-    } else {
-      ret.id = dataEvent.id = nextEventId(data)
-      city.events.push(dataEvent)
-    }
-    return ret
+    )))
   }
 
-  function city_ (city) {
-    const [tags, getTag] = slugify(city.tags, 'tag')
-    const [locations_, getLocation] = slugify(city.locations, 'location')
+  function makeEvent ({id, title, location, tags, occurrences, artist}) {
+    return {
+      id,
+      title,
+      location: location.resolve(),
+      tags: tags.resolve(),
+      occurrences,
+      artist: artist.resolve()
+    }
+  }
+
+  function makeCity (city) {
+    function tags () {
+      return city.tags.all()
+    }
 
     function locations ({name, max}) {
-      var words
-      if (name) {
-        words = normalizeString(name).split(/\s+/)
-      }
-
-      function select (location) {
-        if (words && !(location.name && words.every(word => normalizeString(location.name).indexOf(word) !== -1))) {
-          return false
-        }
-        return true
-      }
-
-      const locations = locations_.filter(select)
-      if (max && locations.length > max) {
-        return null
-      } else {
-        return locations
-      }
+      const nameMatches = matches(name)
+      return city.locations.filter(artist => nameMatches(artist.name), max)
     }
 
     function firstDate () {
@@ -155,9 +100,9 @@ function makeSyncRoot (data) {
     }
 
     function reduceOccurrencesStarts (f) {
-      if (city.events.length) {
-        var ret = city.events[0].occurrences[0].start
-        city.events.forEach(event => {
+      if (city.events.all().length) {
+        var ret = city.events.all()[0].occurrences[0].start
+        city.events.all().forEach(event => {
           event.occurrences.forEach(occurrence => {
             ret = f(ret, occurrence.start)
           })
@@ -166,21 +111,6 @@ function makeSyncRoot (data) {
       } else {
         return null
       }
-    }
-
-    function filterEvents (select) {
-      return city.events
-        .filter(select)
-        .map(({id, title, artist, location, tags, occurrences}) => (Object.assign(
-          {
-            id,
-            title,
-            location: getLocation(location),
-            tags: tags.map(getTag),
-            occurrences
-          },
-          artist ? {artist: getArtist(artist)} : {}
-        )))
     }
 
     function events ({tag, location, artist, title, dates, max}) {
@@ -196,22 +126,19 @@ function makeSyncRoot (data) {
         }
       }
 
-      var words
-      if (title) {
-        words = normalizeString(title).split(/\s+/)
-      }
+      const titleMatches = matches(title)
 
       function select (event) {
-        if (tag && !(new Set(event.tags).has(tag))) {
+        if (tag && !(new Set(event.tags.slugs).has(tag))) {
           return false
         }
-        if (location && event.location !== location) {
+        if (location && event.location.slug !== location) {
           return false
         }
-        if (artist && event.artist !== artist) {
+        if (artist && event.artist.slug !== artist) {
           return false
         }
-        if (words && !(event.title && words.every(word => normalizeString(event.title).indexOf(word) !== -1))) {
+        if (!titleMatches(event.title)) {
           return false
         }
         if (dates && !event.occurrences.some(selectOccurrence(dates))) {
@@ -220,21 +147,11 @@ function makeSyncRoot (data) {
         return true
       }
 
-      const events = filterEvents(select)
-      if (max && events.length > max) {
-        return null
-      } else {
-        return events
-      }
+      return city.events.filterMap(select, max, makeEvent)
     }
 
     function event ({id}) {
-      const events = filterEvents(event => event.id === id)
-      if (events.length) {
-        return events[0]
-      } else {
-        throw new Error('No event with id "' + id + '"')
-      }
+      return makeEvent(city.events.get(id))
     }
 
     const {slug, name} = city
@@ -245,85 +162,222 @@ function makeSyncRoot (data) {
   return {artists, putArtist, cities, city, putLocation, putEvent}
 }
 
+function matches (needles) {
+  if (needles) {
+    needles = normalizeString(needles).split(/\s+/)
+    return function (haystack) {
+      if (!haystack) {
+        return false
+      }
+      haystack = normalizeString(haystack)
+      return needles.every(needle => haystack.indexOf(needle) !== -1)
+    }
+  } else {
+    return function (haystack) {
+      return true
+    }
+  }
+}
+
 function normalizeString (s) {
   // https://stackoverflow.com/a/37511463/905845
   return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
-function fixData (data) {
-  data._ = data._ || {}
-  data._.sequences = data._.sequences || {}
-  data._.sequences.events = data._.sequences.events || 0
-
-  Joi.attempt(data, dataSchema)
-
-  const getArtist = slugify(data.artists, 'artist')[1]
-
-  Object.values(data.cities).forEach(city => {
-    city.events.forEach(event => {
-      if (!event.id) {
-        event.id = nextEventId(data)
-      }
-      if (event.artist) {
-        getArtist(event.artist)
-      }
-    })
-  })
-}
-
-function nextEventId (data) {
-  const id = hashids.encode(data._.sequences.events)
-  data._.sequences.events++
-  return id
-}
-
-function makeSlugSchema () {
-  return Joi.string().min(1)
-}
-
-const dataSchema = Joi.object({
-  _: Joi.object().required().keys({
-    sequences: Joi.object().required().keys({
-      events: Joi.number().integer().required()
-    })
-  }),
-  artists: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
-    name: Joi.string().required()
-  })),
-  cities: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
-    name: Joi.string().required(),
-    locations: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
+const encapsulateData = (function () {
+  const dataSchema = Joi.object({
+    _: Joi.object().required().keys({
+      sequences: Joi.object().required().keys({
+        events: Joi.number().integer().required()
+      })
+    }),
+    artists: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
       name: Joi.string().required()
     })),
-    tags: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
-      title: Joi.string().required()
-    })),
-    events: Joi.array().required().items(Joi.object({
-      id: makeSlugSchema(),
-      artist: makeSlugSchema(),
-      title: Joi.string(),
-      location: makeSlugSchema().required(),
-      tags: Joi.array().required().min(1).items(makeSlugSchema()),
-      occurrences: Joi.array().required().min(1).items(Joi.object({
-        start: Joi.string().required()
+    cities: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
+      name: Joi.string().required(),
+      locations: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
+        name: Joi.string().required()
+      })),
+      // @todo Make this an array (to preserve manual ordering of tags)
+      tags: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
+        title: Joi.string().required()
+      })),
+      events: Joi.array().required().items(Joi.object({
+        id: makeSlugSchema(),
+        artist: makeSlugSchema(),
+        title: Joi.string(),
+        location: makeSlugSchema().required(),
+        tags: Joi.array().required().min(1).items(makeSlugSchema()),
+        occurrences: Joi.array().required().min(1).items(Joi.object({
+          start: Joi.string().required()
+        }))
       }))
     }))
-  }))
-})
+  })
 
-function slugify (thingsBySlug, name) {
-  return [
-    Object.entries(thingsBySlug).map(([slug, thing]) => Object.assign({slug}, thing)),
-    function (slug) {
-      const thing = thingsBySlug[slug]
+  function makeSlugSchema () {
+    return Joi.string().min(1)
+  }
+
+  return encapsulateData
+
+  function encapsulateData (data) {
+    data._ = data._ || {}
+    data._.sequences = data._.sequences || {}
+    data._.sequences.events = data._.sequences.events || 0
+
+    Joi.attempt(data, dataSchema)
+
+    Object.values(data.cities).forEach(city => {
+      city.events.forEach(event => {
+        if (!event.id) {
+          event.id = nextEventId(data)
+        }
+      })
+    })
+
+    const artists = dictOfThingsBySlug(data.artists, 'artist', ({name}) => ({name}))
+
+    return {
+      artists,
+      cities: dictOfThingsBySlug(data.cities, 'city', ({name, locations, tags, events}) => {
+        locations = dictOfThingsBySlug(locations, 'location', ({name}) => ({name}))
+        tags = dictOfThingsBySlug(tags, 'tag', ({title}) => ({title}))
+
+        return {
+          name,
+          locations,
+          tags,
+          events: listOfThingsWithId(events, 'event', nextEventId, ({id, title, artist, location, tags: tags_, occurrences}) => ({
+            id,
+            title,
+            artist: slugOf(artist, artists),
+            location: slugOf(location, locations),
+            tags: listOfSlugsOf(tags_, tags),
+            occurrences
+          }))
+        }
+      })
+    }
+
+    function nextEventId () {
+      const id = hashids.encode(data._.sequences.events)
+      data._.sequences.events++
+      return id
+    }
+  }
+
+  function dictOfThingsBySlug (things, name, encapsulate) {
+    all()
+
+    return {get, all, filter, put}
+
+    function get (slug) {
+      const thing = things[slug]
       if (thing) {
-        return Object.assign({slug}, thing)
+        return make(slug, thing)
       } else {
         throw new Error('No ' + name + ' with slug "' + slug + '"')
       }
     }
-  ]
-}
+
+    function all () {
+      return Object.entries(things).map(([slug, thing]) => make(slug, thing))
+    }
+
+    function filter (select, max) {
+      var selected = all().filter(select)
+      if (max && selected.length > max) {
+        return null
+      } else {
+        return selected
+      }
+    }
+
+    function put (thing) {
+      const {slug} = thing
+      thing = Object.assign({}, thing)
+      delete thing.slug
+      things[slug] = thing
+      return make(slug, thing)
+    }
+
+    function make (slug, thing) {
+      return Object.assign({slug}, encapsulate(thing))
+    }
+  }
+
+  function slugOf (slug, things) {
+    resolve()
+
+    return {slug, resolve}
+
+    function resolve () {
+      return slug && things.get(slug)
+    }
+  }
+
+  function listOfSlugsOf (slugs, things) {
+    resolve()
+
+    return {slugs, resolve}
+
+    function resolve () {
+      return slugs.map(slug => things.get(slug))
+    }
+  }
+
+  function listOfThingsWithId (things, name, nextId, encapsulate) {
+    all()
+
+    return {get, all, filterMap, put}
+
+    function get (id) {
+      const thing = things.filter(thing => thing.id === id)
+      if (thing.length === 1) {
+        return encapsulate(thing[0])
+      } else {
+        throw new Error('No ' + name + ' with id "' + id + '"')
+      }
+    }
+
+    function all () {
+      return things.map(encapsulate)
+    }
+
+    function filterMap (select, max, f) {
+      var selected = all().filter(select)
+      if (max && selected.length > max) {
+        return null
+      } else {
+        return selected.map(f)
+      }
+    }
+
+    function put (thing) {
+      encapsulate(thing)
+      if (thing.id) {
+        var replaced = false
+        for (var i = 0; i !== things.length; ++i) {
+          if (things[i].id === thing.id) {
+            replaced = true
+            things[i] = thing
+            break
+          }
+        }
+        if (!replaced) {
+          throw new Error('No ' + name + ' with id "' + thing.id + '"')
+        }
+      } else {
+        thing = Object.assign({}, thing)
+        thing.id = nextId()
+        things.push(thing)
+      }
+      return encapsulate(thing)
+    }
+  }
+}())
 
 function make (config) {
   const rootValue = makeRoot(config)

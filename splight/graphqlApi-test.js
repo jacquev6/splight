@@ -160,6 +160,73 @@ describe('graphqlApi', function () {
         }
       )
     })
+
+    it('rejects wrong tag reference', function () {
+      const data = {
+        artists: {},
+        cities: {'city': {
+          name: 'City',
+          locations: {'location': {name: 'Location'}},
+          tags: {},
+          events: [{
+            location: 'location',
+            tags: ['tag'],
+            title: 'Title',
+            occurrences: [{start: '2018-07-12T12:00'}]
+          }]
+        }}
+      }
+
+      assert.throws(
+        () => graphqlApi.forTest.makeRoot(data),
+        new Error('No tag with slug "tag"')
+      )
+    })
+
+    it('rejects wrong location reference', function () {
+      const data = {
+        artists: {},
+        cities: {'city': {
+          name: 'City',
+          locations: {},
+          tags: {'tag': {title: 'Tag'}},
+          events: [{
+            location: 'location',
+            tags: ['tag'],
+            title: 'Title',
+            occurrences: [{start: '2018-07-12T12:00'}]
+          }]
+        }}
+      }
+
+      assert.throws(
+        () => graphqlApi.forTest.makeRoot(data),
+        new Error('No location with slug "location"')
+      )
+    })
+
+    it('rejects wrong artist reference', function () {
+      const data = {
+        artists: {},
+        cities: {'city': {
+          name: 'City',
+          locations: {'location': {name: 'Location'}},
+          tags: {'tag': {title: 'Tag'}},
+          events: [{
+            artist: 'artist',
+            location: 'location',
+            tags: ['tag'],
+            title: 'Title',
+            occurrences: [{start: '2018-07-12T12:00'}]
+          }]
+        }}
+      }
+
+      assert.throws(
+        () => graphqlApi.forTest.makeRoot(data),
+        new Error('No artist with slug "artist"')
+      )
+    })
   })
 
   function make (data) {
