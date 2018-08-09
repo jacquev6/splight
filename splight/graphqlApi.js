@@ -199,8 +199,8 @@ const encapsulateData = (function () {
       locations: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
         name: Joi.string().required()
       })),
-      // @todo Make this an array (to preserve manual ordering of tags)
-      tags: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
+      tags: Joi.array().required().items(Joi.object({
+        slug: makeSlugSchema().required(),
         title: Joi.string().required()
       })),
       events: Joi.array().required().items(Joi.object({
@@ -243,7 +243,7 @@ const encapsulateData = (function () {
       artists,
       cities: dictOfThingsBySlug(data.cities, 'city', ({name, locations, tags, events}) => {
         locations = dictOfThingsBySlug(locations, 'location', ({name}) => ({name}))
-        tags = dictOfThingsBySlug(tags, 'tag', ({title}) => ({title}))
+        tags = listOfThingsWithSlug(tags, 'tag', ({slug, title}) => ({slug, title}))
 
         return {
           name,
@@ -375,6 +375,32 @@ const encapsulateData = (function () {
         things.push(thing)
       }
       return encapsulate(thing)
+    }
+  }
+
+  function listOfThingsWithSlug (things, name, encapsulate) {
+    all()
+
+    const bySlug = Object.assign({}, ...things.map(thing => {
+      const o = {}
+      o[thing.slug] = thing
+      return o
+    }))
+
+    // If we ever add a 'put' function, it has to update bySlug
+    return {get, all}
+
+    function get (slug) {
+      const thing = bySlug[slug]
+      if (thing) {
+        return encapsulate(thing)
+      } else {
+        throw new Error('No ' + name + ' with slug "' + slug + '"')
+      }
+    }
+
+    function all () {
+      return things.map(encapsulate)
     }
   }
 }())

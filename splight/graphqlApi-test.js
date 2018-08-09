@@ -35,7 +35,7 @@ describe('graphqlApi', function () {
         cities: {'city': {
           name: 'City',
           locations: {'location': {name: 'Location'}},
-          tags: {'tag': {title: 'Tag'}},
+          tags: [{slug: 'tag', title: 'Tag'}],
           events: [{
             location: 'location',
             tags: ['tag'],
@@ -57,7 +57,7 @@ describe('graphqlApi', function () {
           cities: {'city': {
             name: 'City',
             locations: {'location': {name: 'Location'}},
-            tags: {'tag': {title: 'Tag'}},
+            tags: [{slug: 'tag', title: 'Tag'}],
             events: [{
               id: hashids.encode(0),
               location: 'location',
@@ -79,7 +79,7 @@ describe('graphqlApi', function () {
         cities: {'city': {
           name: 'City',
           locations: {'location': {name: 'Location'}},
-          tags: {'tag': {title: 'Tag'}},
+          tags: [{slug: 'tag', title: 'Tag'}],
           events: [{
             location: 'location',
             tags: ['tag'],
@@ -101,7 +101,7 @@ describe('graphqlApi', function () {
           cities: {'city': {
             name: 'City',
             locations: {'location': {name: 'Location'}},
-            tags: {'tag': {title: 'Tag'}},
+            tags: [{slug: 'tag', title: 'Tag'}],
             events: [{
               id: hashids.encode(10),
               location: 'location',
@@ -123,7 +123,7 @@ describe('graphqlApi', function () {
         cities: {'city': {
           name: 'City',
           locations: {'location': {name: 'Location'}},
-          tags: {'tag': {title: 'Tag'}},
+          tags: [{slug: 'tag', title: 'Tag'}],
           events: [{
             id: 'foobarbaz',
             location: 'location',
@@ -146,7 +146,7 @@ describe('graphqlApi', function () {
           cities: {'city': {
             name: 'City',
             locations: {'location': {name: 'Location'}},
-            tags: {'tag': {title: 'Tag'}},
+            tags: [{slug: 'tag', title: 'Tag'}],
             events: [{
               id: 'foobarbaz',
               location: 'location',
@@ -167,7 +167,7 @@ describe('graphqlApi', function () {
         cities: {'city': {
           name: 'City',
           locations: {'location': {name: 'Location'}},
-          tags: {},
+          tags: [],
           events: [{
             location: 'location',
             tags: ['tag'],
@@ -189,7 +189,7 @@ describe('graphqlApi', function () {
         cities: {'city': {
           name: 'City',
           locations: {},
-          tags: {'tag': {title: 'Tag'}},
+          tags: [{slug: 'tag', title: 'Tag'}],
           events: [{
             location: 'location',
             tags: ['tag'],
@@ -211,7 +211,7 @@ describe('graphqlApi', function () {
         cities: {'city': {
           name: 'City',
           locations: {'location': {name: 'Location'}},
-          tags: {'tag': {title: 'Tag'}},
+          tags: [{slug: 'tag', title: 'Tag'}],
           events: [{
             artist: 'artist',
             location: 'location',
@@ -284,10 +284,10 @@ describe('graphqlApi', function () {
               'location-1': {name: 'Location 1'},
               'location-2': {name: 'Location 2'}
             },
-            tags: {
-              'tag-1': {title: 'Tag 1'},
-              'tag-2': {title: 'Tag 2'}
-            },
+            tags: [
+              {slug: 'tag-1', title: 'Tag 1'},
+              {slug: 'tag-2', title: 'Tag 2'}
+            ],
             events: []
           }
         }
@@ -332,10 +332,10 @@ describe('graphqlApi', function () {
               'location-1': {name: 'Location 1'},
               'location-2': {name: 'Location 2'}
             },
-            tags: {
-              'tag-1': {title: 'Tag 1'},
-              'tag-2': {title: 'Tag 2'}
-            },
+            tags: [
+              {slug: 'tag-1', title: 'Tag 1'},
+              {slug: 'tag-2', title: 'Tag 2'}
+            ],
             events: [{
               location: 'location-1',
               tags: ['tag-1'],
@@ -389,13 +389,13 @@ describe('graphqlApi', function () {
           'no-events': {
             name: 'City',
             locations: {'location': {name: 'Location'}},
-            tags: {'tag': {title: 'Tag'}},
+            tags: [{slug: 'tag', title: 'Tag'}],
             events: []
           },
           'single-occurrence': {
             name: 'City',
             locations: {'location': {name: 'Location'}},
-            tags: {'tag': {title: 'Tag'}},
+            tags: [{slug: 'tag', title: 'Tag'}],
             events: [{
               location: 'location',
               tags: ['tag'],
@@ -405,7 +405,7 @@ describe('graphqlApi', function () {
           'several-occurrences': {
             name: 'City',
             locations: {'location': {name: 'Location'}},
-            tags: {'tag': {title: 'Tag'}},
+            tags: [{slug: 'tag', title: 'Tag'}],
             events: [{
               location: 'location',
               tags: ['tag'],
@@ -415,7 +415,7 @@ describe('graphqlApi', function () {
           'several-events': {
             name: 'City',
             locations: {'location': {name: 'Location'}},
-            tags: {'tag': {title: 'Tag'}},
+            tags: [{slug: 'tag', title: 'Tag'}],
             events: [
               {
                 location: 'location',
@@ -537,9 +537,9 @@ describe('graphqlApi', function () {
         const {checkRequest} = make({
           artists: {},
           cities: {
-            'city-1': {name: 'City 1', locations: {}, tags: {}, events: []},
-            'city-2': {name: 'City 2', locations: {}, tags: {}, events: []},
-            'city-3': {name: 'City 3', locations: {}, tags: {}, events: []}
+            'city-1': {name: 'City 1', locations: {}, tags: [], events: []},
+            'city-2': {name: 'City 2', locations: {}, tags: [], events: []},
+            'city-3': {name: 'City 3', locations: {}, tags: [], events: []}
           }
         })
 
@@ -556,7 +556,7 @@ describe('graphqlApi', function () {
           cities: {
             'city': {
               name: 'City',
-              tags: {},
+              tags: [],
               events: [],
               locations: {
                 'ok-literal': {name: 'name aeiou'},
@@ -586,7 +586,7 @@ describe('graphqlApi', function () {
           cities: {
             'city': {
               name: 'City',
-              tags: {},
+              tags: [],
               events: [],
               locations: {
                 '1': {name: '1'},
@@ -636,7 +636,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}, 'other-tag': {title: 'Other tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}, {slug: 'other-tag', title: 'Other tag'}],
               events: [
                 {
                   id: 'ok-single',
@@ -680,7 +680,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}, 'other-location': {name: 'Other location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [
                 {
                   id: 'ok',
@@ -712,7 +712,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [
                 {
                   id: 'ok',
@@ -752,7 +752,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [
                 {
                   title: 'title aeiou',
@@ -820,7 +820,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [
                 {
                   id: 'ko-before',
@@ -864,7 +864,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [
                 {
                   id: '1',
@@ -925,7 +925,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [{
                 id: 'event',
                 location: 'location',
@@ -949,7 +949,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: []
             }
           }
@@ -1023,7 +1023,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [{
                 artist: 'artist',
                 location: 'location',
@@ -1066,7 +1066,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {},
-              tags: {},
+              tags: [],
               events: []
             }
           }
@@ -1087,7 +1087,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {},
+              tags: [],
               events: []
             }
           }
@@ -1103,7 +1103,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {},
+              tags: [],
               events: []
             }
           }
@@ -1124,7 +1124,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'New name'}},
-              tags: {},
+              tags: [],
               events: []
             }
           }
@@ -1140,7 +1140,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [
                 {
                   location: 'location',
@@ -1187,7 +1187,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: []
             }
           }
@@ -1222,7 +1222,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [{
                 id: hashids.encode(12),
                 location: 'location',
@@ -1260,7 +1260,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: []
             }
           }
@@ -1297,7 +1297,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [{
                 id: hashids.encode(0),
                 location: 'location',
@@ -1332,7 +1332,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: []
             }
           }
@@ -1369,7 +1369,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [{
                 id: hashids.encode(0),
                 title: 'Title',
@@ -1406,7 +1406,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: []
             }
           }
@@ -1440,7 +1440,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: []
             }
           }
@@ -1456,7 +1456,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: []
             }
           }
@@ -1490,7 +1490,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: []
             }
           }
@@ -1506,7 +1506,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {},
+              tags: [],
               events: []
             }
           }
@@ -1540,7 +1540,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {},
+              tags: [],
               events: []
             }
           }
@@ -1557,7 +1557,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [
                 {
                   id: 'other-event',
@@ -1629,7 +1629,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: [
                 {
                   id: 'other-event',
@@ -1684,7 +1684,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: []
             }
           }
@@ -1718,7 +1718,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: {'tag': {title: 'Tag'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
               events: []
             }
           }
@@ -1733,7 +1733,7 @@ describe('graphqlApi', function () {
           name: 'City',
           locations: {},
           events: [],
-          tags: {'tag': {title: 'Tag'}}
+          tags: [{slug: 'tag', title: 'Tag'}]
         }}
       })
 
@@ -1772,7 +1772,7 @@ describe('graphqlApi', function () {
             tags: ['tag'],
             occurrences: [{start: '2018-07-14T12:00'}]
           }],
-          tags: {'tag': {title: 'Tag'}}
+          tags: [{slug: 'tag', title: 'Tag'}]
         }}
       })
     })

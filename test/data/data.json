@@ -90,7 +90,11 @@
         "location-3": {"name": "Lieu à Avalon 3"}
       },
       "name": "Avalon",
-      "tags": {"tag-1": {"title": "Catégorie 1"}, "tag-2": {"title": "Catégorie 2"}, "tag-3": {"title": "Catégorie 3"}}
+      "tags": [
+        {"slug": "tag-1", "title": "Catégorie 1"},
+        {"slug": "tag-2", "title": "Catégorie 2"},
+        {"slug": "tag-3", "title": "Catégorie 3"}
+      ]
     },
     "shangri-la": {
       "events": [
@@ -105,7 +109,7 @@
       ],
       "locations": {"location-1": {"name": "Lieu à Shangri-La 1"}, "location-2": {"name": "Lieu à Shangri-La 2"}},
       "name": "Shangri-La",
-      "tags": {"tag-1": {"title": "Seule catégorie"}}
+      "tags": [{"slug": "tag-1", "title": "Seule catégorie"}]
     }
   }
 }
