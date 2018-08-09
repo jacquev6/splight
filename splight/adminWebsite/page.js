@@ -25,11 +25,11 @@ async function initialize () {
 
   const eventEditor = (function () {
     var active
-    const modal = jQuery('#spa-modify-event-modal')
+    const modal = jQuery('#spa-edit-item-modal')
 
     modal.modal({backdrop: 'static', keyboard: false, show: false})
     modal.on('hide.bs.modal', deactivate)
-    jQuery('#spa-modify-event-save').on('click', save)
+    jQuery('#spa-edit-item-save').on('click', save)
 
     doc.on('click', '#spa-edit-event-edit-preview-when', function () {
       active.editingWhen = !active.editingWhen
@@ -368,8 +368,8 @@ async function initialize () {
     function refreshHeaderAndFooter () {
       modal.find('.modal-title').text(active.event.title)
       const message = validateEvent()
-      modal.find('#spa-modify-event-message').text(message)
-      jQuery('#spa-modify-event-save').attr('disabled', message !== '')
+      modal.find('#spa-edit-item-message').text(message)
+      jQuery('#spa-edit-item-save').attr('disabled', message !== '')
       modal.modal('handleUpdate')
     }
 
@@ -430,7 +430,7 @@ async function initialize () {
 
       modal.modal('hide')
 
-      eventsFilter.refreshContent()
+      // eventsFilter.refreshContent()
     }
 
     function deactivate () {
@@ -439,14 +439,13 @@ async function initialize () {
   }())
 
   const eventsFilter = (function () {
-    var active
-    const filter = jQuery('#spa-events-filter')
-    const filteredEvents = jQuery('#spa-filtered-events')
-    const filterTag = jQuery('#spa-filter-tag')
-    const filterLocation = jQuery('#spa-filter-location')
-    const filterArtist = jQuery('#spa-filter-artist')
-    const filterDate = jQuery('#spa-filter-date')
-    const filterTitle = jQuery('#spa-filter-title')
+    var active = null
+    const filteredEvents = jQuery('#spa-filtered-items')
+    const filterTag = jQuery('#spa-filter-event-tag')
+    const filterLocation = jQuery('#spa-filter-event-location')
+    const filterArtist = jQuery('#spa-filter-event-artist')
+    const filterDate = jQuery('#spa-filter-event-date')
+    const filterTitle = jQuery('#spa-filter-event-title')
 
     filterTag.on('change', refreshContent)
     filterLocation.on('change', refreshContent)
@@ -474,12 +473,9 @@ async function initialize () {
       })
     })
 
-    deactivate()
-
-    return {activate, deactivate, refreshContent}
+    return {activate, refreshContent}
 
     async function activate ({citySlug}) {
-      deactivate()
       active = {citySlug}
 
       const data = await request({
@@ -496,20 +492,6 @@ async function initialize () {
       filterTitle.val('')
 
       refreshContent()
-
-      filter.show()
-      filteredEvents.show()
-
-      if (isDebug) {
-        filterTag.val('tag-1').trigger('change')
-        eventEditor.activate({citySlug: active.citySlug, eventId: 'WjnegYbwZ1'})
-      }
-    }
-
-    function deactivate () {
-      active = null
-      filter.hide()
-      filteredEvents.hide()
     }
 
     async function refreshContent () {
@@ -590,6 +572,197 @@ async function initialize () {
     }
   }())
 
+  const artistsFilter = (function () {
+    const filteredArtists = jQuery('#spa-filtered-items')
+    const filterName = jQuery('#spa-filter-artist-name')
+
+    var filterNameTimeoutId = null
+    filterName.on('input', () => {
+      clearTimeout(filterNameTimeoutId)
+      filterNameTimeoutId = setTimeout(refreshContent, 200)
+    })
+
+    return {activate}
+
+    function activate () {
+      refreshContent()
+    }
+
+    async function refreshContent () {
+      const name = filterName.val()
+
+      const {artists} = await request({
+        requestString: 'query($name:String){artists(name:$name,max:10){slug name}}',
+        variableValues: {name}
+      })
+
+      displayArtists(artists)
+    }
+
+    function displayArtists (artists) {
+      const template = `
+        {{#zero}}<p>Aucun artiste ne correspond au filtre.</p>{{/zero}}
+        {{#one}}<p>L'artiste suivant est le seul correspondant au filtre.</p>{{/one}}
+        {{#several}}<p>Les {{artists.length}} artistes suivants correspondent au filtre.</p>{{/several}}
+        {{^tooMany}}<p><button id="spa-create-artist" class="btn btn-primary" disabled>Nouvel artiste</button></p>{{/tooMany}}
+        {{#tooMany}}<p>Trop d'artistes correspondent. Utiliser le filtre pour raffiner la sélection.</p>{{/tooMany}}
+        {{#artists}}
+        <div class="card m-1">
+          <div class="card-header">
+            {{name}}
+          </div>
+          <div class="card-body">
+            {{{details.html}}}
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary spa-modify-artist" disabled data-spa-artist-slug="{{slug}}">Modifier</button>
+          </div>
+        </div>
+        {{/artists}}
+      `
+
+      var zero, one, several, tooMany
+      if (artists) {
+        tooMany = false
+
+        artists = artists.map(({slug, name}) => {
+          const artist = {slug, name}
+
+          artist.details = {html: ''}
+
+          return artist
+        })
+
+        zero = artists.length === 0
+        one = artists.length === 1
+        several = artists.length > 1
+      } else {
+        zero = false
+        one = false
+        several = false
+        tooMany = true
+      }
+
+      filteredArtists.html(mustache.render(template, {zero, one, several, tooMany, artists}))
+    }
+  }())
+
+  const locationsFilter = (function () {
+    var active = null
+    const filteredLocations = jQuery('#spa-filtered-items')
+    const filterName = jQuery('#spa-filter-location-name')
+
+    var filterNameTimeoutId = null
+    filterName.on('input', () => {
+      clearTimeout(filterNameTimeoutId)
+      filterNameTimeoutId = setTimeout(refreshContent, 200)
+    })
+
+    return {activate}
+
+    function activate ({citySlug}) {
+      active = {citySlug}
+      refreshContent()
+    }
+
+    async function refreshContent () {
+      const name = filterName.val()
+
+      const {city: {locations}} = await request({
+        requestString: 'query($citySlug:ID!,$name:String){city(slug:$citySlug){locations(name:$name,max:10){slug name}}}',
+        variableValues: {
+          citySlug: active.citySlug,
+          name
+        }
+      })
+
+      displayLocations(locations)
+    }
+
+    function displayLocations (locations) {
+      const template = `
+        {{#zero}}<p>Aucun lieu ne correspond au filtre.</p>{{/zero}}
+        {{#one}}<p>Le lieu suivant est le seul correspondant au filtre.</p>{{/one}}
+        {{#several}}<p>Les {{locations.length}} lieux suivants correspondent au filtre.</p>{{/several}}
+        {{^tooMany}}<p><button id="spa-create-location" class="btn btn-primary" disabled>Nouveau lieu</button></p>{{/tooMany}}
+        {{#tooMany}}<p>Trop de lieux correspondent. Utiliser le filtre pour raffiner la sélection.</p>{{/tooMany}}
+        {{#locations}}
+        <div class="card m-1">
+          <div class="card-header">
+            {{name}}
+          </div>
+          <div class="card-body">
+            {{{details.html}}}
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary spa-modify-location" disabled data-spa-location-slug="{{slug}}">Modifier</button>
+          </div>
+        </div>
+        {{/locations}}
+      `
+
+      var zero, one, several, tooMany
+      if (locations) {
+        tooMany = false
+
+        locations = locations.map(({slug, name}) => {
+          const location = {slug, name}
+
+          location.details = {html: ''}
+
+          return location
+        })
+
+        zero = locations.length === 0
+        one = locations.length === 1
+        several = locations.length > 1
+      } else {
+        zero = false
+        one = false
+        several = false
+        tooMany = true
+      }
+
+      filteredLocations.html(mustache.render(template, {zero, one, several, tooMany, locations}))
+    }
+  }())
+
+  const cityEditor = (function () {
+    var active = null
+    const cityEditor = jQuery('.spa-city-editor')
+    const editEvents = jQuery('#spa-edit-events')
+    const editArtists = jQuery('#spa-edit-artists')
+    const editLocations = jQuery('#spa-edit-locations')
+
+    editEvents.on('click', function () {
+      eventsFilter.activate(active)
+    })
+
+    editArtists.on('click', function () {
+      artistsFilter.activate(active)
+    })
+
+    editLocations.on('click', function () {
+      locationsFilter.activate(active)
+    })
+
+    deactivate()
+
+    return {activate, deactivate}
+
+    function activate ({citySlug}) {
+      active = {citySlug}
+      cityEditor.show()
+      editEvents.tab('show')
+      eventsFilter.activate({citySlug})
+    }
+
+    function deactivate () {
+      active = null
+      cityEditor.hide()
+    }
+  }())
+
   const selectCity = jQuery('#spa-select-city')
 
   fillSelect(
@@ -603,9 +776,9 @@ async function initialize () {
   selectCity.on('change', () => {
     const citySlug = selectCity.val()
     if (citySlug === '-') {
-      eventsFilter.deactivate()
+      cityEditor.deactivate()
     } else {
-      eventsFilter.activate({citySlug})
+      cityEditor.activate({citySlug})
     }
   })
 
