@@ -2,7 +2,6 @@
 
 const assert = require('assert').strict
 const moment = require('moment')
-const URI = require('urijs')
 
 const cityContent = require('./widgets/cityContent')
 const cityTitle = require('./widgets/cityTitle')
@@ -93,10 +92,10 @@ timespan.ofSlugs = function (citySlug, timespanSlug) {
   }
 }
 
-function fromPath (url) {
-  const parts = URI.parse(url).path.split('/')
-  assert(parts[0] === '', 'Unexpected path: ' + url)
-  assert(parts.slice(-1)[0] === '', 'Unexpected path: ' + url)
+function fromPath (path) {
+  const parts = path.split('/')
+  assert(parts[0] === '', 'Unexpected path: ' + path)
+  assert(parts.slice(-1)[0] === '', 'Unexpected path: ' + path)
   switch (parts.length) {
     case 2:
       return root()
@@ -105,7 +104,7 @@ function fromPath (url) {
     case 4:
       return timespan.ofSlugs(parts[1], parts[2])
     default:
-      assert.fail('Unexpected path: ' + url)
+      assert.fail('Unexpected path: ' + path)
   }
 }
 

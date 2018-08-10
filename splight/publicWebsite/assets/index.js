@@ -27,9 +27,11 @@ if (hasModernJavascript) {
   moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 
   const pages = require('../pages')
+  const preBrowser = require('../preBrowser')
 
   jQuery(function () {
     const page = pages.fromPath(URI.parse(window.location.href).path)
     page.content.initialize()
+    preBrowser.initialize()
   })
 }

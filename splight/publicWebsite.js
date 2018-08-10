@@ -36,7 +36,7 @@ async function makeRouter ({dataDirectory, scripts}) {
     router.get(asset.path, (content => async (req, res) => res.type(type).send(content))(await asset.content))
   }
 
-  function handler (pageClass) {
+  function htmlHandler (pageClass) {
     return async (req, res, next) => {
       const page = pageClass.makeOne(req)
       if (page) {
@@ -51,8 +51,24 @@ async function makeRouter ({dataDirectory, scripts}) {
     }
   }
 
+  function jsonHandler (pageClass) {
+    return async (req, res, next) => {
+      const page = pageClass.makeOne(req)
+      if (page) {
+        const {data} = await api.request(page.dataRequest)
+        if (page.exists(data)) {
+          res.type('.json')
+          res.send(data)
+          return
+        }
+      }
+      next('route')
+    }
+  }
+
   for (var pageClass of generatePageClasses()) {
-    router.get(pageClass.path, handler(pageClass))
+    router.get(pageClass.path, htmlHandler(pageClass))
+    router.get(pageClass.path + 'data.json', jsonHandler(pageClass))
     console.log('Ready to serve', pageClass.path)
   }
 
@@ -82,11 +98,13 @@ async function generate ({dataDirectory, outputDirectory}) {
     const pageClassData = pageClass.dataRequest && (await api.request(pageClass.dataRequest)).data
     for (var page of pageClass.makeAll(pageClassData)) {
       sitemap.add(page.path)
-      const fileName = path.join(outputDirectory, page.path, 'index.html')
-      console.log('Generating', fileName)
+      const htmlFileName = path.join(outputDirectory, page.path, 'index.html')
+      console.log('Generating', htmlFileName)
       const {data} = await api.request(page.dataRequest)
       assert(page.exists(data))
-      fs.outputFile(fileName, htmlMinifier.minify(container.make({page, scripts: []}).render(data), {collapseWhitespace: true}))
+      fs.outputFile(htmlFileName, htmlMinifier.minify(container.make({page, scripts: []}).render(data), {collapseWhitespace: true}))
+      const jsonFileName = path.join(outputDirectory, page.path, 'data.json')
+      fs.outputJSON(jsonFileName, data)
     }
   }
 
