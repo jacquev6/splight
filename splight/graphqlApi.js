@@ -227,7 +227,7 @@ const encapsulateData = (function () {
   })
 
   function makeSlugSchema () {
-    return Joi.string().regex(/^[a-z][-a-z0-9]+$/)
+    return Joi.string().regex(/^[a-z][-a-z0-9]*$/)
   }
 
   return encapsulateData

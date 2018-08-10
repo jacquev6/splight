@@ -298,27 +298,35 @@ async function initialize () {
 
     return {create, modify}
 
-    async function create ({citySlug}) {
-      // @todo Initialize event with values from filter
-      const event = {
-        title: null,
-        location: null,
-        tags: [],
-        artist: null,
+    async function create ({citySlug, tag, location, artist, title, date}) {
+      const preActivated = await preActivate({citySlug})
+
+      preActivated.event = {
+        title: title || null,
+        location: location ? preActivated.locationsBySlug[location] : null,
+        tags: tag ? [preActivated.tagsBySlug[tag]] : [],
+        artist: artist ? preActivated.artistsBySlug[artist] : null,
         occurrences: []
       }
-      await activate({citySlug, event})
+
+      preActivated.newOccurrence = date ? date + 'T??:??' : null
+
+      activate(preActivated)
     }
 
     async function modify ({citySlug, eventId}) {
+      const preActivated = await preActivate({citySlug})
+
       const {city: {event}} = await request({
         requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){id title location{slug name} tags{slug title} artist{slug name} occurrences{start}}}}',
         variableValues: {citySlug, eventId}
       })
-      await activate({citySlug, event})
+      preActivated.event = event
+
+      activate(preActivated)
     }
 
-    async function activate ({citySlug, event}) {
+    async function preActivate ({citySlug}) {
       const {artists, city: {locations, tags}} = await request({
         requestString: 'query($citySlug:ID!){artists{slug name} city(slug:$citySlug){locations{slug name} tags{slug title}}}',
         variableValues: {citySlug}
@@ -333,7 +341,7 @@ async function initialize () {
       const tagsBySlug = {}
       tags.forEach(tag => { tagsBySlug[tag.slug] = tag })
 
-      active = {
+      return {
         citySlug,
         artists,
         artistsBySlug,
@@ -341,7 +349,6 @@ async function initialize () {
         locationsBySlug,
         tags,
         tagsBySlug,
-        event,
         editingWhen: false,
         editingWhat: false,
         editingWhere: false,
@@ -351,7 +358,10 @@ async function initialize () {
         cachedNewArtist: {slug: '', name: ''},
         newOccurrence: null
       }
+    }
 
+    function activate (preActivated) {
+      active = preActivated
       refreshContent()
       modal.modal('show')
     }
@@ -430,7 +440,7 @@ async function initialize () {
 
       modal.modal('hide')
 
-      // eventsFilter.refreshContent()
+      eventsFilter.refreshContent()
     }
 
     function deactivate () {
@@ -462,8 +472,19 @@ async function initialize () {
     })
 
     doc.on('click', '#spa-create-event', function () {
+      const tag = filterTag.val()
+      const location = filterLocation.val()
+      const artist = filterArtist.val()
+      const date = moment(filterDate.val(), moment.HTML5_FMT.DATE, true)
+      const title = filterTitle.val()
+
       eventEditor.create({
-        citySlug: active.citySlug
+        citySlug: active.citySlug,
+        tag: tag === '-' ? undefined : tag,
+        location: location === '-' ? undefined : location,
+        artist: artist === '-' ? undefined : artist,
+        title: title === '' ? undefined : title,
+        date: date.isValid() ? date.format(moment.HTML5_FMT.DATE) : undefined
       })
     })
     doc.on('click', '.spa-modify-event', function () {
