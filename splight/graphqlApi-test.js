@@ -15,7 +15,7 @@ const hashids = new Hashids('', 10)
 describe('graphqlApi', function () {
   describe('make', function () {
     it('works', async function () {
-      var data = {artists: {}, cities: {}}
+      var data = {}
       const {request} = graphqlApi.make({
         load: async () => data,
         save: async d => { data = d }
@@ -40,9 +40,7 @@ describe('graphqlApi', function () {
             location: 'location',
             tags: ['tag'],
             title: 'Title',
-            occurrences: [
-              {start: '2018-07-12T12:00'}
-            ]
+            occurrences: [{start: '2018-07-12T12:00'}]
           }]
         }}
       }
@@ -63,9 +61,7 @@ describe('graphqlApi', function () {
               location: 'location',
               tags: ['tag'],
               title: 'Title',
-              occurrences: [
-                {start: '2018-07-12T12:00'}
-              ]
+              occurrences: [{start: '2018-07-12T12:00'}]
             }]
           }}
         }
@@ -84,9 +80,7 @@ describe('graphqlApi', function () {
             location: 'location',
             tags: ['tag'],
             title: 'Title',
-            occurrences: [
-              {start: '2018-07-12T12:00'}
-            ]
+            occurrences: [{start: '2018-07-12T12:00'}]
           }]
         }}
       }
@@ -107,9 +101,7 @@ describe('graphqlApi', function () {
               location: 'location',
               tags: ['tag'],
               title: 'Title',
-              occurrences: [
-                {start: '2018-07-12T12:00'}
-              ]
+              occurrences: [{start: '2018-07-12T12:00'}]
             }]
           }}
         }
@@ -129,9 +121,7 @@ describe('graphqlApi', function () {
             location: 'location',
             tags: ['tag'],
             title: 'Title',
-            occurrences: [
-              {start: '2018-07-12T12:00'}
-            ]
+            occurrences: [{start: '2018-07-12T12:00'}]
           }]
         }}
       }
@@ -152,9 +142,7 @@ describe('graphqlApi', function () {
               location: 'location',
               tags: ['tag'],
               title: 'Title',
-              occurrences: [
-                {start: '2018-07-12T12:00'}
-              ]
+              occurrences: [{start: '2018-07-12T12:00'}]
             }]
           }}
         }
@@ -163,11 +151,9 @@ describe('graphqlApi', function () {
 
     it('rejects wrong tag reference', function () {
       const data = {
-        artists: {},
         cities: {'city': {
           name: 'City',
           locations: {'location': {name: 'Location'}},
-          tags: [],
           events: [{
             location: 'location',
             tags: ['tag'],
@@ -185,10 +171,8 @@ describe('graphqlApi', function () {
 
     it('rejects wrong location reference', function () {
       const data = {
-        artists: {},
         cities: {'city': {
           name: 'City',
-          locations: {},
           tags: [{slug: 'tag', title: 'Tag'}],
           events: [{
             location: 'location',
@@ -207,7 +191,6 @@ describe('graphqlApi', function () {
 
     it('rejects wrong artist reference', function () {
       const data = {
-        artists: {},
         cities: {'city': {
           name: 'City',
           locations: {'location': {name: 'Location'}},
@@ -287,8 +270,7 @@ describe('graphqlApi', function () {
             tags: [
               {slug: 'tag-1', title: 'Tag 1'},
               {slug: 'tag-2', title: 'Tag 2'}
-            ],
-            events: []
+            ]
           }
         }
       })
@@ -384,13 +366,11 @@ describe('graphqlApi', function () {
 
     it('returns dates', async function () {
       const {checkRequest} = make({
-        artists: {},
         cities: {
           'no-events': {
             name: 'City',
             locations: {'location': {name: 'Location'}},
-            tags: [{slug: 'tag', title: 'Tag'}],
-            events: []
+            tags: [{slug: 'tag', title: 'Tag'}]
           },
           'single-occurrence': {
             name: 'City',
@@ -460,8 +440,7 @@ describe('graphqlApi', function () {
             'ok-accentuated': {name: 'name àéïôù'},
             'ko-not-all-words': {name: 'name'},
             'ko-title-no-match': {name: 'foobar'}
-          },
-          cities: {}
+          }
         })
 
         await checkRequest(
@@ -475,12 +454,11 @@ describe('graphqlApi', function () {
       it('limits artists returned', async function () {
         const {checkRequest} = make({
           artists: {
-            '1': {name: '1'},
-            '2': {name: '2'},
-            '3': {name: '3'},
-            '4': {name: '4'}
-          },
-          cities: {}
+            'a-1': {name: '1'},
+            'a-2': {name: '2'},
+            'a-3': {name: '3'},
+            'a-4': {name: '4'}
+          }
         })
 
         await checkRequest(
@@ -500,14 +478,14 @@ describe('graphqlApi', function () {
         await checkRequest(
           '{artists(max:4){slug}}',
           {
-            data: {artists: [{slug: '1'}, {slug: '2'}, {slug: '3'}, {slug: '4'}]}
+            data: {artists: [{slug: 'a-1'}, {slug: 'a-2'}, {slug: 'a-3'}, {slug: 'a-4'}]}
           }
         )
 
         await checkRequest(
           '{artists(max:25){slug}}',
           {
-            data: {artists: [{slug: '1'}, {slug: '2'}, {slug: '3'}, {slug: '4'}]}
+            data: {artists: [{slug: 'a-1'}, {slug: 'a-2'}, {slug: 'a-3'}, {slug: 'a-4'}]}
           }
         )
       })
@@ -517,7 +495,7 @@ describe('graphqlApi', function () {
       const get = 'query($slug:ID!){city(slug:$slug){name}}'
 
       it("doesn't find city", async function () {
-        const {checkRequest} = make({artists: {}, cities: {}})
+        const {checkRequest} = make({})
 
         await checkRequest(
           get,
@@ -535,11 +513,10 @@ describe('graphqlApi', function () {
 
       it('finds cities', async function () {
         const {checkRequest} = make({
-          artists: {},
           cities: {
-            'city-1': {name: 'City 1', locations: {}, tags: [], events: []},
-            'city-2': {name: 'City 2', locations: {}, tags: [], events: []},
-            'city-3': {name: 'City 3', locations: {}, tags: [], events: []}
+            'city-1': {name: 'City 1'},
+            'city-2': {name: 'City 2'},
+            'city-3': {name: 'City 3'}
           }
         })
 
@@ -552,12 +529,9 @@ describe('graphqlApi', function () {
     describe('city.location', function () {
       it('filters by name', async function () {
         const {checkRequest} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
-              tags: [],
-              events: [],
               locations: {
                 'ok-literal': {name: 'name aeiou'},
                 'ok-reversed': {name: 'aeiou name'},
@@ -582,17 +556,14 @@ describe('graphqlApi', function () {
 
       it('limits locations returned', async function () {
         const {checkRequest} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
-              tags: [],
-              events: [],
               locations: {
-                '1': {name: '1'},
-                '2': {name: '2'},
-                '3': {name: '3'},
-                '4': {name: '4'}
+                'l-1': {name: '1'},
+                'l-2': {name: '2'},
+                'l-3': {name: '3'},
+                'l-4': {name: '4'}
               }
             }
           }
@@ -615,14 +586,14 @@ describe('graphqlApi', function () {
         await checkRequest(
           '{cities{locations(max:4){slug}}}',
           {
-            data: {cities: [{locations: [{slug: '1'}, {slug: '2'}, {slug: '3'}, {slug: '4'}]}]}
+            data: {cities: [{locations: [{slug: 'l-1'}, {slug: 'l-2'}, {slug: 'l-3'}, {slug: 'l-4'}]}]}
           }
         )
 
         await checkRequest(
           '{cities{locations(max:25){slug}}}',
           {
-            data: {cities: [{locations: [{slug: '1'}, {slug: '2'}, {slug: '3'}, {slug: '4'}]}]}
+            data: {cities: [{locations: [{slug: 'l-1'}, {slug: 'l-2'}, {slug: 'l-3'}, {slug: 'l-4'}]}]}
           }
         )
       })
@@ -631,7 +602,6 @@ describe('graphqlApi', function () {
     describe('city.events', function () {
       it('filters by tag', async function () {
         const {checkRequest} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
@@ -675,7 +645,6 @@ describe('graphqlApi', function () {
 
       it('filters by location', async function () {
         const {checkRequest} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
@@ -747,7 +716,6 @@ describe('graphqlApi', function () {
 
       it('filters by title', async function () {
         const {checkRequest} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
@@ -815,7 +783,6 @@ describe('graphqlApi', function () {
 
       it('filters by dates', async function () {
         const {checkRequest} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
@@ -859,7 +826,6 @@ describe('graphqlApi', function () {
 
       it('limits events returned', async function () {
         const {checkRequest} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
@@ -920,7 +886,6 @@ describe('graphqlApi', function () {
     describe('city.event', function () {
       it('find event by id', async function () {
         const {checkRequest} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
@@ -944,13 +909,11 @@ describe('graphqlApi', function () {
 
       it("doesn't find event by id", async function () {
         const {checkRequest} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: [{slug: 'tag', title: 'Tag'}],
-              events: []
+              tags: [{slug: 'tag', title: 'Tag'}]
             }
           }
         })
@@ -977,7 +940,7 @@ describe('graphqlApi', function () {
       const put = `mutation($artist:IArtist!){putArtist(artist:$artist){${fields}}}`
 
       it('adds an artist', async function () {
-        const {checkRequest, checkData} = make({artists: {}, cities: {}})
+        const {checkRequest, checkData} = make({})
 
         await checkRequest(get, {data: {artists: []}})
 
@@ -997,7 +960,7 @@ describe('graphqlApi', function () {
       })
 
       it('modifies an artist', async function () {
-        const {checkRequest, checkData} = make({artists: {'artist': {name: 'Artist'}}, cities: {}})
+        const {checkRequest, checkData} = make({artists: {'artist': {name: 'Artist'}}})
 
         await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist'}]}})
 
@@ -1060,17 +1023,7 @@ describe('graphqlApi', function () {
       const put = `mutation($location:ILocation!){putLocation(location:$location){${fields}}}`
 
       it('adds a location', async function () {
-        const {checkRequest, checkData} = make({
-          artists: {},
-          cities: {
-            'city': {
-              name: 'City',
-              locations: {},
-              tags: [],
-              events: []
-            }
-          }
-        })
+        const {checkRequest, checkData} = make({cities: {'city': {name: 'City'}}})
 
         await checkRequest(get, {data: {cities: [{slug: 'city', locations: []}]}})
 
@@ -1098,13 +1051,10 @@ describe('graphqlApi', function () {
 
       it('modifies a location', async function () {
         const {checkRequest, checkData} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'Location'}},
-              tags: [],
-              events: []
+              locations: {'location': {name: 'Location'}}
             }
           }
         })
@@ -1135,21 +1085,16 @@ describe('graphqlApi', function () {
 
       it('propagates changes to events', async function () {
         const {checkRequest} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
               tags: [{slug: 'tag', title: 'Tag'}],
-              events: [
-                {
-                  location: 'location',
-                  tags: ['tag'],
-                  occurrences: [
-                    {start: '2018-07-14T12:00'}
-                  ]
-                }
-              ]
+              events: [{
+                location: 'location',
+                tags: ['tag'],
+                occurrences: [{start: '2018-07-14T12:00'}]
+              }]
             }
           }
         })
@@ -1187,8 +1132,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: [{slug: 'tag', title: 'Tag'}],
-              events: []
+              tags: [{slug: 'tag', title: 'Tag'}]
             }
           }
         })
@@ -1228,9 +1172,7 @@ describe('graphqlApi', function () {
                 location: 'location',
                 artist: 'artist',
                 tags: ['tag'],
-                occurrences: [
-                  {start: '2018-07-14T12:00'}
-                ],
+                occurrences: [{start: '2018-07-14T12:00'}],
                 title: 'Title'
               }]
             }
@@ -1260,8 +1202,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: [{slug: 'tag', title: 'Tag'}],
-              events: []
+              tags: [{slug: 'tag', title: 'Tag'}]
             }
           }
         })
@@ -1327,13 +1268,11 @@ describe('graphqlApi', function () {
 
       it('adds an event without artist', async function () {
         const {checkRequest, checkData} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: [{slug: 'tag', title: 'Tag'}],
-              events: []
+              tags: [{slug: 'tag', title: 'Tag'}]
             }
           }
         })
@@ -1375,9 +1314,7 @@ describe('graphqlApi', function () {
                 title: 'Title',
                 location: 'location',
                 tags: ['tag'],
-                occurrences: [
-                  {start: '2018-07-14T12:00'}
-                ]
+                occurrences: [{start: '2018-07-14T12:00'}]
               }]
             }
           }
@@ -1401,13 +1338,11 @@ describe('graphqlApi', function () {
 
       it("doesn't add event with unexisting artist", async function () {
         const {checkRequest, checkData} = make({
-          artists: {},
           cities: {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: [{slug: 'tag', title: 'Tag'}],
-              events: []
+              tags: [{slug: 'tag', title: 'Tag'}]
             }
           }
         })
@@ -1455,9 +1390,7 @@ describe('graphqlApi', function () {
           cities: {
             'city': {
               name: 'City',
-              locations: {},
-              tags: [{slug: 'tag', title: 'Tag'}],
-              events: []
+              tags: [{slug: 'tag', title: 'Tag'}]
             }
           }
         })
@@ -1505,9 +1438,7 @@ describe('graphqlApi', function () {
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'Location'}},
-              tags: [],
-              events: []
+              locations: {'location': {name: 'Location'}}
             }
           }
         })
@@ -1560,7 +1491,7 @@ describe('graphqlApi', function () {
               tags: [{slug: 'tag', title: 'Tag'}],
               events: [
                 {
-                  id: 'other-event',
+                  id: 'otherEvent',
                   location: 'location',
                   tags: ['tag'],
                   occurrences: [{start: '2018-07-14T11:00'}]
@@ -1582,7 +1513,7 @@ describe('graphqlApi', function () {
             slug: 'city',
             events: [
               {
-                id: 'other-event',
+                id: 'otherEvent',
                 title: null,
                 occurrences: [{start: '2018-07-14T11:00'}],
                 artist: null,
@@ -1632,7 +1563,7 @@ describe('graphqlApi', function () {
               tags: [{slug: 'tag', title: 'Tag'}],
               events: [
                 {
-                  id: 'other-event',
+                  id: 'otherEvent',
                   location: 'location',
                   tags: ['tag'],
                   occurrences: [{start: '2018-07-14T11:00'}]
@@ -1656,7 +1587,7 @@ describe('graphqlApi', function () {
             slug: 'city',
             events: [
               {
-                id: 'other-event',
+                id: 'otherEvent',
                 title: null,
                 occurrences: [{start: '2018-07-14T11:00'}],
                 artist: null,
@@ -1684,8 +1615,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: [{slug: 'tag', title: 'Tag'}],
-              events: []
+              tags: [{slug: 'tag', title: 'Tag'}]
             }
           }
         })
@@ -1728,11 +1658,8 @@ describe('graphqlApi', function () {
 
     it('adds artist, location and event in a single call', async function () {
       const {checkRequest, checkData} = make({
-        artists: {},
         cities: {'city': {
           name: 'City',
-          locations: {},
-          events: [],
           tags: [{slug: 'tag', title: 'Tag'}]
         }}
       })

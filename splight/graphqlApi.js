@@ -185,39 +185,49 @@ function normalizeString (s) {
 }
 
 const encapsulateData = (function () {
-  const dataSchema = Joi.object({
-    _: Joi.object().required().keys({
-      sequences: Joi.object().required().keys({
-        events: Joi.number().integer().required()
-      })
-    }),
-    artists: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
-      name: Joi.string().required()
-    })),
-    cities: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
-      name: Joi.string().required(),
-      locations: Joi.object().required().pattern(makeSlugSchema(), Joi.object({
-        name: Joi.string().required()
-      })),
-      tags: Joi.array().required().items(Joi.object({
-        slug: makeSlugSchema().required(),
-        title: Joi.string().required()
-      })),
-      events: Joi.array().required().items(Joi.object({
-        id: makeSlugSchema(),
-        artist: makeSlugSchema(),
-        title: Joi.string(),
-        location: makeSlugSchema().required(),
-        tags: Joi.array().required().min(1).items(makeSlugSchema()),
-        occurrences: Joi.array().required().min(1).items(Joi.object({
-          start: Joi.string().required()
-        }))
-      }))
+  const artistSchema = Joi.object({
+    name: Joi.string().required()
+  })
+
+  const locationSchema = Joi.object({
+    name: Joi.string().required()
+  })
+
+  const tagSchema = Joi.object({
+    slug: makeSlugSchema().required(),
+    title: Joi.string().required()
+  })
+
+  const eventSchema = Joi.object({
+    id: Joi.string().required().regex(/[a-zA-Z0-9]+/),
+    artist: makeSlugSchema(),
+    title: Joi.string(),
+    location: makeSlugSchema().required(),
+    tags: Joi.array().required().min(1).items(makeSlugSchema()),
+    occurrences: Joi.array().required().min(1).items(Joi.object({
+      start: Joi.string().required()
     }))
   })
 
+  const citySchema = Joi.object({
+    name: Joi.string().required(),
+    locations: Joi.object().required().pattern(makeSlugSchema(), locationSchema),
+    tags: Joi.array().required().items(tagSchema),
+    events: Joi.array().required().items(eventSchema)
+  })
+
+  const dataSchema = Joi.object({
+    _: Joi.object().required().keys({
+      sequences: Joi.object().required().keys({
+        events: Joi.number().integer().min(0).required()
+      })
+    }),
+    artists: Joi.object().required().pattern(makeSlugSchema(), artistSchema),
+    cities: Joi.object().required().pattern(makeSlugSchema(), citySchema)
+  })
+
   function makeSlugSchema () {
-    return Joi.string().min(1)
+    return Joi.string().regex(/^[a-z][-a-z0-9]+$/)
   }
 
   return encapsulateData
@@ -226,10 +236,13 @@ const encapsulateData = (function () {
     data._ = data._ || {}
     data._.sequences = data._.sequences || {}
     data._.sequences.events = data._.sequences.events || 0
-
-    Joi.attempt(data, dataSchema)
+    data.artists = data.artists || {}
+    data.cities = data.cities || {}
 
     Object.values(data.cities).forEach(city => {
+      city.locations = city.locations || {}
+      city.tags = city.tags || []
+      city.events = city.events || []
       city.events.forEach(event => {
         if (!event.id) {
           event.id = nextEventId(data)
@@ -237,26 +250,53 @@ const encapsulateData = (function () {
       })
     })
 
-    const artists = dictOfThingsBySlug(data.artists, 'artist', ({name}) => ({name}))
+    Joi.attempt(data, dataSchema)
+
+    const artists = dictOfThingsBySlug({
+      things: data.artists,
+      schema: artistSchema,
+      name: 'artist',
+      encapsulate: ({name}) => ({name})
+    })
 
     return {
       artists,
-      cities: dictOfThingsBySlug(data.cities, 'city', ({name, locations, tags, events}) => {
-        locations = dictOfThingsBySlug(locations, 'location', ({name}) => ({name}))
-        tags = listOfThingsWithSlug(tags, 'tag', ({slug, title}) => ({slug, title}))
+      cities: dictOfThingsBySlug({
+        things: data.cities,
+        schema: citySchema,
+        name: 'city',
+        encapsulate: ({name, locations, tags, events}) => {
+          locations = dictOfThingsBySlug({
+            things: locations,
+            schema: locationSchema,
+            name: 'location',
+            encapsulate: ({name}) => ({name})
+          })
+          tags = listOfThingsWithSlug({
+            things: tags,
+            name: 'tag',
+            encapsulate: ({slug, title}) => ({slug, title})
+          })
 
-        return {
-          name,
-          locations,
-          tags,
-          events: listOfThingsWithId(events, 'event', nextEventId, ({id, title, artist, location, tags: tags_, occurrences}) => ({
-            id,
-            title,
-            artist: slugOf(artist, artists),
-            location: slugOf(location, locations),
-            tags: listOfSlugsOf(tags_, tags),
-            occurrences
-          }))
+          return {
+            name,
+            locations,
+            tags,
+            events: listOfThingsWithId({
+              things: events,
+              schema: eventSchema,
+              name: 'event',
+              nextId: nextEventId,
+              encapsulate: ({id, title, artist, location, tags: tags_, occurrences}) => ({
+                id,
+                title,
+                artist: slugOf({slug: artist, things: artists}),
+                location: slugOf({slug: location, things: locations}),
+                tags: listOfSlugsOf({slugs: tags_, things: tags}),
+                occurrences
+              })
+            })
+          }
         }
       })
     }
@@ -268,7 +308,7 @@ const encapsulateData = (function () {
     }
   }
 
-  function dictOfThingsBySlug (things, name, encapsulate) {
+  function dictOfThingsBySlug ({things, schema, name, encapsulate}) {
     all()
 
     return {get, all, filter, put}
@@ -299,6 +339,7 @@ const encapsulateData = (function () {
       const {slug} = thing
       thing = Object.assign({}, thing)
       delete thing.slug
+      Joi.attempt(thing, schema)
       things[slug] = thing
       return make(slug, thing)
     }
@@ -308,7 +349,7 @@ const encapsulateData = (function () {
     }
   }
 
-  function slugOf (slug, things) {
+  function slugOf ({slug, things}) {
     resolve()
 
     return {slug, resolve}
@@ -318,7 +359,7 @@ const encapsulateData = (function () {
     }
   }
 
-  function listOfSlugsOf (slugs, things) {
+  function listOfSlugsOf ({slugs, things}) {
     resolve()
 
     return {slugs, resolve}
@@ -328,7 +369,7 @@ const encapsulateData = (function () {
     }
   }
 
-  function listOfThingsWithId (things, name, nextId, encapsulate) {
+  function listOfThingsWithId ({things, schema, name, nextId, encapsulate}) {
     all()
 
     return {get, all, filterMap, put}
@@ -358,6 +399,7 @@ const encapsulateData = (function () {
     function put (thing) {
       encapsulate(thing)
       if (thing.id) {
+        Joi.attempt(thing, schema)
         var replaced = false
         for (var i = 0; i !== things.length; ++i) {
           if (things[i].id === thing.id) {
@@ -372,13 +414,14 @@ const encapsulateData = (function () {
       } else {
         thing = Object.assign({}, thing)
         thing.id = nextId()
+        Joi.attempt(thing, schema)
         things.push(thing)
       }
       return encapsulate(thing)
     }
   }
 
-  function listOfThingsWithSlug (things, name, encapsulate) {
+  function listOfThingsWithSlug ({things, name, encapsulate}) {
     all()
 
     const bySlug = Object.assign({}, ...things.map(thing => {
