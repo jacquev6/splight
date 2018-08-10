@@ -22,25 +22,27 @@
     </li>
   </ul>
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sp-navbar-collapse">
+  <div class="sp-needs-js"><button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sp-navbar-collapse">
     <span class="navbar-toggler-icon"></span>
-  </button>
+  </button></div>
 
   <div class="collapse navbar-collapse" id="sp-navbar-collapse">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">Durée affichée</a>
-        <div class="dropdown-menu">
-          {{#durations}}<a class="dropdown-item sp-tag-filtering-tagged-link{{#active}} active{{/active}}" href="{{href}}">{{display}}</a>{{/durations}}
-        </div>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">Aller à</a>
-        <div class="dropdown-menu">
-          <a class="dropdown-item sp-timespan-now-1 sp-tag-filtering-tagged-link" href="{{{links.now1.path}}}">{{links.now1.text}}</a>
-          <a class="dropdown-item sp-timespan-now-2 sp-tag-filtering-tagged-link" href="{{{links.now2.path}}}">{{links.now2.text}}</a>
-        </div>
-      </li>
-    </ul>
+    <div class="sp-needs-js">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">Durée affichée</a>
+          <div class="dropdown-menu">
+            {{#durations}}<a class="dropdown-item sp-tag-filtering-tagged-link{{#active}} active{{/active}}" href="{{href}}">{{display}}</a>{{/durations}}
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">Aller à</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item sp-timespan-now-1 sp-tag-filtering-tagged-link" href="{{{links.now1.path}}}">{{links.now1.text}}</a>
+            <a class="dropdown-item sp-timespan-now-2 sp-tag-filtering-tagged-link" href="{{{links.now2.path}}}">{{links.now2.text}}</a>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
