@@ -15,8 +15,6 @@ const where = require('./eventDetails/where')
 
 const eventDetails = eventDetails_.make({when, what, where})
 
-// @todo Use cards (https://getbootstrap.com/docs/4.1/components/card/) for events?
-
 function make ({citySlug, startDate, dateAfter, duration}) {
   function render (data) {
     const city = {slug: data.city.slug}

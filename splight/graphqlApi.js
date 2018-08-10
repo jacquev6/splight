@@ -12,7 +12,7 @@ const schema = graphql.buildSchema(schemaString)
 const hashids = new Hashids('', 10)
 
 function makeRoot ({load, save}) {
-  const data = Promise.resolve(load()) // @todo Reload data on each request?
+  const data = Promise.resolve(load())
 
   function forward (name) {
     return async function () {

@@ -10,8 +10,6 @@ const pages = require('../pages')
 const paths = require('../paths')
 const template = require('./linksToolbar.html')
 
-// @todo Maybe use https://fontawesome.com/icons?d=gallery&q=angle-double&m=free instead of plain &gt; and &lt;?
-
 function make ({citySlug, startDate, duration}) {
   function makeLinks (now) {
     function make (desc, d) {
