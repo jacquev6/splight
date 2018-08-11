@@ -25,6 +25,9 @@ function make ({citySlug, startDate, duration}) {
   }
 
   function render (data) {
+    // @todo Handle the two different 'now's in this project: generation date and visit date.
+    // Currently, if the static version of the public website is visited a week after it's been generated,
+    // we have dead links to the week after the last one generated.
     const links = makeLinks(moment())
     // @todo Hide link to previous before now
     links.previous.path = pages.timespan(citySlug, duration.links.previous.startDate(startDate), duration).exists(data) && links.previous.path
