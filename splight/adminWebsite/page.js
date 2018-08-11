@@ -537,28 +537,45 @@ async function initialize () {
     async function activate ({citySlug}) {
       active = {citySlug}
 
-      const data = await request({
-        requestString: 'query($citySlug:ID!){artists{slug name} city(slug:$citySlug){tags{slug title} locations{slug name}}}',
-        variableValues: {citySlug}
-      })
+      await refreshSelects()
 
-      // @todo Refill selects when an event is edited, as it may add or modify artists and locations
-      // Maybe use a https://jqueryui.com/autocomplete/#combobox for these selects
-      fillSelect(filterTag, data.city.tags.map(({slug, title}) => ({value: slug, display: title})))
-      fillSelect(filterLocation, data.city.locations.map(({slug, name}) => ({value: slug, display: name})))
-      fillSelect(filterArtist, data.artists.map(({slug, name}) => ({value: slug, display: name})))
+      filterTag.val('-')
+      filterLocation.val('-')
+      filterArtist.val('-')
       filterDate.val('')
       filterTitle.val('')
 
       refreshContent()
     }
 
+    async function refreshSelects (citySlug) {
+      const data = await request({
+        requestString: 'query($citySlug:ID!){artists{slug name} city(slug:$citySlug){tags{slug title} locations{slug name}}}',
+        variableValues: {citySlug: active.citySlug}
+      })
+
+      // Maybe use a https://jqueryui.com/autocomplete/#combobox for these selects
+      fillSelect(filterTag, data.city.tags.map(({slug, title}) => ({value: slug, display: title})))
+      fillSelect(filterLocation, data.city.locations.map(({slug, name}) => ({value: slug, display: name})))
+      fillSelect(filterArtist, data.artists.map(({slug, name}) => ({value: slug, display: name})))
+    }
+
     async function refreshContent () {
       const tag = filterTag.val()
       const location = filterLocation.val()
       const artist = filterArtist.val()
-      const date = moment(filterDate.val(), moment.HTML5_FMT.DATE, true)
+      var date = filterDate.val()
       const title = filterTitle.val()
+
+      await refreshSelects()
+
+      filterTag.val(tag)
+      filterLocation.val(location)
+      filterArtist.val(artist)
+      filterDate.val(date)
+      filterTitle.val(title)
+
+      date = moment(date, moment.HTML5_FMT.DATE, true)
 
       var dates
       if (date.isValid()) {
