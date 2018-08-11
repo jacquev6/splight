@@ -24,7 +24,7 @@ function makeRoot ({load, save}) {
 
   const ret = {}
 
-  for (var name of ['artists', 'putArtist', 'cities', 'city', 'putLocation', 'putEvent', 'deleteEvent']) {
+  for (var name of ['artists', 'artist', 'putArtist', 'cities', 'city', 'putLocation', 'putEvent', 'deleteEvent']) {
     ret[name] = forward(name)
   }
 
@@ -37,6 +37,10 @@ function makeSyncRoot (data) {
   function artists ({name, max}) {
     const nameMatches = matches(name)
     return data.artists.filter(artist => nameMatches(artist.name), max)
+  }
+
+  function artist ({slug}) {
+    return data.artists.get(slug)
   }
 
   function putArtist ({artist: {slug, name}}) {
@@ -91,6 +95,10 @@ function makeSyncRoot (data) {
     function locations ({name, max}) {
       const nameMatches = matches(name)
       return city.locations.filter(artist => nameMatches(artist.name), max)
+    }
+
+    function location ({slug}) {
+      return city.locations.get(slug)
     }
 
     function firstDate () {
@@ -160,10 +168,10 @@ function makeSyncRoot (data) {
 
     const {slug, name} = city
 
-    return {slug, name, tags, locations, firstDate, dateAfter, events, event}
+    return {slug, name, tags, locations, location, firstDate, dateAfter, events, event}
   }
 
-  return {artists, putArtist, cities, city, putLocation, putEvent, deleteEvent}
+  return {artists, artist, putArtist, cities, city, putLocation, putEvent, deleteEvent}
 }
 
 function matches (needles) {

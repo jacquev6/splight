@@ -31,126 +31,132 @@ async function initialize () {
     modal.on('hide.bs.modal', deactivate)
     jQuery('#spa-edit-event-save').on('click', save)
 
-    doc.on('click', '#spa-edit-event-edit-preview-when', function () {
-      active.editingWhen = !active.editingWhen
-      active.editingWhat = false
-      active.editingWhere = false
-      refreshContent()
-    })
-    doc.on('click', '.spa-delete-occurrence', function () {
-      const index = jQuery('.spa-delete-occurrence').index(this)
-      active.event.occurrences.splice(index, 1)
-      refreshContent()
-    })
-    doc.on('input', '#spa-new-occurrence', function () {
-      active.newOccurrence = jQuery('#spa-new-occurrence').val()
-      const m = moment(active.newOccurrence, moment.HTML5_FMT.DATETIME_LOCAL, true)
-      jQuery('#spa-add-occurrence').attr('disabled', !m.isValid())
-    })
-    doc.on('click', '#spa-add-occurrence', function () {
-      active.event.occurrences.push({start: active.newOccurrence})
-      active.newOccurrence = null
-      refreshContent()
-    })
-
-    doc.on('click', '#spa-edit-event-edit-preview-what', function () {
-      active.editingWhen = false
-      active.editingWhat = !active.editingWhat
-      active.editingWhere = false
-      refreshContent()
-    })
-    doc.on('change', '#spa-edit-event-main-tag', function () {
-      const previousMainTag = active.event.tags.length > 0 && active.event.tags[0].slug
-      const previousSecondaryTags = new Set(active.event.tags.slice(1).map(({slug}) => slug))
-
-      const newMainTag = jQuery('#spa-edit-event-main-tag').val()
-      const newSecondaryTags = new Set(previousSecondaryTags)
-
-      if (previousSecondaryTags.has(newMainTag)) {
-        newSecondaryTags.delete(newMainTag)
-        newSecondaryTags.add(previousMainTag)
-      }
-
-      const tags = [newMainTag].concat(Array.from(newSecondaryTags))
-      active.event.tags = tags.map(slug => active.tagsBySlug[slug])
-      refreshContent()
-    })
-    doc.on('change', '.spa-edit-event-secondary-tag', function () {
-      const mainTag = jQuery('#spa-edit-event-main-tag').val()
-      const secondaryTags = jQuery('.spa-edit-event-secondary-tag:checked').map((index, checkbox) => jQuery(checkbox).val()).toArray()
-      const tags = [mainTag].concat(secondaryTags)
-      active.event.tags = tags.map(slug => active.tagsBySlug[slug])
-      refreshContent()
-    })
-    doc.on('input', '#spa-edit-event-title', function () {
-      active.event.title = jQuery('#spa-edit-event-title').val()
-      refreshHeaderAndFooter()
-    })
-    doc.on('change', '#spa-edit-event-artist', function () {
-      active.event.artist = active.artistsBySlug[jQuery('#spa-edit-event-artist').val()]
-      refreshHeaderAndFooter()
-    })
-    doc.on('click', '#spa-edit-event-new-artist', function () {
-      if (!active.newArtist) {
-        active.cachedExistingArtist = active.event.artist
-        active.event.artist = active.newArtist = active.cachedNewArtist
+    ;(function () {
+      doc.on('click', '#spa-edit-event-edit-preview-when', function () {
+        active.editingWhen = !active.editingWhen
+        active.editingWhat = false
+        active.editingWhere = false
         refreshContent()
-      }
-    })
-    doc.on('click', '#spa-edit-event-choose-artist', function () {
-      if (active.newArtist) {
-        active.newArtist = null
-        active.event.artist = active.cachedExistingArtist
+      })
+      doc.on('click', '.spa-edit-event-delete-occurrence', function () {
+        const index = jQuery('.spa-edit-event-delete-occurrence').index(this)
+        active.event.occurrences.splice(index, 1)
         refreshContent()
-      }
-    })
-    doc.on('input', '#spa-edit-event-new-artist-slug', function () {
-      active.newArtist.slug = jQuery('#spa-edit-event-new-artist-slug').val()
-      refreshHeaderAndFooter()
-    })
-    doc.on('input', '#spa-edit-event-new-artist-name', function () {
-      active.newArtist.name = jQuery('#spa-edit-event-new-artist-name').val()
-      refreshHeaderAndFooter()
-    })
+      })
+      doc.on('input', '#spa-edit-event-new-occurrence', function () {
+        active.newOccurrence = jQuery('#spa-edit-event-new-occurrence').val()
+        const m = moment(active.newOccurrence, moment.HTML5_FMT.DATETIME_LOCAL, true)
+        jQuery('#spa-edit-event-add-occurrence').attr('disabled', !m.isValid())
+      })
+      doc.on('click', '#spa-edit-event-add-occurrence', function () {
+        active.event.occurrences.push({start: active.newOccurrence})
+        active.newOccurrence = null
+        refreshContent()
+      })
+    }())
 
-    doc.on('click', '#spa-edit-event-edit-preview-where', function () {
-      active.editingWhen = false
-      active.editingWhat = false
-      active.editingWhere = !active.editingWhere
-      refreshContent()
-    })
-    doc.on('change', '#spa-edit-event-location', function () {
-      active.event.location = active.locationsBySlug[jQuery('#spa-edit-event-location').val()]
-      refreshHeaderAndFooter()
-    })
-    doc.on('click', '#spa-edit-event-new-location', function () {
-      if (!active.newLocation) {
-        active.cachedExistingLocation = active.event.location
-        active.event.location = active.newLocation = active.cachedNewLocation
+    ;(function () {
+      doc.on('click', '#spa-edit-event-edit-preview-what', function () {
+        active.editingWhen = false
+        active.editingWhat = !active.editingWhat
+        active.editingWhere = false
         refreshContent()
-      }
-    })
-    doc.on('click', '#spa-edit-event-choose-location', function () {
-      if (active.newLocation) {
-        active.newLocation = null
-        active.event.location = active.cachedExistingLocation
+      })
+      doc.on('change', '#spa-edit-event-main-tag', function () {
+        const previousMainTag = active.event.tags.length > 0 && active.event.tags[0].slug
+        const previousSecondaryTags = new Set(active.event.tags.slice(1).map(({slug}) => slug))
+
+        const newMainTag = jQuery('#spa-edit-event-main-tag').val()
+        const newSecondaryTags = new Set(previousSecondaryTags)
+
+        if (previousSecondaryTags.has(newMainTag)) {
+          newSecondaryTags.delete(newMainTag)
+          newSecondaryTags.add(previousMainTag)
+        }
+
+        const tags = [newMainTag].concat(Array.from(newSecondaryTags))
+        active.event.tags = tags.map(slug => active.tagsBySlug[slug])
         refreshContent()
-      }
-    })
-    doc.on('input', '#spa-edit-event-new-location-slug', function () {
-      active.newLocation.slug = jQuery('#spa-edit-event-new-location-slug').val()
-      refreshHeaderAndFooter()
-    })
-    doc.on('input', '#spa-edit-event-new-location-name', function () {
-      active.newLocation.name = jQuery('#spa-edit-event-new-location-name').val()
-      refreshHeaderAndFooter()
-    })
+      })
+      doc.on('change', '.spa-edit-event-secondary-tag', function () {
+        const mainTag = jQuery('#spa-edit-event-main-tag').val()
+        const secondaryTags = jQuery('.spa-edit-event-secondary-tag:checked').map((index, checkbox) => jQuery(checkbox).val()).toArray()
+        const tags = [mainTag].concat(secondaryTags)
+        active.event.tags = tags.map(slug => active.tagsBySlug[slug])
+        refreshContent()
+      })
+      doc.on('input', '#spa-edit-event-title', function () {
+        active.event.title = jQuery('#spa-edit-event-title').val()
+        refreshHeaderAndFooter()
+      })
+      doc.on('change', '#spa-edit-event-existing-artist-slug', function () {
+        active.event.artist = active.artistsBySlug[jQuery('#spa-edit-event-existing-artist-slug').val()]
+        refreshHeaderAndFooter()
+      })
+      doc.on('click', '#spa-edit-event-new-artist', function () {
+        if (!active.newArtist) {
+          active.cachedExistingArtist = active.event.artist
+          active.event.artist = active.newArtist = active.cachedNewArtist
+          refreshContent()
+        }
+      })
+      doc.on('click', '#spa-edit-event-choose-artist', function () {
+        if (active.newArtist) {
+          active.newArtist = null
+          active.event.artist = active.cachedExistingArtist
+          refreshContent()
+        }
+      })
+      doc.on('input', '#spa-edit-event-new-artist-slug', function () {
+        active.newArtist.slug = jQuery('#spa-edit-event-new-artist-slug').val()
+        refreshHeaderAndFooter()
+      })
+      doc.on('input', '#spa-edit-event-new-artist-name', function () {
+        active.newArtist.name = jQuery('#spa-edit-event-new-artist-name').val()
+        refreshHeaderAndFooter()
+      })
+    }())
+
+    ;(function () {
+      doc.on('click', '#spa-edit-event-edit-preview-where', function () {
+        active.editingWhen = false
+        active.editingWhat = false
+        active.editingWhere = !active.editingWhere
+        refreshContent()
+      })
+      doc.on('change', '#spa-edit-event-existing-location-slug', function () {
+        active.event.location = active.locationsBySlug[jQuery('#spa-edit-event-existing-location-slug').val()]
+        refreshHeaderAndFooter()
+      })
+      doc.on('click', '#spa-edit-event-new-location', function () {
+        if (!active.newLocation) {
+          active.cachedExistingLocation = active.event.location
+          active.event.location = active.newLocation = active.cachedNewLocation
+          refreshContent()
+        }
+      })
+      doc.on('click', '#spa-edit-event-choose-location', function () {
+        if (active.newLocation) {
+          active.newLocation = null
+          active.event.location = active.cachedExistingLocation
+          refreshContent()
+        }
+      })
+      doc.on('input', '#spa-edit-event-new-location-slug', function () {
+        active.newLocation.slug = jQuery('#spa-edit-event-new-location-slug').val()
+        refreshHeaderAndFooter()
+      })
+      doc.on('input', '#spa-edit-event-new-location-name', function () {
+        active.newLocation.name = jQuery('#spa-edit-event-new-location-name').val()
+        refreshHeaderAndFooter()
+      })
+    }())
 
     const eventDetailsForEdit = (function () {
       const whenForEdit = (function () {
         const template = `<ul>
-          {{#occurrences}}<li>{{start}} <button class="btn btn-secondary btn-sm spa-delete-occurrence">Supprimer</button></li>{{/occurrences}}
-          <li><input id="spa-new-occurrence" type="text" placeholder="Format&nbsp;: 2018-07-14T12:00"{{#newOccurrence}} value="{{.}}"{{/newOccurrence}}/> <button id="spa-add-occurrence" class="btn btn-secondary btn-sm"{{#addDisabled}} disabled="disabled"{{/addDisabled}}>Ajouter</button></li>
+          {{#occurrences}}<li>{{start}} <button class="btn btn-secondary btn-sm spa-edit-event-delete-occurrence">Supprimer</button></li>{{/occurrences}}
+          <li><input id="spa-edit-event-new-occurrence" type="text" placeholder="Format&nbsp;: 2018-07-14T12:00"{{#newOccurrence}} value="{{.}}"{{/newOccurrence}}/> <button id="spa-edit-event-add-occurrence" class="btn btn-secondary btn-sm"{{#addDisabled}} disabled="disabled"{{/addDisabled}}>Ajouter</button></li>
         </ul>`
 
         function render ({event: {occurrences}}) {
@@ -183,7 +189,7 @@ async function initialize () {
           </ul>
           <div class="tab-content border border-top-0 pt-2 px-2" id="spa-edit-event-artist-tabs">
             <div class="tab-pane{{^newArtist}} show active{{/newArtist}}" id="spa-edit-event-artist-tab-existing">
-              <div class="form-group"><label>Choisir un artiste&nbsp;: <select id="spa-edit-event-artist"><option value="-">-</option>{{#artists}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/artists}}</select></label></div>
+              <div class="form-group"><label>Choisir un artiste&nbsp;: <select id="spa-edit-event-existing-artist-slug"><option value="-">-</option>{{#artists}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/artists}}</select></label></div>
             </div>
             <div class="tab-pane{{#newArtist}} show active{{/newArtist}}" id="spa-edit-event-artist-tab-new">
               <div class="form-group"><label>Slug&nbsp;: <input id="spa-edit-event-new-artist-slug" value="{{newArtist.slug}}"/></label></div>
@@ -223,7 +229,7 @@ async function initialize () {
           </ul>
           <div class="tab-content border border-top-0 pt-2 px-2" id="spa-edit-event-location-tabs">
             <div class="tab-pane{{^newLocation}} show active{{/newLocation}}" id="spa-edit-event-location-tab-existing">
-              <div class="form-group"><label>Choisir un lieu&nbsp;: <select id="spa-edit-event-location">
+              <div class="form-group"><label>Choisir un lieu&nbsp;: <select id="spa-edit-event-existing-location-slug">
                 {{#unlocated}}<option disabled="disabled" selected="selected">-</option>{{/unlocated}}
                 {{#locations}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/locations}}
               </select></label></div>
@@ -366,7 +372,7 @@ async function initialize () {
       modal.modal('show')
     }
 
-    function refreshContent ({body} = {body: true}) {
+    function refreshContent () {
       const focusedId = document.activeElement.id
       modal.find('.modal-body').html(eventDetailsForEdit.render({city: {slug: active.citySlug}, event: active.event}))
       if (focusedId) {
@@ -649,6 +655,127 @@ async function initialize () {
     }
   }())
 
+  const artistEditor = (function () {
+    var active
+    const modal = jQuery('#spa-edit-artist-modal')
+
+    modal.modal({backdrop: 'static', keyboard: false, show: false})
+    modal.on('hide.bs.modal', deactivate)
+    jQuery('#spa-edit-artist-save').on('click', save)
+
+    ;(function () {
+      doc.on('input', '#spa-edit-artist-slug', function () {
+        active.artist.slug = jQuery('#spa-edit-artist-slug').val()
+        refreshHeaderAndFooter()
+      })
+      doc.on('input', '#spa-edit-artist-name', function () {
+        active.artist.name = jQuery('#spa-edit-artist-name').val()
+        refreshHeaderAndFooter()
+      })
+    }())
+
+    deactivate()
+
+    return {create, modify}
+
+    async function modify ({artistSlug}) {
+      const preActivated = await preActivate()
+
+      const {artist} = await request({
+        requestString: 'query($artistSlug:ID!){artist(slug:$artistSlug){slug name}}',
+        variableValues: {artistSlug}
+      })
+
+      Object.assign(
+        preActivated,
+        {
+          artist,
+          isNew: false
+        }
+      )
+
+      activate(preActivated)
+    }
+
+    async function create ({name}) {
+      const preActivated = await preActivate()
+
+      Object.assign(
+        preActivated,
+        {
+          artist: {
+            slug: '',
+            name: name || ''
+          },
+          isNew: true
+        }
+      )
+
+      activate(preActivated)
+    }
+
+    async function preActivate () {
+      const {artists} = await request({requestString: '{artists{slug name}}'})
+
+      const artistsBySlug = {}
+      artists.forEach(artist => { artistsBySlug[artist.slug] = artist })
+
+      return {
+        artists,
+        artistsBySlug
+      }
+    }
+
+    function activate (preActivated) {
+      active = preActivated
+      refreshContent()
+      modal.modal('show')
+    }
+
+    function refreshContent () {
+      jQuery('#spa-edit-artist-slug').val(active.artist.slug).attr('disabled', !active.isNew)
+      jQuery('#spa-edit-artist-name').val(active.artist.name)
+      refreshHeaderAndFooter()
+    }
+
+    function refreshHeaderAndFooter () {
+      modal.find('.modal-title').text(active.artist.name)
+      const message = validateArtist()
+      modal.find('#spa-edit-artist-message').text(message)
+      jQuery('#spa-edit-artist-save').attr('disabled', message !== '')
+      modal.modal('handleUpdate')
+    }
+
+    function validateArtist () {
+      if (!active.artist.slug.match(/^[a-z][-a-z0-9]*$/)) {
+        return "Le slug d'un artiste doit être constitué d'un caractère parmi 'a-z' suivi de caractères parmi 'a-z', '0-9' et '-'"
+      } else if (active.isNew && active.artistsBySlug[active.artist.slug]) {
+        return "Le slug d'un nouvel artiste doit être différent de tous les slugs des artistes existants"
+      } else if (!active.artist.name) {
+        return "Le nom d'un artiste ne peut pas être vide"
+      } else {
+        return ''
+      }
+    }
+
+    async function save () {
+      await request({
+        requestString: 'mutation($artist:IArtist!){putArtist(artist:$artist){slug}}',
+        variableValues: {
+          artist: active.artist
+        }
+      })
+
+      modal.modal('hide')
+
+      artistsFilter.refreshContent()
+    }
+
+    function deactivate () {
+      active = null
+    }
+  }())
+
   const artistsFilter = (function () {
     const filteredArtists = jQuery('#spa-filtered-items')
     const filterName = jQuery('#spa-filter-artist-name')
@@ -659,9 +786,21 @@ async function initialize () {
       filterNameTimeoutId = setTimeout(refreshContent, 200)
     })
 
-    return {activate}
+    doc.on('click', '#spa-create-artist', function () {
+      const name = filterName.val()
+      artistEditor.create({name})
+    })
+    doc.on('click', '.spa-modify-artist', function () {
+      artistEditor.modify({
+        artistSlug: jQuery(this).data('spa-artist-slug')
+      })
+    })
+
+    return {activate, refreshContent}
 
     function activate () {
+      filterName.val('')
+
       refreshContent()
     }
 
@@ -670,7 +809,9 @@ async function initialize () {
 
       const {artists} = await request({
         requestString: 'query($name:String){artists(name:$name,max:10){slug name}}',
-        variableValues: {name}
+        variableValues: {
+          name: name === '' ? undefined : name
+        }
       })
 
       displayArtists(artists)
@@ -681,7 +822,7 @@ async function initialize () {
         {{#zero}}<p>Aucun artiste ne correspond au filtre.</p>{{/zero}}
         {{#one}}<p>L'artiste suivant est le seul correspondant au filtre.</p>{{/one}}
         {{#several}}<p>Les {{artists.length}} artistes suivants correspondent au filtre.</p>{{/several}}
-        {{^tooMany}}<p><button id="spa-create-artist" class="btn btn-primary" disabled>Nouvel artiste</button></p>{{/tooMany}}
+        {{^tooMany}}<p><button id="spa-create-artist" class="btn btn-primary">Nouvel artiste</button></p>{{/tooMany}}
         {{#tooMany}}<p>Trop d'artistes correspondent. Utiliser le filtre pour raffiner la sélection.</p>{{/tooMany}}
         {{#artists}}
         <div class="card m-1">
@@ -692,7 +833,7 @@ async function initialize () {
             {{{details.html}}}
           </div>
           <div class="card-footer">
-            <button class="btn btn-primary spa-modify-artist" disabled data-spa-artist-slug="{{slug}}">Modifier</button>
+            <button class="btn btn-primary spa-modify-artist" data-spa-artist-slug="{{slug}}">Modifier</button>
           </div>
         </div>
         {{/artists}}
@@ -724,6 +865,134 @@ async function initialize () {
     }
   }())
 
+  const locationEditor = (function () {
+    var active
+    const modal = jQuery('#spa-edit-location-modal')
+
+    modal.modal({backdrop: 'static', keyboard: false, show: false})
+    modal.on('hide.bs.modal', deactivate)
+    jQuery('#spa-edit-location-save').on('click', save)
+
+    ;(function () {
+      doc.on('input', '#spa-edit-location-slug', function () {
+        active.location.slug = jQuery('#spa-edit-location-slug').val()
+        refreshHeaderAndFooter()
+      })
+      doc.on('input', '#spa-edit-location-name', function () {
+        active.location.name = jQuery('#spa-edit-location-name').val()
+        refreshHeaderAndFooter()
+      })
+    }())
+
+    deactivate()
+
+    return {create, modify}
+
+    async function modify ({citySlug, locationSlug}) {
+      const preActivated = await preActivate({citySlug})
+
+      const {city: {location}} = await request({
+        requestString: 'query($citySlug:ID!,$locationSlug:ID!){city(slug:$citySlug){location(slug:$locationSlug){slug name}}}',
+        variableValues: {citySlug, locationSlug}
+      })
+
+      Object.assign(
+        preActivated,
+        {
+          location,
+          isNew: false
+        }
+      )
+
+      activate(preActivated)
+    }
+
+    async function create ({citySlug, name}) {
+      const preActivated = await preActivate({citySlug})
+
+      Object.assign(
+        preActivated,
+        {
+          location: {
+            slug: '',
+            name: name || ''
+          },
+          isNew: true
+        }
+      )
+
+      activate(preActivated)
+    }
+
+    async function preActivate ({citySlug}) {
+      const {city: {locations}} = await request({
+        requestString: 'query($citySlug:ID!){city(slug:$citySlug){locations{slug name}}}',
+        variableValues: {citySlug}
+      })
+
+      const locationsBySlug = {}
+      locations.forEach(location => { locationsBySlug[location.slug] = location })
+
+      return {
+        citySlug,
+        locations,
+        locationsBySlug
+      }
+    }
+
+    function activate (preActivated) {
+      active = preActivated
+      refreshContent()
+      modal.modal('show')
+    }
+
+    function refreshContent () {
+      jQuery('#spa-edit-location-slug').val(active.location.slug).attr('disabled', !active.isNew)
+      jQuery('#spa-edit-location-name').val(active.location.name)
+      refreshHeaderAndFooter()
+    }
+
+    function refreshHeaderAndFooter () {
+      modal.find('.modal-title').text(active.location.name)
+      const message = validateLocation()
+      modal.find('#spa-edit-location-message').text(message)
+      jQuery('#spa-edit-location-save').attr('disabled', message !== '')
+      modal.modal('handleUpdate')
+    }
+
+    function validateLocation () {
+      if (!active.location.slug.match(/^[a-z][-a-z0-9]*$/)) {
+        return "Le slug d'un lieu doit être constitué d'un caractère parmi 'a-z' suivi de caractères parmi 'a-z', '0-9' et '-'"
+      } else if (active.isNew && active.locationsBySlug[active.location.slug]) {
+        return "Le slug d'un nouveau lieu doit être différent de tous les slugs des lieus existants"
+      } else if (!active.location.name) {
+        return "Le nom d'un lieu ne peut pas être vide"
+      } else {
+        return ''
+      }
+    }
+
+    async function save () {
+      await request({
+        requestString: 'mutation($location:ILocation!){putLocation(location:$location){slug}}',
+        variableValues: {
+          location: Object.assign(
+            {citySlug: active.citySlug},
+            active.location
+          )
+        }
+      })
+
+      modal.modal('hide')
+
+      locationsFilter.refreshContent()
+    }
+
+    function deactivate () {
+      active = null
+    }
+  }())
+
   const locationsFilter = (function () {
     var active = null
     const filteredLocations = jQuery('#spa-filtered-items')
@@ -735,10 +1004,27 @@ async function initialize () {
       filterNameTimeoutId = setTimeout(refreshContent, 200)
     })
 
-    return {activate}
+    doc.on('click', '#spa-create-location', function () {
+      const name = filterName.val()
+      locationEditor.create({
+        citySlug: active.citySlug,
+        name
+      })
+    })
+    doc.on('click', '.spa-modify-location', function () {
+      locationEditor.modify({
+        citySlug: active.citySlug,
+        locationSlug: jQuery(this).data('spa-location-slug')
+      })
+    })
+
+    return {activate, refreshContent}
 
     function activate ({citySlug}) {
       active = {citySlug}
+
+      filterName.val('')
+
       refreshContent()
     }
 
@@ -749,7 +1035,7 @@ async function initialize () {
         requestString: 'query($citySlug:ID!,$name:String){city(slug:$citySlug){locations(name:$name,max:10){slug name}}}',
         variableValues: {
           citySlug: active.citySlug,
-          name
+          name: name === '' ? undefined : name
         }
       })
 
@@ -761,7 +1047,7 @@ async function initialize () {
         {{#zero}}<p>Aucun lieu ne correspond au filtre.</p>{{/zero}}
         {{#one}}<p>Le lieu suivant est le seul correspondant au filtre.</p>{{/one}}
         {{#several}}<p>Les {{locations.length}} lieux suivants correspondent au filtre.</p>{{/several}}
-        {{^tooMany}}<p><button id="spa-create-location" class="btn btn-primary" disabled>Nouveau lieu</button></p>{{/tooMany}}
+        {{^tooMany}}<p><button id="spa-create-location" class="btn btn-primary">Nouveau lieu</button></p>{{/tooMany}}
         {{#tooMany}}<p>Trop de lieux correspondent. Utiliser le filtre pour raffiner la sélection.</p>{{/tooMany}}
         {{#locations}}
         <div class="card m-1">
@@ -772,7 +1058,7 @@ async function initialize () {
             {{{details.html}}}
           </div>
           <div class="card-footer">
-            <button class="btn btn-primary spa-modify-location" disabled data-spa-location-slug="{{slug}}">Modifier</button>
+            <button class="btn btn-primary spa-modify-location" data-spa-location-slug="{{slug}}">Modifier</button>
           </div>
         </div>
         {{/locations}}

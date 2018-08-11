@@ -491,6 +491,33 @@ describe('graphqlApi', function () {
       })
     })
 
+    describe('artist', function () {
+      it('finds artist by slug', async function () {
+        const {checkRequest} = make({artists: {'artist': {name: 'Artist'}}})
+
+        await checkRequest(
+          '{artist(slug:"artist"){name}}',
+          {data: {artist: {name: 'Artist'}}}
+        )
+      })
+
+      it("doesn't find artist by slug", async function () {
+        const {checkRequest} = make({})
+
+        await checkRequest(
+          '{artist(slug:"artist"){name}}',
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 2}],
+              message: 'No artist with slug "artist"',
+              path: ['artist']
+            }]
+          }
+        )
+      })
+    })
+
     describe('city', function () {
       const get = 'query($slug:ID!){city(slug:$slug){name}}'
 
@@ -526,7 +553,7 @@ describe('graphqlApi', function () {
       })
     })
 
-    describe('city.location', function () {
+    describe('city.locations', function () {
       it('filters by name', async function () {
         const {checkRequest} = make({
           cities: {
@@ -594,6 +621,33 @@ describe('graphqlApi', function () {
           '{cities{locations(max:25){slug}}}',
           {
             data: {cities: [{locations: [{slug: 'l-1'}, {slug: 'l-2'}, {slug: 'l-3'}, {slug: 'l-4'}]}]}
+          }
+        )
+      })
+    })
+
+    describe('city.location', function () {
+      it('finds location by slug', async function () {
+        const {checkRequest} = make({cities: {'city': {name: 'City', locations: {'location': {name: 'Location'}}}}})
+
+        await checkRequest(
+          '{city(slug:"city"){location(slug:"location"){name}}}',
+          {data: {city: {location: {name: 'Location'}}}}
+        )
+      })
+
+      it("doesn't find location by slug", async function () {
+        const {checkRequest} = make({cities: {'city': {name: 'City'}}})
+
+        await checkRequest(
+          '{city(slug:"city"){location(slug:"location"){name}}}',
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 20}],
+              message: 'No location with slug "location"',
+              path: ['city', 'location']
+            }]
           }
         )
       })
@@ -884,7 +938,7 @@ describe('graphqlApi', function () {
     })
 
     describe('city.event', function () {
-      it('find event by id', async function () {
+      it('finds event by id', async function () {
         const {checkRequest} = make({
           cities: {
             'city': {
@@ -908,15 +962,7 @@ describe('graphqlApi', function () {
       })
 
       it("doesn't find event by id", async function () {
-        const {checkRequest} = make({
-          cities: {
-            'city': {
-              name: 'City',
-              locations: {'location': {name: 'Location'}},
-              tags: [{slug: 'tag', title: 'Tag'}]
-            }
-          }
-        })
+        const {checkRequest} = make({cities: {'city': {name: 'City'}}})
 
         await checkRequest(
           '{cities{event(id:"event"){id}}}',
