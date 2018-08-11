@@ -72,7 +72,7 @@
       </div>
     </div>
 
-    <div class="modal" id="spa-edit-item-modal">
+    <div class="modal" id="spa-edit-event-modal">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header">
@@ -80,8 +80,22 @@
           </div>
           <div class="modal-body"></div>
           <div class="modal-footer">
-            <span id="spa-edit-item-message" class="text-danger"></span>
-            <button id="spa-edit-item-save" class="btn btn-primary">Enregistrer</button>
+            <span id="spa-edit-event-message" class="text-danger"></span>
+            <button id="spa-edit-event-save" class="btn btn-primary">Enregistrer</button>
+            <button class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="spa-delete-event-modal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirmer la suppression</h5>
+          </div>
+          <div class="modal-footer">
+            <button id="spa-delete-event-confirm" class="btn btn-primary">Supprimer</button>
             <button class="btn btn-secondary" data-dismiss="modal">Annuler</button>
           </div>
         </div>

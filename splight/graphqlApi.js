@@ -24,7 +24,7 @@ function makeRoot ({load, save}) {
 
   const ret = {}
 
-  for (var name of ['artists', 'putArtist', 'cities', 'city', 'putLocation', 'putEvent']) {
+  for (var name of ['artists', 'putArtist', 'cities', 'city', 'putLocation', 'putEvent', 'deleteEvent']) {
     ret[name] = forward(name)
   }
 
@@ -66,6 +66,10 @@ function makeSyncRoot (data) {
       artist ? {artist} : {},
       title ? {title} : {}
     )))
+  }
+
+  function deleteEvent ({citySlug, eventId}) {
+    return makeEvent(data.cities.get(citySlug).events.del(eventId))
   }
 
   function makeEvent ({id, title, location, tags, occurrences, artist}) {
@@ -159,7 +163,7 @@ function makeSyncRoot (data) {
     return {slug, name, tags, locations, firstDate, dateAfter, events, event}
   }
 
-  return {artists, putArtist, cities, city, putLocation, putEvent}
+  return {artists, putArtist, cities, city, putLocation, putEvent, deleteEvent}
 }
 
 function matches (needles) {
@@ -372,7 +376,7 @@ const encapsulateData = (function () {
   function listOfThingsWithId ({things, schema, name, nextId, encapsulate}) {
     all()
 
-    return {get, all, filterMap, put}
+    return {get, all, filterMap, put, del}
 
     function get (id) {
       const thing = things.filter(thing => thing.id === id)
@@ -418,6 +422,17 @@ const encapsulateData = (function () {
         things.push(thing)
       }
       return encapsulate(thing)
+    }
+
+    function del (id) {
+      for (var i = 0; i !== things.length; ++i) {
+        const thing = things[i]
+        if (thing.id === id) {
+          things.splice(i, 1)
+          return encapsulate(thing)
+        }
+      }
+      throw new Error('No ' + name + ' with id "' + id + '"')
     }
   }
 

@@ -52,6 +52,7 @@ type Mutation {
   putArtist(artist: IArtist!): Artist!
   putLocation(location: ILocation!): Location!
   putEvent(event: IEvent!): Event!
+  deleteEvent(citySlug: ID!, eventId: ID!): Event!
 }
 
 input IArtist {

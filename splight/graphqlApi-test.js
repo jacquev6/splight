@@ -1656,6 +1656,109 @@ describe('graphqlApi', function () {
       })
     })
 
+    describe('deleteEvent', function () {
+      const fields = 'id'
+      const get = `{cities{slug events{${fields}}}}`
+      const del = `mutation($citySlug:ID!,$eventId:ID!){deleteEvent(citySlug:$citySlug,eventId:$eventId){${fields}}}`
+
+      it('deletes an event', async function () {
+        const {checkRequest, checkData} = make({
+          _: {sequences: {events: 12}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
+              events: [
+                {
+                  id: 'otherEvent',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T11:00'}]
+                },
+                {
+                  id: 'event',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T12:00'}]
+                }
+              ]
+            }
+          }
+        })
+
+        await checkRequest(
+          get,
+          {data: {cities: [{slug: 'city', events: [{id: 'otherEvent'}, {id: 'event'}]}]}}
+        )
+
+        await checkRequest(
+          del,
+          {
+            citySlug: 'city',
+            eventId: 'event'
+          },
+          {data: {deleteEvent: {id: 'event'}}}
+        )
+
+        checkData({
+          _: {sequences: {events: 12}},
+          artists: {'artist': {name: 'Artist'}},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'Location'}},
+              tags: [{slug: 'tag', title: 'Tag'}],
+              events: [
+                {
+                  id: 'otherEvent',
+                  location: 'location',
+                  tags: ['tag'],
+                  occurrences: [{start: '2018-07-14T11:00'}]
+                }
+              ]
+            }
+          }
+        })
+
+        await checkRequest(
+          get,
+          {data: {cities: [{slug: 'city', events: [{id: 'otherEvent'}]}]}}
+        )
+      })
+
+      it("doesn't delete an unexisting event", async function () {
+        const {checkRequest, checkData} = make({
+          cities: {'city': {'name': 'City'}}
+        })
+
+        await checkRequest(
+          del,
+          {
+            citySlug: 'city',
+            eventId: 'event'
+          },
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 38}],
+              message: 'No event with id "event"',
+              path: ['deleteEvent']
+            }]
+          }
+        )
+
+        checkData({
+          _: {sequences: {events: 0}},
+          artists: {},
+          cities: {
+            'city': {name: 'City', events: [], tags: [], locations: {}}
+          }
+        })
+      })
+    })
+
     it('adds artist, location and event in a single call', async function () {
       const {checkRequest, checkData} = make({
         cities: {'city': {

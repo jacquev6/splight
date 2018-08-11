@@ -25,11 +25,11 @@ async function initialize () {
 
   const eventEditor = (function () {
     var active
-    const modal = jQuery('#spa-edit-item-modal')
+    const modal = jQuery('#spa-edit-event-modal')
 
     modal.modal({backdrop: 'static', keyboard: false, show: false})
     modal.on('hide.bs.modal', deactivate)
-    jQuery('#spa-edit-item-save').on('click', save)
+    jQuery('#spa-edit-event-save').on('click', save)
 
     doc.on('click', '#spa-edit-event-edit-preview-when', function () {
       active.editingWhen = !active.editingWhen
@@ -378,8 +378,8 @@ async function initialize () {
     function refreshHeaderAndFooter () {
       modal.find('.modal-title').text(active.event.title)
       const message = validateEvent()
-      modal.find('#spa-edit-item-message').text(message)
-      jQuery('#spa-edit-item-save').attr('disabled', message !== '')
+      modal.find('#spa-edit-event-message').text(message)
+      jQuery('#spa-edit-event-save').attr('disabled', message !== '')
       modal.modal('handleUpdate')
     }
 
@@ -448,6 +448,38 @@ async function initialize () {
     }
   }())
 
+  const eventDeleter = (function () {
+    var active = null
+    const modal = jQuery('#spa-delete-event-modal')
+    modal.modal({backdrop: 'static', keyboard: false, show: false})
+    modal.on('hide.bs.modal', deactivate)
+    jQuery('#spa-delete-event-confirm').on('click', confirm)
+
+    return {activate}
+
+    function activate ({citySlug, eventId}) {
+      active = {citySlug, eventId}
+      modal.modal('show')
+    }
+
+    async function confirm () {
+      await request({
+        requestString: `mutation($citySlug:ID!,$eventId:ID!){
+          deleteEvent(citySlug:$citySlug,eventId:$eventId){id}
+        }`,
+        variableValues: active
+      })
+
+      modal.modal('hide')
+
+      eventsFilter.refreshContent()
+    }
+
+    function deactivate () {
+      active = null
+    }
+  }())
+
   const eventsFilter = (function () {
     var active = null
     const filteredEvents = jQuery('#spa-filtered-items')
@@ -489,6 +521,12 @@ async function initialize () {
     })
     doc.on('click', '.spa-modify-event', function () {
       eventEditor.modify({
+        citySlug: active.citySlug,
+        eventId: jQuery(this).data('spa-event-id')
+      })
+    })
+    doc.on('click', '.spa-delete-event', function () {
+      eventDeleter.activate({
         citySlug: active.citySlug,
         eventId: jQuery(this).data('spa-event-id')
       })
@@ -561,6 +599,7 @@ async function initialize () {
             {{{details.html}}}
           </div>
           <div class="card-footer">
+            <button class="btn btn-primary spa-delete-event" data-spa-event-id="{{id}}">Supprimer</button>
             <button class="btn btn-primary spa-modify-event" data-spa-event-id="{{id}}">Modifier</button>
           </div>
         </div>
