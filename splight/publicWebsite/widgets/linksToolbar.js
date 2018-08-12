@@ -1,10 +1,10 @@
 'use strict'
 
 const jQuery = require('jquery')
-const moment = require('moment')
 const mustache = require('mustache')
 const URI = require('urijs')
 
+const datetime = require('../../datetime')
 const durations = require('../durations')
 const pages = require('../pages')
 const paths = require('../paths')
@@ -28,7 +28,7 @@ function make ({citySlug, startDate, duration}) {
     // @todo Handle the two different 'now's in this project: generation date and visit date.
     // Currently, if the static version of the public website is visited a week after it's been generated,
     // we have dead links to the week after the last one generated.
-    const links = makeLinks(moment())
+    const links = makeLinks(datetime.generationNow())
     // @todo Hide link to previous before now
     links.previous.path = pages.timespan(citySlug, duration.links.previous.startDate(startDate), duration).exists(data) && links.previous.path
     links.next.path = pages.timespan(citySlug, duration.links.next.startDate(startDate), duration).exists(data) && links.next.path
@@ -51,7 +51,7 @@ function make ({citySlug, startDate, duration}) {
   }
 
   function initialize () {
-    const links = makeLinks(moment())
+    const links = makeLinks(datetime.visitNow())
 
     jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(links.now1.path).toString())
     jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(links.now2.path).toString())

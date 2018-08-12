@@ -1,9 +1,10 @@
 'use strict'
 
 const fs = require('fs-extra')
-const moment = require('moment')
 const path = require('path')
 const neatJSON = require('neatjson')
+
+const datetime = require('./splight/datetime')
 
 async function main (dataFile) {
   const data = await fs.readJSON(dataFile)
@@ -11,7 +12,7 @@ async function main (dataFile) {
   Object.values(data.cities).forEach(city => {
     city.events.forEach(event => {
       event.occurrences.forEach(occurrence => {
-        occurrence.start = moment(occurrence.start, moment.HTML5_FMT.DATETIME_LOCAL, true).add(1, 'week').format(moment.HTML5_FMT.DATETIME_LOCAL)
+        occurrence.start = datetime.datetime(occurrence.start).add(1, 'week').format(datetime.HTML5_FMT.DATETIME_LOCAL)
       })
     })
   })

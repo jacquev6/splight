@@ -1,10 +1,6 @@
 'use strict'
 
-const assert = require('assert').strict
-const moment = require('moment')
-
-// @todo Remove when fix for https://github.com/moment/moment/issues/4698 is on npm
-assert.equal(moment.HTML5_FMT.WEEK, 'GGGG-[W]WW')
+const datetime = require('../datetime')
 
 const oneDay = (function () {
   function clip (d) {
@@ -16,7 +12,7 @@ const oneDay = (function () {
     name: 'une journée',
     clip,
     titleFormat: '[Journée du] dddd LL',
-    slugFormat: moment.HTML5_FMT.DATE,
+    slugFormat: datetime.HTML5_FMT.DATE,
     dateAfter: startDate => clip(startDate).add(1, 'day'),
     links: {
       previous: {text: 'Journée précédente', startDate: startDate => clip(startDate).subtract(1, 'day')},
@@ -37,7 +33,7 @@ const threeDays = (function () {
     name: 'trois jours',
     clip,
     titleFormat: '[3 jours à partir du] dddd LL',
-    slugFormat: moment.HTML5_FMT.DATE + '+2',
+    slugFormat: datetime.HTML5_FMT.DATE + '+2',
     dateAfter: startDate => clip(startDate).add(3, 'days'),
     links: {
       previous: {text: 'Jours précédents', startDate: startDate => clip(startDate).subtract(1, 'day')},
@@ -57,7 +53,7 @@ const oneWeek = (function () {
     days: 7,
     name: 'une semaine',
     clip,
-    slugFormat: moment.HTML5_FMT.WEEK,
+    slugFormat: datetime.HTML5_FMT.WEEK,
     titleFormat: '[Semaine du] dddd LL',
     dateAfter: startDate => clip(startDate).add(7, 'days'),
     links: {

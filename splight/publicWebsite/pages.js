@@ -5,6 +5,7 @@ const moment = require('moment')
 
 const cityContent = require('./widgets/cityContent')
 const cityTitle = require('./widgets/cityTitle')
+const datetime = require('../datetime')
 const durations = require('./durations')
 const paths = require('./paths')
 const rootContent = require('./widgets/rootContent')
@@ -56,8 +57,8 @@ function timespan (citySlug, startDate, duration) {
       requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){city(slug:$citySlug){slug name tags{slug title} firstDate events(dates:{start:$first, after:$after}){id title tags{slug title} artist{name} location{name} occurrences{start}}}}',
       variableValues: {
         citySlug,
-        first: startDate.format(moment.HTML5_FMT.DATE),
-        after: dateAfter.format(moment.HTML5_FMT.DATE)
+        first: startDate.format(datetime.HTML5_FMT.DATE),
+        after: dateAfter.format(datetime.HTML5_FMT.DATE)
       }
     },
     exists: data => {
@@ -65,14 +66,14 @@ function timespan (citySlug, startDate, duration) {
         return false
       }
 
-      const now = moment()
+      const now = datetime.generationNow()
       const maxDateAfter = durations.oneWeek.clip(now).add(5, 'weeks')
       var minStartDate = durations.oneWeek.clip(now)
 
       if (data.city.firstDate) {
         minStartDate = moment.min(
           minStartDate,
-          durations.oneWeek.clip(moment(data.city.firstDate, moment.HTML5_FMT.DATE, true))
+          durations.oneWeek.clip(datetime.date(data.city.firstDate))
         )
       }
 

@@ -1,9 +1,9 @@
 'use strict'
 
 const jQuery = require('jquery')
-const moment = require('moment')
 const mustache = require('mustache')
 
+const datetime = require('../datetime')
 const eventDetails_ = require('../publicWebsite/widgets/eventDetails')
 const template = require('./page.html')
 const utils = require('./utils')
@@ -45,7 +45,7 @@ async function initialize () {
       })
       doc.on('input', '#spa-edit-event-new-occurrence', function () {
         active.newOccurrence = jQuery('#spa-edit-event-new-occurrence').val()
-        const m = moment(active.newOccurrence, moment.HTML5_FMT.DATETIME_LOCAL, true)
+        const m = datetime.datetime(active.newOccurrence)
         jQuery('#spa-edit-event-add-occurrence').attr('disabled', !m.isValid())
       })
       doc.on('click', '#spa-edit-event-add-occurrence', function () {
@@ -162,7 +162,7 @@ async function initialize () {
         function render ({event: {occurrences}}) {
           return mustache.render(template, {
             newOccurrence: active.newOccurrence,
-            addDisabled: !moment(active.newOccurrence, moment.HTML5_FMT.DATETIME_LOCAL, true).isValid(),
+            addDisabled: !datetime.datetime(active.newOccurrence).isValid(),
             occurrences
           })
         }
@@ -513,7 +513,7 @@ async function initialize () {
       const tag = filterTag.val()
       const location = filterLocation.val()
       const artist = filterArtist.val()
-      const date = moment(filterDate.val(), moment.HTML5_FMT.DATE, true)
+      const date = datetime.date(filterDate.val())
       const title = filterTitle.val()
 
       eventEditor.create({
@@ -522,7 +522,7 @@ async function initialize () {
         location: location === '-' ? undefined : location,
         artist: artist === '-' ? undefined : artist,
         title: title === '' ? undefined : title,
-        date: date.isValid() ? date.format(moment.HTML5_FMT.DATE) : undefined
+        date: date.isValid() ? date.format(datetime.HTML5_FMT.DATE) : undefined
       })
     })
     doc.on('click', '.spa-modify-event', function () {
@@ -581,13 +581,13 @@ async function initialize () {
       filterDate.val(date)
       filterTitle.val(title)
 
-      date = moment(date, moment.HTML5_FMT.DATE, true)
+      date = datetime.date(date)
 
       var dates
       if (date.isValid()) {
         dates = {
-          start: date.format(moment.HTML5_FMT.DATE),
-          after: date.clone().add(1, 'day').format(moment.HTML5_FMT.DATE)
+          start: date.format(datetime.HTML5_FMT.DATE),
+          after: date.clone().add(1, 'day').format(datetime.HTML5_FMT.DATE)
         }
       }
 

@@ -8,7 +8,6 @@ const expressGraphql = require('express-graphql')
 const fs = require('fs-extra')
 const htmlMinifier = require('html-minifier')
 const modernizr = require('modernizr')
-const moment = require('moment')
 const neatJSON = require('neatjson')
 const path = require('path')
 const sass = require('node-sass')
@@ -16,6 +15,7 @@ const terser = require('terser')
 const XmlSitemap = require('xml-sitemap')
 
 const container = require('./publicWebsite/widgets/container')
+const datetime = require('./datetime')
 const durations = require('./publicWebsite/durations')
 const graphqlApi = require('./graphqlApi')
 const pages = require('./publicWebsite/pages')
@@ -251,11 +251,11 @@ function * generatePageClasses () {
       requestString: 'query{cities{slug firstDate}}'
     },
     makeAll: function * ({cities}) {
-      const dateAfter = durations.oneWeek.clip(moment()).add(5, 'weeks')
+      const dateAfter = durations.oneWeek.clip(datetime.generationNow()).add(5, 'weeks')
       for (var {slug, firstDate} of cities) {
-        var globalStartDate = durations.oneWeek.clip(moment())
+        var globalStartDate = durations.oneWeek.clip(datetime.generationNow())
         if (firstDate) {
-          globalStartDate = durations.oneWeek.clip(moment(firstDate, moment.HTML5_FMT.DATE, true))
+          globalStartDate = durations.oneWeek.clip(datetime.date(firstDate))
         }
         for (var duration of durations.all) {
           for (

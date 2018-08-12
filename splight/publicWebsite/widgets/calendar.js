@@ -3,10 +3,10 @@
 /* global history */
 
 const jQuery = require('jquery')
-const moment = require('moment')
 const mustache = require('mustache')
 const URI = require('urijs')
 
+const datetime = require('../../datetime')
 const eventDetails_ = require('./eventDetails')
 const template = require('./calendar.html')
 const what = require('./eventDetails/what')
@@ -23,9 +23,9 @@ function make ({citySlug, startDate, dateAfter, duration}) {
 
     data.city.events.forEach(({id, location, artist, occurrences, tags, title}) => {
       occurrences.forEach(({start}) => {
-        start = moment(start, moment.HTML5_FMT.DATETIME_LOCAL, true)
+        start = datetime.datetime(start)
 
-        const day = start.format(moment.HTML5_FMT.DATE)
+        const day = start.format(datetime.HTML5_FMT.DATE)
         var dayEvents = dayEventsByDate[day]
         if (!dayEvents) {
           dayEventsByDate[day] = dayEvents = []
@@ -33,7 +33,7 @@ function make ({citySlug, startDate, dateAfter, duration}) {
 
         dayEvents.push({
           id,
-          time: start.format(moment.HTML5_FMT.TIME),
+          time: start.format(datetime.HTML5_FMT.TIME),
           title,
           mainTag: tags[0],
           tags
@@ -45,7 +45,7 @@ function make ({citySlug, startDate, dateAfter, duration}) {
     for (var d = startDate.clone(); d.isBefore(dateAfter); d.add(1, 'day')) {
       days.push({
         date: d.format('ddd Do MMM'),
-        events: (dayEventsByDate[d.format(moment.HTML5_FMT.DATE)] || []).sort(
+        events: (dayEventsByDate[d.format(datetime.HTML5_FMT.DATE)] || []).sort(
           (a, b) => a.time < b.time ? -1 : a.time > b.time ? 1 : 0
         )
       })

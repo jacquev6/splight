@@ -3,8 +3,8 @@
 const graphql = require('graphql')
 const Hashids = require('hashids')
 const Joi = require('joi')
-const moment = require('moment')
 
+const datetime = require('./datetime')
 const schemaString = require('./graphqlApi.gqls')
 
 const schema = graphql.buildSchema(schemaString)
@@ -103,12 +103,12 @@ function makeSyncRoot (data) {
 
     function firstDate () {
       const d = reduceOccurrencesStarts((a, b) => a < b ? a : b)
-      return d && moment(d, moment.HTML5_FMT.DATETIME_LOCAL, true).format(moment.HTML5_FMT.DATE)
+      return d && datetime.datetime(d).format(datetime.HTML5_FMT.DATE)
     }
 
     function dateAfter () {
       const d = reduceOccurrencesStarts((a, b) => a < b ? b : a)
-      return d && moment(d, moment.HTML5_FMT.DATETIME_LOCAL, true).add(1, 'day').format(moment.HTML5_FMT.DATE)
+      return d && datetime.datetime(d).add(1, 'day').format(datetime.HTML5_FMT.DATE)
     }
 
     function reduceOccurrencesStarts (f) {

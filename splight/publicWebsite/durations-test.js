@@ -1,15 +1,10 @@
 'use strict'
 
-require('stringify').registerWithRequire(['.html'])
-
 /* global describe, it */
 
 const assert = require('assert').strict
-const moment = require('moment')
 
-// @todo Remove when fix for https://github.com/moment/moment/issues/4698 is on npm
-moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
-
+const datetime = require('../datetime')
 const durations = require('./durations')
 
 describe('durations', function () {
@@ -21,7 +16,7 @@ describe('durations', function () {
 
   describe('oneDay', function () {
     it('clips', function () {
-      assertMomentsEqual(oneDay.clip(moment('2018-07-13T12:34')), moment('2018-07-13'))
+      assertMomentsEqual(oneDay.clip(datetime.datetime('2018-07-13T12:34')), datetime.date('2018-07-13'))
     })
   })
 })

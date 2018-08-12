@@ -1,16 +1,16 @@
 'use strict'
 
 const jQuery = require('jquery')
-const moment = require('moment')
 const mustache = require('mustache')
 const URI = require('urijs')
 
+const datetime = require('../../datetime')
 const paths = require('../paths')
 const durations = require('../durations')
 const template = require('./cityContent.html')
 
 function make ({citySlug}) {
-  const nowWeekPath = paths.timespan(citySlug, moment(), durations.oneWeek)
+  const nowWeekPath = paths.timespan(citySlug, datetime.visitNow(), durations.oneWeek)
 
   function render (data) {
     const city = data.city
