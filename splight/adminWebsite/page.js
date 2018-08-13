@@ -171,13 +171,13 @@ async function initialize () {
 
       const whatForEdit = (function () {
         const template = `
-          <div class="form-group"><label>Catégorie principale&nbsp;: <select id="spa-edit-event-main-tag">
+          <div class="form-group form-inline"><label>Catégorie principale&nbsp;: <select id="spa-edit-event-main-tag" class="form-control ml-sm-2">
             {{#untagged}}<option disabled="disabled" selected="selected">-</option>{{/untagged}}
             {{#tags}}<option value="{{slug}}"{{#isMain}} selected="selected"{{/isMain}}>{{title}}</option>{{/tags}}
           </select></label></div>
           <p>Catégories secondaires&nbsp;:</p>
-          <ul>{{#tags}}{{^isMain}}<li><label>{{title}} <input class="spa-edit-event-secondary-tag" type="checkbox" value="{{slug}}"{{#isSecondary}} checked="checked"{{/isSecondary}} /></label></li>{{/isMain}}{{/tags}}</ul>
-          <div class="form-group"><label>Titre&nbsp;: <input id="spa-edit-event-title" value="{{title}}" /></label></div>
+          <ul>{{#tags}}{{^isMain}}<li class="form-group form-inline"><label>{{title}} <input id="spa-edit-event-secondary-tag-{{slug}}" class="spa-edit-event-secondary-tag form-control ml-sm-2" type="checkbox" value="{{slug}}"{{#isSecondary}} checked="checked"{{/isSecondary}} /></label></li>{{/isMain}}{{/tags}}</ul>
+          <div class="form-group form-inline"><label>Titre&nbsp;: <input id="spa-edit-event-title" class="form-control ml-sm-2" value="{{title}}" /></label></div>
           <ul class="nav nav-tabs">
             <li class="nav-item">
               <a id="spa-edit-event-choose-artist" class="nav-link{{^newArtist}} active{{/newArtist}}" data-toggle="tab" href="#spa-edit-event-artist-tab-existing">Artiste existant</a>
@@ -188,11 +188,11 @@ async function initialize () {
           </ul>
           <div class="tab-content border border-top-0 pt-2 px-2" id="spa-edit-event-artist-tabs">
             <div class="tab-pane{{^newArtist}} show active{{/newArtist}}" id="spa-edit-event-artist-tab-existing">
-              <div class="form-group"><label>Choisir un artiste&nbsp;: <select id="spa-edit-event-existing-artist-slug"><option value="-">-</option>{{#artists}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/artists}}</select></label></div>
+              <div class="form-group form-inline"><label>Choisir un artiste&nbsp;: <select id="spa-edit-event-existing-artist-slug" class="form-control ml-sm-2"><option value="-">-</option>{{#artists}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/artists}}</select></label></div>
             </div>
             <div class="tab-pane{{#newArtist}} show active{{/newArtist}}" id="spa-edit-event-artist-tab-new">
-              <div class="form-group"><label>Slug&nbsp;: <input id="spa-edit-event-new-artist-slug" value="{{newArtist.slug}}"/></label></div>
-              <div class="form-group"><label>Nom&nbsp;: <input id="spa-edit-event-new-artist-name" value="{{newArtist.name}}"/></label></div>
+              <div class="form-group form-inline"><label>Slug&nbsp;: <input id="spa-edit-event-new-artist-slug" class="form-control ml-sm-2" value="{{newArtist.slug}}"/></label></div>
+              <div class="form-group form-inline"><label>Nom&nbsp;: <input id="spa-edit-event-new-artist-name" class="form-control ml-sm-2" value="{{newArtist.name}}"/></label></div>
             </div>
           </div>
         `
@@ -228,14 +228,14 @@ async function initialize () {
           </ul>
           <div class="tab-content border border-top-0 pt-2 px-2" id="spa-edit-event-location-tabs">
             <div class="tab-pane{{^newLocation}} show active{{/newLocation}}" id="spa-edit-event-location-tab-existing">
-              <div class="form-group"><label>Choisir un lieu&nbsp;: <select id="spa-edit-event-existing-location-slug">
+              <div class="form-group form-inline"><label>Choisir un lieu&nbsp;: <select id="spa-edit-event-existing-location-slug" class="form-control ml-sm-2">
                 {{#unlocated}}<option disabled="disabled" selected="selected">-</option>{{/unlocated}}
                 {{#locations}}<option value="{{slug}}"{{#selected}} selected="selected"{{/selected}}>{{name}}</option>{{/locations}}
               </select></label></div>
             </div>
             <div class="tab-pane{{#newLocation}} show active{{/newLocation}}" id="spa-edit-event-location-tab-new">
-              <div class="form-group"><label>Slug&nbsp;: <input id="spa-edit-event-new-location-slug" value="{{newLocation.slug}}"/></label></div>
-              <div class="form-group"><label>Nom&nbsp;: <input id="spa-edit-event-new-location-name" value="{{newLocation.name}}"/></label></div>
+              <div class="form-group form-inline"><label>Slug&nbsp;: <input id="spa-edit-event-new-location-slug" class="form-control ml-sm-2" value="{{newLocation.slug}}"/></label></div>
+              <div class="form-group form-inline"><label>Nom&nbsp;: <input id="spa-edit-event-new-location-name" class="form-control ml-sm-2" value="{{newLocation.name}}"/></label></div>
             </div>
           </div>
         `
