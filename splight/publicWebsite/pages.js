@@ -54,7 +54,7 @@ function timespan (citySlug, startDate, duration) {
   return {
     path: paths.timespan(citySlug, startDate, duration),
     dataRequest: {
-      requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){generation{date dateAfter} city(slug:$citySlug){slug name tags{slug title} firstDate events(dates:{start:$first, after:$after}){id title tags{slug title} artist{name} location{name} occurrences{start}}}}',
+      requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){generation{date dateAfter} city(slug:$citySlug){slug name tags{slug title} firstDate events(dates:{start:$first, after:$after}){id title tags{slug title} artist{name description website} location{name description website} occurrences{start}}}}',
       variableValues: {
         citySlug,
         first: startDate.format(datetime.HTML5_FMT.DATE),
