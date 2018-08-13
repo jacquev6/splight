@@ -61,8 +61,8 @@ function makeSyncRoot (data, generationDate) {
     return data.artists.get(slug)
   }
 
-  function putArtist ({artist: {slug, name}}) {
-    return data.artists.put({slug, name})
+  function putArtist ({artist}) {
+    return data.artists.put(artist)
   }
 
   function cities () {
@@ -73,10 +73,14 @@ function makeSyncRoot (data, generationDate) {
     return makeCity(data.cities.get(slug))
   }
 
-  function putLocation ({location: {citySlug, slug, name}}) {
-    return data.cities.get(citySlug).locations.put({slug, name})
+  // @todo Put citySlug as a first argument, independent from ILocation
+  function putLocation ({location}) {
+    const citySlug = location.citySlug
+    delete location.citySlug
+    return data.cities.get(citySlug).locations.put(location)
   }
 
+  // @todo Put citySlug as a first argument, independent from IEvent
   function putEvent ({event: {citySlug, eventId, title, artist, location, tags, occurrences}}) {
     return makeEvent(data.cities.get(citySlug).events.put(Object.assign(
       {
@@ -112,7 +116,7 @@ function makeSyncRoot (data, generationDate) {
 
     function locations ({name, max}) {
       const nameMatches = matches(name)
-      return city.locations.filter(artist => nameMatches(artist.name), max)
+      return city.locations.filter(location => nameMatches(location.name), max)
     }
 
     function location ({slug}) {
@@ -216,11 +220,15 @@ function normalizeString (s) {
 
 const encapsulateData = (function () {
   const artistSchema = Joi.object({
-    name: Joi.string().required()
+    name: Joi.string().required(),
+    description: Joi.array().required().items(Joi.string()),
+    website: Joi.string()
   })
 
   const locationSchema = Joi.object({
-    name: Joi.string().required()
+    name: Joi.string().required(),
+    description: Joi.array().required().items(Joi.string()),
+    website: Joi.string()
   })
 
   const tagSchema = Joi.object({
@@ -266,11 +274,18 @@ const encapsulateData = (function () {
     data._ = data._ || {}
     data._.sequences = data._.sequences || {}
     data._.sequences.events = data._.sequences.events || 0
-    data.artists = data.artists || {}
-    data.cities = data.cities || {}
 
+    data.artists = data.artists || {}
+    Object.values(data.artists).forEach(artist => {
+      artist.description = artist.description || []
+    })
+
+    data.cities = data.cities || {}
     Object.values(data.cities).forEach(city => {
       city.locations = city.locations || {}
+      Object.values(city.locations).forEach(location => {
+        location.description = location.description || []
+      })
       city.tags = city.tags || []
       city.events = city.events || []
       city.events.forEach(event => {
@@ -286,7 +301,7 @@ const encapsulateData = (function () {
       things: data.artists,
       schema: artistSchema,
       name: 'artist',
-      encapsulate: ({name}) => ({name})
+      encapsulate: ({name, description, website}) => ({name, description, website})
     })
 
     return {
@@ -300,7 +315,7 @@ const encapsulateData = (function () {
             things: locations,
             schema: locationSchema,
             name: 'location',
-            encapsulate: ({name}) => ({name})
+            encapsulate: ({name, description, website}) => ({name, description, website})
           })
           tags = listOfThingsWithSlug({
             things: tags,
@@ -507,4 +522,4 @@ function make (config) {
   return {schema, rootValue, request}
 }
 
-Object.assign(exports, {make, forTest: {makeRoot: makeSyncRoot, schema}})
+Object.assign(exports, {make, forTest: {makeRoot: makeSyncRoot, schema, encapsulateData}})

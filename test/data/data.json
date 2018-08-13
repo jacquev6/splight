@@ -1,6 +1,17 @@
 {
   "_": {"sequences": {"events": 11}},
-  "artists": {"artist-1": {"name": "Artiste 1"}, "artist-2": {"name": "Artiste 2"}},
+  "artists": {
+    "artist-1": {
+      "description": [
+        "L'Artiste 1 est vraiment très très bon. Il fait de bonnes choses dans son domaine. Nous le recommandons à tous ceux qui l'apprécient.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      ],
+      "name": "Artiste 1",
+      "website": "https://google.fr/search?q=toto"
+    },
+    "artist-2": {"description": [], "name": "Artiste 2"}
+  },
   "cities": {
     "avalon": {
       "events": [
@@ -85,9 +96,9 @@
         }
       ],
       "locations": {
-        "location-1": {"name": "Lieu à Avalon 1"},
-        "location-2": {"name": "Lieu à Avalon 2"},
-        "location-3": {"name": "Lieu à Avalon 3"}
+        "location-1": {"description": [], "name": "Lieu à Avalon 1"},
+        "location-2": {"description": [], "name": "Lieu à Avalon 2"},
+        "location-3": {"description": [], "name": "Lieu à Avalon 3"}
       },
       "name": "Avalon",
       "tags": [
@@ -107,7 +118,10 @@
           "title": "Seul événement"
         }
       ],
-      "locations": {"location-1": {"name": "Lieu à Shangri-La 1"}, "location-2": {"name": "Lieu à Shangri-La 2"}},
+      "locations": {
+        "location-1": {"description": [], "name": "Lieu à Shangri-La 1"},
+        "location-2": {"description": [], "name": "Lieu à Shangri-La 2"}
+      },
       "name": "Shangri-La",
       "tags": [{"slug": "tag-1", "title": "Seule catégorie"}]
     }

@@ -48,10 +48,10 @@ describe('graphqlApi', function () {
         data,
         {
           _: {sequences: {events: 1}},
-          artists: {'artist': {name: 'Artist'}},
+          artists: {'artist': {name: 'Artist', description: []}},
           cities: {'city': {
             name: 'City',
-            locations: {'location': {name: 'Location'}},
+            locations: {'location': {name: 'Location', description: []}},
             tags: [{slug: 'tag', title: 'Tag'}],
             events: [{
               id: hashids.encode(0),
@@ -88,10 +88,10 @@ describe('graphqlApi', function () {
         data,
         {
           _: {sequences: {events: 11}},
-          artists: {'artist': {name: 'Artist'}},
+          artists: {'artist': {name: 'Artist', description: []}},
           cities: {'city': {
             name: 'City',
-            locations: {'location': {name: 'Location'}},
+            locations: {'location': {name: 'Location', description: []}},
             tags: [{slug: 'tag', title: 'Tag'}],
             events: [{
               id: hashids.encode(10),
@@ -129,10 +129,10 @@ describe('graphqlApi', function () {
         data,
         {
           _: {sequences: {events: 10}},
-          artists: {'artist': {name: 'Artist'}},
+          artists: {'artist': {name: 'Artist', description: []}},
           cities: {'city': {
             name: 'City',
-            locations: {'location': {name: 'Location'}},
+            locations: {'location': {name: 'Location', description: []}},
             tags: [{slug: 'tag', title: 'Tag'}],
             events: [{
               id: 'foobarbaz',
@@ -224,6 +224,7 @@ describe('graphqlApi', function () {
     }
 
     function checkData (expected) {
+      graphqlApi.forTest.encapsulateData(expected)
       assert.deepStrictEqual(data, expected)
     }
 
@@ -989,7 +990,7 @@ describe('graphqlApi', function () {
 
   describe('mutations', function () {
     describe('putArtist', function () {
-      const fields = 'slug name'
+      const fields = 'slug name description website'
       const get = `{artists{${fields}}}`
       const put = `mutation($artist:IArtist!){putArtist(artist:$artist){${fields}}}`
 
@@ -1000,37 +1001,57 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {artist: {slug: 'artist', name: 'Artist'}},
-          {data: {putArtist: {slug: 'artist', name: 'Artist'}}}
+          {artist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar'}},
+          {data: {putArtist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}}
         )
 
         checkData({
           _: {sequences: {events: 0}},
-          artists: {'artist': {name: 'Artist'}},
+          artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}},
           cities: {}
         })
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar'}]}})
       })
 
       it('modifies an artist', async function () {
         const {checkRequest, checkData} = make({artists: {'artist': {name: 'Artist'}}})
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: [], website: null}]}})
 
         await checkRequest(
           put,
-          {artist: {slug: 'artist', name: 'New name'}},
-          {data: {putArtist: {slug: 'artist', name: 'New name'}}}
+          {artist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar'}},
+          {data: {putArtist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar'}}}
         )
 
         checkData({
           _: {sequences: {events: 0}},
-          artists: {'artist': {name: 'New name'}},
+          artists: {'artist': {name: 'New name', description: ['Description'], website: 'http://foo.bar'}},
           cities: {}
         })
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar'}]}})
+      })
+
+      it('modifies an artist - reset', async function () {
+        const {checkRequest, checkData} = make({artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}})
+
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar'}]}})
+
+        await checkRequest(
+          put,
+          {artist: {slug: 'artist', name: 'New name', description: []}},
+          {data: {putArtist: {slug: 'artist', name: 'New name', description: [], website: null}}}
+        )
+
+        checkData({
+          _: {sequences: {events: 0}},
+          artists: {'artist': {name: 'New name', description: []}},
+          cities: {}
+        })
+
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name', description: [], website: null}]}})
       })
 
       it('propagates changes to events', async function () {
@@ -1055,24 +1076,24 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{events: [{artist: {slug: 'artist', name: 'Artist'}}]}]}}
+          {data: {cities: [{events: [{artist: {slug: 'artist', name: 'Artist', description: [], website: null}}]}]}}
         )
 
         await checkRequest(
           put,
-          {artist: {slug: 'artist', name: 'New name'}},
-          {data: {putArtist: {slug: 'artist', name: 'New name'}}}
+          {artist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar'}},
+          {data: {putArtist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar'}}}
         )
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{events: [{artist: {slug: 'artist', name: 'New name'}}]}]}}
+          {data: {cities: [{events: [{artist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar'}}]}]}}
         )
       })
     })
 
     describe('putLocation', function () {
-      const fields = 'slug name'
+      const fields = 'slug name description website'
       const get = `{cities{slug locations{${fields}}}}`
       const put = `mutation($location:ILocation!){putLocation(location:$location){${fields}}}`
 
@@ -1083,8 +1104,8 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {location: {citySlug: 'city', slug: 'location', name: 'Location'}},
-          {data: {putLocation: {slug: 'location', name: 'Location'}}}
+          {location: {citySlug: 'city', slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar'}},
+          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar'}}}
         )
 
         checkData({
@@ -1093,32 +1114,35 @@ describe('graphqlApi', function () {
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'Location'}},
+              locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar'}},
               tags: [],
               events: []
             }
           }
         })
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location'}]}]}})
+        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar'}]}]}})
       })
 
       it('modifies a location', async function () {
         const {checkRequest, checkData} = make({
-          cities: {
-            'city': {
-              name: 'City',
-              locations: {'location': {name: 'Location'}}
-            }
-          }
+          cities: {'city': {name: 'City', locations: {'location': {name: 'Location'}}}}
         })
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location'}]}]}})
+        await checkRequest(get, {data: {cities: [{
+          slug: 'city',
+          locations: [{
+            slug: 'location',
+            name: 'Location',
+            description: [],
+            website: null
+          }]
+        }]}})
 
         await checkRequest(
           put,
-          {location: {citySlug: 'city', slug: 'location', name: 'New name'}},
-          {data: {putLocation: {slug: 'location', name: 'New name'}}}
+          {location: {citySlug: 'city', slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar'}},
+          {data: {putLocation: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar'}}}
         )
 
         checkData({
@@ -1127,14 +1151,67 @@ describe('graphqlApi', function () {
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'New name'}},
+              locations: {'location': {name: 'New name', description: ['Description'], website: 'http://foo.bar'}},
               tags: [],
               events: []
             }
           }
         })
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'New name'}]}]}})
+        await checkRequest(get, {data: {cities: [{
+          slug: 'city',
+          locations: [{
+            slug: 'location',
+            name: 'New name',
+            description: ['Description'],
+            website: 'http://foo.bar'
+          }]
+        }]}})
+      })
+
+      it('modifies a location - reset', async function () {
+        const {checkRequest, checkData} = make({
+          cities: {'city': {name: 'City', locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar'}}}}
+        })
+
+        await checkRequest(get, {data: {cities: [{
+          slug: 'city',
+          locations: [{
+            slug: 'location',
+            name: 'Location',
+            description: ['Description'],
+            website: 'http://foo.bar'
+          }]
+        }]}})
+
+        await checkRequest(
+          put,
+          {location: {citySlug: 'city', slug: 'location', name: 'New name', description: []}},
+          {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null}}}
+        )
+
+        checkData({
+          _: {sequences: {events: 0}},
+          artists: {},
+          cities: {
+            'city': {
+              name: 'City',
+              locations: {'location': {name: 'New name', description: []}},
+              tags: [],
+              events: []
+            }
+          }
+        })
+
+        await checkRequest(get, {data: {cities: [{
+          slug: 'city',
+          locations: [{
+            slug: 'location',
+            name: 'New name',
+            description: [],
+            website: null
+          }]
+        }]}})
       })
 
       it('propagates changes to events', async function () {
@@ -1157,18 +1234,18 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{events: [{location: {slug: 'location', name: 'Location'}}]}]}}
+          {data: {cities: [{events: [{location: {slug: 'location', name: 'Location', description: [], website: null}}]}]}}
         )
 
         await checkRequest(
           put,
-          {location: {citySlug: 'city', slug: 'location', name: 'New name'}},
-          {data: {putLocation: {slug: 'location', name: 'New name'}}}
+          {location: {citySlug: 'city', slug: 'location', name: 'New name', description: []}},
+          {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null}}}
         )
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{events: [{location: {slug: 'location', name: 'New name'}}]}]}}
+          {data: {cities: [{events: [{location: {slug: 'location', name: 'New name', description: [], website: null}}]}]}}
         )
       })
     })
@@ -1823,17 +1900,17 @@ describe('graphqlApi', function () {
 
       await checkRequest(
         'mutation{' +
-          'putArtist(artist:{slug:"artist",name:"Artist"}){slug name}' +
-          'putLocation(location:{citySlug:"city",slug:"location",name:"Location"}){slug name}' +
-          'putEvent(event:{citySlug:"city",location:"location",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){id artist{slug name} location{slug name} tags{slug title}}' +
+          'putArtist(artist:{slug:"artist",name:"Artist",description:["Some artist"],website:"http://artist.bar"}){slug name description website}' +
+          'putLocation(location:{citySlug:"city",slug:"location",name:"Location",description:["Some location"],website:"http://location.bar"}){slug name description website}' +
+          'putEvent(event:{citySlug:"city",location:"location",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){id artist{slug name description website} location{slug name description website} tags{slug title}}' +
         '}',
         {data: {
-          putArtist: {slug: 'artist', name: 'Artist'},
-          putLocation: {slug: 'location', name: 'Location'},
+          putArtist: {slug: 'artist', name: 'Artist', description: ['Some artist'], website: 'http://artist.bar'},
+          putLocation: {slug: 'location', name: 'Location', description: ['Some location'], website: 'http://location.bar'},
           putEvent: {
             id: hashids.encode(0),
-            artist: {slug: 'artist', name: 'Artist'},
-            location: {slug: 'location', name: 'Location'},
+            artist: {slug: 'artist', name: 'Artist', description: ['Some artist'], website: 'http://artist.bar'},
+            location: {slug: 'location', name: 'Location', description: ['Some location'], website: 'http://location.bar'},
             tags: [{slug: 'tag', title: 'Tag'}]
           }
         }}
@@ -1845,10 +1922,10 @@ describe('graphqlApi', function () {
             events: 1
           }
         },
-        artists: {artist: {name: 'Artist'}},
+        artists: {artist: {name: 'Artist', description: ['Some artist'], website: 'http://artist.bar'}},
         cities: {'city': {
           name: 'City',
-          locations: {'location': {name: 'Location'}},
+          locations: {'location': {name: 'Location', description: ['Some location'], website: 'http://location.bar'}},
           events: [{
             id: hashids.encode(0),
             artist: 'artist',

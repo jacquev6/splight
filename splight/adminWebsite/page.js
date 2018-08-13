@@ -671,6 +671,15 @@ async function initialize () {
         active.artist.name = jQuery('#spa-edit-artist-name').val()
         refreshHeaderAndFooter()
       })
+      doc.on('input', '#spa-edit-artist-website', function () {
+        const website = jQuery('#spa-edit-artist-website').val()
+        active.artist.website = website === '' ? undefined : website
+        refreshHeaderAndFooter()
+      })
+      doc.on('input', '#spa-edit-artist-description', function () {
+        active.artist.description = jQuery('#spa-edit-artist-description').val().split(/\n\n+/).map(part => part.trim()).filter(part => part !== '')
+        refreshHeaderAndFooter()
+      })
     }())
 
     deactivate()
@@ -681,9 +690,13 @@ async function initialize () {
       const preActivated = await preActivate()
 
       const {artist} = await request({
-        requestString: 'query($artistSlug:ID!){artist(slug:$artistSlug){slug name}}',
+        requestString: 'query($artistSlug:ID!){artist(slug:$artistSlug){slug name description website}}',
         variableValues: {artistSlug}
       })
+
+      if (!artist.website) {
+        artist.website = undefined
+      }
 
       Object.assign(
         preActivated,
@@ -704,7 +717,9 @@ async function initialize () {
         {
           artist: {
             slug: '',
-            name: name || ''
+            name: name || '',
+            description: [],
+            website: undefined
           },
           isNew: true
         }
@@ -734,6 +749,8 @@ async function initialize () {
     function refreshContent () {
       jQuery('#spa-edit-artist-slug').val(active.artist.slug).attr('disabled', !active.isNew)
       jQuery('#spa-edit-artist-name').val(active.artist.name)
+      jQuery('#spa-edit-artist-website').val(active.artist.website)
+      jQuery('#spa-edit-artist-description').val(active.artist.description.join('\n\n'))
       refreshHeaderAndFooter()
     }
 
@@ -881,6 +898,15 @@ async function initialize () {
         active.location.name = jQuery('#spa-edit-location-name').val()
         refreshHeaderAndFooter()
       })
+      doc.on('input', '#spa-edit-location-website', function () {
+        const website = jQuery('#spa-edit-location-website').val()
+        active.location.website = website === '' ? undefined : website
+        refreshHeaderAndFooter()
+      })
+      doc.on('input', '#spa-edit-location-description', function () {
+        active.location.description = jQuery('#spa-edit-location-description').val().split(/\n\n+/).map(part => part.trim()).filter(part => part !== '')
+        refreshHeaderAndFooter()
+      })
     }())
 
     deactivate()
@@ -891,9 +917,13 @@ async function initialize () {
       const preActivated = await preActivate({citySlug})
 
       const {city: {location}} = await request({
-        requestString: 'query($citySlug:ID!,$locationSlug:ID!){city(slug:$citySlug){location(slug:$locationSlug){slug name}}}',
+        requestString: 'query($citySlug:ID!,$locationSlug:ID!){city(slug:$citySlug){location(slug:$locationSlug){slug name description website}}}',
         variableValues: {citySlug, locationSlug}
       })
+
+      if (!location.website) {
+        delete location.website
+      }
 
       Object.assign(
         preActivated,
@@ -914,7 +944,9 @@ async function initialize () {
         {
           location: {
             slug: '',
-            name: name || ''
+            name: name || '',
+            description: [],
+            website: undefined
           },
           isNew: true
         }
@@ -948,6 +980,8 @@ async function initialize () {
     function refreshContent () {
       jQuery('#spa-edit-location-slug').val(active.location.slug).attr('disabled', !active.isNew)
       jQuery('#spa-edit-location-name').val(active.location.name)
+      jQuery('#spa-edit-location-website').val(active.location.website)
+      jQuery('#spa-edit-location-description').val(active.location.description.join('\n\n'))
       refreshHeaderAndFooter()
     }
 
