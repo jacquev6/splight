@@ -1,8 +1,11 @@
 'use strict'
 
+const fs = require('fs-extra')
 const graphql = require('graphql')
 const Hashids = require('hashids')
 const Joi = require('joi')
+const neatJSON = require('neatjson')
+const path = require('path')
 
 const datetime = require('./datetime')
 const durations = require('./publicWebsite/durations')
@@ -12,20 +15,26 @@ const schema = graphql.buildSchema(schemaString)
 
 const hashids = new Hashids('', 10)
 
-function makeRoot ({load, save, generationDate}) {
-  const data = Promise.resolve(load())
+function makeRoot ({dataDirectory, generationDate}) {
+  const fileName = path.join(dataDirectory, 'data.json')
+
+  const data = fs.readJSONSync(fileName)
+
+  const root = makeSyncRoot(data, generationDate)
 
   function forward (name) {
-    return async function () {
-      const ret = makeSyncRoot(await data, generationDate)[name].apply(undefined, arguments)
-      await save(await data)
+    return function () {
+      const ret = root[name].apply(undefined, arguments)
+      fs.outputFileSync(fileName, neatJSON.neatJSON(data, {sort: true, wrap: 120, afterColon: 1, afterComma: 1}) + '\n')
       return ret
     }
   }
 
+  const fields = ['generation', 'artists', 'artist', 'putArtist', 'cities', 'city', 'putLocation', 'putEvent', 'deleteEvent']
+
   const ret = {}
 
-  for (var name of ['generation', 'artists', 'artist', 'putArtist', 'cities', 'city', 'putLocation', 'putEvent', 'deleteEvent']) {
+  for (var name of fields) {
     ret[name] = forward(name)
   }
 

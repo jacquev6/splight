@@ -16,15 +16,11 @@ const hashids = new Hashids('', 10)
 describe('graphqlApi', function () {
   describe('make', function () {
     it('works', async function () {
-      var data = {}
-      const {request} = graphqlApi.make({
-        load: async () => data,
-        save: async d => { data = d }
-      })
+      const {request} = graphqlApi.make({dataDirectory: 'test/data'})
 
       assert.deepEqual(
         await request({requestString: '{cities{slug}}'}),
-        {data: {cities: []}}
+        {data: {cities: [{slug: 'avalon'}, {slug: 'shangri-la'}]}}
       )
     })
   })

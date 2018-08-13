@@ -8,7 +8,6 @@ const expressGraphql = require('express-graphql')
 const fs = require('fs-extra')
 const htmlMinifier = require('html-minifier')
 const modernizr = require('modernizr')
-const neatJSON = require('neatjson')
 const path = require('path')
 const sass = require('node-sass')
 const terser = require('terser')
@@ -112,12 +111,7 @@ async function generate ({dataDirectory, outputDirectory}) {
 }
 
 function makeApi ({dataDirectory, generationDate}) {
-  const fileName = path.join(dataDirectory, 'data.json')
-  return graphqlApi.make({
-    load: () => fs.readJSON(fileName),
-    save: data => fs.outputFile(fileName, neatJSON.neatJSON(data, {sort: true, wrap: 120, afterColon: 1, afterComma: 1}) + '\n'),
-    generationDate
-  })
+  return graphqlApi.make({dataDirectory, generationDate})
 }
 
 function * generateAssets ({api}) {
