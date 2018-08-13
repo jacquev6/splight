@@ -5,18 +5,19 @@ const Hashids = require('hashids')
 const Joi = require('joi')
 
 const datetime = require('./datetime')
+const durations = require('./publicWebsite/durations')
 const schemaString = require('./graphqlApi.gqls')
 
 const schema = graphql.buildSchema(schemaString)
 
 const hashids = new Hashids('', 10)
 
-function makeRoot ({load, save}) {
+function makeRoot ({load, save, generationDate}) {
   const data = Promise.resolve(load())
 
   function forward (name) {
     return async function () {
-      const ret = makeSyncRoot(await data)[name].apply(undefined, arguments)
+      const ret = makeSyncRoot(await data, generationDate)[name].apply(undefined, arguments)
       await save(await data)
       return ret
     }
@@ -24,15 +25,23 @@ function makeRoot ({load, save}) {
 
   const ret = {}
 
-  for (var name of ['artists', 'artist', 'putArtist', 'cities', 'city', 'putLocation', 'putEvent', 'deleteEvent']) {
+  for (var name of ['generation', 'artists', 'artist', 'putArtist', 'cities', 'city', 'putLocation', 'putEvent', 'deleteEvent']) {
     ret[name] = forward(name)
   }
 
   return ret
 }
 
-function makeSyncRoot (data) {
+function makeSyncRoot (data, generationDate) {
   data = encapsulateData(data)
+  generationDate = generationDate || datetime.now()
+
+  function generation () {
+    return {
+      date: generationDate.format(datetime.HTML5_FMT.DATE),
+      dateAfter: durations.oneWeek.clip(generationDate).add(5, 'weeks').format(datetime.HTML5_FMT.DATE)
+    }
+  }
 
   function artists ({name, max}) {
     const nameMatches = matches(name)
@@ -171,7 +180,7 @@ function makeSyncRoot (data) {
     return {slug, name, tags, locations, location, firstDate, dateAfter, events, event}
   }
 
-  return {artists, artist, putArtist, cities, city, putLocation, putEvent, deleteEvent}
+  return {generation, artists, artist, putArtist, cities, city, putLocation, putEvent, deleteEvent}
 }
 
 function matches (needles) {

@@ -8,6 +8,7 @@ const assert = require('assert') // Not strict because graphql's returned data d
 const graphql = require('graphql')
 const Hashids = require('hashids')
 
+const datetime = require('./datetime')
 const graphqlApi = require('./graphqlApi')
 
 const hashids = new Hashids('', 10)
@@ -212,8 +213,8 @@ describe('graphqlApi', function () {
     })
   })
 
-  function make (data) {
-    const rootValue = graphqlApi.forTest.makeRoot(data)
+  function make (data, generationDate) {
+    const rootValue = graphqlApi.forTest.makeRoot(data, generationDate)
 
     async function checkRequest (requestString, variableValues, expected) {
       if (!expected) { // A poor man's variadic function
@@ -357,6 +358,17 @@ describe('graphqlApi', function () {
             dateAfter: '2018-07-15'
           }]
         }}
+      )
+    })
+  })
+
+  describe('generation', function () {
+    it('uses injected date', async function () {
+      const {checkRequest} = make({}, datetime.date('2018-08-15'))
+
+      await checkRequest(
+        '{generation{date dateAfter}}',
+        {data: {generation: {date: '2018-08-15', dateAfter: '2018-09-17'}}}
       )
     })
   })

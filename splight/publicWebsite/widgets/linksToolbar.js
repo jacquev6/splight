@@ -25,10 +25,7 @@ function make ({citySlug, startDate, duration}) {
   }
 
   function render (data) {
-    // @todo Handle the two different 'now's in this project: generation date and visit date.
-    // Currently, if the static version of the public website is visited a week after it's been generated,
-    // we have dead links to the week after the last one generated.
-    const links = makeLinks(datetime.generationNow())
+    const links = makeLinks(datetime.date(data.generation.date))
     // @todo Hide link to previous before now
     links.previous.path = pages.timespan(citySlug, duration.links.previous.startDate(startDate), duration).exists(data) && links.previous.path
     links.next.path = pages.timespan(citySlug, duration.links.next.startDate(startDate), duration).exists(data) && links.next.path
@@ -51,8 +48,9 @@ function make ({citySlug, startDate, duration}) {
   }
 
   function initialize () {
-    const links = makeLinks(datetime.visitNow())
-
+    // This generates dead links if site is visited more than four weeks after it's been generated.
+    // But that would mean the site is abandonned and then who cares?
+    const links = makeLinks(datetime.now())
     jQuery('.sp-timespan-now-1').attr('href', (index, href) => URI(href).path(links.now1.path).toString())
     jQuery('.sp-timespan-now-2').attr('href', (index, href) => URI(href).path(links.now2.path).toString())
   }

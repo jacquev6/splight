@@ -61,10 +61,10 @@ async function makeIndexCss ({api}) {
   )
 }
 
-async function makeRouter ({dataDirectory, scripts}) {
+async function makeRouter ({dataDirectory, scripts, generationDate}) {
   const router = express.Router()
 
-  const publicSite = await publicWebsite.makeRouter({dataDirectory, scripts})
+  const publicSite = await publicWebsite.makeRouter({dataDirectory, scripts, generationDate})
 
   for (var asset of generateAssets({scripts, api: publicSite.api})) {
     console.log('Preparing to serve', asset.path, 'as', asset.type)

@@ -35,7 +35,7 @@ function city (citySlug) {
   return {
     path: paths.city(citySlug),
     dataRequest: {
-      requestString: 'query($citySlug:ID!){city(slug:$citySlug){slug name tags{slug title}}}',
+      requestString: 'query($citySlug:ID!){generation{date} city(slug:$citySlug){slug name tags{slug title}}}',
       variableValues: {citySlug}
     },
     exists: data => data && data.city,
@@ -54,7 +54,7 @@ function timespan (citySlug, startDate, duration) {
   return {
     path: paths.timespan(citySlug, startDate, duration),
     dataRequest: {
-      requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){city(slug:$citySlug){slug name tags{slug title} firstDate events(dates:{start:$first, after:$after}){id title tags{slug title} artist{name} location{name} occurrences{start}}}}',
+      requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){generation{date dateAfter} city(slug:$citySlug){slug name tags{slug title} firstDate events(dates:{start:$first, after:$after}){id title tags{slug title} artist{name} location{name} occurrences{start}}}}',
       variableValues: {
         citySlug,
         first: startDate.format(datetime.HTML5_FMT.DATE),
@@ -66,9 +66,8 @@ function timespan (citySlug, startDate, duration) {
         return false
       }
 
-      const now = datetime.generationNow()
-      const maxDateAfter = durations.oneWeek.clip(now).add(5, 'weeks')
-      var minStartDate = durations.oneWeek.clip(now)
+      const maxDateAfter = datetime.date(data.generation.dateAfter)
+      var minStartDate = datetime.date(data.generation.date)
 
       if (data.city.firstDate) {
         minStartDate = moment.min(

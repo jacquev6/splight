@@ -1,4 +1,5 @@
 type Query {
+  generation: Generation
   artists(name: String, max: Int): [Artist!]
   artist(slug: ID!): Artist!
   cities: [City!]!
@@ -8,6 +9,11 @@ type Query {
 scalar Date
 scalar Time
 scalar DateTime
+
+type Generation {
+  date: Date!
+  dateAfter: Date!
+}
 
 type Artist {
   slug: ID!

@@ -10,15 +10,17 @@ const durations = require('../durations')
 const template = require('./cityContent.html')
 
 function make ({citySlug}) {
-  const nowWeekPath = paths.timespan(citySlug, datetime.visitNow(), durations.oneWeek)
-
   function render (data) {
     const city = data.city
+    const nowWeekPath = paths.timespan(citySlug, datetime.date(data.generation.date), durations.oneWeek)
 
     return mustache.render(template, {city, nowWeekPath})
   }
 
   function initialize () {
+    // This generates a dead link if site is visited more than five weeks after it's been generated.
+    // But that would mean the site is abandonned and then who cares?
+    const nowWeekPath = paths.timespan(citySlug, datetime.now(), durations.oneWeek)
     jQuery('.sp-now-week-link').attr('href', (index, href) => URI(href).path(nowWeekPath).toString())
   }
 

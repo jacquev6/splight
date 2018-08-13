@@ -16,12 +16,8 @@ function datetime (s) {
   return moment(s, HTML5_FMT.DATETIME_LOCAL, true)
 }
 
-function generationNow () {
+function now () {
   return moment()
 }
 
-function visitNow () {
-  return moment()
-}
-
-Object.assign(exports, {date, datetime, HTML5_FMT, generationNow, visitNow})
+Object.assign(exports, {date, datetime, HTML5_FMT, now})

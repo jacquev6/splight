@@ -21,8 +21,8 @@ const graphqlApi = require('./graphqlApi')
 const pages = require('./publicWebsite/pages')
 const tagColoring = require('./tagColoring')
 
-async function makeRouter ({dataDirectory, scripts}) {
-  const api = makeApi({dataDirectory})
+async function makeRouter ({dataDirectory, scripts, generationDate}) {
+  const api = makeApi({dataDirectory, generationDate})
 
   const router = express.Router()
 
@@ -111,11 +111,12 @@ async function generate ({dataDirectory, outputDirectory}) {
   fs.outputFile(path.join(outputDirectory, 'sitemap.xml'), sitemap.xml)
 }
 
-function makeApi ({dataDirectory}) {
+function makeApi ({dataDirectory, generationDate}) {
   const fileName = path.join(dataDirectory, 'data.json')
   return graphqlApi.make({
     load: () => fs.readJSON(fileName),
-    save: data => fs.outputFile(fileName, neatJSON.neatJSON(data, {sort: true, wrap: 120, afterColon: 1, afterComma: 1}) + '\n')
+    save: data => fs.outputFile(fileName, neatJSON.neatJSON(data, {sort: true, wrap: 120, afterColon: 1, afterComma: 1}) + '\n'),
+    generationDate
   })
 }
 
@@ -248,19 +249,19 @@ function * generatePageClasses () {
     path: '/:city/:timespan/',
     makeOne: req => pages.timespan.ofSlugs(req.params.city, req.params.timespan),
     dataRequest: {
-      requestString: 'query{cities{slug firstDate}}'
+      requestString: 'query{generation{date, dateAfter} cities{slug firstDate}}'
     },
-    makeAll: function * ({cities}) {
-      const dateAfter = durations.oneWeek.clip(datetime.generationNow()).add(5, 'weeks')
+    makeAll: function * ({generation, cities}) {
+      const globalDateAfter = datetime.date(generation.dateAfter)
       for (var {slug, firstDate} of cities) {
-        var globalStartDate = durations.oneWeek.clip(datetime.generationNow())
+        var cityStartDate = durations.oneWeek.clip(datetime.date(generation.date))
         if (firstDate) {
-          globalStartDate = durations.oneWeek.clip(datetime.date(firstDate))
+          cityStartDate = durations.oneWeek.clip(datetime.date(firstDate))
         }
         for (var duration of durations.all) {
           for (
-            var startDate = globalStartDate.clone();
-            duration.dateAfter(startDate).isSameOrBefore(dateAfter);
+            var startDate = cityStartDate.clone();
+            duration.dateAfter(startDate).isSameOrBefore(globalDateAfter);
             startDate = duration.links.next.startDate(startDate)
           ) {
             yield pages.timespan(slug, startDate, duration)

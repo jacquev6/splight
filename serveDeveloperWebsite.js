@@ -6,6 +6,7 @@ const express = require('express')
 const reload = require('reload')
 
 const adminWebsite = require('./splight/adminWebsite')
+const datetime = require('./splight/datetime')
 
 async function main (dataDirectory) {
   console.log('Starting developer website...')
@@ -17,7 +18,8 @@ async function main (dataDirectory) {
     scripts: [
       '/reload/reload.js',
       'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'
-    ]
+    ],
+    generationDate: datetime.now().subtract(1, 'week')
   }))
 
   reload(app)
