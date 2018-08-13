@@ -21,7 +21,6 @@ function render ({scripts}) {
 
 async function initialize () {
   const doc = jQuery(document)
-  const isDebug = window.location.href.indexOf('?debug') !== -1
 
   const eventEditor = (function () {
     var active
@@ -1144,10 +1143,6 @@ async function initialize () {
       cityEditor.activate({citySlug})
     }
   })
-
-  if (isDebug) {
-    selectCity.val('avalon').trigger('change')
-  }
 }
 
 Object.assign(exports, {render, initialize})
