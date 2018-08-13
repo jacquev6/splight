@@ -422,11 +422,9 @@ async function initialize () {
       const hasLocation = !!active.newLocation
 
       const location = active.newLocation || {slug: '', name: '', description: []}
-      location.citySlug = active.citySlug
 
       const event = {
-        citySlug: active.citySlug,
-        eventId: active.event.id,
+        id: active.event.id,
         title: active.event.title,
         artist: active.event.artist && active.event.artist.slug,
         location: active.event.location.slug,
@@ -435,12 +433,12 @@ async function initialize () {
       }
 
       await request({
-        requestString: `mutation($hasArtist:Boolean!,$artist:IArtist!,$hasLocation:Boolean!,$location:ILocation!,$event:IEvent!){
+        requestString: `mutation($citySlug:ID!,$hasArtist:Boolean!,$artist:IArtist!,$hasLocation:Boolean!,$location:ILocation!,$event:IEvent!){
           putArtist(artist:$artist)@include(if:$hasArtist){slug}
-          putLocation(location:$location)@include(if:$hasLocation){slug}
-          putEvent(event:$event){id}
+          putLocation(citySlug:$citySlug,location:$location)@include(if:$hasLocation){slug}
+          putEvent(citySlug:$citySlug,event:$event){id}
         }`,
-        variableValues: {hasArtist, artist, hasLocation, location, event}
+        variableValues: {citySlug: active.citySlug, hasArtist, artist, hasLocation, location, event}
       })
 
       modal.modal('hide')
@@ -1007,12 +1005,10 @@ async function initialize () {
 
     async function save () {
       await request({
-        requestString: 'mutation($location:ILocation!){putLocation(location:$location){slug}}',
+        requestString: 'mutation($citySlug:ID!,$location:ILocation!){putLocation(citySlug:$citySlug,location:$location){slug}}',
         variableValues: {
-          location: Object.assign(
-            {citySlug: active.citySlug},
-            active.location
-          )
+          citySlug: active.citySlug,
+          location: active.location
         }
       })
 

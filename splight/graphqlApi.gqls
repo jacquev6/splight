@@ -64,8 +64,8 @@ type Occurrence {
 
 type Mutation {
   putArtist(artist: IArtist!): Artist!
-  putLocation(location: ILocation!): Location!
-  putEvent(event: IEvent!): Event!
+  putLocation(citySlug: ID!, location: ILocation!): Location!
+  putEvent(citySlug: ID!, event: IEvent!): Event!
   deleteEvent(citySlug: ID!, eventId: ID!): Event!
 }
 
@@ -77,7 +77,6 @@ input IArtist {
 }
 
 input ILocation {
-  citySlug: ID!
   slug: ID!
   name: String!
   description: [String!]!
@@ -85,8 +84,7 @@ input ILocation {
 }
 
 input IEvent {
-  citySlug: ID!
-  eventId: ID
+  id: ID
   title: String
   artist: ID
   location: ID!

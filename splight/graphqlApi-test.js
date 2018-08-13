@@ -1095,7 +1095,7 @@ describe('graphqlApi', function () {
     describe('putLocation', function () {
       const fields = 'slug name description website'
       const get = `{cities{slug locations{${fields}}}}`
-      const put = `mutation($location:ILocation!){putLocation(location:$location){${fields}}}`
+      const put = `mutation($citySlug:ID!,$location:ILocation!){putLocation(citySlug:$citySlug,location:$location){${fields}}}`
 
       it('adds a location', async function () {
         const {checkRequest, checkData} = make({cities: {'city': {name: 'City'}}})
@@ -1104,7 +1104,7 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {location: {citySlug: 'city', slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar'}},
+          {citySlug: 'city', location: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar'}},
           {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar'}}}
         )
 
@@ -1141,7 +1141,7 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {location: {citySlug: 'city', slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar'}},
+          {citySlug: 'city', location: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar'}},
           {data: {putLocation: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar'}}}
         )
 
@@ -1186,7 +1186,7 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {location: {citySlug: 'city', slug: 'location', name: 'New name', description: []}},
+          {citySlug: 'city', location: {slug: 'location', name: 'New name', description: []}},
           {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null}}}
         )
 
@@ -1239,7 +1239,7 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {location: {citySlug: 'city', slug: 'location', name: 'New name', description: []}},
+          {citySlug: 'city', location: {slug: 'location', name: 'New name', description: []}},
           {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null}}}
         )
 
@@ -1253,7 +1253,7 @@ describe('graphqlApi', function () {
     describe('putEvent', function () {
       const fields = 'id title artist{name} location{name} tags{title} occurrences{start}'
       const get = `{cities{slug events{${fields}}}}`
-      const put = `mutation($event:IEvent!){putEvent(event:$event){${fields}}}`
+      const put = `mutation($citySlug:ID!,$event:IEvent!){putEvent(citySlug:$citySlug,event:$event){${fields}}}`
 
       it('adds an event', async function () {
         const {checkRequest, checkData} = make({
@@ -1272,14 +1272,16 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {event: {
+          {
             citySlug: 'city',
-            title: 'Title',
-            location: 'location',
-            artist: 'artist',
-            tags: ['tag'],
-            occurrences: [{start: '2018-07-14T12:00'}]
-          }},
+            event: {
+              title: 'Title',
+              location: 'location',
+              artist: 'artist',
+              tags: ['tag'],
+              occurrences: [{start: '2018-07-14T12:00'}]
+            }
+          },
           {data: {putEvent: {
             id: hashids.encode(12),
             title: 'Title',
@@ -1345,13 +1347,15 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {event: {
+          {
             citySlug: 'city',
-            location: 'location',
-            artist: 'artist',
-            tags: ['tag'],
-            occurrences: [{start: '2018-07-14T12:00'}]
-          }},
+            event: {
+              location: 'location',
+              artist: 'artist',
+              tags: ['tag'],
+              occurrences: [{start: '2018-07-14T12:00'}]
+            }
+          },
           {data: {putEvent: {
             id: hashids.encode(0),
             title: null,
@@ -1415,13 +1419,15 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {event: {
+          {
             citySlug: 'city',
-            title: 'Title',
-            location: 'location',
-            tags: ['tag'],
-            occurrences: [{start: '2018-07-14T12:00'}]
-          }},
+            event: {
+              title: 'Title',
+              location: 'location',
+              tags: ['tag'],
+              occurrences: [{start: '2018-07-14T12:00'}]
+            }
+          },
           {data: {putEvent: {
             id: hashids.encode(0),
             title: 'Title',
@@ -1482,17 +1488,19 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {event: {
+          {
             citySlug: 'city',
-            location: 'location',
-            artist: 'artist',
-            tags: ['tag'],
-            occurrences: [{start: '2018-07-14T12:00'}]
-          }},
+            event: {
+              location: 'location',
+              artist: 'artist',
+              tags: ['tag'],
+              occurrences: [{start: '2018-07-14T12:00'}]
+            }
+          },
           {
             data: null,
             errors: [{
-              locations: [{line: 1, column: 26}],
+              locations: [{line: 1, column: 40}],
               message: 'No artist with slug "artist"',
               path: ['putEvent']
             }]
@@ -1530,17 +1538,19 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {event: {
+          {
             citySlug: 'city',
-            location: 'location',
-            artist: 'artist',
-            tags: ['tag'],
-            occurrences: [{start: '2018-07-14T12:00'}]
-          }},
+            event: {
+              location: 'location',
+              artist: 'artist',
+              tags: ['tag'],
+              occurrences: [{start: '2018-07-14T12:00'}]
+            }
+          },
           {
             data: null,
             errors: [{
-              locations: [{line: 1, column: 26}],
+              locations: [{line: 1, column: 40}],
               message: 'No location with slug "location"',
               path: ['putEvent']
             }]
@@ -1578,17 +1588,19 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {event: {
+          {
             citySlug: 'city',
-            location: 'location',
-            artist: 'artist',
-            tags: ['tag'],
-            occurrences: [{start: '2018-07-14T12:00'}]
-          }},
+            event: {
+              location: 'location',
+              artist: 'artist',
+              tags: ['tag'],
+              occurrences: [{start: '2018-07-14T12:00'}]
+            }
+          },
           {
             data: null,
             errors: [{
-              locations: [{line: 1, column: 26}],
+              locations: [{line: 1, column: 40}],
               message: 'No tag with slug "tag"',
               path: ['putEvent']
             }]
@@ -1665,15 +1677,17 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {event: {
+          {
             citySlug: 'city',
-            eventId: 'event',
-            title: 'Title',
-            location: 'location',
-            artist: 'artist',
-            tags: ['tag'],
-            occurrences: [{start: '2018-07-14T13:00'}]
-          }},
+            event: {
+              id: 'event',
+              title: 'Title',
+              location: 'location',
+              artist: 'artist',
+              tags: ['tag'],
+              occurrences: [{start: '2018-07-14T13:00'}]
+            }
+          },
           {data: {putEvent: {
             id: 'event',
             title: 'Title',
@@ -1753,19 +1767,21 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {event: {
+          {
             citySlug: 'city',
-            eventId: 'event',
-            title: 'Title',
-            location: 'location',
-            artist: 'artist',
-            tags: ['tag'],
-            occurrences: [{start: '2018-07-14T13:00'}]
-          }},
+            event: {
+              id: 'event',
+              title: 'Title',
+              location: 'location',
+              artist: 'artist',
+              tags: ['tag'],
+              occurrences: [{start: '2018-07-14T13:00'}]
+            }
+          },
           {
             data: null,
             errors: [{
-              locations: [{line: 1, column: 26}],
+              locations: [{line: 1, column: 40}],
               message: 'No event with id "event"',
               path: ['putEvent']
             }]
@@ -1901,8 +1917,8 @@ describe('graphqlApi', function () {
       await checkRequest(
         'mutation{' +
           'putArtist(artist:{slug:"artist",name:"Artist",description:["Some artist"],website:"http://artist.bar"}){slug name description website}' +
-          'putLocation(location:{citySlug:"city",slug:"location",name:"Location",description:["Some location"],website:"http://location.bar"}){slug name description website}' +
-          'putEvent(event:{citySlug:"city",location:"location",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){id artist{slug name description website} location{slug name description website} tags{slug title}}' +
+          'putLocation(citySlug:"city",location:{slug:"location",name:"Location",description:["Some location"],website:"http://location.bar"}){slug name description website}' +
+          'putEvent(citySlug:"city",event:{location:"location",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){id artist{slug name description website} location{slug name description website} tags{slug title}}' +
         '}',
         {data: {
           putArtist: {slug: 'artist', name: 'Artist', description: ['Some artist'], website: 'http://artist.bar'},

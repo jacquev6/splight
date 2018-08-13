@@ -73,18 +73,14 @@ function makeSyncRoot (data, generationDate) {
     return makeCity(data.cities.get(slug))
   }
 
-  // @todo Put citySlug as a first argument, independent from ILocation
-  function putLocation ({location}) {
-    const citySlug = location.citySlug
-    delete location.citySlug
+  function putLocation ({citySlug, location}) {
     return data.cities.get(citySlug).locations.put(location)
   }
 
-  // @todo Put citySlug as a first argument, independent from IEvent
-  function putEvent ({event: {citySlug, eventId, title, artist, location, tags, occurrences}}) {
+  function putEvent ({citySlug, event: {id, title, artist, location, tags, occurrences}}) {
     return makeEvent(data.cities.get(citySlug).events.put(Object.assign(
       {
-        id: eventId,
+        id,
         location,
         tags: tags.map(tag => tag),
         occurrences: occurrences.map(({start}) => ({start}))
