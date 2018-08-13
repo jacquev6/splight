@@ -358,9 +358,9 @@ async function initialize () {
         editingWhat: false,
         editingWhere: false,
         newLocation: null,
-        cachedNewLocation: {slug: '', name: ''},
+        cachedNewLocation: {slug: '', name: '', description: []},
         newArtist: null,
-        cachedNewArtist: {slug: '', name: ''},
+        cachedNewArtist: {slug: '', name: '', description: []},
         newOccurrence: null
       }
     }
@@ -417,11 +417,11 @@ async function initialize () {
     async function save () {
       const hasArtist = !!active.newArtist
 
-      const artist = active.newArtist || {slug: '', name: ''}
+      const artist = active.newArtist || {slug: '', name: '', description: []}
 
       const hasLocation = !!active.newLocation
 
-      const location = active.newLocation || {slug: '', name: ''}
+      const location = active.newLocation || {slug: '', name: '', description: []}
       location.citySlug = active.citySlug
 
       const event = {
