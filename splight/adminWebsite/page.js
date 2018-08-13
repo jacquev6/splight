@@ -323,7 +323,7 @@ async function initialize () {
       const preActivated = await preActivate({citySlug})
 
       const {city: {event}} = await request({
-        requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){id title location{slug name} tags{slug title} artist{slug name} occurrences{start}}}}',
+        requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){id title location{slug name description website} tags{slug title} artist{slug name description website} occurrences{start}}}}',
         variableValues: {citySlug, eventId}
       })
       preActivated.event = event
@@ -333,7 +333,7 @@ async function initialize () {
 
     async function preActivate ({citySlug}) {
       const {artists, city: {locations, tags}} = await request({
-        requestString: 'query($citySlug:ID!){artists{slug name} city(slug:$citySlug){locations{slug name} tags{slug title}}}',
+        requestString: 'query($citySlug:ID!){artists{slug name description website} city(slug:$citySlug){locations{slug name description website} tags{slug title}}}',
         variableValues: {citySlug}
       })
 
@@ -589,7 +589,7 @@ async function initialize () {
       }
 
       const {city: {events}} = await request({
-        requestString: 'query($citySlug:ID!,$tag:ID,$location:ID,$artist:ID,$title:String,$dates:IDateInterval){city(slug:$citySlug){events(tag:$tag,location:$location,artist:$artist,title:$title,dates:$dates,max:10){id title artist{name} location{name} occurrences{start} tags{slug title}}}}',
+        requestString: 'query($citySlug:ID!,$tag:ID,$location:ID,$artist:ID,$title:String,$dates:IDateInterval){city(slug:$citySlug){events(tag:$tag,location:$location,artist:$artist,title:$title,dates:$dates,max:10){id title artist{name description website} location{name description website} occurrences{start} tags{slug title}}}}',
         variableValues: {
           citySlug: active.citySlug,
           tag: tag === '-' ? undefined : tag,
@@ -727,7 +727,7 @@ async function initialize () {
     }
 
     async function preActivate () {
-      const {artists} = await request({requestString: '{artists{slug name}}'})
+      const {artists} = await request({requestString: '{artists{slug}}'})
 
       const artistsBySlug = {}
       artists.forEach(artist => { artistsBySlug[artist.slug] = artist })
@@ -955,7 +955,7 @@ async function initialize () {
 
     async function preActivate ({citySlug}) {
       const {city: {locations}} = await request({
-        requestString: 'query($citySlug:ID!){city(slug:$citySlug){locations{slug name}}}',
+        requestString: 'query($citySlug:ID!){city(slug:$citySlug){locations{slug}}}',
         variableValues: {citySlug}
       })
 
