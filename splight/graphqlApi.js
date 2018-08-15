@@ -1,5 +1,6 @@
 'use strict'
 
+const assert = require('assert').strict
 const fs = require('fs-extra')
 const graphql = require('graphql')
 const Hashids = require('hashids')
@@ -15,21 +16,30 @@ const schema = graphql.buildSchema(schemaString)
 
 const hashids = new Hashids('', 10)
 
-function makeRoot ({dataDirectory, generationDate}) {
+function makeRoot ({dataDirectory, generationDate, imagesUrlsPrefix}) {
   const fileName = path.join(dataDirectory, 'data.json')
 
   const data = fs.readJSONSync(fileName)
 
   const images = (function () {
-    function exists (img) {
-      const p = path.join(dataDirectory, 'images', img)
+    function exists (fileName) {
+      const p = path.join(dataDirectory, 'images', fileName)
       return fs.existsSync(p)
     }
 
-    return {exists}
+    function save (fileName, data) {
+      const p = path.join(dataDirectory, 'images', fileName)
+      if (data) {
+        fs.outputFileSync(p, data)
+      } else {
+        fs.unlinkSync(p)
+      }
+    }
+
+    return {exists, save}
   }())
 
-  const root = makeSyncRoot(data, generationDate, images)
+  const root = makeSyncRoot(data, generationDate, images, imagesUrlsPrefix)
 
   function forward (name) {
     return function () {
@@ -50,7 +60,7 @@ function makeRoot ({dataDirectory, generationDate}) {
   return ret
 }
 
-function makeSyncRoot (data, generationDate, images) {
+function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
   data = encapsulateData(data)
   generationDate = generationDate || datetime.now()
 
@@ -71,7 +81,11 @@ function makeSyncRoot (data, generationDate, images) {
   }
 
   function putArtist ({artist}) {
-    return makeArtist(data.artists.put(artist))
+    var image = artist.image
+    delete artist.image
+    const ret = data.artists.put(artist)
+    saveImage(`artists/${artist.slug}.png`, image)
+    return makeArtist(ret)
   }
 
   function makeArtist (artist) {
@@ -90,7 +104,11 @@ function makeSyncRoot (data, generationDate, images) {
 
   function putLocation ({citySlug, location}) {
     const city = data.cities.get(citySlug)
-    return makeLocation(city, city.locations.put(location))
+    var image = location.image
+    delete location.image
+    const ret = city.locations.put(location)
+    saveImage(`cities/${city.slug}/locations/${location.slug}.png`, image)
+    return makeLocation(city, ret)
   }
 
   function makeLocation (city, location) {
@@ -225,11 +243,26 @@ function makeSyncRoot (data, generationDate, images) {
     return {slug, name, image, allTagsImage, tags, locations, location, firstDate, dateAfter, events, event}
   }
 
+  // @todo Support jpg image (get and save (and delete existing other formats in save))
   function imageIfExists (img) {
     if (images.exists(img)) {
-      return img
+      return imagesUrlsPrefix + img
     } else {
       return null
+    }
+  }
+
+  function saveImage (img, data) {
+    if (data) {
+      if (data.startsWith('data:')) {
+        assert(data.startsWith('data:image/png;base64,'))
+        data = Buffer.from(data.slice(22), 'base64')
+        images.save(img, data)
+      } else {
+        assert(data === imagesUrlsPrefix + img)
+      }
+    } else {
+      images.save(img, undefined)
     }
   }
 
@@ -422,6 +455,11 @@ const encapsulateData = (function () {
 
     function put (thing) {
       const {slug} = thing
+      try {
+        Joi.attempt(slug, makeSlugSchema())
+      } catch (e) {
+        throw new Error('Incorrect slug')
+      }
       thing = Object.assign({}, thing)
       delete thing.slug
       Joi.attempt(thing, schema)

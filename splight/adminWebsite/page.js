@@ -1,5 +1,7 @@
 'use strict'
 
+/* globals FileReader */
+
 const jQuery = require('jquery')
 const mustache = require('mustache')
 
@@ -676,6 +678,18 @@ async function initialize () {
         active.artist.name = jQuery('#spa-edit-artist-name').val()
         refreshHeaderAndFooter()
       })
+      doc.on('input', '#spa-edit-artist-image', function () {
+        const reader = new FileReader()
+        reader.onload = function (e) {
+          active.artist.image = e.target.result
+          refreshHeaderAndFooter()
+        }
+        reader.readAsDataURL(jQuery('#spa-edit-artist-image').get(0).files[0])
+      })
+      doc.on('click', '#spa-edit-artist-delete-image', function () {
+        active.artist.image = null
+        refreshHeaderAndFooter()
+      })
       doc.on('input', '#spa-edit-artist-website', function () {
         const website = jQuery('#spa-edit-artist-website').val()
         active.artist.website = website === '' ? undefined : website
@@ -758,12 +772,14 @@ async function initialize () {
         const template = `
           <div class="form-group form-inline"><label>Slug&nbsp;: <input id="spa-edit-artist-slug" class="form-control ml-sm-2" value="{{artist.slug}}"{{^isNew}} disabled{{/isNew}}/></label></div>
           <div class="form-group form-inline"><label>Nom&nbsp;: <input id="spa-edit-artist-name" class="form-control ml-sm-2" value="{{artist.name}}"/></label></div>
+          <div class="form-group form-inline"><label>Image&nbsp;: <input id="spa-edit-artist-image" type="file" class="form-control-file ml-sm-2" /></label> <button id="spa-edit-artist-delete-image" class="btn btn-secondary btn-sm">Supprimer</button></div>
           <div class="form-group form-inline"><label>Description&nbsp;: <textarea id="spa-edit-artist-description" class="form-control ml-sm-2" rows="6">{{artist.description}}</textarea></label></div>
           <div class="form-group form-inline"><label>Site officiel&nbsp;: <input id="spa-edit-artist-website" class="form-control ml-sm-2" value="{{artist.website}}"/></label></div>
         `
         const artist = {
           slug: active.artist.slug,
           name: active.artist.name,
+          image: active.artist.image,
           website: active.artist.website,
           description: active.artist.description.join('\n\n')
         }
@@ -883,6 +899,7 @@ async function initialize () {
         tooMany = false
 
         artists.forEach(artist => {
+          artist.image = artist.image && artist.image + '?' + new Date().getTime()
           artist.details = {html: artistDetails.render({artist})}
         })
 
@@ -920,6 +937,18 @@ async function initialize () {
       })
       doc.on('input', '#spa-edit-location-name', function () {
         active.location.name = jQuery('#spa-edit-location-name').val()
+        refreshHeaderAndFooter()
+      })
+      doc.on('input', '#spa-edit-location-image', function () {
+        const reader = new FileReader()
+        reader.onload = function (e) {
+          active.location.image = e.target.result
+          refreshHeaderAndFooter()
+        }
+        reader.readAsDataURL(jQuery('#spa-edit-location-image').get(0).files[0])
+      })
+      doc.on('click', '#spa-edit-location-delete-image', function () {
+        active.location.image = null
         refreshHeaderAndFooter()
       })
       doc.on('input', '#spa-edit-location-website', function () {
@@ -1008,12 +1037,14 @@ async function initialize () {
         const template = `
           <div class="form-group form-inline"><label>Slug&nbsp;: <input id="spa-edit-location-slug" class="form-control ml-sm-2" value="{{location.slug}}"{{^isNew}} disabled{{/isNew}}/></label></div>
           <div class="form-group form-inline"><label>Nom&nbsp;: <input id="spa-edit-location-name" class="form-control ml-sm-2" value="{{location.name}}"/></label></div>
+          <div class="form-group form-inline"><label>Image&nbsp;: <input id="spa-edit-location-image" type="file" class="form-control-file ml-sm-2" /></label> <button id="spa-edit-location-delete-image" class="btn btn-secondary btn-sm">Supprimer</button></div>
           <div class="form-group form-inline"><label>Description&nbsp;: <textarea id="spa-edit-location-description" class="form-control ml-sm-2" rows="6">{{location.description}}</textarea></label></div>
           <div class="form-group form-inline"><label>Site officiel&nbsp;: <input id="spa-edit-location-website" class="form-control ml-sm-2" value="{{location.website}}"/></label></div>
         `
         const location = {
           slug: active.location.slug,
           name: active.location.name,
+          image: active.location.image,
           website: active.location.website,
           description: active.location.description.join('\n\n')
         }
@@ -1142,6 +1173,7 @@ async function initialize () {
         tooMany = false
 
         locations.forEach(location => {
+          location.image = location.image && location.image + '?' + new Date().getTime()
           location.details = {html: locationDetails.render({location})}
         })
 

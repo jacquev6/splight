@@ -79,6 +79,7 @@ input IArtist {
   name: String!
   description: [String!]!
   website: URL
+  image: URL
 }
 
 input ILocation {
@@ -86,6 +87,7 @@ input ILocation {
   name: String!
   description: [String!]!
   website: URL
+  image: URL
 }
 
 input IEvent {

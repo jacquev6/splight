@@ -21,7 +21,7 @@ const pages = require('./publicWebsite/pages')
 const tagColoring = require('./tagColoring')
 
 async function makeRouter ({dataDirectory, scripts, generationDate}) {
-  const api = makeApi({dataDirectory, generationDate})
+  const api = graphqlApi.make({dataDirectory, generationDate, imagesUrlsPrefix: '/images/'})
 
   const router = express.Router()
 
@@ -75,14 +75,14 @@ async function makeRouter ({dataDirectory, scripts, generationDate}) {
 }
 
 async function generate ({dataDirectory, outputDirectory}) {
-  const api = makeApi({dataDirectory})
+  const api = graphqlApi.make({dataDirectory, imagesUrlsPrefix: '/images/'})
 
   await fs.emptyDir(outputDirectory)
 
   fs.outputFile(path.join(outputDirectory, 'CNAME'), 'splight.fr')
   fs.outputFile(path.join(outputDirectory, '.nojekyll'), '')
 
-  fs.copy(path.join(dataDirectory, 'images'), outputDirectory)
+  fs.copy(path.join(dataDirectory, 'images'), path.join(outputDirectory, 'images'))
 
   for (var asset of generateAssets({api})) {
     const fileName = path.join(outputDirectory, asset.path)
@@ -108,10 +108,6 @@ async function generate ({dataDirectory, outputDirectory}) {
   }
 
   fs.outputFile(path.join(outputDirectory, 'sitemap.xml'), sitemap.xml)
-}
-
-function makeApi ({dataDirectory, generationDate}) {
-  return graphqlApi.make({dataDirectory, generationDate})
 }
 
 function * generateAssets ({api}) {
