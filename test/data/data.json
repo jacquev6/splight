@@ -97,7 +97,7 @@
       ],
       "locations": {
         "location-1": {"description": [], "name": "Lieu à Avalon 1"},
-        "location-2": {"description": [], "name": "Lieu à Avalon 2"},
+        "location-2": {"description": ["Un bien bel endroit."], "name": "Lieu à Avalon 2", "website": "http://foobarbaz.com"},
         "location-3": {"description": [], "name": "Lieu à Avalon 3"}
       },
       "name": "Avalon",

@@ -3,8 +3,10 @@
 const jQuery = require('jquery')
 const mustache = require('mustache')
 
+const artistDetails = require('../publicWebsite/widgets/eventDetails/artistDetails')
 const datetime = require('../datetime')
 const eventDetails_ = require('../publicWebsite/widgets/eventDetails')
+const locationDetails = require('../publicWebsite/widgets/eventDetails/locationDetails')
 const template = require('./page.html')
 const utils = require('./utils')
 const whatForDisplay = require('../publicWebsite/widgets/eventDetails/what')
@@ -661,6 +663,11 @@ async function initialize () {
     jQuery('#spa-edit-artist-save').on('click', save)
 
     ;(function () {
+      doc.on('click', '#spa-edit-artist-edit-preview', function () {
+        active.isEditing = !active.isEditing
+        refreshContent()
+        jQuery('#spa-edit-artist-edit-preview').focus()
+      })
       doc.on('input', '#spa-edit-artist-slug', function () {
         active.artist.slug = jQuery('#spa-edit-artist-slug').val()
         refreshHeaderAndFooter()
@@ -734,7 +741,8 @@ async function initialize () {
 
       return {
         artists,
-        artistsBySlug
+        artistsBySlug,
+        isEditing: true
       }
     }
 
@@ -745,15 +753,32 @@ async function initialize () {
     }
 
     function refreshContent () {
-      jQuery('#spa-edit-artist-slug').val(active.artist.slug).attr('disabled', !active.isNew)
-      jQuery('#spa-edit-artist-name').val(active.artist.name)
-      jQuery('#spa-edit-artist-website').val(active.artist.website)
-      jQuery('#spa-edit-artist-description').val(active.artist.description.join('\n\n'))
+      var body
+      if (active.isEditing) {
+        const template = `
+          <div class="form-group form-inline"><label>Slug&nbsp;: <input id="spa-edit-artist-slug" class="form-control ml-sm-2" value="{{artist.slug}}"{{^isNew}} disabled{{/isNew}}/></label></div>
+          <div class="form-group form-inline"><label>Nom&nbsp;: <input id="spa-edit-artist-name" class="form-control ml-sm-2" value="{{artist.name}}"/></label></div>
+          <div class="form-group form-inline"><label>Description&nbsp;: <textarea id="spa-edit-artist-description" class="form-control ml-sm-2" rows="6">{{artist.description}}</textarea></label></div>
+          <div class="form-group form-inline"><label>Site officiel&nbsp;: <input id="spa-edit-artist-website" class="form-control ml-sm-2" value="{{artist.website}}"/></label></div>
+        `
+        const artist = {
+          slug: active.artist.slug,
+          name: active.artist.name,
+          website: active.artist.website,
+          description: active.artist.description.join('\n\n')
+        }
+        body = mustache.render(template, {artist, isNew: active.isNew})
+      } else {
+        body = artistDetails.render({artist: active.artist})
+      }
+      modal.find('.modal-body').html(body)
+
       refreshHeaderAndFooter()
     }
 
     function refreshHeaderAndFooter () {
-      modal.find('.modal-title').text(active.artist.name)
+      const titleTemplate = '{{artist.name}} <button id="spa-edit-artist-edit-preview" class="btn btn-secondary btn-sm">{{#isEditing}}Prévisualiser{{/isEditing}}{{^isEditing}}Modifier{{/isEditing}}</button>'
+      modal.find('.modal-title').html(mustache.render(titleTemplate, active))
       const message = validateArtist()
       modal.find('#spa-edit-artist-message').text(message)
       jQuery('#spa-edit-artist-save').attr('disabled', message !== '')
@@ -822,7 +847,7 @@ async function initialize () {
       const name = filterName.val()
 
       const {artists} = await request({
-        requestString: 'query($name:String){artists(name:$name,max:10){slug name}}',
+        requestString: 'query($name:String){artists(name:$name,max:10){slug name description website}}',
         variableValues: {
           name: name === '' ? undefined : name
         }
@@ -857,12 +882,8 @@ async function initialize () {
       if (artists) {
         tooMany = false
 
-        artists = artists.map(({slug, name}) => {
-          const artist = {slug, name}
-
-          artist.details = {html: ''}
-
-          return artist
+        artists.forEach(artist => {
+          artist.details = {html: artistDetails.render({artist})}
         })
 
         zero = artists.length === 0
@@ -888,6 +909,11 @@ async function initialize () {
     jQuery('#spa-edit-location-save').on('click', save)
 
     ;(function () {
+      doc.on('click', '#spa-edit-location-edit-preview', function () {
+        active.isEditing = !active.isEditing
+        refreshContent()
+        jQuery('#spa-edit-location-edit-preview').focus()
+      })
       doc.on('input', '#spa-edit-location-slug', function () {
         active.location.slug = jQuery('#spa-edit-location-slug').val()
         refreshHeaderAndFooter()
@@ -965,7 +991,8 @@ async function initialize () {
       return {
         citySlug,
         locations,
-        locationsBySlug
+        locationsBySlug,
+        isEditing: true
       }
     }
 
@@ -976,15 +1003,32 @@ async function initialize () {
     }
 
     function refreshContent () {
-      jQuery('#spa-edit-location-slug').val(active.location.slug).attr('disabled', !active.isNew)
-      jQuery('#spa-edit-location-name').val(active.location.name)
-      jQuery('#spa-edit-location-website').val(active.location.website)
-      jQuery('#spa-edit-location-description').val(active.location.description.join('\n\n'))
+      var body
+      if (active.isEditing) {
+        const template = `
+          <div class="form-group form-inline"><label>Slug&nbsp;: <input id="spa-edit-location-slug" class="form-control ml-sm-2" value="{{location.slug}}"{{^isNew}} disabled{{/isNew}}/></label></div>
+          <div class="form-group form-inline"><label>Nom&nbsp;: <input id="spa-edit-location-name" class="form-control ml-sm-2" value="{{location.name}}"/></label></div>
+          <div class="form-group form-inline"><label>Description&nbsp;: <textarea id="spa-edit-location-description" class="form-control ml-sm-2" rows="6">{{location.description}}</textarea></label></div>
+          <div class="form-group form-inline"><label>Site officiel&nbsp;: <input id="spa-edit-location-website" class="form-control ml-sm-2" value="{{location.website}}"/></label></div>
+        `
+        const location = {
+          slug: active.location.slug,
+          name: active.location.name,
+          website: active.location.website,
+          description: active.location.description.join('\n\n')
+        }
+        body = mustache.render(template, {location, isNew: active.isNew})
+      } else {
+        body = locationDetails.render({location: active.location})
+      }
+      modal.find('.modal-body').html(body)
+
       refreshHeaderAndFooter()
     }
 
     function refreshHeaderAndFooter () {
-      modal.find('.modal-title').text(active.location.name)
+      const titleTemplate = '{{location.name}} <button id="spa-edit-location-edit-preview" class="btn btn-secondary btn-sm">{{#isEditing}}Prévisualiser{{/isEditing}}{{^isEditing}}Modifier{{/isEditing}}</button>'
+      modal.find('.modal-title').html(mustache.render(titleTemplate, active))
       const message = validateLocation()
       modal.find('#spa-edit-location-message').text(message)
       jQuery('#spa-edit-location-save').attr('disabled', message !== '')
@@ -995,7 +1039,7 @@ async function initialize () {
       if (!active.location.slug.match(/^[a-z][-a-z0-9]*$/)) {
         return "Le slug d'un lieu doit être constitué d'un caractère parmi 'a-z' suivi de caractères parmi 'a-z', '0-9' et '-'"
       } else if (active.isNew && active.locationsBySlug[active.location.slug]) {
-        return "Le slug d'un nouveau lieu doit être différent de tous les slugs des lieus existants"
+        return "Le slug d'un nouveau lieu doit être différent de tous les slugs des lieux existants"
       } else if (!active.location.name) {
         return "Le nom d'un lieu ne peut pas être vide"
       } else {
@@ -1061,7 +1105,7 @@ async function initialize () {
       const name = filterName.val()
 
       const {city: {locations}} = await request({
-        requestString: 'query($citySlug:ID!,$name:String){city(slug:$citySlug){locations(name:$name,max:10){slug name}}}',
+        requestString: 'query($citySlug:ID!,$name:String){city(slug:$citySlug){locations(name:$name,max:10){slug name description website}}}',
         variableValues: {
           citySlug: active.citySlug,
           name: name === '' ? undefined : name
@@ -1097,12 +1141,8 @@ async function initialize () {
       if (locations) {
         tooMany = false
 
-        locations = locations.map(({slug, name}) => {
-          const location = {slug, name}
-
-          location.details = {html: ''}
-
-          return location
+        locations.forEach(location => {
+          location.details = {html: locationDetails.render({location})}
         })
 
         zero = locations.length === 0

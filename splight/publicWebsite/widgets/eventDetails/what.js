@@ -2,16 +2,20 @@
 
 const mustache = require('mustache')
 
-const template = require('./what.html')
+const artistDetails = require('./artistDetails')
+const template = `
+  <p>{{#tags}}{{^first}} {{/first}}<span class="sp-small-tag sp-main-tag-{{city.slug}}-{{slug}}">{{title}}</span>{{/tags}}</p>
+  <p>{{title}}</p>
+  {{{artist.details.html}}}
+`
 
 function render ({city, event: {artist, tags, title}}) {
-  const event = {
-    artist,
+  return mustache.render(template, {
     tags: tags.map(({slug, title}) => ({slug, title, first: slug === tags[0].slug})),
-    title
-  }
-
-  return mustache.render(template, {city, event})
+    city,
+    title,
+    artist: {details: {html: artistDetails.render({artist})}}
+  })
 }
 
 Object.assign(exports, {render})
