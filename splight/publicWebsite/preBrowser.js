@@ -59,7 +59,6 @@ function preBrowse (url, force) {
 }
 
 async function doPreBrowse (path) {
-  console.log('preBrowser.doPreBrowse', path)
   const page = pages.fromPath(path)
   const data = await jQuery.get(path + 'data.json')
 

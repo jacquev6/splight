@@ -23,7 +23,6 @@ function makeRoot ({dataDirectory, generationDate}) {
   const images = (function () {
     function exists (img) {
       const p = path.join(dataDirectory, 'images', img)
-      // console.log('exists:', p, fs.existsSync(p))
       return fs.existsSync(p)
     }
 
