@@ -112,19 +112,22 @@ async function main (dataDirectory) {
     () => makePng({width: 160, height: 600, seed: 'Publicité 160x600'})
   )
 
-  ensure(
-    p('all-tags.png'),
-    () => makePng({width: 1104, height: 200, seed: "Toute l'actualité"})
-  )
-
   const api = graphqlApi.make({dataDirectory})
 
-  const {data} = await api.request({requestString: 'query{cities{slug name tags{slug title}}}'})
+  const {data} = await api.request({requestString: 'query{artists{slug name} cities{slug name tags{slug title} locations{slug name}}}'})
+
+  for (var artist of data.artists) {
+    ensure(p('artists', artist.slug + '.png'), (seed => () => makePng({width: 368, height: 200, seed}))(artist.name))
+  }
 
   for (var city of data.cities) {
-    ensure(p(city.slug + '.png'), (seed => () => makePng({width: 253, height: 200, seed}))(city.name))
+    ensure(p('cities', city.slug + '.png'), (seed => () => makePng({width: 253, height: 200, seed}))(city.name))
+    ensure(p('cities', city.slug, 'all-tags.png'), () => makePng({width: 1104, height: 200, seed: "Toute l'actualité"}))
     for (var tag of city.tags) {
-      ensure(p(city.slug, tag.slug + '.png'), (seed => () => makePng({width: 253, height: 200, seed}))(tag.title))
+      ensure(p('cities', city.slug, 'tags', tag.slug + '.png'), (seed => () => makePng({width: 253, height: 200, seed}))(tag.title))
+    }
+    for (var location of city.locations) {
+      ensure(p('cities', city.slug, 'locations', location.slug + '.png'), (seed => () => makePng({width: 368, height: 200, seed}))(location.title))
     }
   }
 }

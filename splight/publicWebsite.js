@@ -25,7 +25,7 @@ async function makeRouter ({dataDirectory, scripts, generationDate}) {
 
   const router = express.Router()
 
-  router.use(express.static(path.join(dataDirectory, 'images')))
+  router.use('/images', express.static(path.join(dataDirectory, 'images')))
 
   router.use('/graphql', expressGraphql(Object.assign({graphiql: true}, api)))
 

@@ -209,8 +209,8 @@ describe('graphqlApi', function () {
     })
   })
 
-  function make (data, generationDate) {
-    const rootValue = graphqlApi.forTest.makeRoot(data, generationDate)
+  function make (data, {generationDate, images} = {images: {}}) {
+    const rootValue = graphqlApi.forTest.makeRoot(data, generationDate, makeTestImages(images))
 
     async function checkRequest (requestString, variableValues, expected) {
       if (!expected) { // A poor man's variadic function
@@ -228,23 +228,41 @@ describe('graphqlApi', function () {
       assert.deepStrictEqual(data, expected)
     }
 
-    return {checkRequest, checkData}
+    function checkImages (expected) {
+      assert.deepStrictEqual(images, expected)
+    }
+
+    return {checkRequest, checkData, checkImages}
+  }
+
+  function makeTestImages (images) {
+    function exists (path) {
+      return !!images[path]
+    }
+
+    function save (path, data) {
+      images[path] = data
+    }
+
+    return {exists, save, del: save}
   }
 
   describe('full query', function () {
     const get = `{
-      artists{slug name}
+      artists{slug name description website image}
       cities{
         slug
         name
-        tags{slug title}
-        locations{slug name}
+        image
+        allTagsImage
+        tags{slug title image}
+        locations{slug name description website image}
         events{
           id
           title
-          artist{slug name}
-          location{slug name}
-          tags{slug title}
+          artist{slug name description website image}
+          location{slug name description website image}
+          tags{slug title image}
           occurrences{start}
         }
         firstDate
@@ -252,17 +270,17 @@ describe('graphqlApi', function () {
       }
     }`
 
-    it('returns everything on single city without events', async function () {
+    it('returns everything on minimal city', async function () {
       const {checkRequest} = make({
         artists: {
-          'artist-1': {name: 'Artist 1'},
+          'artist-1': {name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com'},
           'artist-2': {name: 'Artist 2'}
         },
         cities: {
           'city': {
             name: 'City',
             locations: {
-              'location-1': {name: 'Location 1'},
+              'location-1': {name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com'},
               'location-2': {name: 'Location 2'}
             },
             tags: [
@@ -277,51 +295,70 @@ describe('graphqlApi', function () {
         get,
         {data: {
           artists: [
-            {slug: 'artist-1', name: 'Artist 1'},
-            {slug: 'artist-2', name: 'Artist 2'}
+            {slug: 'artist-1', name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com', image: null},
+            {slug: 'artist-2', name: 'Artist 2', description: [], website: null, image: null}
           ],
           cities: [{
             slug: 'city',
             name: 'City',
+            allTagsImage: null,
             tags: [
-              {slug: 'tag-1', title: 'Tag 1'},
-              {slug: 'tag-2', title: 'Tag 2'}
+              {slug: 'tag-1', title: 'Tag 1', image: null},
+              {slug: 'tag-2', title: 'Tag 2', image: null}
             ],
             locations: [
-              {slug: 'location-1', name: 'Location 1'},
-              {slug: 'location-2', name: 'Location 2'}
+              {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: null},
+              {slug: 'location-2', name: 'Location 2', description: [], website: null, image: null}
             ],
             events: [],
             firstDate: null,
+            image: null,
             dateAfter: null
           }]
         }}
       )
     })
 
-    it('returns everything on single city with single minimal event', async function () {
+    it('returns everything on single city with a minimal and a full event', async function () {
       const {checkRequest} = make({
         artists: {
-          'artist-1': {name: 'Artist 1'},
+          'artist-1': {name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com'},
           'artist-2': {name: 'Artist 2'}
         },
         cities: {
           'city': {
             name: 'City',
             locations: {
-              'location-1': {name: 'Location 1'},
+              'location-1': {name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com'},
               'location-2': {name: 'Location 2'}
             },
             tags: [
               {slug: 'tag-1', title: 'Tag 1'},
               {slug: 'tag-2', title: 'Tag 2'}
             ],
-            events: [{
-              location: 'location-1',
-              tags: ['tag-1'],
-              occurrences: [{start: '2018-07-14T12:00'}]
-            }]
+            events: [
+              {
+                location: 'location-2',
+                tags: ['tag-2'],
+                occurrences: [{start: '2018-07-14T12:00'}]
+              },
+              {
+                title: 'Title',
+                artist: 'artist-1',
+                location: 'location-1',
+                tags: ['tag-1'],
+                occurrences: [{start: '2018-07-14T12:00'}]
+              }
+            ]
           }
+        }
+      }, {
+        images: {
+          'cities/city.png': true,
+          'cities/city/all-tags.png': true,
+          'cities/city/locations/location-1.png': true,
+          'cities/city/tags/tag-1.png': true,
+          'artists/artist-1.png': true
         }
       })
 
@@ -329,29 +366,41 @@ describe('graphqlApi', function () {
         get,
         {data: {
           artists: [
-            {slug: 'artist-1', name: 'Artist 1'},
-            {slug: 'artist-2', name: 'Artist 2'}
+            {slug: 'artist-1', name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com', image: 'artists/artist-1.png'},
+            {slug: 'artist-2', name: 'Artist 2', description: [], website: null, image: null}
           ],
           cities: [{
             slug: 'city',
             name: 'City',
+            allTagsImage: 'cities/city/all-tags.png',
             tags: [
-              {slug: 'tag-1', title: 'Tag 1'},
-              {slug: 'tag-2', title: 'Tag 2'}
+              {slug: 'tag-1', title: 'Tag 1', image: 'cities/city/tags/tag-1.png'},
+              {slug: 'tag-2', title: 'Tag 2', image: null}
             ],
             locations: [
-              {slug: 'location-1', name: 'Location 1'},
-              {slug: 'location-2', name: 'Location 2'}
+              {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: 'cities/city/locations/location-1.png'},
+              {slug: 'location-2', name: 'Location 2', description: [], website: null, image: null}
             ],
-            events: [{
-              id: hashids.encode(0),
-              artist: null,
-              title: null,
-              location: {slug: 'location-1', name: 'Location 1'},
-              tags: [{slug: 'tag-1', title: 'Tag 1'}],
-              occurrences: [{start: '2018-07-14T12:00'}]
-            }],
+            events: [
+              {
+                id: hashids.encode(0),
+                artist: null,
+                title: null,
+                location: {slug: 'location-2', name: 'Location 2', description: [], website: null, image: null},
+                tags: [{slug: 'tag-2', title: 'Tag 2', image: null}],
+                occurrences: [{start: '2018-07-14T12:00'}]
+              },
+              {
+                id: hashids.encode(1),
+                artist: {slug: 'artist-1', name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com', image: 'artists/artist-1.png'},
+                title: 'Title',
+                location: {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: 'cities/city/locations/location-1.png'},
+                tags: [{slug: 'tag-1', title: 'Tag 1', image: 'cities/city/tags/tag-1.png'}],
+                occurrences: [{start: '2018-07-14T12:00'}]
+              }
+            ],
             firstDate: '2018-07-14',
+            image: 'cities/city.png',
             dateAfter: '2018-07-15'
           }]
         }}
@@ -361,7 +410,7 @@ describe('graphqlApi', function () {
 
   describe('generation', function () {
     it('uses injected date', async function () {
-      const {checkRequest} = make({}, datetime.date('2018-08-15'))
+      const {checkRequest} = make({}, {generationDate: datetime.date('2018-08-15')})
 
       await checkRequest(
         '{generation{date dateAfter}}',

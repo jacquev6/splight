@@ -1,5 +1,5 @@
 <div class="row"><div class="col">
-  <p><a class="sp-now-week-link" href="{{{nowWeekPath}}}"><img class="img-fluid" alt="Toute l'actualité" src="/all-tags.png" /></a></p>
+  <p><a class="sp-now-week-link" href="{{{nowWeekPath}}}"><img class="img-fluid" alt="Toute l'actualité" src="/images/{{city.allTagsImage}}" /></a></p>
   <p><a class="sp-now-week-link" href="{{{nowWeekPath}}}">Toute l'actualité</a></p>
 </div></div>
 <div class="sp-needs-js">
@@ -9,7 +9,7 @@
   <div class="row">
     {{#city.tags}}
     <div class="col-6 col-md-3">
-      <p><a class="sp-now-week-link" href="{{{nowWeekPath}}}?{{slug}}"><img class="img-fluid" alt="{{title}}" src="/{{city.slug}}/{{slug}}.png" /></a></p>
+      <p><a class="sp-now-week-link" href="{{{nowWeekPath}}}?{{slug}}"><img class="img-fluid" alt="{{title}}" src="/images/{{image}}" /></a></p>
       <p><a class="sp-now-week-link" href="{{{nowWeekPath}}}?{{slug}}">{{title}}</a></p>
     </div>
     {{/city.tags}}

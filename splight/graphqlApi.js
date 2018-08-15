@@ -20,7 +20,17 @@ function makeRoot ({dataDirectory, generationDate}) {
 
   const data = fs.readJSONSync(fileName)
 
-  const root = makeSyncRoot(data, generationDate)
+  const images = (function () {
+    function exists (img) {
+      const p = path.join(dataDirectory, 'images', img)
+      // console.log('exists:', p, fs.existsSync(p))
+      return fs.existsSync(p)
+    }
+
+    return {exists}
+  }())
+
+  const root = makeSyncRoot(data, generationDate, images)
 
   function forward (name) {
     return function () {
@@ -41,7 +51,7 @@ function makeRoot ({dataDirectory, generationDate}) {
   return ret
 }
 
-function makeSyncRoot (data, generationDate) {
+function makeSyncRoot (data, generationDate, images) {
   data = encapsulateData(data)
   generationDate = generationDate || datetime.now()
 
@@ -54,15 +64,21 @@ function makeSyncRoot (data, generationDate) {
 
   function artists ({name, max}) {
     const nameMatches = matches(name)
-    return data.artists.filter(artist => nameMatches(artist.name), max)
+    return data.artists.filterMap(artist => nameMatches(artist.name), max, makeArtist)
   }
 
   function artist ({slug}) {
-    return data.artists.get(slug)
+    return makeArtist(data.artists.get(slug))
   }
 
   function putArtist ({artist}) {
-    return data.artists.put(artist)
+    return makeArtist(data.artists.put(artist))
+  }
+
+  function makeArtist (artist) {
+    const image = imageIfExists(`artists/${artist.slug}.png`)
+    const {slug, name, description, website} = artist
+    return {slug, name, description, website, image}
   }
 
   function cities () {
@@ -74,11 +90,19 @@ function makeSyncRoot (data, generationDate) {
   }
 
   function putLocation ({citySlug, location}) {
-    return data.cities.get(citySlug).locations.put(location)
+    const city = data.cities.get(citySlug)
+    return makeLocation(city, city.locations.put(location))
+  }
+
+  function makeLocation (city, location) {
+    const image = imageIfExists(`cities/${city.slug}/locations/${location.slug}.png`)
+    const {slug, name, description, website} = location
+    return {slug, name, description, website, image}
   }
 
   function putEvent ({citySlug, event: {id, title, artist, location, tags, occurrences}}) {
-    return makeEvent(data.cities.get(citySlug).events.put(Object.assign(
+    const city = data.cities.get(citySlug)
+    return makeEvent(city, city.events.put(Object.assign(
       {
         id,
         location,
@@ -91,32 +115,43 @@ function makeSyncRoot (data, generationDate) {
   }
 
   function deleteEvent ({citySlug, eventId}) {
-    return makeEvent(data.cities.get(citySlug).events.del(eventId))
+    const city = data.cities.get(citySlug)
+    return makeEvent(city, city.events.del(eventId))
   }
 
-  function makeEvent ({id, title, location, tags, occurrences, artist}) {
+  function makeEvent (city, {id, title, location, tags, occurrences, artist}) {
+    artist = artist.resolve()
+    if (artist) {
+      artist = makeArtist(artist)
+    }
     return {
       id,
       title,
-      location: location.resolve(),
-      tags: tags.resolve(),
+      location: makeLocation(city, location.resolve()),
+      tags: tags.resolve().map(tag => makeTag(city, tag)),
       occurrences,
-      artist: artist.resolve()
+      artist
     }
+  }
+
+  function makeTag (city, tag) {
+    const image = imageIfExists(`cities/${city.slug}/tags/${tag.slug}.png`)
+    const {slug, title} = tag
+    return {slug, title, image}
   }
 
   function makeCity (city) {
     function tags () {
-      return city.tags.all()
+      return city.tags.all().map(tag => makeTag(city, tag))
     }
 
     function locations ({name, max}) {
       const nameMatches = matches(name)
-      return city.locations.filter(location => nameMatches(location.name), max)
+      return city.locations.filterMap(location => nameMatches(location.name), max, location => makeLocation(city, location))
     }
 
     function location ({slug}) {
-      return city.locations.get(slug)
+      return makeLocation(city, city.locations.get(slug))
     }
 
     function firstDate () {
@@ -177,16 +212,26 @@ function makeSyncRoot (data, generationDate) {
         return true
       }
 
-      return city.events.filterMap(select, max, makeEvent)
+      return city.events.filterMap(select, max, event => makeEvent(city, event))
     }
 
     function event ({id}) {
-      return makeEvent(city.events.get(id))
+      return makeEvent(city, city.events.get(id))
     }
 
     const {slug, name} = city
+    const image = imageIfExists(`cities/${slug}.png`)
+    const allTagsImage = imageIfExists(`cities/${slug}/all-tags.png`)
 
-    return {slug, name, tags, locations, location, firstDate, dateAfter, events, event}
+    return {slug, name, image, allTagsImage, tags, locations, location, firstDate, dateAfter, events, event}
+  }
+
+  function imageIfExists (img) {
+    if (images.exists(img)) {
+      return img
+    } else {
+      return null
+    }
   }
 
   return {generation, artists, artist, putArtist, cities, city, putLocation, putEvent, deleteEvent}
@@ -352,7 +397,7 @@ const encapsulateData = (function () {
   function dictOfThingsBySlug ({things, schema, name, encapsulate}) {
     all()
 
-    return {get, all, filter, put}
+    return {get, all, filterMap, put}
 
     function get (slug) {
       const thing = things[slug]
@@ -367,12 +412,12 @@ const encapsulateData = (function () {
       return Object.entries(things).map(([slug, thing]) => make(slug, thing))
     }
 
-    function filter (select, max) {
+    function filterMap (select, max, f) {
       var selected = all().filter(select)
       if (max && selected.length > max) {
         return null
       } else {
-        return selected
+        return selected.map(f)
       }
     }
 

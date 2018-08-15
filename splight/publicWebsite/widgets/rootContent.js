@@ -11,7 +11,7 @@ function make () {
       template,
       {
         cities: data.cities.map(
-          ({slug, name}) => ({slug, name, path: paths.city(slug)})
+          ({slug, name, image}) => ({slug, name, image, path: paths.city(slug)})
         )
       }
     )

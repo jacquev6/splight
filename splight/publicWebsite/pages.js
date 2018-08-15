@@ -19,7 +19,7 @@ function root () {
   return {
     path: paths.root(),
     dataRequest: {
-      requestString: '{cities{slug name}}',
+      requestString: '{cities{slug name image}}',
       variableValues: undefined
     },
     exists: data => true,
@@ -35,7 +35,7 @@ function city (citySlug) {
   return {
     path: paths.city(citySlug),
     dataRequest: {
-      requestString: 'query($citySlug:ID!){generation{date} city(slug:$citySlug){slug name tags{slug title}}}',
+      requestString: 'query($citySlug:ID!){generation{date} city(slug:$citySlug){slug name tags{slug title image} allTagsImage}}',
       variableValues: {citySlug}
     },
     exists: data => data && data.city,
@@ -54,7 +54,7 @@ function timespan (citySlug, startDate, duration) {
   return {
     path: paths.timespan(citySlug, startDate, duration),
     dataRequest: {
-      requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){generation{date dateAfter} city(slug:$citySlug){slug name tags{slug title} firstDate events(dates:{start:$first, after:$after}){id title tags{slug title} artist{name description website} location{name description website} occurrences{start}}}}',
+      requestString: 'query($citySlug:ID!,$first:Date!,$after:Date!){generation{date dateAfter} city(slug:$citySlug){slug name tags{slug title} firstDate events(dates:{start:$first, after:$after}){id title tags{slug title} artist{name description website image} location{name description website image} occurrences{start}}}}',
       variableValues: {
         citySlug,
         first: startDate.format(datetime.HTML5_FMT.DATE),

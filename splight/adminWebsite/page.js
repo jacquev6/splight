@@ -325,7 +325,7 @@ async function initialize () {
       const preActivated = await preActivate({citySlug})
 
       const {city: {event}} = await request({
-        requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){id title location{slug name description website} tags{slug title} artist{slug name description website} occurrences{start}}}}',
+        requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){id title location{slug name description website image} tags{slug title} artist{slug name description website image} occurrences{start}}}}',
         variableValues: {citySlug, eventId}
       })
       preActivated.event = event
@@ -335,7 +335,7 @@ async function initialize () {
 
     async function preActivate ({citySlug}) {
       const {artists, city: {locations, tags}} = await request({
-        requestString: 'query($citySlug:ID!){artists{slug name description website} city(slug:$citySlug){locations{slug name description website} tags{slug title}}}',
+        requestString: 'query($citySlug:ID!){artists{slug name description website image} city(slug:$citySlug){locations{slug name description website image} tags{slug title}}}',
         variableValues: {citySlug}
       })
 
@@ -591,7 +591,7 @@ async function initialize () {
       }
 
       const {city: {events}} = await request({
-        requestString: 'query($citySlug:ID!,$tag:ID,$location:ID,$artist:ID,$title:String,$dates:IDateInterval){city(slug:$citySlug){events(tag:$tag,location:$location,artist:$artist,title:$title,dates:$dates,max:10){id title artist{name description website} location{name description website} occurrences{start} tags{slug title}}}}',
+        requestString: 'query($citySlug:ID!,$tag:ID,$location:ID,$artist:ID,$title:String,$dates:IDateInterval){city(slug:$citySlug){events(tag:$tag,location:$location,artist:$artist,title:$title,dates:$dates,max:10){id title artist{name description website image} location{name description website image} occurrences{start} tags{slug title}}}}',
         variableValues: {
           citySlug: active.citySlug,
           tag: tag === '-' ? undefined : tag,
@@ -695,7 +695,7 @@ async function initialize () {
       const preActivated = await preActivate()
 
       const {artist} = await request({
-        requestString: 'query($artistSlug:ID!){artist(slug:$artistSlug){slug name description website}}',
+        requestString: 'query($artistSlug:ID!){artist(slug:$artistSlug){slug name description website image}}',
         variableValues: {artistSlug}
       })
 
@@ -847,7 +847,7 @@ async function initialize () {
       const name = filterName.val()
 
       const {artists} = await request({
-        requestString: 'query($name:String){artists(name:$name,max:10){slug name description website}}',
+        requestString: 'query($name:String){artists(name:$name,max:10){slug name description website image}}',
         variableValues: {
           name: name === '' ? undefined : name
         }
@@ -941,7 +941,7 @@ async function initialize () {
       const preActivated = await preActivate({citySlug})
 
       const {city: {location}} = await request({
-        requestString: 'query($citySlug:ID!,$locationSlug:ID!){city(slug:$citySlug){location(slug:$locationSlug){slug name description website}}}',
+        requestString: 'query($citySlug:ID!,$locationSlug:ID!){city(slug:$citySlug){location(slug:$locationSlug){slug name description website image}}}',
         variableValues: {citySlug, locationSlug}
       })
 
@@ -1105,7 +1105,7 @@ async function initialize () {
       const name = filterName.val()
 
       const {city: {locations}} = await request({
-        requestString: 'query($citySlug:ID!,$name:String){city(slug:$citySlug){locations(name:$name,max:10){slug name description website}}}',
+        requestString: 'query($citySlug:ID!,$name:String){city(slug:$citySlug){locations(name:$name,max:10){slug name description website image}}}',
         variableValues: {
           citySlug: active.citySlug,
           name: name === '' ? undefined : name
