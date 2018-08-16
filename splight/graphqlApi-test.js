@@ -246,10 +246,14 @@ describe('graphqlApi', function () {
     }
 
     function save (fileName, data) {
-      images[fileName] = data && data.toString()
+      images[fileName] = data.toString()
     }
 
-    return {exists, save}
+    function del (fileName) {
+      delete images[fileName]
+    }
+
+    return {exists, save, del}
   }
 
   describe('full query', function () {
@@ -1046,9 +1050,12 @@ describe('graphqlApi', function () {
   })
 
   describe('mutations', function () {
-    const pngData = 'anything'
+    const pngData = 'png data'
     const pngDataBase64 = Buffer.from(pngData).toString('base64')
     const pngDataUrl = 'data:image/png;base64,' + pngDataBase64
+    const jpgData = 'jpg data'
+    const jpgDataBase64 = Buffer.from(jpgData).toString('base64')
+    const jpgDataUrl = 'data:image/jpeg;base64,' + jpgDataBase64
 
     describe('putArtist', function () {
       const fields = 'slug name description website image'
@@ -1145,7 +1152,7 @@ describe('graphqlApi', function () {
         )
 
         checkData({artists: {'artist': {name: 'New name', description: []}}})
-        checkImages({'artists/artist.png': undefined})
+        checkImages({})
 
         await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name', description: [], website: null, image: null}]}})
       })
@@ -1189,6 +1196,24 @@ describe('graphqlApi', function () {
           {data: {cities: [{events: [{artist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: null}}]}]}}
         )
       })
+    })
+
+    it('changes image type', async function () {
+      const put = 'mutation($image:URL!){putArtist(artist:{slug:"artist",name:"Artist",description:[],image:$image}){image}}'
+
+      const {checkRequest, checkData, checkImages} = make()
+
+      await checkRequest(put, {image: pngDataUrl}, {data: {putArtist: {image: 'artists/artist.png'}}})
+      checkData({artists: {'artist': {name: 'Artist', description: []}}})
+      checkImages({'artists/artist.png': pngData})
+
+      await checkRequest(put, {image: jpgDataUrl}, {data: {putArtist: {image: 'artists/artist.jpg'}}})
+      checkData({artists: {'artist': {name: 'Artist', description: []}}})
+      checkImages({'artists/artist.jpg': jpgData})
+
+      await checkRequest(put, {image: pngDataUrl}, {data: {putArtist: {image: 'artists/artist.png'}}})
+      checkData({artists: {'artist': {name: 'Artist', description: []}}})
+      checkImages({'artists/artist.png': pngData})
     })
 
     describe('putLocation', function () {
@@ -1365,7 +1390,7 @@ describe('graphqlApi', function () {
           }
         })
 
-        checkImages({'cities/city/locations/location.png': undefined})
+        checkImages({})
 
         await checkRequest(get, {data: {cities: [{
           slug: 'city',

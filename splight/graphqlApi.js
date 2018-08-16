@@ -22,21 +22,23 @@ function makeRoot ({dataDirectory, generationDate, imagesUrlsPrefix}) {
   const data = fs.readJSONSync(fileName)
 
   const images = (function () {
+    function p (fileName) {
+      return path.join(dataDirectory, 'images', fileName)
+    }
+
     function exists (fileName) {
-      const p = path.join(dataDirectory, 'images', fileName)
-      return fs.existsSync(p)
+      return fs.existsSync(p(fileName))
     }
 
     function save (fileName, data) {
-      const p = path.join(dataDirectory, 'images', fileName)
-      if (data) {
-        fs.outputFileSync(p, data)
-      } else {
-        fs.unlinkSync(p)
-      }
+      fs.outputFileSync(p(fileName), data)
     }
 
-    return {exists, save}
+    function del (fileName) {
+      fs.removeSync(p(fileName))
+    }
+
+    return {exists, save, del}
   }())
 
   const root = makeSyncRoot(data, generationDate, images, imagesUrlsPrefix)
@@ -84,12 +86,12 @@ function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
     var image = artist.image
     delete artist.image
     const ret = data.artists.put(artist)
-    saveImage(`artists/${artist.slug}.png`, image)
+    saveImage(`artists/${artist.slug}`, image)
     return makeArtist(ret)
   }
 
   function makeArtist (artist) {
-    const image = imageIfExists(`artists/${artist.slug}.png`)
+    const image = imageIfExists(`artists/${artist.slug}`)
     const {slug, name, description, website} = artist
     return {slug, name, description, website, image}
   }
@@ -107,12 +109,12 @@ function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
     var image = location.image
     delete location.image
     const ret = city.locations.put(location)
-    saveImage(`cities/${city.slug}/locations/${location.slug}.png`, image)
+    saveImage(`cities/${city.slug}/locations/${location.slug}`, image)
     return makeLocation(city, ret)
   }
 
   function makeLocation (city, location) {
-    const image = imageIfExists(`cities/${city.slug}/locations/${location.slug}.png`)
+    const image = imageIfExists(`cities/${city.slug}/locations/${location.slug}`)
     const {slug, name, description, website} = location
     return {slug, name, description, website, image}
   }
@@ -152,7 +154,7 @@ function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
   }
 
   function makeTag (city, tag) {
-    const image = imageIfExists(`cities/${city.slug}/tags/${tag.slug}.png`)
+    const image = imageIfExists(`cities/${city.slug}/tags/${tag.slug}`)
     const {slug, title} = tag
     return {slug, title, image}
   }
@@ -237,32 +239,47 @@ function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
     }
 
     const {slug, name} = city
-    const image = imageIfExists(`cities/${slug}.png`)
-    const allTagsImage = imageIfExists(`cities/${slug}/all-tags.png`)
+    const image = imageIfExists(`cities/${slug}`)
+    const allTagsImage = imageIfExists(`cities/${slug}/all-tags`)
 
     return {slug, name, image, allTagsImage, tags, locations, location, firstDate, dateAfter, events, event}
   }
 
-  // @todo Support jpg image (get and save (and delete existing other formats in save))
+  const imageExtensions = ['.png', '.jpg']
+
   function imageIfExists (img) {
-    if (images.exists(img)) {
-      return imagesUrlsPrefix + img
-    } else {
-      return null
+    for (var ext of imageExtensions) {
+      if (images.exists(img + ext)) {
+        return imagesUrlsPrefix + img + ext
+      }
     }
+    return null
   }
 
   function saveImage (img, data) {
     if (data) {
       if (data.startsWith('data:')) {
-        assert(data.startsWith('data:image/png;base64,'))
+        var extension
+        if (data.startsWith('data:image/png;base64,')) {
+          extension = '.png'
+        } else {
+          assert(data.startsWith('data:image/jpeg;base64,'))
+          extension = '.jpg'
+        }
         data = Buffer.from(data.slice(22), 'base64')
-        images.save(img, data)
+        images.save(img + extension, data)
+        for (var ext of imageExtensions) {
+          if (ext !== extension) {
+            images.del(img + ext)
+          }
+        }
       } else {
-        assert(data === imagesUrlsPrefix + img)
+        assert(imageExtensions.some(ext => data === imagesUrlsPrefix + img + ext))
       }
     } else {
-      images.save(img, undefined)
+      for (ext of imageExtensions) {
+        images.del(img + ext)
+      }
     }
   }
 

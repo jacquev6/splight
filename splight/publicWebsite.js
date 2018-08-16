@@ -1,6 +1,7 @@
 'use strict'
 
 const assert = require('assert').strict
+const bodyParser = require('body-parser')
 const browserify = require('browserify')
 const CleanCSS = require('clean-css')
 const express = require('express')
@@ -27,6 +28,7 @@ async function makeRouter ({dataDirectory, scripts, generationDate}) {
 
   router.use('/images', express.static(path.join(dataDirectory, 'images')))
 
+  router.use(bodyParser.json({limit: '50mb'})) // https://stackoverflow.com/a/19965089/905845
   router.use('/graphql', expressGraphql(Object.assign({graphiql: true}, api)))
 
   for (var asset of generateAssets({api})) {
