@@ -43,14 +43,14 @@ do
   shift
 done
 
-npm test
-
-show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
-
 if $GENERATE || $SERVE_DEVELOPER_SITE || $SERVE_WEBMASTER_SITE
 then
   npm run generateMissingImages test/data
 fi
+
+npm test
+
+show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
 
 if $GENERATE
 then
