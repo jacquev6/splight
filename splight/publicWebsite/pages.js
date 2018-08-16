@@ -67,7 +67,7 @@ function timespan (citySlug, startDate, duration) {
       }
 
       const maxDateAfter = datetime.date(data.generation.dateAfter)
-      var minStartDate = datetime.date(data.generation.date)
+      var minStartDate = durations.oneWeek.clip(datetime.date(data.generation.date))
 
       if (data.city.firstDate) {
         minStartDate = moment.min(
