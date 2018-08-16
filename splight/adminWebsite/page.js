@@ -678,7 +678,7 @@ async function initialize () {
         active.artist.name = jQuery('#spa-edit-artist-name').val()
         refreshHeaderAndFooter()
       })
-      doc.on('input', '#spa-edit-artist-image', function () {
+      doc.on('change', '#spa-edit-artist-image', function () {
         const reader = new FileReader()
         reader.onload = function (e) {
           active.artist.image = e.target.result
@@ -939,7 +939,7 @@ async function initialize () {
         active.location.name = jQuery('#spa-edit-location-name').val()
         refreshHeaderAndFooter()
       })
-      doc.on('input', '#spa-edit-location-image', function () {
+      doc.on('change', '#spa-edit-location-image', function () {
         const reader = new FileReader()
         reader.onload = function (e) {
           active.location.image = e.target.result
