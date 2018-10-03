@@ -21,7 +21,7 @@ function make ({citySlug, startDate, dateAfter, duration}) {
 
     const dayEventsByDate = {}
 
-    data.city.events.forEach(({id, location, artist, occurrences, tags, title}) => {
+    data.city.events.forEach(({id, location, artist, occurrences, tags, title: eventTitle}) => {
       occurrences.forEach(({start}) => {
         start = datetime.datetime(start)
 
@@ -30,6 +30,8 @@ function make ({citySlug, startDate, dateAfter, duration}) {
         if (!dayEvents) {
           dayEventsByDate[day] = dayEvents = []
         }
+
+        const title = [eventTitle, artist && artist.name, location && location.name].filter(x => x).join(', ')
 
         dayEvents.push({
           id,
