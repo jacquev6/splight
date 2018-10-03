@@ -59,7 +59,9 @@ function make ({citySlug, startDate, dateAfter, duration}) {
       return event
     })
 
-    return mustache.render(template, {city, days, events})
+    const severalDays = days.length > 1
+
+    return mustache.render(template, {city, days, severalDays, events})
   }
 
   function initialize () {

@@ -1,7 +1,9 @@
 <div id="sp-calendar" class="row">
   {{#days}}
   <div class="col-md">
+    {{#severalDays}}
     <p><strong>{{date}}</strong></p>
+    {{/severalDays}}
     {{#events}}
     <div class="sp-event sp-main-tag-{{city.slug}}-{{mainTag.slug}}{{#tags}} sp-tag-{{city.slug}}-{{slug}}{{/tags}}" data-sp-event-id={{id}}>
       <p><strong>{{time}}</strong> <span class="sp-event-title">{{title}}</span></p>
