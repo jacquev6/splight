@@ -96,9 +96,19 @@
         }
       ],
       "locations": {
-        "location-1": {"description": [], "name": "Lieu à Avalon 1"},
-        "location-2": {"description": ["Un bien bel endroit."], "name": "Lieu à Avalon 2", "website": "http://foobarbaz.com"},
-        "location-3": {"description": [], "name": "Lieu à Avalon 3"}
+        "location-1": {
+          "address": ["Address 1", "Address 2", "Three"],
+          "description": [],
+          "name": "Lieu à Avalon 1",
+          "phone": "0123456789"
+        },
+        "location-2": {
+          "address": [],
+          "description": ["Un bien bel endroit."],
+          "name": "Lieu à Avalon 2",
+          "website": "http://foobarbaz.com"
+        },
+        "location-3": {"address": [], "description": [], "name": "Lieu à Avalon 3"}
       },
       "name": "Avalon",
       "tags": [
@@ -119,8 +129,8 @@
         }
       ],
       "locations": {
-        "location-1": {"description": [], "name": "Lieu à Shangri-La 1"},
-        "location-2": {"description": [], "name": "Lieu à Shangri-La 2"}
+        "location-1": {"address": [], "description": [], "name": "Lieu à Shangri-La 1"},
+        "location-2": {"address": [], "description": [], "name": "Lieu à Shangri-La 2"}
       },
       "name": "Shangri-La",
       "tags": [{"slug": "tag-1", "title": "Seule catégorie"}]

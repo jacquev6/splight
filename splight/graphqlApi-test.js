@@ -54,7 +54,7 @@ describe('graphqlApi', function () {
           artists: {'artist': {name: 'Artist', description: []}},
           cities: {'city': {
             name: 'City',
-            locations: {'location': {name: 'Location', description: []}},
+            locations: {'location': {name: 'Location', description: [], address: []}},
             tags: [{slug: 'tag', title: 'Tag'}],
             events: [{
               id: hashids.encode(0),
@@ -94,7 +94,7 @@ describe('graphqlApi', function () {
           artists: {'artist': {name: 'Artist', description: []}},
           cities: {'city': {
             name: 'City',
-            locations: {'location': {name: 'Location', description: []}},
+            locations: {'location': {name: 'Location', description: [], address: []}},
             tags: [{slug: 'tag', title: 'Tag'}],
             events: [{
               id: hashids.encode(10),
@@ -135,7 +135,7 @@ describe('graphqlApi', function () {
           artists: {'artist': {name: 'Artist', description: []}},
           cities: {'city': {
             name: 'City',
-            locations: {'location': {name: 'Location', description: []}},
+            locations: {'location': {name: 'Location', description: [], address: []}},
             tags: [{slug: 'tag', title: 'Tag'}],
             events: [{
               id: 'foobarbaz',
@@ -265,12 +265,12 @@ describe('graphqlApi', function () {
         image
         allTagsImage
         tags{slug title image}
-        locations{slug name description website image}
+        locations{slug name description website image phone address}
         events{
           id
           title
           artist{slug name description website image}
-          location{slug name description website image}
+          location{slug name description website image phone address}
           tags{slug title image}
           occurrences{start}
         }
@@ -289,7 +289,7 @@ describe('graphqlApi', function () {
           'city': {
             name: 'City',
             locations: {
-              'location-1': {name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com'},
+              'location-1': {name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', phone: '0123456789', address: ['Location 1 address']},
               'location-2': {name: 'Location 2'}
             },
             tags: [
@@ -316,8 +316,8 @@ describe('graphqlApi', function () {
               {slug: 'tag-2', title: 'Tag 2', image: null}
             ],
             locations: [
-              {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: null},
-              {slug: 'location-2', name: 'Location 2', description: [], website: null, image: null}
+              {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: null, phone: '0123456789', address: ['Location 1 address']},
+              {slug: 'location-2', name: 'Location 2', description: [], website: null, image: null, phone: null, address: []}
             ],
             events: [],
             firstDate: null,
@@ -339,7 +339,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {
-                'location-1': {name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com'},
+                'location-1': {name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', phone: '0123456789', address: ['Location 1 address']},
                 'location-2': {name: 'Location 2'}
               },
               tags: [
@@ -390,15 +390,15 @@ describe('graphqlApi', function () {
               {slug: 'tag-2', title: 'Tag 2', image: null}
             ],
             locations: [
-              {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: 'cities/city/locations/location-1.png'},
-              {slug: 'location-2', name: 'Location 2', description: [], website: null, image: null}
+              {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: 'cities/city/locations/location-1.png', phone: '0123456789', address: ['Location 1 address']},
+              {slug: 'location-2', name: 'Location 2', description: [], website: null, image: null, phone: null, address: []}
             ],
             events: [
               {
                 id: hashids.encode(0),
                 artist: null,
                 title: null,
-                location: {slug: 'location-2', name: 'Location 2', description: [], website: null, image: null},
+                location: {slug: 'location-2', name: 'Location 2', description: [], website: null, image: null, phone: null, address: []},
                 tags: [{slug: 'tag-2', title: 'Tag 2', image: null}],
                 occurrences: [{start: '2018-07-14T12:00'}]
               },
@@ -406,7 +406,7 @@ describe('graphqlApi', function () {
                 id: hashids.encode(1),
                 artist: {slug: 'artist-1', name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com', image: 'artists/artist-1.png'},
                 title: 'Title',
-                location: {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: 'cities/city/locations/location-1.png'},
+                location: {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: 'cities/city/locations/location-1.png', phone: '0123456789', address: ['Location 1 address']},
                 tags: [{slug: 'tag-1', title: 'Tag 1', image: 'cities/city/tags/tag-1.png'}],
                 occurrences: [{start: '2018-07-14T12:00'}]
               }
@@ -1217,7 +1217,7 @@ describe('graphqlApi', function () {
     })
 
     describe('putLocation', function () {
-      const fields = 'slug name description website image'
+      const fields = 'slug name description website image phone address'
       const get = `{cities{slug locations{${fields}}}}`
       const put = `mutation($citySlug:ID!,$location:ILocation!){putLocation(citySlug:$citySlug,location:$location){${fields}}}`
 
@@ -1228,22 +1228,22 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {citySlug: 'city', location: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}},
-          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png'}}}
+          {citySlug: 'city', location: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}},
+          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
         )
 
         checkData({
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar'}}
+              locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address']}}
             }
           }
         })
 
         checkImages({'cities/city/locations/location.png': pngData})
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png'}]}]}})
+        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}]}]}})
       })
 
       it("doesn't add a location with bad slug", async function () {
@@ -1251,7 +1251,7 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {citySlug: 'city', location: {slug: 'L', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}},
+          {citySlug: 'city', location: {slug: 'L', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}},
           {
             data: null,
             errors: [{
@@ -1279,21 +1279,23 @@ describe('graphqlApi', function () {
             name: 'Location',
             description: [],
             website: null,
-            image: null
+            image: null,
+            phone: null,
+            address: []
           }]
         }]}})
 
         await checkRequest(
           put,
-          {citySlug: 'city', location: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}},
-          {data: {putLocation: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png'}}}
+          {citySlug: 'city', location: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}},
+          {data: {putLocation: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
         )
 
         checkData({
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'New name', description: ['Description'], website: 'http://foo.bar'}}
+              locations: {'location': {name: 'New name', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address']}}
             }
           }
         })
@@ -1307,14 +1309,16 @@ describe('graphqlApi', function () {
             name: 'New name',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'cities/city/locations/location.png'
+            image: 'cities/city/locations/location.png',
+            phone: '0123456789',
+            address: ['Address']
           }]
         }]}})
       })
 
       it('modifies a location - no change', async function () {
         const {checkRequest, checkData, checkImages} = make(
-          {cities: {'city': {name: 'City', locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar'}}}}},
+          {cities: {'city': {name: 'City', locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address']}}}}},
           {images: {'cities/city/locations/location.png': pngData}}
         )
 
@@ -1325,21 +1329,23 @@ describe('graphqlApi', function () {
             name: 'Location',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'cities/city/locations/location.png'
+            image: 'cities/city/locations/location.png',
+            phone: '0123456789',
+            address: ['Address']
           }]
         }]}})
 
         await checkRequest(
           put,
-          {citySlug: 'city', location: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png'}},
-          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png'}}}
+          {citySlug: 'city', location: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}},
+          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
         )
 
         checkData({
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar'}}
+              locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address']}}
             }
           }
         })
@@ -1353,14 +1359,16 @@ describe('graphqlApi', function () {
             name: 'Location',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'cities/city/locations/location.png'
+            image: 'cities/city/locations/location.png',
+            phone: '0123456789',
+            address: ['Address']
           }]
         }]}})
       })
 
       it('modifies a location - reset', async function () {
         const {checkRequest, checkData, checkImages} = make(
-          {cities: {'city': {name: 'City', locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar'}}}}},
+          {cities: {'city': {name: 'City', locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['1 rue de Gaule', '92000 Issy-ou-là']}}}}},
           {images: {'cities/city/locations/location.png': pngData}}
         )
 
@@ -1371,21 +1379,23 @@ describe('graphqlApi', function () {
             name: 'Location',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'cities/city/locations/location.png'
+            image: 'cities/city/locations/location.png',
+            phone: '0123456789',
+            address: ['1 rue de Gaule', '92000 Issy-ou-là']
           }]
         }]}})
 
         await checkRequest(
           put,
-          {citySlug: 'city', location: {slug: 'location', name: 'New name', description: []}},
-          {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null, image: null}}}
+          {citySlug: 'city', location: {slug: 'location', name: 'New name', description: [], address: []}},
+          {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null, image: null, phone: null, address: []}}}
         )
 
         checkData({
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'New name', description: []}}
+              locations: {'location': {name: 'New name', description: [], address: []}}
             }
           }
         })
@@ -1399,7 +1409,9 @@ describe('graphqlApi', function () {
             name: 'New name',
             description: [],
             website: null,
-            image: null
+            image: null,
+            phone: null,
+            address: []
           }]
         }]}})
       })
@@ -1424,18 +1436,18 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{events: [{location: {slug: 'location', name: 'Location', description: [], website: null, image: null}}]}]}}
+          {data: {cities: [{events: [{location: {slug: 'location', name: 'Location', description: [], website: null, image: null, phone: null, address: []}}]}]}}
         )
 
         await checkRequest(
           put,
-          {citySlug: 'city', location: {slug: 'location', name: 'New name', description: [], image: pngDataUrl}},
-          {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null, image: 'cities/city/locations/location.png'}}}
+          {citySlug: 'city', location: {slug: 'location', name: 'New name', description: [], image: pngDataUrl, address: []}},
+          {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null, image: 'cities/city/locations/location.png', phone: null, address: []}}}
         )
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{events: [{location: {slug: 'location', name: 'New name', description: [], website: null, image: 'cities/city/locations/location.png'}}]}]}}
+          {data: {cities: [{events: [{location: {slug: 'location', name: 'New name', description: [], website: null, image: 'cities/city/locations/location.png', phone: null, address: []}}]}]}}
         )
       })
     })
@@ -2107,16 +2119,16 @@ describe('graphqlApi', function () {
       await checkRequest(
         'mutation{' +
           'putArtist(artist:{slug:"artist",name:"Artist",description:["Some artist"],website:"http://artist.bar"}){slug name description website}' +
-          'putLocation(citySlug:"city",location:{slug:"location",name:"Location",description:["Some location"],website:"http://location.bar"}){slug name description website}' +
-          'putEvent(citySlug:"city",event:{location:"location",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){id artist{slug name description website} location{slug name description website} tags{slug title}}' +
+          'putLocation(citySlug:"city",location:{slug:"location",name:"Location",description:["Some location"],website:"http://location.bar",phone:"0123456789",address:["Address"]}){slug name description website phone address}' +
+          'putEvent(citySlug:"city",event:{location:"location",artist:"artist",tags:["tag"],occurrences:[{start:"2018-07-14T12:00"}]}){id artist{slug name description website} location{slug name description website phone address} tags{slug title}}' +
         '}',
         {data: {
           putArtist: {slug: 'artist', name: 'Artist', description: ['Some artist'], website: 'http://artist.bar'},
-          putLocation: {slug: 'location', name: 'Location', description: ['Some location'], website: 'http://location.bar'},
+          putLocation: {slug: 'location', name: 'Location', description: ['Some location'], website: 'http://location.bar', phone: '0123456789', address: ['Address']},
           putEvent: {
             id: hashids.encode(0),
             artist: {slug: 'artist', name: 'Artist', description: ['Some artist'], website: 'http://artist.bar'},
-            location: {slug: 'location', name: 'Location', description: ['Some location'], website: 'http://location.bar'},
+            location: {slug: 'location', name: 'Location', description: ['Some location'], website: 'http://location.bar', phone: '0123456789', address: ['Address']},
             tags: [{slug: 'tag', title: 'Tag'}]
           }
         }}
@@ -2131,7 +2143,7 @@ describe('graphqlApi', function () {
         artists: {artist: {name: 'Artist', description: ['Some artist'], website: 'http://artist.bar'}},
         cities: {'city': {
           name: 'City',
-          locations: {'location': {name: 'Location', description: ['Some location'], website: 'http://location.bar'}},
+          locations: {'location': {name: 'Location', description: ['Some location'], website: 'http://location.bar', phone: '0123456789', address: ['Address']}},
           events: [{
             id: hashids.encode(0),
             artist: 'artist',

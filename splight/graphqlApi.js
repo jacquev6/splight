@@ -115,8 +115,8 @@ function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
 
   function makeLocation (city, location) {
     const image = imageIfExists(`cities/${city.slug}/locations/${location.slug}`)
-    const {slug, name, description, website} = location
-    return {slug, name, description, website, image}
+    const {slug, name, description, website, phone, address} = location
+    return {slug, name, description, website, image, phone, address}
   }
 
   function putEvent ({citySlug, event: {id, title, artist, location, tags, occurrences}}) {
@@ -318,7 +318,9 @@ const encapsulateData = (function () {
   const locationSchema = Joi.object({
     name: Joi.string().required(),
     description: Joi.array().required().items(Joi.string()),
-    website: Joi.string()
+    website: Joi.string(),
+    phone: Joi.string(),
+    address: Joi.array().required().items(Joi.string())
   })
 
   const tagSchema = Joi.object({
@@ -375,6 +377,7 @@ const encapsulateData = (function () {
       city.locations = city.locations || {}
       Object.values(city.locations).forEach(location => {
         location.description = location.description || []
+        location.address = location.address || []
       })
       city.tags = city.tags || []
       city.events = city.events || []
@@ -405,7 +408,7 @@ const encapsulateData = (function () {
             things: locations,
             schema: locationSchema,
             name: 'location',
-            encapsulate: ({name, description, website}) => ({name, description, website})
+            encapsulate: ({name, description, website, phone, address}) => ({name, description, website, phone, address})
           })
           tags = listOfThingsWithSlug({
             things: tags,

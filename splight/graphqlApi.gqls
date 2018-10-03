@@ -51,6 +51,8 @@ type Location {
   description: [String!]!
   website: URL
   image: URL
+  phone: String
+  address: [String!]!
 }
 
 type Event {
@@ -88,6 +90,8 @@ input ILocation {
   description: [String!]!
   website: URL
   image: URL
+  phone: String
+  address: [String!]!
 }
 
 input IEvent {

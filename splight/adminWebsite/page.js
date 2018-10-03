@@ -327,7 +327,7 @@ async function initialize () {
       const preActivated = await preActivate({citySlug})
 
       const {city: {event}} = await request({
-        requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){id title location{slug name description website image} tags{slug title} artist{slug name description website image} occurrences{start}}}}',
+        requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){id title location{slug name description website image phone address} tags{slug title} artist{slug name description website image} occurrences{start}}}}',
         variableValues: {citySlug, eventId}
       })
       preActivated.event = event
@@ -337,7 +337,7 @@ async function initialize () {
 
     async function preActivate ({citySlug}) {
       const {artists, city: {locations, tags}} = await request({
-        requestString: 'query($citySlug:ID!){artists{slug name description website image} city(slug:$citySlug){locations{slug name description website image} tags{slug title}}}',
+        requestString: 'query($citySlug:ID!){artists{slug name description website image} city(slug:$citySlug){locations{slug name description website image phone address} tags{slug title}}}',
         variableValues: {citySlug}
       })
 
@@ -425,7 +425,7 @@ async function initialize () {
 
       const hasLocation = !!active.newLocation
 
-      const location = active.newLocation || {slug: '', name: '', description: []}
+      const location = active.newLocation || {slug: '', name: '', description: [], address: []}
 
       const event = {
         id: active.event.id,
@@ -593,7 +593,7 @@ async function initialize () {
       }
 
       const {city: {events}} = await request({
-        requestString: 'query($citySlug:ID!,$tag:ID,$location:ID,$artist:ID,$title:String,$dates:IDateInterval){city(slug:$citySlug){events(tag:$tag,location:$location,artist:$artist,title:$title,dates:$dates,max:10){id title artist{name description website image} location{name description website image} occurrences{start} tags{slug title}}}}',
+        requestString: 'query($citySlug:ID!,$tag:ID,$location:ID,$artist:ID,$title:String,$dates:IDateInterval){city(slug:$citySlug){events(tag:$tag,location:$location,artist:$artist,title:$title,dates:$dates,max:10){id title artist{name description website image} location{name description website image phone address} occurrences{start} tags{slug title}}}}',
         variableValues: {
           citySlug: active.citySlug,
           tag: tag === '-' ? undefined : tag,
@@ -960,6 +960,15 @@ async function initialize () {
         active.location.description = jQuery('#spa-edit-location-description').val().split(/\n\n+/).map(part => part.trim()).filter(part => part !== '')
         refreshHeaderAndFooter()
       })
+      doc.on('input', '#spa-edit-location-phone', function () {
+        const phone = jQuery('#spa-edit-location-phone').val()
+        active.location.phone = phone === '' ? undefined : phone
+        refreshHeaderAndFooter()
+      })
+      doc.on('input', '#spa-edit-location-address', function () {
+        active.location.address = jQuery('#spa-edit-location-address').val().split(/\n+/).map(part => part.trim()).filter(part => part !== '')
+        refreshHeaderAndFooter()
+      })
     }())
 
     deactivate()
@@ -970,12 +979,15 @@ async function initialize () {
       const preActivated = await preActivate({citySlug})
 
       const {city: {location}} = await request({
-        requestString: 'query($citySlug:ID!,$locationSlug:ID!){city(slug:$citySlug){location(slug:$locationSlug){slug name description website image}}}',
+        requestString: 'query($citySlug:ID!,$locationSlug:ID!){city(slug:$citySlug){location(slug:$locationSlug){slug name description website image phone address}}}',
         variableValues: {citySlug, locationSlug}
       })
 
       if (!location.website) {
         delete location.website
+      }
+      if (!location.phone) {
+        delete location.phone
       }
 
       Object.assign(
@@ -999,7 +1011,9 @@ async function initialize () {
             slug: '',
             name: name || '',
             description: [],
-            website: undefined
+            website: undefined,
+            phone: undefined,
+            address: []
           },
           isNew: true
         }
@@ -1040,13 +1054,17 @@ async function initialize () {
           <div class="form-group form-inline"><label>Image&nbsp;: <input id="spa-edit-location-image" type="file" class="form-control-file ml-sm-2" /></label> <button id="spa-edit-location-delete-image" class="btn btn-secondary btn-sm">Supprimer</button></div>
           <div class="form-group form-inline"><label>Description&nbsp;: <textarea id="spa-edit-location-description" class="form-control ml-sm-2" rows="6">{{location.description}}</textarea></label></div>
           <div class="form-group form-inline"><label>Site officiel&nbsp;: <input id="spa-edit-location-website" class="form-control ml-sm-2" value="{{location.website}}"/></label></div>
+          <div class="form-group form-inline"><label>Téléphone&nbsp;: <input id="spa-edit-location-phone" class="form-control ml-sm-2" value="{{location.phone}}"/></label></div>
+          <div class="form-group form-inline"><label>Adresse&nbsp;: <textarea id="spa-edit-location-address" class="form-control ml-sm-2" rows="3">{{location.address}}</textarea></label></div>
         `
         const location = {
           slug: active.location.slug,
           name: active.location.name,
           image: active.location.image,
           website: active.location.website,
-          description: active.location.description.join('\n\n')
+          description: active.location.description.join('\n\n'),
+          phone: active.location.phone,
+          address: active.location.address.join('\n')
         }
         body = mustache.render(template, {location, isNew: active.isNew})
       } else {
@@ -1136,7 +1154,7 @@ async function initialize () {
       const name = filterName.val()
 
       const {city: {locations}} = await request({
-        requestString: 'query($citySlug:ID!,$name:String){city(slug:$citySlug){locations(name:$name,max:10){slug name description website image}}}',
+        requestString: 'query($citySlug:ID!,$name:String){city(slug:$citySlug){locations(name:$name,max:10){slug name description website image phone address}}}',
         variableValues: {
           citySlug: active.citySlug,
           name: name === '' ? undefined : name
