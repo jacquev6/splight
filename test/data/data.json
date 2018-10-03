@@ -19,6 +19,7 @@
           "id": "WjnegYbwZ1",
           "location": "location-1",
           "occurrences": [{"start": "2018-08-07T13:00"}],
+          "reservationPage": "http://reserve.com/",
           "tags": ["tag-1"],
           "title": "Événement 1"
         },

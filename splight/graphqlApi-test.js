@@ -273,6 +273,7 @@ describe('graphqlApi', function () {
           location{slug name description website image phone address}
           tags{slug title image}
           occurrences{start}
+          reservationPage
         }
         firstDate
         dateAfter
@@ -357,7 +358,8 @@ describe('graphqlApi', function () {
                   artist: 'artist-1',
                   location: 'location-1',
                   tags: ['tag-1'],
-                  occurrences: [{start: '2018-07-14T12:00'}]
+                  occurrences: [{start: '2018-07-14T12:00'}],
+                  reservationPage: 'http://reserve.com/'
                 }
               ]
             }
@@ -400,7 +402,8 @@ describe('graphqlApi', function () {
                 title: null,
                 location: {slug: 'location-2', name: 'Location 2', description: [], website: null, image: null, phone: null, address: []},
                 tags: [{slug: 'tag-2', title: 'Tag 2', image: null}],
-                occurrences: [{start: '2018-07-14T12:00'}]
+                occurrences: [{start: '2018-07-14T12:00'}],
+                reservationPage: null
               },
               {
                 id: hashids.encode(1),
@@ -408,7 +411,8 @@ describe('graphqlApi', function () {
                 title: 'Title',
                 location: {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: 'cities/city/locations/location-1.png', phone: '0123456789', address: ['Location 1 address']},
                 tags: [{slug: 'tag-1', title: 'Tag 1', image: 'cities/city/tags/tag-1.png'}],
-                occurrences: [{start: '2018-07-14T12:00'}]
+                occurrences: [{start: '2018-07-14T12:00'}],
+                reservationPage: 'http://reserve.com/'
               }
             ],
             firstDate: '2018-07-14',
@@ -1453,7 +1457,7 @@ describe('graphqlApi', function () {
     })
 
     describe('putEvent', function () {
-      const fields = 'id title artist{name} location{name} tags{title} occurrences{start}'
+      const fields = 'id title artist{name} location{name} tags{title} occurrences{start} reservationPage'
       const get = `{cities{slug events{${fields}}}}`
       const put = `mutation($citySlug:ID!,$event:IEvent!){putEvent(citySlug:$citySlug,event:$event){${fields}}}`
 
@@ -1490,7 +1494,8 @@ describe('graphqlApi', function () {
             artist: {name: 'Artist'},
             location: {name: 'Location'},
             tags: [{title: 'Tag'}],
-            occurrences: [{start: '2018-07-14T12:00'}]
+            occurrences: [{start: '2018-07-14T12:00'}],
+            reservationPage: null
           }}}
         )
 
@@ -1524,7 +1529,8 @@ describe('graphqlApi', function () {
               occurrences: [{start: '2018-07-14T12:00'}],
               artist: {name: 'Artist'},
               location: {name: 'Location'},
-              tags: [{title: 'Tag'}]
+              tags: [{title: 'Tag'}],
+              reservationPage: null
             }]
           }]}}
         )
@@ -1564,7 +1570,8 @@ describe('graphqlApi', function () {
             artist: {name: 'Artist'},
             location: {name: 'Location'},
             tags: [{title: 'Tag'}],
-            occurrences: [{start: '2018-07-14T12:00'}]
+            occurrences: [{start: '2018-07-14T12:00'}],
+            reservationPage: null
           }}}
         )
 
@@ -1597,7 +1604,8 @@ describe('graphqlApi', function () {
               occurrences: [{start: '2018-07-14T12:00'}],
               artist: {name: 'Artist'},
               location: {name: 'Location'},
-              tags: [{title: 'Tag'}]
+              tags: [{title: 'Tag'}],
+              reservationPage: null
             }]
           }]}}
         )
@@ -1636,7 +1644,8 @@ describe('graphqlApi', function () {
             artist: null,
             location: {name: 'Location'},
             tags: [{title: 'Tag'}],
-            occurrences: [{start: '2018-07-14T12:00'}]
+            occurrences: [{start: '2018-07-14T12:00'}],
+            reservationPage: null
           }}}
         )
 
@@ -1669,7 +1678,8 @@ describe('graphqlApi', function () {
               occurrences: [{start: '2018-07-14T12:00'}],
               artist: null,
               location: {name: 'Location'},
-              tags: [{title: 'Tag'}]
+              tags: [{title: 'Tag'}],
+              reservationPage: null
             }]
           }]}}
         )
@@ -1863,7 +1873,8 @@ describe('graphqlApi', function () {
                 occurrences: [{start: '2018-07-14T11:00'}],
                 artist: null,
                 location: {name: 'Location'},
-                tags: [{title: 'Tag'}]
+                tags: [{title: 'Tag'}],
+                reservationPage: null
               },
               {
                 id: 'event',
@@ -1871,7 +1882,8 @@ describe('graphqlApi', function () {
                 occurrences: [{start: '2018-07-14T12:00'}],
                 artist: null,
                 location: {name: 'Location'},
-                tags: [{title: 'Tag'}]
+                tags: [{title: 'Tag'}],
+                reservationPage: null
               }
             ]
           }]}}
@@ -1887,7 +1899,8 @@ describe('graphqlApi', function () {
               location: 'location',
               artist: 'artist',
               tags: ['tag'],
-              occurrences: [{start: '2018-07-14T13:00'}]
+              occurrences: [{start: '2018-07-14T13:00'}],
+              reservationPage: 'http://reserve.com/'
             }
           },
           {data: {putEvent: {
@@ -1896,7 +1909,8 @@ describe('graphqlApi', function () {
             artist: {name: 'Artist'},
             location: {name: 'Location'},
             tags: [{title: 'Tag'}],
-            occurrences: [{start: '2018-07-14T13:00'}]
+            occurrences: [{start: '2018-07-14T13:00'}],
+            reservationPage: 'http://reserve.com/'
           }}}
         )
 
@@ -1921,7 +1935,8 @@ describe('graphqlApi', function () {
                   artist: 'artist',
                   tags: ['tag'],
                   occurrences: [{start: '2018-07-14T13:00'}],
-                  title: 'Title'
+                  title: 'Title',
+                  reservationPage: 'http://reserve.com/'
                 }
               ]
             }
@@ -1939,7 +1954,8 @@ describe('graphqlApi', function () {
                 occurrences: [{start: '2018-07-14T11:00'}],
                 artist: null,
                 location: {name: 'Location'},
-                tags: [{title: 'Tag'}]
+                tags: [{title: 'Tag'}],
+                reservationPage: null
               },
               {
                 id: 'event',
@@ -1947,7 +1963,8 @@ describe('graphqlApi', function () {
                 occurrences: [{start: '2018-07-14T13:00'}],
                 artist: {name: 'Artist'},
                 location: {name: 'Location'},
-                tags: [{title: 'Tag'}]
+                tags: [{title: 'Tag'}],
+                reservationPage: 'http://reserve.com/'
               }
             ]
           }]}}

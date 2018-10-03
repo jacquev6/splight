@@ -92,6 +92,11 @@ async function initialize () {
         active.event.title = jQuery('#spa-edit-event-title').val()
         refreshHeaderAndFooter()
       })
+      doc.on('input', '#spa-edit-event-reservation-page', function () {
+        const reservationPage = jQuery('#spa-edit-event-reservation-page').val()
+        active.event.reservationPage = reservationPage === '' ? undefined : reservationPage
+        refreshHeaderAndFooter()
+      })
       doc.on('change', '#spa-edit-event-existing-artist-slug', function () {
         active.event.artist = active.artistsBySlug[jQuery('#spa-edit-event-existing-artist-slug').val()]
         refreshHeaderAndFooter()
@@ -182,6 +187,7 @@ async function initialize () {
           <p>Catégories secondaires&nbsp;:</p>
           <ul>{{#tags}}{{^isMain}}<li class="form-group form-inline"><label>{{title}} <input id="spa-edit-event-secondary-tag-{{slug}}" class="spa-edit-event-secondary-tag form-control ml-sm-2" type="checkbox" value="{{slug}}"{{#isSecondary}} checked="checked"{{/isSecondary}} /></label></li>{{/isMain}}{{/tags}}</ul>
           <div class="form-group form-inline"><label>Titre&nbsp;: <input id="spa-edit-event-title" class="form-control ml-sm-2" value="{{title}}" /></label></div>
+          <div class="form-group form-inline"><label>Page de reservation&nbsp;: <input id="spa-edit-event-reservation-page" class="form-control ml-sm-2" value="{{reservationPage}}"/></label></div>
           <ul class="nav nav-tabs">
             <li class="nav-item">
               <a id="spa-edit-event-choose-artist" class="nav-link{{^newArtist}} active{{/newArtist}}" data-toggle="tab" href="#spa-edit-event-artist-tab-existing">Artiste existant</a>
@@ -201,7 +207,7 @@ async function initialize () {
           </div>
         `
 
-        function render ({event: {tags: eventTags, artist, title}}) {
+        function render ({event: {tags: eventTags, artist, title, reservationPage}}) {
           const artists = active.artists.map(({slug, name}) => (
             {slug, name, selected: artist && slug === artist.slug}
           ))
@@ -214,7 +220,7 @@ async function initialize () {
             {slug, title, isMain: slug === mainTag, isSecondary: secondaryTags.has(slug)}
           ))
 
-          return mustache.render(template, {untagged, tags, title, artists, newArtist: active.newArtist})
+          return mustache.render(template, {untagged, tags, title, reservationPage, artists, newArtist: active.newArtist})
         }
 
         return {render}
@@ -315,7 +321,8 @@ async function initialize () {
         location: location ? preActivated.locationsBySlug[location] : null,
         tags: tag ? [preActivated.tagsBySlug[tag]] : [],
         artist: artist ? preActivated.artistsBySlug[artist] : null,
-        occurrences: []
+        occurrences: [],
+        reservationPage: undefined
       }
 
       preActivated.newOccurrence = date ? date + 'T??:??' : null
@@ -327,7 +334,7 @@ async function initialize () {
       const preActivated = await preActivate({citySlug})
 
       const {city: {event}} = await request({
-        requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){id title location{slug name description website image phone address} tags{slug title} artist{slug name description website image} occurrences{start}}}}',
+        requestString: 'query($citySlug:ID!, $eventId:ID!){city(slug:$citySlug){event(id:$eventId){id title location{slug name description website image phone address} tags{slug title} artist{slug name description website image} occurrences{start} reservationPage}}}',
         variableValues: {citySlug, eventId}
       })
       preActivated.event = event
@@ -433,7 +440,8 @@ async function initialize () {
         artist: active.event.artist && active.event.artist.slug,
         location: active.event.location.slug,
         tags: active.event.tags.map(({slug}) => slug),
-        occurrences: active.event.occurrences
+        occurrences: active.event.occurrences,
+        reservationPage: active.event.reservationPage
       }
 
       await request({
@@ -593,7 +601,7 @@ async function initialize () {
       }
 
       const {city: {events}} = await request({
-        requestString: 'query($citySlug:ID!,$tag:ID,$location:ID,$artist:ID,$title:String,$dates:IDateInterval){city(slug:$citySlug){events(tag:$tag,location:$location,artist:$artist,title:$title,dates:$dates,max:10){id title artist{name description website image} location{name description website image phone address} occurrences{start} tags{slug title}}}}',
+        requestString: 'query($citySlug:ID!,$tag:ID,$location:ID,$artist:ID,$title:String,$dates:IDateInterval){city(slug:$citySlug){events(tag:$tag,location:$location,artist:$artist,title:$title,dates:$dates,max:10){id title artist{name description website image} location{name description website image phone address} occurrences{start} reservationPage tags{slug title}}}}',
         variableValues: {
           citySlug: active.citySlug,
           tag: tag === '-' ? undefined : tag,
@@ -634,8 +642,8 @@ async function initialize () {
       if (events) {
         tooMany = false
 
-        events = events.map(({id, title, tags, artist, location, occurrences}) => {
-          const event = {id, title, location, tags, artist, occurrences}
+        events = events.map(({id, title, tags, artist, location, occurrences, reservationPage}) => {
+          const event = {id, title, location, tags, artist, occurrences, reservationPage}
 
           event.details = {html: eventDetailsForDisplay.render({city: {slug: active.citySlug}, event})}
 

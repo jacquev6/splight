@@ -62,6 +62,7 @@ type Event {
   location: Location!
   tags: [Tag!]!
   occurrences: [Occurrence!]!
+  reservationPage: URL
 }
 
 type Occurrence {
@@ -101,6 +102,7 @@ input IEvent {
   location: ID!
   tags: [ID!]!
   occurrences: [IOccurrence!]!
+  reservationPage: URL
 }
 
 input IOccurrence {

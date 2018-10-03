@@ -119,7 +119,7 @@ function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
     return {slug, name, description, website, image, phone, address}
   }
 
-  function putEvent ({citySlug, event: {id, title, artist, location, tags, occurrences}}) {
+  function putEvent ({citySlug, event: {id, title, artist, location, tags, occurrences, reservationPage}}) {
     const city = data.cities.get(citySlug)
     return makeEvent(city, city.events.put(Object.assign(
       {
@@ -128,6 +128,7 @@ function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
         tags: tags.map(tag => tag),
         occurrences: occurrences.map(({start}) => ({start}))
       },
+      reservationPage ? {reservationPage} : {},
       artist ? {artist} : {},
       title ? {title} : {}
     )))
@@ -138,7 +139,7 @@ function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
     return makeEvent(city, city.events.del(eventId))
   }
 
-  function makeEvent (city, {id, title, location, tags, occurrences, artist}) {
+  function makeEvent (city, {id, title, location, tags, occurrences, artist, reservationPage}) {
     artist = artist.resolve()
     if (artist) {
       artist = makeArtist(artist)
@@ -149,7 +150,8 @@ function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
       location: makeLocation(city, location.resolve()),
       tags: tags.resolve().map(tag => makeTag(city, tag)),
       occurrences,
-      artist
+      artist,
+      reservationPage
     }
   }
 
@@ -336,7 +338,8 @@ const encapsulateData = (function () {
     tags: Joi.array().required().min(1).items(makeSlugSchema()),
     occurrences: Joi.array().required().min(1).items(Joi.object({
       start: Joi.string().required()
-    }))
+    })),
+    reservationPage: Joi.string()
   })
 
   const citySchema = Joi.object({
@@ -425,13 +428,14 @@ const encapsulateData = (function () {
               schema: eventSchema,
               name: 'event',
               nextId: nextEventId,
-              encapsulate: ({id, title, artist, location, tags: tags_, occurrences}) => ({
+              encapsulate: ({id, title, artist, location, tags: tags_, occurrences, reservationPage}) => ({
                 id,
                 title,
                 artist: slugOf({slug: artist, things: artists}),
                 location: slugOf({slug: location, things: locations}),
                 tags: listOfSlugsOf({slugs: tags_, things: tags}),
-                occurrences
+                occurrences,
+                reservationPage
               })
             })
           }

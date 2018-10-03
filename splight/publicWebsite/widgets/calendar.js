@@ -51,8 +51,8 @@ function make ({citySlug, startDate, dateAfter, duration}) {
       })
     }
 
-    const events = data.city.events.map(({id, location, artist, occurrences, tags, title}) => {
-      const event = {id, location, artist, occurrences, tags, title}
+    const events = data.city.events.map(({id, location, artist, occurrences, tags, title, reservationPage}) => {
+      const event = {id, location, artist, occurrences, tags, title, reservationPage}
 
       event.details = {html: eventDetails.render({city, event})}
 
