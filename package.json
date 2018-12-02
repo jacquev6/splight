@@ -6,7 +6,8 @@
     "generateMissingImages": "node generateMissingImages.js",
     "generatePublicWebsite": "node generatePublicWebsite.js",
     "serveDeveloperWebsite": "nodemon --ignore test --ext js,scss,html,gqls serveDeveloperWebsite.js",
-    "serveWebmasterWebsite": "node serveWebmasterWebsite.js"
+    "serveWebmasterWebsite": "node serveWebmasterWebsite.js",
+    "serveLongRunningWebsite": "node serveLongRunningWebsite.js"
   },
   "dependencies": {
     "bootstrap": "^4.1.2",
