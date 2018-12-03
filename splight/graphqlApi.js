@@ -19,11 +19,13 @@ const hashids = new Hashids('', 10)
 function makeRoot ({dataDirectory, generationDate, imagesUrlsPrefix}) {
   const fileName = path.join(dataDirectory, 'data.json')
 
+  const imagesDirectory = path.join(dataDirectory, 'images')
+
   const data = fs.readJSONSync(fileName)
 
   const images = (function () {
     function p (fileName) {
-      return path.join(dataDirectory, 'images', fileName)
+      return path.join(imagesDirectory, fileName)
     }
 
     function exists (fileName) {
@@ -53,13 +55,13 @@ function makeRoot ({dataDirectory, generationDate, imagesUrlsPrefix}) {
 
   const fields = ['generation', 'artists', 'artist', 'putArtist', 'cities', 'city', 'putLocation', 'putEvent', 'deleteEvent']
 
-  const ret = {}
+  const rootValue = {}
 
   for (var name of fields) {
-    ret[name] = forward(name)
+    rootValue[name] = forward(name)
   }
 
-  return ret
+  return {rootValue, imagesDirectory}
 }
 
 function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
@@ -607,7 +609,7 @@ const encapsulateData = (function () {
 }())
 
 function make (config) {
-  const rootValue = makeRoot(config)
+  const {rootValue, imagesDirectory} = makeRoot(config)
 
   async function request ({requestString, variableValues}) {
     const response = await graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
@@ -621,7 +623,7 @@ function make (config) {
     return response
   }
 
-  return {schema, rootValue, request}
+  return {api: {schema, rootValue, request}, imagesDirectory}
 }
 
 Object.assign(exports, {make, forTest: {makeRoot: makeSyncRoot, schema, encapsulateData}})
