@@ -65,7 +65,9 @@ fi
 
 if $SERVE_DEVELOPER_SITE
 then
-  npm run serveDeveloperWebsite test/data
+  trap true SIGINT
+  npm run serveDeveloperWebsite test/data || true
+  trap - SIGINT
 fi
 
 if $SERVE_WEBMASTER_SITE
