@@ -9,12 +9,12 @@ const ws = require('ws')
 
 const adminWebsite = require('./splight/adminWebsite')
 
-async function main (dataDirectory) {
+async function main (dataGitRemote) {
   console.log('Starting webmaster website...')
 
   const app = express()
 
-  app.use(await adminWebsite.makeRouter({dataDirectory, scripts: ['/shutdown/shutdown.js']}))
+  app.use(await adminWebsite.makeRouter({dataGitRemote, scripts: ['/shutdown/shutdown.js']}))
 
   app.get(
     '/shutdown/shutdown.js',

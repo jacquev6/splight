@@ -45,7 +45,16 @@ done
 
 if $GENERATE || $SERVE_DEVELOPER_SITE || $SERVE_WEBMASTER_SITE
 then
-  npm run generateMissingImages test/data
+  rm -rf /tmp/splight-test-data
+  git init /tmp/splight-test-data >/dev/null
+  cp -r test/data/* /tmp/splight-test-data
+  (
+    cd /tmp/splight-test-data
+    git add .
+    git commit -m "Initial commit"
+    git config receive.denyCurrentBranch ignore
+  ) >/dev/null
+  npm run generateMissingImages /tmp/splight-test-data
 fi
 
 npm test
@@ -54,7 +63,7 @@ show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
 
 if $GENERATE
 then
-  npm run generatePublicWebsite test/data test/site
+  npm run generatePublicWebsite /tmp/splight-test-data test/site
 
   if [ -d ../splight.fr-data -a -d ../splight.fr ]
   then
@@ -66,13 +75,23 @@ fi
 if $SERVE_DEVELOPER_SITE
 then
   trap true SIGINT
-  npm run serveDeveloperWebsite test/data || true
+  npm run serveDeveloperWebsite /tmp/splight-test-data || true
   trap - SIGINT
 fi
 
 if $SERVE_WEBMASTER_SITE
 then
-  npm run serveWebmasterWebsite test/data
+  npm run serveWebmasterWebsite /tmp/splight-test-data
+fi
+
+if $SERVE_DEVELOPER_SITE || $SERVE_WEBMASTER_SITE
+then
+  (
+    cd /tmp/splight-test-data
+    git reset --hard >/dev/null
+    git log --oneline
+  )
+  cp -r /tmp/splight-test-data/* test/data
 fi
 
 echo

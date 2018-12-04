@@ -62,10 +62,10 @@ async function makeIndexCss ({api}) {
   )
 }
 
-async function makeRouter ({dataDirectory, scripts, generationDate}) {
+async function makeRouter ({dataGitRemote, scripts, generationDate}) {
   const router = express.Router()
 
-  const {api, imagesDirectory} = graphqlApi.make({dataDirectory, generationDate, imagesUrlsPrefix: '/images/'})
+  const {api, imagesDirectory} = graphqlApi.make({dataGitRemote, generationDate, imagesUrlsPrefix: '/images/'})
 
   for (var asset of generateAssets({scripts, api})) {
     console.log('Preparing to serve', asset.path, 'as', asset.type)

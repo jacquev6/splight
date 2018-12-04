@@ -74,15 +74,15 @@ async function makeRouter ({api, imagesDirectory, scripts, generationDate}) {
   return router
 }
 
-async function generate ({dataDirectory, outputDirectory}) {
-  const api = graphqlApi.make({dataDirectory, imagesUrlsPrefix: '/images/'})
+async function generate ({dataGitRemote, outputDirectory}) {
+  const {api, imagesDirectory} = graphqlApi.make({dataGitRemote, imagesUrlsPrefix: '/images/'})
 
   await fs.emptyDir(outputDirectory)
 
   fs.outputFile(path.join(outputDirectory, 'CNAME'), 'splight.fr')
   fs.outputFile(path.join(outputDirectory, '.nojekyll'), '')
 
-  fs.copy(path.join(dataDirectory, 'images'), path.join(outputDirectory, 'images'))
+  fs.copy(imagesDirectory, path.join(outputDirectory, 'images'))
 
   for (var asset of generateAssets({api})) {
     const fileName = path.join(outputDirectory, asset.path)
