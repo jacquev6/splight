@@ -16,7 +16,7 @@ async function main (dataGitRemote) {
     scripts: []
   }))
 
-  app.listen(8000, () => console.log('Listening at http://localhost:80/'))
+  app.listen(80, () => console.log('Listening at http://localhost:80/'))
 }
 
 main(process.argv[2])

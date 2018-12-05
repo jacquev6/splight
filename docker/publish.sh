@@ -7,6 +7,7 @@ TAG=$(date "+%Y%m%d%H%M%S")
 rm -rf src
 mkdir src
 cp -r ../package.json ../package-lock.json ../serveLongRunningWebsite.js ../splight src
+cp ../../papa-on-gcp.id_rsa* src
 
 echo "--------------------------------------------"
 echo "Building splight-admin:$TAG"
@@ -18,4 +19,4 @@ echo "--------------------------------------------"
 echo "Produced splight-admin:$TAG"
 echo "--------------------------------------------"
 
-docker run --rm --name splight-admin --publish 8000:80 --volume $PWD/../test/data:/data --env SPLIGHT_DATA=/data splight-admin:$TAG
+docker run --rm --name splight-admin --publish 8000:80 splight-admin:$TAG
