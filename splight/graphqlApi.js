@@ -70,7 +70,7 @@ function makeRoot ({dataGitRemote, generationDate, imagesUrlsPrefix}) {
       const ret = root[name].apply(undefined, arguments)
       fs.outputFileSync(fileName, neatJSON.neatJSON(data, {sort: true, wrap: 120, afterColon: 1, afterComma: 1}) + '\n')
       childProcess.execSync(`git commit --allow-empty -am "${name} ${ret.slug || ret.id}"`, {cwd: dataDirectory})
-      childProcess.execSync('git push', {cwd: dataDirectory})
+      childProcess.exec('git push', {cwd: dataDirectory})
       return ret
     }
   }
