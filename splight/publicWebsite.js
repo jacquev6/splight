@@ -21,12 +21,10 @@ const graphqlApi = require('./graphqlApi')
 const pages = require('./publicWebsite/pages')
 const tagColoring = require('./tagColoring')
 
-async function makeRouter ({dataDirectory, scripts, generationDate}) {
-  const api = graphqlApi.make({dataDirectory, generationDate, imagesUrlsPrefix: '/images/'})
-
+async function makeRouter ({api, imagesDirectory, scripts, generationDate}) {
   const router = express.Router()
 
-  router.use('/images', express.static(path.join(dataDirectory, 'images')))
+  router.use('/images', express.static(imagesDirectory))
 
   router.use(bodyParser.json({limit: '50mb'})) // https://stackoverflow.com/a/19965089/905845
   router.use('/graphql', expressGraphql(Object.assign({graphiql: true}, api)))
@@ -73,18 +71,18 @@ async function makeRouter ({dataDirectory, scripts, generationDate}) {
     console.log('Ready to serve', pageClass.path)
   }
 
-  return {router, api}
+  return router
 }
 
-async function generate ({dataDirectory, outputDirectory}) {
-  const api = graphqlApi.make({dataDirectory, imagesUrlsPrefix: '/images/'})
+async function generate ({dataGitRemote, outputDirectory}) {
+  const {api, imagesDirectory} = graphqlApi.make({dataGitRemote, imagesUrlsPrefix: '/images/'})
 
   await fs.emptyDir(outputDirectory)
 
   fs.outputFile(path.join(outputDirectory, 'CNAME'), 'splight.fr')
   fs.outputFile(path.join(outputDirectory, '.nojekyll'), '')
 
-  fs.copy(path.join(dataDirectory, 'images'), path.join(outputDirectory, 'images'))
+  fs.copy(imagesDirectory, path.join(outputDirectory, 'images'))
 
   for (var asset of generateAssets({api})) {
     const fileName = path.join(outputDirectory, asset.path)

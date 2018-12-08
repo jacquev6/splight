@@ -1,6 +1,7 @@
 'use strict'
 
 const assert = require('assert').strict
+const childProcess = require('child_process')
 const fs = require('fs-extra')
 const graphql = require('graphql')
 const Hashids = require('hashids')
@@ -16,14 +17,21 @@ const schema = graphql.buildSchema(schemaString)
 
 const hashids = new Hashids('', 10)
 
-function makeRoot ({dataDirectory, generationDate, imagesUrlsPrefix}) {
+function makeRoot ({dataGitRemote, generationDate, imagesUrlsPrefix}) {
+  const dataDirectory = '/tmp/splight-data' // @todo Generate a dynamic name
+
+  fs.removeSync(dataDirectory)
+  childProcess.execSync(`git clone ${dataGitRemote} ${dataDirectory}`)
+
   const fileName = path.join(dataDirectory, 'data.json')
+
+  const imagesDirectory = path.join(dataDirectory, 'images')
 
   const data = fs.readJSONSync(fileName)
 
   const images = (function () {
     function p (fileName) {
-      return path.join(dataDirectory, 'images', fileName)
+      return path.join(imagesDirectory, fileName)
     }
 
     function exists (fileName) {
@@ -43,23 +51,37 @@ function makeRoot ({dataDirectory, generationDate, imagesUrlsPrefix}) {
 
   const root = makeSyncRoot(data, generationDate, images, imagesUrlsPrefix)
 
-  function forward (name) {
+  const rootValue = {}
+
+  function forwardQuery (name) {
+    return function () {
+      return root[name].apply(undefined, arguments)
+    }
+  }
+
+  const queries = ['generation', 'artists', 'artist', 'cities', 'city']
+
+  for (var queryName of queries) {
+    rootValue[queryName] = forwardQuery(queryName)
+  }
+
+  function forwardMutation (name) {
     return function () {
       const ret = root[name].apply(undefined, arguments)
       fs.outputFileSync(fileName, neatJSON.neatJSON(data, {sort: true, wrap: 120, afterColon: 1, afterComma: 1}) + '\n')
+      childProcess.execSync(`git commit --allow-empty -am "${name} ${ret.slug || ret.id}"`, {cwd: dataDirectory})
+      childProcess.exec('git push', {cwd: dataDirectory})
       return ret
     }
   }
 
-  const fields = ['generation', 'artists', 'artist', 'putArtist', 'cities', 'city', 'putLocation', 'putEvent', 'deleteEvent']
+  const mutations = ['putArtist', 'putLocation', 'putEvent', 'deleteEvent']
 
-  const ret = {}
-
-  for (var name of fields) {
-    ret[name] = forward(name)
+  for (var mutationName of mutations) {
+    rootValue[mutationName] = forwardMutation(mutationName)
   }
 
-  return ret
+  return {rootValue, imagesDirectory}
 }
 
 function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
@@ -607,7 +629,7 @@ const encapsulateData = (function () {
 }())
 
 function make (config) {
-  const rootValue = makeRoot(config)
+  const {rootValue, imagesDirectory} = makeRoot(config)
 
   async function request ({requestString, variableValues}) {
     const response = await graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
@@ -621,7 +643,7 @@ function make (config) {
     return response
   }
 
-  return {schema, rootValue, request}
+  return {api: {schema, rootValue, request}, imagesDirectory}
 }
 
 Object.assign(exports, {make, forTest: {makeRoot: makeSyncRoot, schema, encapsulateData}})

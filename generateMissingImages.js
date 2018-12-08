@@ -90,9 +90,11 @@ async function ensure (fileName, thunk) {
   }
 }
 
-async function main (dataDirectory) {
+async function main (dataGitRemote) {
+  const {api, imagesDirectory} = graphqlApi.make({dataGitRemote})
+
   function p () {
-    return path.join(dataDirectory, 'images', ...arguments)
+    return path.join(imagesDirectory, ...arguments)
   }
 
   ensure(
@@ -111,8 +113,6 @@ async function main (dataDirectory) {
     p('ads', '160x600.png'),
     () => makePng({width: 160, height: 600, seed: 'Publicité 160x600'})
   )
-
-  const api = graphqlApi.make({dataDirectory})
 
   const {data} = await api.request({requestString: 'query{artists{slug name} cities{slug name tags{slug title} locations{slug name}}}'})
 

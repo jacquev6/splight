@@ -14,20 +14,6 @@ const graphqlApi = require('./graphqlApi')
 const hashids = new Hashids('', 10)
 
 describe('graphqlApi', function () {
-  describe('make', function () {
-    it('works', async function () {
-      const {request} = graphqlApi.make({dataDirectory: 'test/data', imagesUrlsPrefix: '/imgs/'})
-
-      assert.deepEqual(
-        await request({requestString: '{cities{slug, image}}'}),
-        {data: {cities: [
-          {slug: 'avalon', 'image': '/imgs/cities/avalon.png'},
-          {slug: 'shangri-la', 'image': '/imgs/cities/shangri-la.png'}
-        ]}}
-      )
-    })
-  })
-
   describe('makeRoot', function () {
     it('computes first event id', function () {
       const data = {

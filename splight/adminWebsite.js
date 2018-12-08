@@ -4,6 +4,7 @@ const browserify = require('browserify')
 const express = require('express')
 const sass = require('node-sass')
 
+const graphqlApi = require('./graphqlApi')
 const page = require('./adminWebsite/page')
 const publicWebsite = require('./publicWebsite')
 const tagColoring = require('./tagColoring')
@@ -61,17 +62,17 @@ async function makeIndexCss ({api}) {
   )
 }
 
-async function makeRouter ({dataDirectory, scripts, generationDate}) {
+async function makeRouter ({dataGitRemote, scripts, generationDate}) {
   const router = express.Router()
 
-  const publicSite = await publicWebsite.makeRouter({dataDirectory, scripts, generationDate})
+  const {api, imagesDirectory} = graphqlApi.make({dataGitRemote, generationDate, imagesUrlsPrefix: '/images/'})
 
-  for (var asset of generateAssets({scripts, api: publicSite.api})) {
+  for (var asset of generateAssets({scripts, api})) {
     console.log('Preparing to serve', asset.path, 'as', asset.type)
     router.get(asset.path, ((content, type) => async (req, res) => res.type(type).send(content))(await asset.content, asset.type))
   }
 
-  router.use(publicSite.router)
+  router.use(await publicWebsite.makeRouter({api, imagesDirectory, scripts, generationDate}))
 
   return router
 }
