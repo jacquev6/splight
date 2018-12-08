@@ -21,8 +21,10 @@ echo "Produced splight-admin:$TAG"
 echo "--------------------------------------------"
 
 docker tag splight-admin:$TAG eu.gcr.io/splight-0001/splight-admin:$TAG
+docker tag splight-admin:$TAG eu.gcr.io/splight-0001/splight-admin:latest
 
 docker push eu.gcr.io/splight-0001/splight-admin:$TAG
+docker push eu.gcr.io/splight-0001/splight-admin:latest
 
 echo "--------------------------------------------"
 echo "Pushed splight-admin:$TAG"
