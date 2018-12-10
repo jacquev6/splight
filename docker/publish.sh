@@ -8,7 +8,7 @@ rm -rf src
 mkdir src
 cp -r ../package.json ../package-lock.json ../serveLongRunningWebsite.js ../splight src
 cp ../../papa-on-gcp.id_rsa* src
-chmod 600 ssh-config
+chmod 600 ssh-config src/papa-on-gcp.id_rsa*
 
 echo "--------------------------------------------"
 echo "Building splight-admin:$TAG"
