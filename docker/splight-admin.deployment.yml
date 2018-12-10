@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splight-admin
+spec:
+  selector:
+    matchLabels:
+      app: splight-admin
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: splight-admin
+    spec:
+      containers:
+      - name: splight-admin
+        image: eu.gcr.io/jacquev6-0001/splight-admin:latest
+        ports:
+        - containerPort: 80
