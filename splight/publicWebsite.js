@@ -1,23 +1,19 @@
 'use strict'
 
-const assert = require('assert').strict
 const bodyParser = require('body-parser')
 const browserify = require('browserify')
 const CleanCSS = require('clean-css')
 const express = require('express')
 const expressGraphql = require('express-graphql')
-const fs = require('fs-extra')
 const htmlMinifier = require('html-minifier')
 const modernizr = require('modernizr')
 const path = require('path')
 const sass = require('node-sass')
 const terser = require('terser')
-const XmlSitemap = require('xml-sitemap')
 
 const container = require('./publicWebsite/widgets/container')
 const datetime = require('./datetime')
 const durations = require('./publicWebsite/durations')
-const graphqlApi = require('./graphqlApi')
 const pages = require('./publicWebsite/pages')
 const tagColoring = require('./tagColoring')
 
@@ -72,42 +68,6 @@ async function makeRouter ({api, imagesDirectory, scripts, generationDate}) {
   }
 
   return router
-}
-
-async function generate ({dataGitRemote, outputDirectory}) {
-  const {api, imagesDirectory} = graphqlApi.make({dataGitRemote, imagesUrlsPrefix: '/images/'})
-
-  await fs.emptyDir(outputDirectory)
-
-  fs.outputFile(path.join(outputDirectory, 'CNAME'), 'splight.fr')
-  fs.outputFile(path.join(outputDirectory, '.nojekyll'), '')
-
-  fs.copy(imagesDirectory, path.join(outputDirectory, 'images'))
-
-  for (var asset of generateAssets({api})) {
-    const fileName = path.join(outputDirectory, asset.path)
-    console.log('Generating', fileName)
-    fs.outputFile(fileName, await asset.content)
-  }
-
-  const sitemap = new XmlSitemap()
-  sitemap.setHost('https://splight.fr/')
-
-  for (var pageClass of generatePageClasses()) {
-    const pageClassData = pageClass.dataRequest && (await api.request(pageClass.dataRequest)).data
-    for (var page of pageClass.makeAll(pageClassData)) {
-      sitemap.add(page.path)
-      const htmlFileName = path.join(outputDirectory, page.path, 'index.html')
-      console.log('Generating', htmlFileName)
-      const {data} = await api.request(page.dataRequest)
-      assert(page.exists(data))
-      fs.outputFile(htmlFileName, htmlMinifier.minify(container.make({page, scripts: []}).render(data), {collapseWhitespace: true}))
-      const jsonFileName = path.join(outputDirectory, page.path, 'data.json')
-      fs.outputJSON(jsonFileName, data)
-    }
-  }
-
-  fs.outputFile(path.join(outputDirectory, 'sitemap.xml'), sitemap.xml)
 }
 
 function * generateAssets ({api}) {
@@ -262,4 +222,4 @@ function * generatePageClasses () {
   }
 }
 
-Object.assign(exports, {makeRouter, generate})
+Object.assign(exports, {makeRouter})

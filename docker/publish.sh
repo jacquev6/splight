@@ -15,6 +15,7 @@ echo "Building splight-admin:$TAG"
 echo "--------------------------------------------"
 
 docker build -t splight-admin:$TAG .
+rm -rf src
 
 echo "--------------------------------------------"
 echo "Produced splight-admin:$TAG"

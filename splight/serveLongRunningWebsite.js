@@ -4,7 +4,7 @@ require('stringify').registerWithRequire(['.html', '.gqls'])
 
 const express = require('express')
 
-const adminWebsite = require('./splight/adminWebsite')
+const adminWebsite = require('./adminWebsite')
 
 async function main (dataGitRemote) {
   console.log('Starting developer website...')

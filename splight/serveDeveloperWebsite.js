@@ -5,8 +5,8 @@ require('stringify').registerWithRequire(['.html', '.gqls'])
 const express = require('express')
 const reload = require('reload')
 
-const adminWebsite = require('./splight/adminWebsite')
-const datetime = require('./splight/datetime')
+const adminWebsite = require('./adminWebsite')
+const datetime = require('./datetime')
 
 async function main (dataGitRemote) {
   console.log('Starting developer website...')
@@ -24,7 +24,7 @@ async function main (dataGitRemote) {
 
   reload(app)
 
-  app.listen(8000, () => console.log('Developer website live at http://localhost:8000/admin/'))
+  app.listen(80, () => console.log('Developer website live at http://localhost:80/admin/'))
 }
 
 main(process.argv[2])
