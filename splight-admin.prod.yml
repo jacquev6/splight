@@ -11,10 +11,12 @@ spec:
     metadata:
       labels:
         app: splight-admin
+      annotations:
+        ad.datadoghq.com/splight-admin.logs: '[{"source":"splight-admin","service":"splight-admin"}]'
     spec:
       containers:
       - name: splight-admin
-        image: eu.gcr.io/jacquev6-0001/splight-admin:20181216102935
+        image: eu.gcr.io/jacquev6-0001/splight-admin:20181216175339
         ports:
         - containerPort: 80
 ---

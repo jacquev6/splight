@@ -55,6 +55,7 @@ function makeRoot ({dataGitRemote, generationDate, imagesUrlsPrefix}) {
 
   function forwardQuery (name) {
     return function () {
+      console.log('GraphQL query:', name)
       return root[name].apply(undefined, arguments)
     }
   }
@@ -68,6 +69,7 @@ function makeRoot ({dataGitRemote, generationDate, imagesUrlsPrefix}) {
   function forwardMutation (name) {
     return function () {
       const ret = root[name].apply(undefined, arguments)
+      console.log('GraphQL mutation:', name)
       fs.outputFileSync(fileName, neatJSON.neatJSON(data, {sort: true, wrap: 120, afterColon: 1, afterComma: 1}) + '\n')
       childProcess.execSync(`git commit --allow-empty -am "${name} ${ret.slug || ret.id}"`, {cwd: dataDirectory})
       childProcess.exec('git push', {cwd: dataDirectory})
