@@ -24,7 +24,7 @@ async function main (dataGitRemote) {
 
   reload(app)
 
-  app.listen(80, () => console.log('Developer website live at http://localhost:80/admin/'))
+  app.listen(80, () => console.log('Website live!'))
 }
 
 main(process.argv[2])

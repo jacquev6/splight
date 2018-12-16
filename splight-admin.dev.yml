@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splight-admin
+spec:
+  selector:
+    matchLabels:
+      app: splight-admin
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: splight-admin
+    spec:
+      containers:
+        - name: splight-admin
+          image: splight-dev
+          imagePullPolicy: Never
+          volumeMounts:
+            - mountPath: /app/splight
+              name: splight-sources
+            - mountPath: /app/coverage
+              name: splight-coverage
+            - mountPath: /app/test-data
+              name: splight-test-data
+          ports:
+            - containerPort: 80
+          command: ["tail", "-f", "/dev/null"]
+      volumes:
+        - name: splight-sources
+          hostPath:
+            path: /mounts/splight/sources
+            type: Directory
+        - name: splight-coverage
+          hostPath:
+            path: /mounts/splight/coverage
+            type: Directory
+        - name: splight-test-data
+          hostPath:
+            path: /mounts/splight/test-data
+            type: Directory
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: splight-admin
+spec:
+  type: NodePort
+  selector:
+    app: splight-admin
+  ports:
+  - port: 80
