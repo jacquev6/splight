@@ -33,13 +33,34 @@ do
   shift
 done
 
-eval $(minikube docker-env)
 mkdir -p coverage
-PROCESSES=$(ps a)
-# This doesn't seem to trigger events watched by nodemon
-echo "$PROCESSES" | grep "minikube mount ./splight:/mounts/splight/sources" >/dev/null || (echo "Please run 'minikube mount ./splight:/mounts/splight/sources' in another terminal"; exit 1)
-echo "$PROCESSES" | grep "minikube mount ./coverage:/mounts/splight/coverage" >/dev/null || (echo "Please run 'minikube mount ./coverage:/mounts/splight/coverage' in another terminal"; exit 1)
-echo "$PROCESSES" | grep "minikube mount ./test-data:/mounts/splight/test-data" >/dev/null || (echo "Please run 'minikube mount ./test-data:/mounts/splight/test-data' in another terminal"; exit 1)
+
+CLUSTER=$(kubectl config current-context)
+case $CLUSTER in
+  minikube)
+    echo "Using minikube"
+    minikube status && echo
+    eval $(minikube docker-env)
+    PROCESSES=$(ps ux)
+    RESTART_POD=false
+    for MOUNT in $PROJECT_ROOT/splight:/mounts/splight/sources $PROJECT_ROOT/coverage:/mounts/splight/coverage $PROJECT_ROOT/test-data:/mounts/splight/test-data
+    do
+      if ! echo "$PROCESSES" | grep -e "minikube mount $MOUNT" >/dev/null
+      then
+        # "minikube mount" doesn't transmit events watched by nodemon
+        minikube mount $MOUNT&
+        RESTART_POD=true
+      fi
+    done
+    if $RESTART_POD
+    then
+      kubectl delete -f splight-admin.dev.yml
+    fi
+    ;;
+  *)
+    echo "Unknown k8s dev cluster: $CLUSTER"
+    exit 1;;
+esac
 
 # @todo Allow running "npm install --save[-dev]" to modify package[-lock].json in sources
 docker build --file Dockerfile.dev --tag splight-dev .
@@ -52,7 +73,11 @@ do
   sleep 1
 done
 
-kubectl exec --stdin --tty $(kubectl get pod | grep "splight-admin.*Running" | cut -d " " -f 1) npm test
+function npm {
+  kubectl exec --stdin --tty $(kubectl get pod | grep "splight-admin.*Running" | cut -d " " -f 1) npm "$@"
+}
+
+npm test
 
 show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
 
@@ -68,9 +93,13 @@ then
     git config receive.denyCurrentBranch ignore
   ) >/dev/null
 
-  echo "Admin website will be listening on $(minikube service splight-admin --url)/admin"
+  case $CLUSTER in
+    minikube)
+      echo "Admin website will be listening on $(minikube service splight-admin --url)/admin"
+      ;;
+  esac
   trap true SIGINT
-  kubectl exec --stdin --tty $(kubectl get pod | grep "splight-admin.*Running" | cut -d " " -f 1) npm run serve ./test-data/repo || true
+  npm run serve ./test-data/repo || true
   trap - SIGINT
 
   (
