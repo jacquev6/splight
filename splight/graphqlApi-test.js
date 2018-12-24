@@ -267,7 +267,7 @@ describe('graphqlApi', function () {
     }`
 
     it('returns everything on minimal city', async function () {
-      const {checkRequest} = make({
+      const {checkRequest} = await make({
         artists: {
           'artist-1': {name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com'},
           'artist-2': {name: 'Artist 2'}
@@ -316,7 +316,7 @@ describe('graphqlApi', function () {
     })
 
     it('returns everything on single city with a minimal and a full event', async function () {
-      const {checkRequest} = make(
+      const {checkRequest} = await make(
         {
           artists: {
             'artist-1': {name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com'},
@@ -412,7 +412,7 @@ describe('graphqlApi', function () {
 
   describe('generation', function () {
     it('uses injected date', async function () {
-      const {checkRequest} = make({}, {generationDate: datetime.date('2018-08-15')})
+      const {checkRequest} = await make({}, {generationDate: datetime.date('2018-08-15')})
 
       await checkRequest(
         '{generation{date dateAfter}}',
@@ -425,7 +425,7 @@ describe('graphqlApi', function () {
     const get = '{cities{slug firstDate dateAfter}}'
 
     it('returns dates', async function () {
-      const {checkRequest} = make({
+      const {checkRequest} = await make({
         cities: {
           'no-events': {
             name: 'City',
@@ -492,7 +492,7 @@ describe('graphqlApi', function () {
   describe('filtering queries', function () {
     describe('artists', function () {
       it('filters by name', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           artists: {
             'ok-literal': {name: 'name aeiou'},
             'ok-reversed': {name: 'aeiou name'},
@@ -512,7 +512,7 @@ describe('graphqlApi', function () {
       })
 
       it('limits artists returned', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           artists: {
             'a-1': {name: '1'},
             'a-2': {name: '2'},
@@ -553,7 +553,7 @@ describe('graphqlApi', function () {
 
     describe('artist', function () {
       it('finds artist by slug', async function () {
-        const {checkRequest} = make({artists: {'artist': {name: 'Artist'}}})
+        const {checkRequest} = await make({artists: {'artist': {name: 'Artist'}}})
 
         await checkRequest(
           '{artist(slug:"artist"){name}}',
@@ -562,15 +562,27 @@ describe('graphqlApi', function () {
       })
 
       it("doesn't find artist by slug", async function () {
-        const {checkRequest} = make()
+        const {checkRequest} = await make()
 
         await checkRequest(
-          '{artist(slug:"artist"){name}}',
+          '{artist(slug:"artist-1"){name}}',
           {
             data: null,
             errors: [{
               locations: [{line: 1, column: 2}],
-              message: 'No artist with slug "artist"',
+              message: 'No artist with slug "artist-1"',
+              path: ['artist']
+            }]
+          }
+        )
+
+        await checkRequest(
+          '{artist(slug:"artist-2"){name}}',
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 2}],
+              message: 'No artist with slug "artist-2"',
               path: ['artist']
             }]
           }
@@ -582,16 +594,29 @@ describe('graphqlApi', function () {
       const get = 'query($slug:ID!){city(slug:$slug){name}}'
 
       it("doesn't find city", async function () {
-        const {checkRequest} = make()
+        const {checkRequest} = await make()
 
         await checkRequest(
           get,
-          {slug: 'foo'},
+          {slug: 'city-1'},
           {
             data: null,
             errors: [{
               locations: [{line: 1, column: 18}],
-              message: 'No city with slug "foo"',
+              message: 'No city with slug "city-1"',
+              path: ['city']
+            }]
+          }
+        )
+
+        await checkRequest(
+          get,
+          {slug: 'city-2'},
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 18}],
+              message: 'No city with slug "city-2"',
               path: ['city']
             }]
           }
@@ -599,7 +624,7 @@ describe('graphqlApi', function () {
       })
 
       it('finds cities', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           cities: {
             'city-1': {name: 'City 1'},
             'city-2': {name: 'City 2'},
@@ -615,7 +640,7 @@ describe('graphqlApi', function () {
 
     describe('city.locations', function () {
       it('filters by name', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           cities: {
             'city': {
               name: 'City',
@@ -642,7 +667,7 @@ describe('graphqlApi', function () {
       })
 
       it('limits locations returned', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           cities: {
             'city': {
               name: 'City',
@@ -688,7 +713,7 @@ describe('graphqlApi', function () {
 
     describe('city.location', function () {
       it('finds location by slug', async function () {
-        const {checkRequest} = make({cities: {'city': {name: 'City', locations: {'location': {name: 'Location'}}}}})
+        const {checkRequest} = await make({cities: {'city': {name: 'City', locations: {'location': {name: 'Location'}}}}})
 
         await checkRequest(
           '{city(slug:"city"){location(slug:"location"){name}}}',
@@ -697,15 +722,27 @@ describe('graphqlApi', function () {
       })
 
       it("doesn't find location by slug", async function () {
-        const {checkRequest} = make({cities: {'city': {name: 'City'}}})
+        const {checkRequest} = await make({cities: {'city': {name: 'City'}}})
 
         await checkRequest(
-          '{city(slug:"city"){location(slug:"location"){name}}}',
+          '{city(slug:"city"){location(slug:"location-1"){name}}}',
           {
             data: null,
             errors: [{
               locations: [{line: 1, column: 20}],
-              message: 'No location with slug "location"',
+              message: 'No location with slug "location-1"',
+              path: ['city', 'location']
+            }]
+          }
+        )
+
+        await checkRequest(
+          '{city(slug:"city"){location(slug:"location-2"){name}}}',
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 20}],
+              message: 'No location with slug "location-2"',
               path: ['city', 'location']
             }]
           }
@@ -715,7 +752,7 @@ describe('graphqlApi', function () {
 
     describe('city.events', function () {
       it('filters by tag', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           cities: {
             'city': {
               name: 'City',
@@ -758,7 +795,7 @@ describe('graphqlApi', function () {
       })
 
       it('filters by location', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           cities: {
             'city': {
               name: 'City',
@@ -789,7 +826,7 @@ describe('graphqlApi', function () {
       })
 
       it('filters by artist', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           artists: {'artist': {name: 'Artist'}, 'artist-2': {name: 'Artist'}},
           cities: {
             'city': {
@@ -829,7 +866,7 @@ describe('graphqlApi', function () {
       })
 
       it('filters by title', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           cities: {
             'city': {
               name: 'City',
@@ -896,7 +933,7 @@ describe('graphqlApi', function () {
       })
 
       it('filters by dates', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           cities: {
             'city': {
               name: 'City',
@@ -939,7 +976,7 @@ describe('graphqlApi', function () {
       })
 
       it('limits events returned', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           cities: {
             'city': {
               name: 'City',
@@ -999,7 +1036,7 @@ describe('graphqlApi', function () {
 
     describe('city.event', function () {
       it('finds event by id', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           cities: {
             'city': {
               name: 'City',
@@ -1022,15 +1059,27 @@ describe('graphqlApi', function () {
       })
 
       it("doesn't find event by id", async function () {
-        const {checkRequest} = make({cities: {'city': {name: 'City'}}})
+        const {checkRequest} = await make({cities: {'city': {name: 'City'}}})
 
         await checkRequest(
-          '{cities{event(id:"event"){id}}}',
+          '{cities{event(id:"event-1"){id}}}',
           {
             data: null,
             errors: [{
               locations: [{line: 1, column: 9}],
-              message: 'No event with id "event"',
+              message: 'No event with id "event-1"',
+              path: ['cities', 0, 'event']
+            }]
+          }
+        )
+
+        await checkRequest(
+          '{cities{event(id:"event-2"){id}}}',
+          {
+            data: null,
+            errors: [{
+              locations: [{line: 1, column: 9}],
+              message: 'No event with id "event-2"',
               path: ['cities', 0, 'event']
             }]
           }
@@ -1053,7 +1102,7 @@ describe('graphqlApi', function () {
       const put = `mutation($artist:IArtist!){putArtist(artist:$artist){${fields}}}`
 
       it('adds an artist', async function () {
-        const {checkRequest, checkData, checkImages} = make()
+        const {checkRequest, checkData, checkImages} = await make()
 
         await checkRequest(get, {data: {artists: []}})
 
@@ -1063,15 +1112,15 @@ describe('graphqlApi', function () {
           {data: {putArtist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}}}
         )
 
-        checkData({artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}})
+        await checkData({artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}})
 
-        checkImages({'artists/artist.png': pngData})
+        await checkImages({'artists/artist.png': pngData})
 
         await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}]}})
       })
 
       it("doesn't add an artist with a bad slug", async function () {
-        const {checkRequest, checkData, checkImages} = make()
+        const {checkRequest, checkData, checkImages} = await make()
 
         await checkRequest(
           put,
@@ -1086,12 +1135,12 @@ describe('graphqlApi', function () {
           }
         )
 
-        checkData({})
-        checkImages({})
+        await checkData({})
+        await checkImages({})
       })
 
       it('modifies an artist', async function () {
-        const {checkRequest, checkData, checkImages} = make({artists: {'artist': {name: 'Artist'}}})
+        const {checkRequest, checkData, checkImages} = await make({artists: {'artist': {name: 'Artist'}}})
 
         await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: [], website: null, image: null}]}})
 
@@ -1101,14 +1150,14 @@ describe('graphqlApi', function () {
           {data: {putArtist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}}}
         )
 
-        checkData({artists: {'artist': {name: 'New name', description: ['Description'], website: 'http://foo.bar'}}})
-        checkImages({'artists/artist.png': pngData})
+        await checkData({artists: {'artist': {name: 'New name', description: ['Description'], website: 'http://foo.bar'}}})
+        await checkImages({'artists/artist.png': pngData})
 
         await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}]}})
       })
 
       it('modifies an artist - no change', async function () {
-        const {checkRequest, checkData, checkImages} = make(
+        const {checkRequest, checkData, checkImages} = await make(
           {artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}},
           {images: {'artists/artist.png': pngData}}
         )
@@ -1121,14 +1170,14 @@ describe('graphqlApi', function () {
           {data: {putArtist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}}}
         )
 
-        checkData({artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}})
-        checkImages({'artists/artist.png': pngData})
+        await checkData({artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}})
+        await checkImages({'artists/artist.png': pngData})
 
         await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}]}})
       })
 
       it('modifies an artist - reset', async function () {
-        const {checkRequest, checkData, checkImages} = make(
+        const {checkRequest, checkData, checkImages} = await make(
           {artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}},
           {images: {'artists/artist.png': pngData}}
         )
@@ -1141,14 +1190,14 @@ describe('graphqlApi', function () {
           {data: {putArtist: {slug: 'artist', name: 'New name', description: [], website: null, image: null}}}
         )
 
-        checkData({artists: {'artist': {name: 'New name', description: []}}})
-        checkImages({})
+        await checkData({artists: {'artist': {name: 'New name', description: []}}})
+        await checkImages({})
 
         await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name', description: [], website: null, image: null}]}})
       })
 
       it('propagates changes to events', async function () {
-        const {checkRequest} = make(
+        const {checkRequest} = await make(
           {
             artists: {'artist': {name: 'Artist'}},
             cities: {
@@ -1191,19 +1240,19 @@ describe('graphqlApi', function () {
     it('changes image type', async function () {
       const put = 'mutation($image:URL!){putArtist(artist:{slug:"artist",name:"Artist",description:[],image:$image}){image}}'
 
-      const {checkRequest, checkData, checkImages} = make()
+      const {checkRequest, checkData, checkImages} = await make()
 
       await checkRequest(put, {image: pngDataUrl}, {data: {putArtist: {image: 'artists/artist.png'}}})
-      checkData({artists: {'artist': {name: 'Artist', description: []}}})
-      checkImages({'artists/artist.png': pngData})
+      await checkData({artists: {'artist': {name: 'Artist', description: []}}})
+      await checkImages({'artists/artist.png': pngData})
 
       await checkRequest(put, {image: jpgDataUrl}, {data: {putArtist: {image: 'artists/artist.jpg'}}})
-      checkData({artists: {'artist': {name: 'Artist', description: []}}})
-      checkImages({'artists/artist.jpg': jpgData})
+      await checkData({artists: {'artist': {name: 'Artist', description: []}}})
+      await checkImages({'artists/artist.jpg': jpgData})
 
       await checkRequest(put, {image: pngDataUrl}, {data: {putArtist: {image: 'artists/artist.png'}}})
-      checkData({artists: {'artist': {name: 'Artist', description: []}}})
-      checkImages({'artists/artist.png': pngData})
+      await checkData({artists: {'artist': {name: 'Artist', description: []}}})
+      await checkImages({'artists/artist.png': pngData})
     })
 
     describe('putLocation', function () {
@@ -1212,7 +1261,7 @@ describe('graphqlApi', function () {
       const put = `mutation($citySlug:ID!,$location:ILocation!){putLocation(citySlug:$citySlug,location:$location){${fields}}}`
 
       it('adds a location', async function () {
-        const {checkRequest, checkData, checkImages} = make({cities: {'city': {name: 'City'}}})
+        const {checkRequest, checkData, checkImages} = await make({cities: {'city': {name: 'City'}}})
 
         await checkRequest(get, {data: {cities: [{slug: 'city', locations: []}]}})
 
@@ -1222,7 +1271,7 @@ describe('graphqlApi', function () {
           {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
         )
 
-        checkData({
+        await checkData({
           cities: {
             'city': {
               name: 'City',
@@ -1231,13 +1280,15 @@ describe('graphqlApi', function () {
           }
         })
 
-        checkImages({'cities/city/locations/location.png': pngData})
+        await checkImages({'cities/city/locations/location.png': pngData})
 
         await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}]}]}})
       })
 
+      // @todo Test adding a lodation to an unexisting city
+
       it("doesn't add a location with bad slug", async function () {
-        const {checkRequest, checkData, checkImages} = make({cities: {'city': {name: 'City'}}})
+        const {checkRequest, checkData, checkImages} = await make({cities: {'city': {name: 'City'}}})
 
         await checkRequest(
           put,
@@ -1252,13 +1303,13 @@ describe('graphqlApi', function () {
           }
         )
 
-        checkData({cities: {'city': {name: 'City'}}})
+        await checkData({cities: {'city': {name: 'City'}}})
 
-        checkImages({})
+        await checkImages({})
       })
 
       it('modifies a location', async function () {
-        const {checkRequest, checkData, checkImages} = make({
+        const {checkRequest, checkData, checkImages} = await make({
           cities: {'city': {name: 'City', locations: {'location': {name: 'Location'}}}}
         })
 
@@ -1281,7 +1332,7 @@ describe('graphqlApi', function () {
           {data: {putLocation: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
         )
 
-        checkData({
+        await checkData({
           cities: {
             'city': {
               name: 'City',
@@ -1290,7 +1341,7 @@ describe('graphqlApi', function () {
           }
         })
 
-        checkImages({'cities/city/locations/location.png': pngData})
+        await checkImages({'cities/city/locations/location.png': pngData})
 
         await checkRequest(get, {data: {cities: [{
           slug: 'city',
@@ -1307,7 +1358,7 @@ describe('graphqlApi', function () {
       })
 
       it('modifies a location - no change', async function () {
-        const {checkRequest, checkData, checkImages} = make(
+        const {checkRequest, checkData, checkImages} = await make(
           {cities: {'city': {name: 'City', locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address']}}}}},
           {images: {'cities/city/locations/location.png': pngData}}
         )
@@ -1331,7 +1382,7 @@ describe('graphqlApi', function () {
           {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
         )
 
-        checkData({
+        await checkData({
           cities: {
             'city': {
               name: 'City',
@@ -1340,7 +1391,7 @@ describe('graphqlApi', function () {
           }
         })
 
-        checkImages({'cities/city/locations/location.png': pngData})
+        await checkImages({'cities/city/locations/location.png': pngData})
 
         await checkRequest(get, {data: {cities: [{
           slug: 'city',
@@ -1357,7 +1408,7 @@ describe('graphqlApi', function () {
       })
 
       it('modifies a location - reset', async function () {
-        const {checkRequest, checkData, checkImages} = make(
+        const {checkRequest, checkData, checkImages} = await make(
           {cities: {'city': {name: 'City', locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['1 rue de Gaule', '92000 Issy-ou-là']}}}}},
           {images: {'cities/city/locations/location.png': pngData}}
         )
@@ -1381,7 +1432,7 @@ describe('graphqlApi', function () {
           {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null, image: null, phone: null, address: []}}}
         )
 
-        checkData({
+        await checkData({
           cities: {
             'city': {
               name: 'City',
@@ -1390,7 +1441,7 @@ describe('graphqlApi', function () {
           }
         })
 
-        checkImages({})
+        await checkImages({})
 
         await checkRequest(get, {data: {cities: [{
           slug: 'city',
@@ -1407,7 +1458,7 @@ describe('graphqlApi', function () {
       })
 
       it('propagates changes to events', async function () {
-        const {checkRequest} = make({
+        const {checkRequest} = await make({
           cities: {
             'city': {
               name: 'City',
@@ -1448,7 +1499,7 @@ describe('graphqlApi', function () {
       const put = `mutation($citySlug:ID!,$event:IEvent!){putEvent(citySlug:$citySlug,event:$event){${fields}}}`
 
       it('adds an event', async function () {
-        const {checkRequest, checkData} = make({
+        const {checkRequest, checkData} = await make({
           _: {sequences: {events: 12}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
@@ -1485,7 +1536,7 @@ describe('graphqlApi', function () {
           }}}
         )
 
-        checkData({
+        await checkData({
           _: {sequences: {events: 13}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
@@ -1523,7 +1574,7 @@ describe('graphqlApi', function () {
       })
 
       it('adds an event without title', async function () {
-        const {checkRequest, checkData} = make({
+        const {checkRequest, checkData} = await make({
           artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
@@ -1561,7 +1612,7 @@ describe('graphqlApi', function () {
           }}}
         )
 
-        checkData({
+        await checkData({
           _: {sequences: {events: 1}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
@@ -1598,7 +1649,7 @@ describe('graphqlApi', function () {
       })
 
       it('adds an event without artist', async function () {
-        const {checkRequest, checkData} = make({
+        const {checkRequest, checkData} = await make({
           cities: {
             'city': {
               name: 'City',
@@ -1635,7 +1686,7 @@ describe('graphqlApi', function () {
           }}}
         )
 
-        checkData({
+        await checkData({
           _: {sequences: {events: 1}},
           artists: {},
           cities: {
@@ -1671,8 +1722,10 @@ describe('graphqlApi', function () {
         )
       })
 
+      // @todo Test adding an event to an unexisting city
+
       it("doesn't add event with unexisting artist", async function () {
-        const {checkRequest, checkData} = make({
+        const {checkRequest, checkData} = await make({
           cities: {
             'city': {
               name: 'City',
@@ -1705,7 +1758,7 @@ describe('graphqlApi', function () {
           }
         )
 
-        checkData({
+        await checkData({
           _: {sequences: {events: 0}},
           artists: {},
           cities: {
@@ -1722,7 +1775,7 @@ describe('graphqlApi', function () {
       })
 
       it("doesn't add event with unexisting location", async function () {
-        const {checkRequest, checkData} = make({
+        const {checkRequest, checkData} = await make({
           artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
@@ -1755,7 +1808,7 @@ describe('graphqlApi', function () {
           }
         )
 
-        checkData({
+        await checkData({
           _: {sequences: {events: 0}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
@@ -1772,7 +1825,7 @@ describe('graphqlApi', function () {
       })
 
       it("doesn't add event with unexisting tag", async function () {
-        const {checkRequest, checkData} = make({
+        const {checkRequest, checkData} = await make({
           artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
@@ -1805,7 +1858,7 @@ describe('graphqlApi', function () {
           }
         )
 
-        checkData({
+        await checkData({
           _: {sequences: {events: 0}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
@@ -1822,7 +1875,7 @@ describe('graphqlApi', function () {
       })
 
       it('modifies an event', async function () {
-        const {checkRequest, checkData} = make({
+        const {checkRequest, checkData} = await make({
           _: {sequences: {events: 12}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
@@ -1900,7 +1953,7 @@ describe('graphqlApi', function () {
           }}}
         )
 
-        checkData({
+        await checkData({
           _: {sequences: {events: 12}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
@@ -1958,7 +2011,7 @@ describe('graphqlApi', function () {
       })
 
       it("doesn't modify unexisting event", async function () {
-        const {checkRequest, checkData} = make({
+        const {checkRequest, checkData} = await make({
           _: {sequences: {events: 12}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
@@ -1993,7 +2046,7 @@ describe('graphqlApi', function () {
           }
         )
 
-        checkData({
+        await checkData({
           _: {sequences: {events: 12}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
@@ -2014,7 +2067,7 @@ describe('graphqlApi', function () {
       const del = `mutation($citySlug:ID!,$eventId:ID!){deleteEvent(citySlug:$citySlug,eventId:$eventId){${fields}}}`
 
       it('deletes an event', async function () {
-        const {checkRequest, checkData} = make({
+        const {checkRequest, checkData} = await make({
           _: {sequences: {events: 12}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
@@ -2054,7 +2107,7 @@ describe('graphqlApi', function () {
           {data: {deleteEvent: {id: 'event'}}}
         )
 
-        checkData({
+        await checkData({
           _: {sequences: {events: 12}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
@@ -2080,8 +2133,10 @@ describe('graphqlApi', function () {
         )
       })
 
+      // @todo Test deleting an event from an unexisting city
+
       it("doesn't delete an unexisting event", async function () {
-        const {checkRequest, checkData} = make({
+        const {checkRequest, checkData} = await make({
           cities: {'city': {'name': 'City'}}
         })
 
@@ -2101,7 +2156,7 @@ describe('graphqlApi', function () {
           }
         )
 
-        checkData({
+        await checkData({
           _: {sequences: {events: 0}},
           artists: {},
           cities: {
@@ -2112,7 +2167,7 @@ describe('graphqlApi', function () {
     })
 
     it('adds artist, location and event in a single call', async function () {
-      const {checkRequest, checkData} = make({
+      const {checkRequest, checkData} = await make({
         cities: {'city': {
           name: 'City',
           tags: [{slug: 'tag', title: 'Tag'}]
@@ -2137,7 +2192,7 @@ describe('graphqlApi', function () {
         }}
       )
 
-      checkData({
+      await checkData({
         _: {
           sequences: {
             events: 1
