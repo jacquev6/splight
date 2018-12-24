@@ -1,11 +1,4 @@
-FROM node:10-alpine
-
-RUN \
-    npm install -g npm && \
-    apk --update add git openssh && \
-    rm -rf /var/lib/apt/lists/* /var/cache/apk/* && \
-    git config --global user.email "vincent@vincent-jacques.net" && \
-    git config --global user.name "Vincent Jacques"
+FROM node:10-stretch
 
 WORKDIR /app
 

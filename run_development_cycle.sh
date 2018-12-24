@@ -88,15 +88,12 @@ show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
 
 if $SERVE
 then
-  rm -rf test-data/repo
-  git init test-data/repo >/dev/null
-  cp -r test-data/data/* test-data/repo
-  (
-    cd test-data/repo
-    git add .
-    git commit -m "Initial commit"
-    git config receive.denyCurrentBranch ignore
-  ) >/dev/null
+  for F in test-data/mongo-exports/*.json
+  do
+    COLLECTION=${F%.json}
+    COLLECTION=${COLLECTION#test-data/mongo-exports/}
+    cat $F | kubectl exec --stdin $(kubectl get pod | grep "splight-mongo.*Running" | cut -d " " -f 1) -- mongoimport --db splight --collection $COLLECTION --jsonArray --drop --quiet
+  done
 
   case $CLUSTER in
     minikube)
@@ -112,12 +109,12 @@ then
   npm run serve ./test-data/repo || true
   trap - SIGINT
 
-  (
-    cd test-data/repo
-    git reset --hard >/dev/null
-    git log --oneline
-  )
-  cp -r test-data/repo/* test-data/data
+  for F in test-data/mongo-exports/*.json
+  do
+    COLLECTION=${F%.json}
+    COLLECTION=${COLLECTION#test-data/mongo-exports/}
+    kubectl exec $(kubectl get pod | grep "splight-mongo.*Running" | cut -d " " -f 1) -- mongoexport --db splight --collection $COLLECTION --jsonArray --quiet | python3 -m json.tool --sort-keys >$F
+  done
 fi
 
 echo

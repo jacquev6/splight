@@ -1,0 +1,46 @@
+[
+    {
+        "_id": "avalon:location-1",
+        "address": [
+            "Address 1",
+            "Address 2",
+            "Three"
+        ],
+        "citySlug": "avalon",
+        "description": [],
+        "name": "Lieu \u00e0 Avalon 1",
+        "phone": "01234567890",
+        "website": null
+    },
+    {
+        "_id": "avalon:location-2",
+        "address": [],
+        "citySlug": "avalon",
+        "description": [
+            "Un bien bel endroit."
+        ],
+        "name": "Lieu \u00e0 Avalon 2",
+        "website": "http://foobarbaz.com"
+    },
+    {
+        "_id": "avalon:location-3",
+        "address": [],
+        "citySlug": "avalon",
+        "description": [],
+        "name": "Lieu \u00e0 Avalon 3"
+    },
+    {
+        "_id": "shangri-la:location-1",
+        "address": [],
+        "citySlug": "shangri-la",
+        "description": [],
+        "name": "Lieu \u00e0 Shangri-La 1"
+    },
+    {
+        "_id": "shangri-la:location-2",
+        "address": [],
+        "citySlug": "shangri-la",
+        "description": [],
+        "name": "Lieu \u00e0 Shangri-La 2"
+    }
+]

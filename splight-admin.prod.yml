@@ -32,3 +32,39 @@ spec:
     port: 80
   selector:
     app: splight-admin
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: splight-mongo
+spec:
+  selector:
+    matchLabels:
+      app: splight-mongo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: splight-mongo
+    spec:
+      containers:
+        - name: splight-mongo
+          image: mongo:4.0.4
+          volumeMounts:
+            - mountPath: /data/db
+              name: splight-mongo
+      volumes:
+        - name: splight-mongo
+          gcePersistentDisk:
+            pdName: splight-mongo
+            fsType: ext4
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: splight-mongo
+spec:
+  selector:
+    app: splight-mongo
+  ports:
+  - port: 27017

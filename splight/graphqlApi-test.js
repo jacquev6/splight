@@ -1,12 +1,13 @@
 'use strict'
 
-/* globals describe, it */
+/* globals describe, it, after */
 
 require('stringify').registerWithRequire(['.gqls'])
 
 const assert = require('assert') // Not strict because graphql's returned data doesn't have Object prototype
-const graphql = require('graphql')
 const Hashids = require('hashids')
+const mondodbMemoryServer = require('mongodb-memory-server')
+const mongodb = require('mongodb')
 
 const datetime = require('./datetime')
 const graphqlApi = require('./graphqlApi')
@@ -14,194 +15,57 @@ const graphqlApi = require('./graphqlApi')
 const hashids = new Hashids('', 10)
 
 describe('graphqlApi', function () {
-  describe('makeRoot', function () {
-    it('computes first event id', function () {
-      const data = {
-        artists: {'artist': {name: 'Artist'}},
-        cities: {'city': {
-          name: 'City',
-          locations: {'location': {name: 'Location'}},
-          tags: [{slug: 'tag', title: 'Tag'}],
-          events: [{
-            location: 'location',
-            tags: ['tag'],
-            title: 'Title',
-            occurrences: [{start: '2018-07-12T12:00'}]
-          }]
-        }}
-      }
+  const mongodbServer = new mondodbMemoryServer.MongoMemoryServer()
 
-      graphqlApi.forTest.makeRoot(data)
+  const clientPromise = (async function () {
+    return mongodb.MongoClient.connect(await mongodbServer.getConnectionString(), {useNewUrlParser: true})
+  })()
 
-      assert.deepStrictEqual(
-        data,
-        {
-          _: {sequences: {events: 1}},
-          artists: {'artist': {name: 'Artist', description: []}},
-          cities: {'city': {
-            name: 'City',
-            locations: {'location': {name: 'Location', description: [], address: []}},
-            tags: [{slug: 'tag', title: 'Tag'}],
-            events: [{
-              id: hashids.encode(0),
-              location: 'location',
-              tags: ['tag'],
-              title: 'Title',
-              occurrences: [{start: '2018-07-12T12:00'}]
-            }]
-          }}
-        }
-      )
-    })
-
-    it('computes next event id', function () {
-      const data = {
-        _: {sequences: {events: 10}},
-        artists: {'artist': {name: 'Artist'}},
-        cities: {'city': {
-          name: 'City',
-          locations: {'location': {name: 'Location'}},
-          tags: [{slug: 'tag', title: 'Tag'}],
-          events: [{
-            location: 'location',
-            tags: ['tag'],
-            title: 'Title',
-            occurrences: [{start: '2018-07-12T12:00'}]
-          }]
-        }}
-      }
-
-      graphqlApi.forTest.makeRoot(data)
-
-      assert.deepStrictEqual(
-        data,
-        {
-          _: {sequences: {events: 11}},
-          artists: {'artist': {name: 'Artist', description: []}},
-          cities: {'city': {
-            name: 'City',
-            locations: {'location': {name: 'Location', description: [], address: []}},
-            tags: [{slug: 'tag', title: 'Tag'}],
-            events: [{
-              id: hashids.encode(10),
-              location: 'location',
-              tags: ['tag'],
-              title: 'Title',
-              occurrences: [{start: '2018-07-12T12:00'}]
-            }]
-          }}
-        }
-      )
-    })
-
-    it("doesn't touch existing event ids", function () {
-      const data = {
-        _: {sequences: {events: 10}},
-        artists: {'artist': {name: 'Artist'}},
-        cities: {'city': {
-          name: 'City',
-          locations: {'location': {name: 'Location'}},
-          tags: [{slug: 'tag', title: 'Tag'}],
-          events: [{
-            id: 'foobarbaz',
-            location: 'location',
-            tags: ['tag'],
-            title: 'Title',
-            occurrences: [{start: '2018-07-12T12:00'}]
-          }]
-        }}
-      }
-
-      graphqlApi.forTest.makeRoot(data)
-
-      assert.deepStrictEqual(
-        data,
-        {
-          _: {sequences: {events: 10}},
-          artists: {'artist': {name: 'Artist', description: []}},
-          cities: {'city': {
-            name: 'City',
-            locations: {'location': {name: 'Location', description: [], address: []}},
-            tags: [{slug: 'tag', title: 'Tag'}],
-            events: [{
-              id: 'foobarbaz',
-              location: 'location',
-              tags: ['tag'],
-              title: 'Title',
-              occurrences: [{start: '2018-07-12T12:00'}]
-            }]
-          }}
-        }
-      )
-    })
-
-    it('rejects wrong tag reference', function () {
-      const data = {
-        cities: {'city': {
-          name: 'City',
-          locations: {'location': {name: 'Location'}},
-          events: [{
-            location: 'location',
-            tags: ['tag'],
-            title: 'Title',
-            occurrences: [{start: '2018-07-12T12:00'}]
-          }]
-        }}
-      }
-
-      assert.throws(
-        () => graphqlApi.forTest.makeRoot(data),
-        new Error('No tag with slug "tag"')
-      )
-    })
-
-    it('rejects wrong location reference', function () {
-      const data = {
-        cities: {'city': {
-          name: 'City',
-          tags: [{slug: 'tag', title: 'Tag'}],
-          events: [{
-            location: 'location',
-            tags: ['tag'],
-            title: 'Title',
-            occurrences: [{start: '2018-07-12T12:00'}]
-          }]
-        }}
-      }
-
-      assert.throws(
-        () => graphqlApi.forTest.makeRoot(data),
-        new Error('No location with slug "location"')
-      )
-    })
-
-    it('rejects wrong artist reference', function () {
-      const data = {
-        cities: {'city': {
-          name: 'City',
-          locations: {'location': {name: 'Location'}},
-          tags: [{slug: 'tag', title: 'Tag'}],
-          events: [{
-            artist: 'artist',
-            location: 'location',
-            tags: ['tag'],
-            title: 'Title',
-            occurrences: [{start: '2018-07-12T12:00'}]
-          }]
-        }}
-      }
-
-      assert.throws(
-        () => graphqlApi.forTest.makeRoot(data),
-        new Error('No artist with slug "artist"')
-      )
-    })
+  after(async function () {
+    const client = await clientPromise
+    client.close()
+    mongodbServer.stop()
   })
 
-  function make (data = {}, {generationDate, images, imagesUrlsPrefix} = {}) {
+  async function make (data = {}, {images, clock} = {}) {
+    const dbArtists = Object.entries(data.artists || {}).map(([slug, artist]) => Object.assign({_id: slug}, artist))
+    const dbLocations = [].concat(...Object.entries(data.cities || {}).map(function ([citySlug, city]) {
+      const {locations} = city
+      delete city.locations
+      return Object.entries(locations || {}).map(([slug, location]) => Object.assign({_id: citySlug + ':' + slug, citySlug}, location))
+    }))
+    const dbEvents = [].concat(...Object.entries(data.cities || {}).map(function ([citySlug, city]) {
+      const {events} = city
+      delete city.events
+      return (events || []).map(function (event) {
+        const _id = event.id
+        delete event.id
+        return Object.assign({_id, citySlug}, event)
+      })
+    }))
+    const dbCities = Object.entries(data.cities || {}).map(([slug, city]) => Object.assign({_id: slug}, city))
+    const dbSequences = Object.entries((data._ || {}).sequences || {}).map(([_id, value]) => ({ _id, value }))
+
+    const client = await clientPromise
+    const db = client.db('splight-tests')
+
+    async function setCollection (name, items) {
+      const coll = db.collection(name)
+      await coll.deleteMany()
+      if (items.length > 0) {
+        await coll.insertMany(items)
+      }
+    }
+
+    await setCollection('artists', dbArtists)
+    await setCollection('cities', dbCities)
+    await setCollection('locations', dbLocations)
+    await setCollection('events', dbEvents)
+    await setCollection('sequences', dbSequences)
+
     images = images || {}
-    imagesUrlsPrefix = imagesUrlsPrefix || ''
-    const rootValue = graphqlApi.forTest.makeRoot(data, generationDate, makeTestImages(images), imagesUrlsPrefix)
+
+    const api = await graphqlApi.make({db, images: makeTestImages(images), clock})
 
     async function checkRequest (requestString, variableValues, expected) {
       if (!expected) { // A poor man's variadic function
@@ -209,14 +73,83 @@ describe('graphqlApi', function () {
         variableValues = undefined
       }
       assert.deepEqual(
-        await graphql.graphql(graphqlApi.forTest.schema, requestString, rootValue, undefined, variableValues),
+        await api.request({requestString, variableValues}),
         expected
       )
     }
 
-    function checkData (expected) {
-      graphqlApi.forTest.encapsulateData(expected)
-      assert.deepStrictEqual(data, expected)
+    async function checkData (expected) {
+      const artists = await db.collection('artists').find().toArray()
+      const cities = await db.collection('cities').find().toArray()
+      const locations = await db.collection('locations').find().toArray()
+      const events = await db.collection('events').find().toArray()
+      const sequences = await db.collection('sequences').find().toArray()
+
+      const actual = {
+        _: {
+          sequences: Object.assign({}, ...sequences.map(function (sequence) {
+            const o = {}
+            o[sequence._id] = sequence.value
+            return o
+          }))
+        },
+        artists: Object.assign({}, ...artists.map(function (artist) {
+          const slug = artist._id
+          delete artist._id
+          const o = {}
+          o[slug] = artist
+          if (artist.website === null) {
+            delete artist.website
+          }
+          return o
+        })),
+        cities: Object.assign({}, ...cities.map(function (city) {
+          const slug = city._id
+          delete city._id
+          city.locations = Object.assign({}, ...locations.map(function (location) {
+            const slug = location._id.split(':')[1]
+            delete location._id
+            delete location.citySlug
+            if (location.website === null) {
+              delete location.website
+            }
+            if (location.phone === null) {
+              delete location.phone
+            }
+            const o = {}
+            o[slug] = location
+            return o
+          }))
+          if (Object.keys(city.locations).length === 0) {
+            delete city.locations
+          }
+          city.events = events.map(function (event) {
+            event.id = event._id
+            delete event._id
+            delete event.citySlug
+            return event
+          })
+          if (city.events.length === 0) {
+            delete city.events
+          }
+          const o = {}
+          o[slug] = city
+          return o
+        }))
+      }
+      if (Object.keys(actual._.sequences).length === 0) {
+        delete actual._.sequences
+      }
+      if (Object.keys(actual._).length === 0) {
+        delete actual._
+      }
+      if (Object.keys(actual.artists).length === 0) {
+        delete actual.artists
+      }
+      if (Object.keys(actual.cities).length === 0) {
+        delete actual.cities
+      }
+      assert.deepStrictEqual(actual, expected)
     }
 
     function checkImages (expected) {
@@ -239,7 +172,7 @@ describe('graphqlApi', function () {
       delete images[fileName]
     }
 
-    return {exists, save, del}
+    return {exists, save, del, prefix: 'prefix/'}
   }
 
   describe('full query', function () {
@@ -335,11 +268,13 @@ describe('graphqlApi', function () {
               ],
               events: [
                 {
+                  id: hashids.encode(0),
                   location: 'location-2',
                   tags: ['tag-2'],
                   occurrences: [{start: '2018-07-14T12:00'}]
                 },
                 {
+                  id: hashids.encode(1),
                   title: 'Title',
                   artist: 'artist-1',
                   location: 'location-1',
@@ -366,19 +301,19 @@ describe('graphqlApi', function () {
         get,
         {data: {
           artists: [
-            {slug: 'artist-1', name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com', image: 'artists/artist-1.png'},
+            {slug: 'artist-1', name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com', image: 'prefix/artists/artist-1.png'},
             {slug: 'artist-2', name: 'Artist 2', description: [], website: null, image: null}
           ],
           cities: [{
             slug: 'city',
             name: 'City',
-            allTagsImage: 'cities/city/all-tags.png',
+            allTagsImage: 'prefix/cities/city/all-tags.png',
             tags: [
-              {slug: 'tag-1', title: 'Tag 1', image: 'cities/city/tags/tag-1.png'},
+              {slug: 'tag-1', title: 'Tag 1', image: 'prefix/cities/city/tags/tag-1.png'},
               {slug: 'tag-2', title: 'Tag 2', image: null}
             ],
             locations: [
-              {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: 'cities/city/locations/location-1.png', phone: '0123456789', address: ['Location 1 address']},
+              {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: 'prefix/cities/city/locations/location-1.png', phone: '0123456789', address: ['Location 1 address']},
               {slug: 'location-2', name: 'Location 2', description: [], website: null, image: null, phone: null, address: []}
             ],
             events: [
@@ -393,16 +328,16 @@ describe('graphqlApi', function () {
               },
               {
                 id: hashids.encode(1),
-                artist: {slug: 'artist-1', name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com', image: 'artists/artist-1.png'},
+                artist: {slug: 'artist-1', name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com', image: 'prefix/artists/artist-1.png'},
                 title: 'Title',
-                location: {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: 'cities/city/locations/location-1.png', phone: '0123456789', address: ['Location 1 address']},
-                tags: [{slug: 'tag-1', title: 'Tag 1', image: 'cities/city/tags/tag-1.png'}],
+                location: {slug: 'location-1', name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', image: 'prefix/cities/city/locations/location-1.png', phone: '0123456789', address: ['Location 1 address']},
+                tags: [{slug: 'tag-1', title: 'Tag 1', image: 'prefix/cities/city/tags/tag-1.png'}],
                 occurrences: [{start: '2018-07-14T12:00'}],
                 reservationPage: 'http://reserve.com/'
               }
             ],
             firstDate: '2018-07-14',
-            image: 'cities/city.png',
+            image: 'prefix/cities/city.png',
             dateAfter: '2018-07-15'
           }]
         }}
@@ -412,7 +347,7 @@ describe('graphqlApi', function () {
 
   describe('generation', function () {
     it('uses injected date', async function () {
-      const {checkRequest} = await make({}, {generationDate: datetime.date('2018-08-15')})
+      const {checkRequest} = await make({}, {clock: () => datetime.date('2018-08-15')})
 
       await checkRequest(
         '{generation{date dateAfter}}',
@@ -1109,14 +1044,14 @@ describe('graphqlApi', function () {
         await checkRequest(
           put,
           {artist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}},
-          {data: {putArtist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}}}
+          {data: {putArtist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}}}
         )
 
         await checkData({artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}})
 
         await checkImages({'artists/artist.png': pngData})
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}]}})
       })
 
       it("doesn't add an artist with a bad slug", async function () {
@@ -1147,13 +1082,13 @@ describe('graphqlApi', function () {
         await checkRequest(
           put,
           {artist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}},
-          {data: {putArtist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}}}
+          {data: {putArtist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}}}
         )
 
         await checkData({artists: {'artist': {name: 'New name', description: ['Description'], website: 'http://foo.bar'}}})
         await checkImages({'artists/artist.png': pngData})
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}]}})
       })
 
       it('modifies an artist - no change', async function () {
@@ -1162,18 +1097,18 @@ describe('graphqlApi', function () {
           {images: {'artists/artist.png': pngData}}
         )
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}]}})
 
         await checkRequest(
           put,
-          {artist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}},
-          {data: {putArtist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}}}
+          {artist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}},
+          {data: {putArtist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}}}
         )
 
         await checkData({artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}})
         await checkImages({'artists/artist.png': pngData})
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}]}})
       })
 
       it('modifies an artist - reset', async function () {
@@ -1182,7 +1117,7 @@ describe('graphqlApi', function () {
           {images: {'artists/artist.png': pngData}}
         )
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'artists/artist.png'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}]}})
 
         await checkRequest(
           put,
@@ -1221,7 +1156,7 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{events: [{artist: {slug: 'artist', name: 'Artist', description: [], website: null, image: 'artists/artist.png'}}]}]}}
+          {data: {cities: [{events: [{artist: {slug: 'artist', name: 'Artist', description: [], website: null, image: 'prefix/artists/artist.png'}}]}]}}
         )
 
         await checkRequest(
@@ -1242,15 +1177,15 @@ describe('graphqlApi', function () {
 
       const {checkRequest, checkData, checkImages} = await make()
 
-      await checkRequest(put, {image: pngDataUrl}, {data: {putArtist: {image: 'artists/artist.png'}}})
+      await checkRequest(put, {image: pngDataUrl}, {data: {putArtist: {image: 'prefix/artists/artist.png'}}})
       await checkData({artists: {'artist': {name: 'Artist', description: []}}})
       await checkImages({'artists/artist.png': pngData})
 
-      await checkRequest(put, {image: jpgDataUrl}, {data: {putArtist: {image: 'artists/artist.jpg'}}})
+      await checkRequest(put, {image: jpgDataUrl}, {data: {putArtist: {image: 'prefix/artists/artist.jpg'}}})
       await checkData({artists: {'artist': {name: 'Artist', description: []}}})
       await checkImages({'artists/artist.jpg': jpgData})
 
-      await checkRequest(put, {image: pngDataUrl}, {data: {putArtist: {image: 'artists/artist.png'}}})
+      await checkRequest(put, {image: pngDataUrl}, {data: {putArtist: {image: 'prefix/artists/artist.png'}}})
       await checkData({artists: {'artist': {name: 'Artist', description: []}}})
       await checkImages({'artists/artist.png': pngData})
     })
@@ -1268,7 +1203,7 @@ describe('graphqlApi', function () {
         await checkRequest(
           put,
           {citySlug: 'city', location: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}},
-          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
+          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'prefix/cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
         )
 
         await checkData({
@@ -1282,7 +1217,7 @@ describe('graphqlApi', function () {
 
         await checkImages({'cities/city/locations/location.png': pngData})
 
-        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}]}]}})
+        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'prefix/cities/city/locations/location.png', phone: '0123456789', address: ['Address']}]}]}})
       })
 
       // @todo Test adding a lodation to an unexisting city
@@ -1329,7 +1264,7 @@ describe('graphqlApi', function () {
         await checkRequest(
           put,
           {citySlug: 'city', location: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}},
-          {data: {putLocation: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
+          {data: {putLocation: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'prefix/cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
         )
 
         await checkData({
@@ -1350,7 +1285,7 @@ describe('graphqlApi', function () {
             name: 'New name',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'cities/city/locations/location.png',
+            image: 'prefix/cities/city/locations/location.png',
             phone: '0123456789',
             address: ['Address']
           }]
@@ -1370,7 +1305,7 @@ describe('graphqlApi', function () {
             name: 'Location',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'cities/city/locations/location.png',
+            image: 'prefix/cities/city/locations/location.png',
             phone: '0123456789',
             address: ['Address']
           }]
@@ -1378,8 +1313,8 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {citySlug: 'city', location: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}},
-          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
+          {citySlug: 'city', location: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'prefix/cities/city/locations/location.png', phone: '0123456789', address: ['Address']}},
+          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'prefix/cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
         )
 
         await checkData({
@@ -1400,7 +1335,7 @@ describe('graphqlApi', function () {
             name: 'Location',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'cities/city/locations/location.png',
+            image: 'prefix/cities/city/locations/location.png',
             phone: '0123456789',
             address: ['Address']
           }]
@@ -1420,7 +1355,7 @@ describe('graphqlApi', function () {
             name: 'Location',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'cities/city/locations/location.png',
+            image: 'prefix/cities/city/locations/location.png',
             phone: '0123456789',
             address: ['1 rue de Gaule', '92000 Issy-ou-là']
           }]
@@ -1483,12 +1418,12 @@ describe('graphqlApi', function () {
         await checkRequest(
           put,
           {citySlug: 'city', location: {slug: 'location', name: 'New name', description: [], image: pngDataUrl, address: []}},
-          {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null, image: 'cities/city/locations/location.png', phone: null, address: []}}}
+          {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null, image: 'prefix/cities/city/locations/location.png', phone: null, address: []}}}
         )
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{events: [{location: {slug: 'location', name: 'New name', description: [], website: null, image: 'cities/city/locations/location.png', phone: null, address: []}}]}]}}
+          {data: {cities: [{events: [{location: {slug: 'location', name: 'New name', description: [], website: null, image: 'prefix/cities/city/locations/location.png', phone: null, address: []}}]}]}}
         )
       })
     })
@@ -1688,7 +1623,6 @@ describe('graphqlApi', function () {
 
         await checkData({
           _: {sequences: {events: 1}},
-          artists: {},
           cities: {
             'city': {
               name: 'City',
@@ -1759,14 +1693,12 @@ describe('graphqlApi', function () {
         )
 
         await checkData({
-          _: {sequences: {events: 0}},
-          artists: {},
+          _: {sequences: {events: 1}},
           cities: {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: [{slug: 'tag', title: 'Tag'}],
-              events: []
+              tags: [{slug: 'tag', title: 'Tag'}]
             }
           }
         })
@@ -1809,14 +1741,12 @@ describe('graphqlApi', function () {
         )
 
         await checkData({
-          _: {sequences: {events: 0}},
+          _: {sequences: {events: 1}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
               name: 'City',
-              locations: {},
-              tags: [{slug: 'tag', title: 'Tag'}],
-              events: []
+              tags: [{slug: 'tag', title: 'Tag'}]
             }
           }
         })
@@ -1859,14 +1789,12 @@ describe('graphqlApi', function () {
         )
 
         await checkData({
-          _: {sequences: {events: 0}},
+          _: {sequences: {events: 1}},
           artists: {'artist': {name: 'Artist'}},
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'Location'}},
-              tags: [],
-              events: []
+              locations: {'location': {name: 'Location'}}
             }
           }
         })
@@ -2053,8 +1981,7 @@ describe('graphqlApi', function () {
             'city': {
               name: 'City',
               locations: {'location': {name: 'Location'}},
-              tags: [{slug: 'tag', title: 'Tag'}],
-              events: []
+              tags: [{slug: 'tag', title: 'Tag'}]
             }
           }
         })
@@ -2157,10 +2084,8 @@ describe('graphqlApi', function () {
         )
 
         await checkData({
-          _: {sequences: {events: 0}},
-          artists: {},
           cities: {
-            'city': {name: 'City', events: [], tags: [], locations: {}}
+            'city': {name: 'City'}
           }
         })
       })

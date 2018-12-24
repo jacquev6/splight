@@ -1,0 +1,17 @@
+[
+    {
+        "_id": "artist-1",
+        "description": [
+            "L'Artiste 1 est vraiment tr\u00e8s tr\u00e8s bon. Il fait de bonnes choses dans son domaine. Nous le recommandons \u00e0 tous ceux qui l'appr\u00e9cient.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        ],
+        "name": "Artiste 1",
+        "website": "https://google.fr/search?q=toto"
+    },
+    {
+        "_id": "artist-2",
+        "description": [],
+        "name": "Artiste 2"
+    }
+]

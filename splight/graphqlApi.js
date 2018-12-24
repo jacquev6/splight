@@ -1,13 +1,8 @@
 'use strict'
 
 const assert = require('assert').strict
-const childProcess = require('child_process')
-const fs = require('fs-extra')
 const graphql = require('graphql')
 const Hashids = require('hashids')
-const Joi = require('joi')
-const neatJSON = require('neatjson')
-const path = require('path')
 
 const datetime = require('./datetime')
 const durations = require('./publicWebsite/durations')
@@ -17,186 +12,213 @@ const schema = graphql.buildSchema(schemaString)
 
 const hashids = new Hashids('', 10)
 
-function makeRoot ({dataGitRemote, generationDate, imagesUrlsPrefix}) {
-  const dataDirectory = '/tmp/splight-data' // @todo Generate a dynamic name
+function imagesManager (images) {
+  const imageExtensions = ['.png', '.jpg']
 
-  fs.removeSync(dataDirectory)
-  childProcess.execSync(`git clone ${dataGitRemote} ${dataDirectory}`)
-
-  const fileName = path.join(dataDirectory, 'data.json')
-
-  const imagesDirectory = path.join(dataDirectory, 'images')
-
-  const data = fs.readJSONSync(fileName)
-
-  const images = (function () {
-    function p (fileName) {
-      return path.join(imagesDirectory, fileName)
+  async function get (img) {
+    for (var ext of imageExtensions) {
+      if (await images.exists(img + ext)) {
+        return images.prefix + img + ext
+      }
     }
+    return null
+  }
 
-    function exists (fileName) {
-      return fs.existsSync(p(fileName))
-    }
-
-    function save (fileName, data) {
-      fs.outputFileSync(p(fileName), data)
-    }
-
-    function del (fileName) {
-      fs.removeSync(p(fileName))
-    }
-
-    return {exists, save, del}
-  }())
-
-  const root = makeSyncRoot(data, generationDate, images, imagesUrlsPrefix)
-
-  const rootValue = {}
-
-  function forwardQuery (name) {
-    return function () {
-      console.log('GraphQL query:', name)
-      return root[name].apply(undefined, arguments)
+  async function save (img, data) {
+    if (data) {
+      if (data.startsWith('data:')) {
+        var extension
+        if (data.startsWith('data:image/png;base64,')) {
+          extension = '.png'
+        } else {
+          assert(data.startsWith('data:image/jpeg;base64,'))
+          extension = '.jpg'
+        }
+        data = Buffer.from(data.slice(22), 'base64') // @todo slice(23) for jpg!
+        await images.save(img + extension, data)
+        for (var ext of imageExtensions) {
+          if (ext !== extension) {
+            await images.del(img + ext)
+          }
+        }
+      } else {
+        assert(imageExtensions.some(ext => data === images.prefix + img + ext))
+      }
+    } else {
+      for (ext of imageExtensions) {
+        await images.del(img + ext)
+      }
     }
   }
 
-  const queries = ['generation', 'artists', 'artist', 'cities', 'city']
-
-  for (var queryName of queries) {
-    rootValue[queryName] = forwardQuery(queryName)
-  }
-
-  function forwardMutation (name) {
-    return function () {
-      const ret = root[name].apply(undefined, arguments)
-      console.log('GraphQL mutation:', name)
-      fs.outputFileSync(fileName, neatJSON.neatJSON(data, {sort: true, wrap: 120, afterColon: 1, afterComma: 1}) + '\n')
-      childProcess.execSync(`git commit --allow-empty -am "${name} ${ret.slug || ret.id}"`, {cwd: dataDirectory})
-      childProcess.exec('git push', {cwd: dataDirectory})
-      return ret
-    }
-  }
-
-  const mutations = ['putArtist', 'putLocation', 'putEvent', 'deleteEvent']
-
-  for (var mutationName of mutations) {
-    rootValue[mutationName] = forwardMutation(mutationName)
-  }
-
-  return {rootValue, imagesDirectory}
+  return {get, save}
 }
 
-function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
-  data = encapsulateData(data)
-  generationDate = generationDate || datetime.now()
+async function make ({db, images, clock}) {
+  images = imagesManager(images)
+  clock = clock || datetime.now
+
+  const artistsCollection = db.collection('artists')
+  const citiesCollection = db.collection('cities')
+  const locationsCollection = db.collection('locations')
+  const eventsCollection = db.collection('events')
+  const sequencesCollection = db.collection('sequences')
+
+  async function nextSequenceValue (_id) {
+    const sequence = (await sequencesCollection.findOneAndUpdate({_id}, {$inc: {value: 1}}, {upsert: true})).value
+    if (sequence) {
+      return sequence.value
+    } else {
+      return 0
+    }
+  }
 
   function generation () {
+    const generationDate = clock()
     return {
       date: generationDate.format(datetime.HTML5_FMT.DATE),
       dateAfter: durations.oneWeek.clip(generationDate).add(5, 'weeks').format(datetime.HTML5_FMT.DATE)
     }
   }
 
-  function artists ({name, max}) {
+  async function putArtist ({artist: {slug, name, description, website, image}}) {
+    const _id = slug
+    const dbArtist = {_id, name, description, website}
+    if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
+      throw new Error('Incorrect slug')
+    }
+    await artistsCollection.replaceOne({_id}, dbArtist, {upsert: true})
+    await images.save(`artists/${slug}`, image)
+    return makeArtist(dbArtist)
+  }
+
+  async function artist ({slug}) {
+    const dbArtist = await artistsCollection.findOne({_id: slug})
+    if (dbArtist) {
+      return makeArtist(dbArtist)
+    } else {
+      throw new Error(`No artist with slug "${slug}"`)
+    }
+  }
+
+  async function artists ({name, max}) {
     const nameMatches = matches(name)
-    return data.artists.filterMap(artist => nameMatches(artist.name), max, makeArtist)
+    // This is bad: we must filter and limit in MongoDB
+    const artists = (await artistsCollection.find().toArray()).filter(artist => nameMatches(artist.name))
+    if (max && artists.length > max) {
+      return null
+    } else {
+      return Promise.all(artists.map(makeArtist))
+    }
   }
 
-  function artist ({slug}) {
-    return makeArtist(data.artists.get(slug))
-  }
-
-  function putArtist ({artist}) {
-    var image = artist.image
-    delete artist.image
-    const ret = data.artists.put(artist)
-    saveImage(`artists/${artist.slug}`, image)
-    return makeArtist(ret)
-  }
-
-  function makeArtist (artist) {
-    const image = imageIfExists(`artists/${artist.slug}`)
-    const {slug, name, description, website} = artist
+  async function makeArtist ({_id: slug, name, description, website}) {
+    const image = await images.get(`artists/${slug}`)
+    description = description || []
     return {slug, name, description, website, image}
   }
 
-  function cities () {
-    return data.cities.all().map(makeCity)
-  }
-
-  function city ({slug}) {
-    return makeCity(data.cities.get(slug))
-  }
-
-  function putLocation ({citySlug, location}) {
-    const city = data.cities.get(citySlug)
-    var image = location.image
-    delete location.image
-    const ret = city.locations.put(location)
-    saveImage(`cities/${city.slug}/locations/${location.slug}`, image)
-    return makeLocation(city, ret)
-  }
-
-  function makeLocation (city, location) {
-    const image = imageIfExists(`cities/${city.slug}/locations/${location.slug}`)
-    const {slug, name, description, website, phone, address} = location
-    return {slug, name, description, website, image, phone, address}
-  }
-
-  function putEvent ({citySlug, event: {id, title, artist, location, tags, occurrences, reservationPage}}) {
-    const city = data.cities.get(citySlug)
-    return makeEvent(city, city.events.put(Object.assign(
-      {
-        id,
-        location,
-        tags: tags.map(tag => tag),
-        occurrences: occurrences.map(({start}) => ({start}))
-      },
-      reservationPage ? {reservationPage} : {},
-      artist ? {artist} : {},
-      title ? {title} : {}
-    )))
-  }
-
-  function deleteEvent ({citySlug, eventId}) {
-    const city = data.cities.get(citySlug)
-    return makeEvent(city, city.events.del(eventId))
-  }
-
-  function makeEvent (city, {id, title, location, tags, occurrences, artist, reservationPage}) {
-    artist = artist.resolve()
-    if (artist) {
-      artist = makeArtist(artist)
-    }
-    return {
-      id,
-      title,
-      location: makeLocation(city, location.resolve()),
-      tags: tags.resolve().map(tag => makeTag(city, tag)),
-      occurrences,
-      artist,
-      reservationPage
+  async function city ({slug}) {
+    const dbCity = await citiesCollection.findOne({_id: slug})
+    if (dbCity) {
+      return makeCity(dbCity)
+    } else {
+      throw new Error(`No city with slug "${slug}"`)
     }
   }
 
-  function makeTag (city, tag) {
-    const image = imageIfExists(`cities/${city.slug}/tags/${tag.slug}`)
-    const {slug, title} = tag
-    return {slug, title, image}
+  async function cities ({name, max}) {
+    const nameMatches = matches(name)
+    // This is bad: we must filter and limit in MongoDB
+    const cities = (await citiesCollection.find().toArray()).filter(city => nameMatches(city.name))
+    if (max && cities.length > max) {
+      return null
+    } else {
+      return Promise.all(cities.map(makeCity))
+    }
   }
 
-  function makeCity (city) {
-    function tags () {
-      return city.tags.all().map(tag => makeTag(city, tag))
+  async function makeCity ({_id: slug, name, tags: dbTags}) {
+    const citySlug = slug
+
+    async function location ({slug}) {
+      const dbLocation = await locationsCollection.findOne({_id: citySlug + ':' + slug})
+      if (dbLocation) {
+        return makeLocation(citySlug, dbLocation)
+      } else {
+        throw new Error(`No location with slug "${slug}"`)
+      }
     }
 
-    function locations ({name, max}) {
+    async function locations ({name, max}) {
       const nameMatches = matches(name)
-      return city.locations.filterMap(location => nameMatches(location.name), max, location => makeLocation(city, location))
+      // This is bad: we must filter and limit in MongoDB
+      const locations = (await locationsCollection.find({citySlug}).toArray()).filter(location => nameMatches(location.name))
+      if (max && locations.length > max) {
+        return null
+      } else {
+        return Promise.all(locations.map(location => makeLocation(citySlug, location)))
+      }
     }
 
-    function location ({slug}) {
-      return makeLocation(city, city.locations.get(slug))
+    const tags = await Promise.all((dbTags || []).map(async function ({slug, title}) {
+      const image = await images.get(`cities/${citySlug}/tags/${slug}`)
+      return {slug, title, image}
+    }))
+
+    const tagsBySlug = Object.assign({}, ...tags.map(function (tag) {
+      const o = {}
+      o[tag.slug] = tag
+      return o
+    }))
+
+    const dbEvents = await eventsCollection.find({citySlug}).toArray()
+    const events_ = await Promise.all(dbEvents.map(dbEvent => makeEvent(citySlug, tagsBySlug, dbEvent)))
+
+    async function event ({id}) {
+      const _id = id
+      const dbEvent = await eventsCollection.findOne({_id})
+      if (dbEvent) {
+        return makeEvent(citySlug, tagsBySlug, dbEvent)
+      } else {
+        throw new Error(`No event with id "${id}"`)
+      }
+    }
+
+    function events ({tag, location, artist, title, dates, max}) {
+      const titleMatches = matches(title)
+
+      function selectOccurrence ({start, after}) {
+        return function (occurrence) {
+          if (start && occurrence.start < start) {
+            return false
+          }
+          if (after && occurrence.start >= after) {
+            return false
+          }
+          return true
+        }
+      }
+
+      var filtered = events_.filter(({title}) => titleMatches(title))
+      if (tag) {
+        filtered = filtered.filter(({tags}) => tags.some(({slug}) => slug === tag))
+      }
+      if (location) {
+        filtered = filtered.filter(({location: {slug}}) => slug === location)
+      }
+      if (artist) {
+        filtered = filtered.filter(({artist: a}) => a && a.slug === artist)
+      }
+      if (dates) {
+        const occurrenceMatches = selectOccurrence(dates)
+        filtered = filtered.filter(({occurrences}) => occurrences.some(occurrenceMatches))
+      }
+      if (max && filtered.length > max) {
+        return null
+      } else {
+        return filtered
+      }
     }
 
     function firstDate () {
@@ -210,9 +232,9 @@ function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
     }
 
     function reduceOccurrencesStarts (f) {
-      if (city.events.all().length) {
-        var ret = city.events.all()[0].occurrences[0].start
-        city.events.all().forEach(event => {
+      if (events_.length) {
+        var ret = events_[0].occurrences[0].start
+        events_.forEach(event => {
           event.occurrences.forEach(occurrence => {
             ret = f(ret, occurrence.start)
           })
@@ -223,93 +245,116 @@ function makeSyncRoot (data, generationDate, images, imagesUrlsPrefix) {
       }
     }
 
-    function events ({tag, location, artist, title, dates, max}) {
-      function selectOccurrence ({start, after}) {
-        return function (occurrence) {
-          if (start && occurrence.start < start) {
-            return false
-          }
-          if (after && occurrence.start >= after) {
-            return false
-          }
-          return true
-        }
-      }
-
-      const titleMatches = matches(title)
-
-      function select (event) {
-        if (tag && !(new Set(event.tags.slugs).has(tag))) {
-          return false
-        }
-        if (location && event.location.slug !== location) {
-          return false
-        }
-        if (artist && event.artist.slug !== artist) {
-          return false
-        }
-        if (!titleMatches(event.title)) {
-          return false
-        }
-        if (dates && !event.occurrences.some(selectOccurrence(dates))) {
-          return false
-        }
-        return true
-      }
-
-      return city.events.filterMap(select, max, event => makeEvent(city, event))
-    }
-
-    function event ({id}) {
-      return makeEvent(city, city.events.get(id))
-    }
-
-    const {slug, name} = city
-    const image = imageIfExists(`cities/${slug}`)
-    const allTagsImage = imageIfExists(`cities/${slug}/all-tags`)
-
-    return {slug, name, image, allTagsImage, tags, locations, location, firstDate, dateAfter, events, event}
+    const image = await images.get(`cities/${slug}`)
+    const allTagsImage = await images.get(`cities/${slug}/all-tags`)
+    return {slug, name, tags, location, locations, event, events, allTagsImage, image, firstDate, dateAfter}
   }
 
-  const imageExtensions = ['.png', '.jpg']
-
-  function imageIfExists (img) {
-    for (var ext of imageExtensions) {
-      if (images.exists(img + ext)) {
-        return imagesUrlsPrefix + img + ext
-      }
+  async function putLocation ({citySlug, location: {slug, name, description, address, phone, website, image}}) {
+    const _id = citySlug + ':' + slug
+    const dbLocation = {_id, citySlug, name, description, address, phone, website}
+    if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
+      throw new Error('Incorrect slug')
     }
-    return null
+    await locationsCollection.replaceOne({_id}, dbLocation, {upsert: true})
+    await images.save(`cities/${citySlug}/locations/${slug}`, image)
+    return makeLocation(citySlug, dbLocation)
   }
 
-  function saveImage (img, data) {
-    if (data) {
-      if (data.startsWith('data:')) {
-        var extension
-        if (data.startsWith('data:image/png;base64,')) {
-          extension = '.png'
-        } else {
-          assert(data.startsWith('data:image/jpeg;base64,'))
-          extension = '.jpg'
-        }
-        data = Buffer.from(data.slice(22), 'base64')
-        images.save(img + extension, data)
-        for (var ext of imageExtensions) {
-          if (ext !== extension) {
-            images.del(img + ext)
-          }
-        }
-      } else {
-        assert(imageExtensions.some(ext => data === imagesUrlsPrefix + img + ext))
-      }
-    } else {
-      for (ext of imageExtensions) {
-        images.del(img + ext)
-      }
-    }
+  async function makeLocation (citySlug, {_id, name, description, address, phone, website}) {
+    assert.equal(_id.split(':').length, 2)
+    const slug = _id.split(':')[1]
+    const image = await images.get(`cities/${citySlug}/locations/${slug}`)
+    description = description || []
+    address = address || []
+    return {slug, name, description, address, phone, website, image}
   }
 
-  return {generation, artists, artist, putArtist, cities, city, putLocation, putEvent, deleteEvent}
+  async function putEvent ({citySlug, event: {id, title, artist, location, tags, occurrences, reservationPage}}) {
+    const dbCity = await citiesCollection.findOne({_id: citySlug})
+
+    const tagsBySlug = Object.assign({}, ...await Promise.all((dbCity.tags || []).map(async function ({slug, title}) {
+      const o = {}
+      const image = await images.get(`cities/${citySlug}/tags/${slug}`)
+      o[slug] = {slug, title, image}
+      return o
+    })))
+
+    var upsert = false
+    var _id = id
+    if (!_id) {
+      upsert = true
+      _id = hashids.encode(await nextSequenceValue('events'))
+    }
+
+    const dbEvent = Object.assign(
+      {_id, citySlug, location, tags, occurrences},
+      reservationPage ? {reservationPage} : {},
+      artist ? {artist} : {},
+      title ? {title} : {}
+    )
+
+    const event = await makeEvent(citySlug, tagsBySlug, dbEvent)
+
+    const ret = await eventsCollection.replaceOne({_id}, dbEvent, {upsert})
+    // console.log(id, ret.matchedCount)
+    if (id && ret.matchedCount === 0) {
+      throw new Error(`No event with id "${id}"`)
+    }
+
+    return event
+  }
+
+  async function deleteEvent ({citySlug, eventId}) {
+    const dbCity = await citiesCollection.findOne({_id: citySlug})
+
+    const tagsBySlug = Object.assign({}, ...await Promise.all((dbCity.tags || []).map(async function ({slug, title}) {
+      const o = {}
+      const image = await images.get(`cities/${citySlug}/tags/${slug}`)
+      o[slug] = {slug, title, image}
+      return o
+    })))
+
+    const _id = eventId
+
+    const dbEvent = await eventsCollection.findOne({_id})
+    if (!dbEvent) {
+      throw new Error(`No event with id "${eventId}"`)
+    }
+    const event = await makeEvent(citySlug, tagsBySlug, dbEvent)
+
+    await eventsCollection.deleteOne({_id})
+
+    return event
+  }
+
+  async function makeEvent (citySlug, tagsBySlug, {_id, title, artist: artistSlug, location: locationSlug, tags: tagSlugs, occurrences, reservationPage}) {
+    const id = _id
+    const artist_ = artistSlug ? await artist({slug: artistSlug}) : null
+    const dbLocation = await locationsCollection.findOne({_id: citySlug + ':' + locationSlug})
+    // @todo Factorize with makeCity.location
+    if (!dbLocation) {
+      throw new Error(`No location with slug "${locationSlug}"`)
+    }
+    const location_ = await makeLocation(citySlug, dbLocation)
+    const tags = tagSlugs.map(slug => {
+      const tag = tagsBySlug[slug]
+      if (!tag) {
+        // @todo Factorize
+        throw new Error(`No tag with slug "${slug}"`)
+      }
+      return tag
+    })
+    return {id, title, artist: artist_, location: location_, tags, occurrences, reservationPage}
+  }
+
+  const rootValue = {generation, putArtist, artist, artists, city, cities, putLocation, putEvent, deleteEvent}
+
+  function request ({requestString, variableValues}) {
+    return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
+  }
+
+  return {schema, rootValue, request}
 }
 
 function matches (needles) {
@@ -334,318 +379,4 @@ function normalizeString (s) {
   return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
-const encapsulateData = (function () {
-  const artistSchema = Joi.object({
-    name: Joi.string().required(),
-    description: Joi.array().required().items(Joi.string()),
-    website: Joi.string()
-  })
-
-  const locationSchema = Joi.object({
-    name: Joi.string().required(),
-    description: Joi.array().required().items(Joi.string()),
-    website: Joi.string(),
-    phone: Joi.string(),
-    address: Joi.array().required().items(Joi.string())
-  })
-
-  const tagSchema = Joi.object({
-    slug: makeSlugSchema().required(),
-    title: Joi.string().required()
-  })
-
-  const eventSchema = Joi.object({
-    id: Joi.string().required().regex(/[a-zA-Z0-9]+/),
-    artist: makeSlugSchema(),
-    title: Joi.string(),
-    location: makeSlugSchema().required(),
-    tags: Joi.array().required().min(1).items(makeSlugSchema()),
-    occurrences: Joi.array().required().min(1).items(Joi.object({
-      start: Joi.string().required()
-    })),
-    reservationPage: Joi.string()
-  })
-
-  const citySchema = Joi.object({
-    name: Joi.string().required(),
-    locations: Joi.object().required().pattern(makeSlugSchema(), locationSchema),
-    tags: Joi.array().required().items(tagSchema),
-    events: Joi.array().required().items(eventSchema)
-  })
-
-  const dataSchema = Joi.object({
-    _: Joi.object().required().keys({
-      sequences: Joi.object().required().keys({
-        events: Joi.number().integer().min(0).required()
-      })
-    }),
-    artists: Joi.object().required().pattern(makeSlugSchema(), artistSchema),
-    cities: Joi.object().required().pattern(makeSlugSchema(), citySchema)
-  })
-
-  function makeSlugSchema () {
-    return Joi.string().regex(/^[a-z][-a-z0-9]*$/)
-  }
-
-  return encapsulateData
-
-  function encapsulateData (data) {
-    data._ = data._ || {}
-    data._.sequences = data._.sequences || {}
-    data._.sequences.events = data._.sequences.events || 0
-
-    data.artists = data.artists || {}
-    Object.values(data.artists).forEach(artist => {
-      artist.description = artist.description || []
-    })
-
-    data.cities = data.cities || {}
-    Object.values(data.cities).forEach(city => {
-      city.locations = city.locations || {}
-      Object.values(city.locations).forEach(location => {
-        location.description = location.description || []
-        location.address = location.address || []
-      })
-      city.tags = city.tags || []
-      city.events = city.events || []
-      city.events.forEach(event => {
-        if (!event.id) {
-          event.id = nextEventId(data)
-        }
-      })
-    })
-
-    Joi.attempt(data, dataSchema)
-
-    const artists = dictOfThingsBySlug({
-      things: data.artists,
-      schema: artistSchema,
-      name: 'artist',
-      encapsulate: ({name, description, website}) => ({name, description, website})
-    })
-
-    return {
-      artists,
-      cities: dictOfThingsBySlug({
-        things: data.cities,
-        schema: citySchema,
-        name: 'city',
-        encapsulate: ({name, locations, tags, events}) => {
-          locations = dictOfThingsBySlug({
-            things: locations,
-            schema: locationSchema,
-            name: 'location',
-            encapsulate: ({name, description, website, phone, address}) => ({name, description, website, phone, address})
-          })
-          tags = listOfThingsWithSlug({
-            things: tags,
-            name: 'tag',
-            encapsulate: ({slug, title}) => ({slug, title})
-          })
-
-          return {
-            name,
-            locations,
-            tags,
-            events: listOfThingsWithId({
-              things: events,
-              schema: eventSchema,
-              name: 'event',
-              nextId: nextEventId,
-              encapsulate: ({id, title, artist, location, tags: tags_, occurrences, reservationPage}) => ({
-                id,
-                title,
-                artist: slugOf({slug: artist, things: artists}),
-                location: slugOf({slug: location, things: locations}),
-                tags: listOfSlugsOf({slugs: tags_, things: tags}),
-                occurrences,
-                reservationPage
-              })
-            })
-          }
-        }
-      })
-    }
-
-    function nextEventId () {
-      const id = hashids.encode(data._.sequences.events)
-      data._.sequences.events++
-      return id
-    }
-  }
-
-  function dictOfThingsBySlug ({things, schema, name, encapsulate}) {
-    all()
-
-    return {get, all, filterMap, put}
-
-    function get (slug) {
-      const thing = things[slug]
-      if (thing) {
-        return make(slug, thing)
-      } else {
-        throw new Error('No ' + name + ' with slug "' + slug + '"')
-      }
-    }
-
-    function all () {
-      return Object.entries(things).map(([slug, thing]) => make(slug, thing))
-    }
-
-    function filterMap (select, max, f) {
-      var selected = all().filter(select)
-      if (max && selected.length > max) {
-        return null
-      } else {
-        return selected.map(f)
-      }
-    }
-
-    function put (thing) {
-      const {slug} = thing
-      try {
-        Joi.attempt(slug, makeSlugSchema())
-      } catch (e) {
-        throw new Error('Incorrect slug')
-      }
-      thing = Object.assign({}, thing)
-      delete thing.slug
-      Joi.attempt(thing, schema)
-      things[slug] = thing
-      return make(slug, thing)
-    }
-
-    function make (slug, thing) {
-      return Object.assign({slug}, encapsulate(thing))
-    }
-  }
-
-  function slugOf ({slug, things}) {
-    resolve()
-
-    return {slug, resolve}
-
-    function resolve () {
-      return slug && things.get(slug)
-    }
-  }
-
-  function listOfSlugsOf ({slugs, things}) {
-    resolve()
-
-    return {slugs, resolve}
-
-    function resolve () {
-      return slugs.map(slug => things.get(slug))
-    }
-  }
-
-  function listOfThingsWithId ({things, schema, name, nextId, encapsulate}) {
-    all()
-
-    return {get, all, filterMap, put, del}
-
-    function get (id) {
-      const thing = things.filter(thing => thing.id === id)
-      if (thing.length === 1) {
-        return encapsulate(thing[0])
-      } else {
-        throw new Error('No ' + name + ' with id "' + id + '"')
-      }
-    }
-
-    function all () {
-      return things.map(encapsulate)
-    }
-
-    function filterMap (select, max, f) {
-      var selected = all().filter(select)
-      if (max && selected.length > max) {
-        return null
-      } else {
-        return selected.map(f)
-      }
-    }
-
-    function put (thing) {
-      encapsulate(thing)
-      if (thing.id) {
-        Joi.attempt(thing, schema)
-        var replaced = false
-        for (var i = 0; i !== things.length; ++i) {
-          if (things[i].id === thing.id) {
-            replaced = true
-            things[i] = thing
-            break
-          }
-        }
-        if (!replaced) {
-          throw new Error('No ' + name + ' with id "' + thing.id + '"')
-        }
-      } else {
-        thing = Object.assign({}, thing)
-        thing.id = nextId()
-        Joi.attempt(thing, schema)
-        things.push(thing)
-      }
-      return encapsulate(thing)
-    }
-
-    function del (id) {
-      for (var i = 0; i !== things.length; ++i) {
-        const thing = things[i]
-        if (thing.id === id) {
-          things.splice(i, 1)
-          return encapsulate(thing)
-        }
-      }
-      throw new Error('No ' + name + ' with id "' + id + '"')
-    }
-  }
-
-  function listOfThingsWithSlug ({things, name, encapsulate}) {
-    all()
-
-    const bySlug = Object.assign({}, ...things.map(thing => {
-      const o = {}
-      o[thing.slug] = thing
-      return o
-    }))
-
-    // If we ever add a 'put' function, it has to update bySlug
-    return {get, all}
-
-    function get (slug) {
-      const thing = bySlug[slug]
-      if (thing) {
-        return encapsulate(thing)
-      } else {
-        throw new Error('No ' + name + ' with slug "' + slug + '"')
-      }
-    }
-
-    function all () {
-      return things.map(encapsulate)
-    }
-  }
-}())
-
-function make (config) {
-  const {rootValue, imagesDirectory} = makeRoot(config)
-
-  async function request ({requestString, variableValues}) {
-    const response = await graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
-
-    // if (response.errors) {
-    //   console.log('GraphQL requestString:', requestString)
-    //   console.log('GraphQL variableValues:', variableValues)
-    //   console.log('GraphQL errors:', response.errors)
-    // }
-
-    return response
-  }
-
-  return {api: {schema, rootValue, request}, imagesDirectory}
-}
-
-Object.assign(exports, {make, forTest: {makeRoot: makeSyncRoot, schema, encapsulateData}})
+Object.assign(exports, {make})

@@ -1,0 +1,172 @@
+[
+    {
+        "_id": "4openRe7Az",
+        "artist": "artist-1",
+        "citySlug": "avalon",
+        "location": "location-1",
+        "occurrences": [
+            {
+                "start": "2018-08-17T13:00"
+            },
+            {
+                "start": "2018-08-18T13:00"
+            },
+            {
+                "start": "2018-08-19T13:00"
+            },
+            {
+                "start": "2018-08-19T18:00"
+            }
+        ],
+        "tags": [
+            "tag-1"
+        ],
+        "title": "\u00c9v\u00e9nement A"
+    },
+    {
+        "_id": "Opnel5aKBz",
+        "artist": "artist-2",
+        "citySlug": "avalon",
+        "location": "location-2",
+        "occurrences": [
+            {
+                "start": "2018-08-16T14:00"
+            }
+        ],
+        "tags": [
+            "tag-1",
+            "tag-2"
+        ],
+        "title": "\u00c9v\u00e9nement 2-12"
+    },
+    {
+        "_id": "VolejRejNm",
+        "artist": "artist-1",
+        "citySlug": "avalon",
+        "location": "location-2",
+        "occurrences": [
+            {
+                "start": "2018-08-14T14:00"
+            }
+        ],
+        "tags": [
+            "tag-1"
+        ],
+        "title": "\u00c9v\u00e9nement 2-1"
+    },
+    {
+        "_id": "WJxbojagwO",
+        "citySlug": "avalon",
+        "location": "location-1",
+        "occurrences": [
+            {
+                "start": "2018-08-21T15:00"
+            }
+        ],
+        "tags": [
+            "tag-1"
+        ],
+        "title": "\u00c9v\u00e9nement 3"
+    },
+    {
+        "_id": "WjnegYbwZ1",
+        "citySlug": "avalon",
+        "location": "location-1",
+        "occurrences": [
+            {
+                "start": "2018-08-07T13:00"
+            }
+        ],
+        "reservationPage": "http://reserve.com/",
+        "tags": [
+            "tag-1"
+        ],
+        "title": "\u00c9v\u00e9nement 1"
+    },
+    {
+        "_id": "Wpmbk5ezJn",
+        "citySlug": "avalon",
+        "location": "location-1",
+        "occurrences": [
+            {
+                "start": "2018-08-15T14:00"
+            }
+        ],
+        "tags": [
+            "tag-2"
+        ],
+        "title": "\u00c9v\u00e9nement 2-2"
+    },
+    {
+        "_id": "gl9avmeG1v",
+        "artist": "artist-1",
+        "citySlug": "shangri-la",
+        "location": "location-1",
+        "occurrences": [
+            {
+                "start": "2018-08-15T12:00"
+            }
+        ],
+        "tags": [
+            "tag-1"
+        ],
+        "title": "Seul \u00e9v\u00e9nement"
+    },
+    {
+        "_id": "k8mep2bMyJ",
+        "citySlug": "avalon",
+        "location": "location-2",
+        "occurrences": [
+            {
+                "start": "2018-08-28T16:00"
+            }
+        ],
+        "tags": [
+            "tag-1"
+        ],
+        "title": "\u00c9v\u00e9nement 4"
+    },
+    {
+        "_id": "l4zbq2dprO",
+        "citySlug": "avalon",
+        "location": "location-1",
+        "occurrences": [
+            {
+                "start": "2018-09-04T17:00"
+            }
+        ],
+        "tags": [
+            "tag-1"
+        ],
+        "title": "\u00c9v\u00e9nement 5"
+    },
+    {
+        "_id": "wMvbmOeYAl",
+        "artist": "artist-2",
+        "citySlug": "avalon",
+        "location": "location-1",
+        "occurrences": [
+            {
+                "start": "2018-08-17T14:00"
+            }
+        ],
+        "tags": [
+            "tag-1"
+        ],
+        "title": "\u00c9v\u00e9nement B"
+    },
+    {
+        "_id": "yMYerEdOBQ",
+        "citySlug": "avalon",
+        "location": "location-1",
+        "occurrences": [
+            {
+                "start": "2018-09-11T18:00"
+            }
+        ],
+        "tags": [
+            "tag-1"
+        ],
+        "title": "\u00c9v\u00e9nement 6"
+    }
+]
