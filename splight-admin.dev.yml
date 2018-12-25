@@ -29,15 +29,15 @@ spec:
       volumes:
         - name: splight-sources
           hostPath:
-            path: /mounts/splight/sources
+            path: MOUNT_ROOT/splight
             type: Directory
         - name: splight-coverage
           hostPath:
-            path: /mounts/splight/coverage
+            path: MOUNT_ROOT/coverage
             type: Directory
         - name: splight-test-data
           hostPath:
-            path: /mounts/splight/test-data
+            path: MOUNT_ROOT/test-data
             type: Directory
 ---
 kind: Service

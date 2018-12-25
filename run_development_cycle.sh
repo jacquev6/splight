@@ -41,9 +41,10 @@ case $CLUSTER in
     echo "Using minikube"
     minikube status && echo
     eval $(minikube docker-env)
+    MOUNT_ROOT=/mounts/splight
     PROCESSES=$(ps ux)
     RESTART_POD=false
-    for MOUNT in $PROJECT_ROOT/splight:/mounts/splight/sources $PROJECT_ROOT/coverage:/mounts/splight/coverage $PROJECT_ROOT/test-data:/mounts/splight/test-data
+    for MOUNT in $PROJECT_ROOT/splight:/mounts/splight/splight $PROJECT_ROOT/coverage:/mounts/splight/coverage $PROJECT_ROOT/test-data:/mounts/splight/test-data
     do
       if ! echo "$PROCESSES" | grep -e "minikube mount $MOUNT" >/dev/null
       then
@@ -54,8 +55,12 @@ case $CLUSTER in
     done
     if $RESTART_POD
     then
-      kubectl delete -f splight-admin.dev.yml
+      sed "s|MOUNT_ROOT|$MOUNT_ROOT|g" splight-admin.dev.yml | kubectl delete -f -
     fi
+    ;;
+  docker-for-desktop)
+    echo "Using Docker for Mac"
+    MOUNT_ROOT=$PROJECT_ROOT
     ;;
   *)
     echo "Unknown k8s dev cluster: $CLUSTER"
@@ -65,7 +70,7 @@ esac
 # @todo Allow running "npm install --save[-dev]" to modify package[-lock].json in sources
 docker build --file Dockerfile.dev --tag splight-dev .
 
-kubectl apply -f splight-admin.dev.yml
+sed "s|MOUNT_ROOT|$MOUNT_ROOT|g" splight-admin.dev.yml | kubectl apply -f -
 
 while ! kubectl get pod | grep "splight-admin.*Running" >/dev/null
 do
@@ -97,6 +102,11 @@ then
     minikube)
       echo "Admin website will be listening on $(minikube service splight-admin --url)/admin"
       ;;
+    docker-for-desktop)
+      kubectl port-forward service/splight-admin 8080:80 >/dev/null 2>/dev/null&
+      trap "kill $!" EXIT
+      echo "Admin website will be listening on http://localhost:8080/admin"
+      ;;
   esac
   trap true SIGINT
   npm run serve ./test-data/repo || true
@@ -109,9 +119,6 @@ then
   )
   cp -r test-data/repo/* test-data/data
 fi
-
-
-# docker stop splight-dev >/dev/null &
 
 echo
 echo "Development cycle OK"
