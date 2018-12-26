@@ -35,6 +35,16 @@ done
 
 mkdir -p coverage
 
+# @todo Does Helm solve this problem? (Generating k8s *.yml files from templates and variables, for dev, staging and prod)
+function k8s_config {
+  local F
+  for F in *.dev.yml
+  do
+    echo "---"
+    sed "s|MOUNT_ROOT|$MOUNT_ROOT|g" $F
+  done
+}
+
 CLUSTER=$(kubectl config current-context)
 case $CLUSTER in
   minikube)
@@ -55,7 +65,7 @@ case $CLUSTER in
     done
     if $RESTART_POD
     then
-      sed "s|MOUNT_ROOT|$MOUNT_ROOT|g" splight-admin.dev.yml | kubectl delete -f -
+      k8s_config | kubectl delete -f -
     fi
     ;;
   docker-for-desktop)
@@ -68,9 +78,9 @@ case $CLUSTER in
 esac
 
 # @todo Allow running "npm install --save[-dev]" to modify package[-lock].json in sources
-docker build --file Dockerfile.dev --tag splight-dev .
+docker build --file splight-admin.dev.dockerfile --tag splight-dev .
 
-sed "s|MOUNT_ROOT|$MOUNT_ROOT|g" splight-admin.dev.yml | kubectl apply -f -
+k8s_config | kubectl apply -f -
 
 while ! kubectl get pod | grep "splight-admin.*Running" >/dev/null
 do

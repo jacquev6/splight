@@ -15,7 +15,7 @@ echo "--------------------------------------------"
 echo "Building eu.gcr.io/jacquev6-0001/splight-admin:$TAG"
 echo "--------------------------------------------"
 
-docker build --file Dockerfile.prod --tag eu.gcr.io/jacquev6-0001/splight-admin:$TAG .
+docker build --file splight-admin.prod.dockerfile --tag eu.gcr.io/jacquev6-0001/splight-admin:$TAG .
 
 echo "--------------------------------------------"
 echo "Produced eu.gcr.io/jacquev6-0001/splight-admin:$TAG"
@@ -27,4 +27,13 @@ echo "--------------------------------------------"
 echo "Pushed eu.gcr.io/jacquev6-0001/splight-admin:$TAG"
 echo "--------------------------------------------"
 
-kubectl apply -f splight-admin.prod.yml
+function k8s_config {
+  local F
+  for F in *.prod.yml
+  do
+    echo "---"
+    cat $F
+  done
+}
+
+k8s_config | kubectl apply -f -
