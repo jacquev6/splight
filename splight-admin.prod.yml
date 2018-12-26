@@ -15,10 +15,18 @@ spec:
         ad.datadoghq.com/splight-admin.logs: '[{"source":"splight-admin","service":"splight-admin"}]'
     spec:
       containers:
-      - name: splight-admin
-        image: eu.gcr.io/jacquev6-0001/splight-admin:20181216175339
-        ports:
-        - containerPort: 80
+        - name: splight-admin
+          image: eu.gcr.io/jacquev6-0001/splight-admin:20181226185405
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /app/test-data/images
+              name: splight-images
+      volumes:
+        - name: splight-images
+          gcePersistentDisk:
+            pdName: splight-images
+            fsType: ext4
 ---
 apiVersion: v1
 kind: Service
@@ -26,9 +34,8 @@ metadata:
   name: splight-admin
 spec:
   type: LoadBalancer
-  loadBalancerIP: 35.210.122.49
-  ports:
-  - protocol: TCP
-    port: 80
   selector:
     app: splight-admin
+  loadBalancerIP: 35.210.122.49
+  ports:
+    - port: 80

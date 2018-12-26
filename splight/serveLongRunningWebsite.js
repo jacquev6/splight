@@ -11,9 +11,9 @@ async function main () {
 
   const app = express()
 
-  app.use(await adminWebsite.makeRouter())
+  app.use(await adminWebsite.makeRouter({}))
 
-  app.listen(80, () => console.log('Listening at http://localhost:80/'))
+  app.listen(80, () => console.log('Website live!'))
 }
 
-main(process.argv[2])
+main()

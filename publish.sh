@@ -4,10 +4,6 @@ set -o errexit
 
 TAG=$(date "+%Y%m%d%H%M%S")
 
-cp ../papa-on-gcp.id_rsa ssh/id_rsa
-cp ../papa-on-gcp.id_rsa.pub ssh/id_rsa.pub
-chmod 600 ssh/*
-
 sed -i "s|Splight - [0-9]\+</title>$|Splight - $TAG</title>|" splight/adminWebsite/page.html
 sed -i "s/splight-admin:[0-9]\+$/splight-admin:$TAG/" splight-admin.prod.yml
 

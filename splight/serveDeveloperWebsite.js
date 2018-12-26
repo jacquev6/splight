@@ -8,7 +8,7 @@ const reload = require('reload')
 const adminWebsite = require('./adminWebsite')
 
 async function main () {
-  console.log('Starting developer website...')
+  console.log('Starting website...')
 
   const app = express()
 

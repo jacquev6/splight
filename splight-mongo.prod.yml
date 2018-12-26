@@ -32,4 +32,4 @@ spec:
   selector:
     app: splight-mongo
   ports:
-  - port: 27017
+    - port: 27017
