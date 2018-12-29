@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: splight-mongo
-          image: mongo:4
+          image: mongo:3
 ---
 apiVersion: v1
 kind: Service

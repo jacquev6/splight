@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: splight-mongo
-          image: mongo:4.0.4
+          image: mongo:3.6.9
           volumeMounts:
             - mountPath: /data/db
               name: splight-mongo
