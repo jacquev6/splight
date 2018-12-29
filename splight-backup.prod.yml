@@ -1,0 +1,14 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: splight-backup
+spec:
+  schedule: "*/15 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: splight-backup
+              image: eu.gcr.io/jacquev6-0001/splight-backup:20181229-115501
+          restartPolicy: Never
