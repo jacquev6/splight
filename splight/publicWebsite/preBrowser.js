@@ -28,6 +28,7 @@ function initialize () {
 }
 
 async function browse (url) {
+  // @todo Fix bug: "back" history button does not reload previous view
   history.pushState(null, '', url)
 
   const cached = await preBrowse(url, false)
