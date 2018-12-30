@@ -10,5 +10,7 @@ spec:
         spec:
           containers:
             - name: splight-backup
-              image: eu.gcr.io/jacquev6-0001/splight-backup:20181229-115501
+              image: eu.gcr.io/jacquev6-0001/splight-backup:20181230-082900
+              args:
+                - backup
           restartPolicy: Never

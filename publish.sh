@@ -4,7 +4,8 @@ set -o errexit
 
 TAG=$(date "+%Y%m%d-%H%M%S")
 
-sed -i "s/[0-9]\{8\}-[0-9]\{6\}/$TAG/g" *.prod.yml splight/adminWebsite/page.html
+sed -i "s/[0-9]\{8\}-[0-9]\{6\}/$TAG/g" splight/adminWebsite/page.html
+sed -i "s/:[0-9]\{8\}-[0-9]\{6\}/:$TAG/g" *prod.yml
 
 echo "--------------------------------------------"
 echo "Building eu.gcr.io/jacquev6-0001/splight-admin:$TAG"
