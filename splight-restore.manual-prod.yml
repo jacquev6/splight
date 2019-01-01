@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: splight-restore-20181230-083030
+  name: splight-restore-20190101-095048
 spec:
   template:
     spec:
@@ -10,5 +10,5 @@ spec:
           image: eu.gcr.io/jacquev6-0001/splight-backup:20181230-082900
           args:
             - restore
-            - 20181230-072908
+            - 20190101-084407
       restartPolicy: Never

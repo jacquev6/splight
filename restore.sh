@@ -3,7 +3,7 @@
 set -o errexit
 
 DATETIME=$1
-echo $DATETIME | grep "^[0-9]\{8\}-[0-9]\{6\}$" || (echo "Datetime format: YYYMMDD-HHMMSS"; exit 1)
+echo $DATETIME | grep "^[0-9]\{8\}-[0-9]\{6\}$" >/dev/null || (echo "Datetime format: YYYMMDD-HHMMSS"; exit 1)
 
 read -p "Restore Splight from $DATETIME backup? " -n 1 -r
 echo
