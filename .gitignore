@@ -1,6 +1,3 @@
 /node_modules/
 /coverage/
 /.nyc_output/
-
-# @todo Remove (and use k8s secrets?)
-jacquev6-0001-430328cf0505.json

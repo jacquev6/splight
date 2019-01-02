@@ -12,6 +12,6 @@ RUN apk --update add mongodb-tools && \
 
 COPY splight ./splight
 
-COPY jacquev6-0001-430328cf0505.json ./
+COPY secrets/jacquev6-0001-430328cf0505.json ./
 
 ENTRYPOINT ["node", "splight/backup.js"]
