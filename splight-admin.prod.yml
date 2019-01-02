@@ -27,6 +27,8 @@ spec:
           gcePersistentDisk:
             pdName: splight-images
             fsType: ext4
+  strategy:
+    type: Recreate
 ---
 apiVersion: v1
 kind: Service
