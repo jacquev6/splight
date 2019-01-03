@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: splight-admin
-          image: eu.gcr.io/jacquev6-0001/splight-admin:20190102-191317
+          image: eu.gcr.io/jacquev6-0001/splight-admin:20190103-063007
           ports:
             - containerPort: 80
   strategy:
