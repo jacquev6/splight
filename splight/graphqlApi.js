@@ -12,50 +12,7 @@ const schema = graphql.buildSchema(schemaString)
 
 const hashids = new Hashids('', 10)
 
-function imagesManager (images) {
-  const imageExtensions = ['.png', '.jpg']
-
-  async function get (img) {
-    for (var ext of imageExtensions) {
-      if (await images.exists(img + ext)) {
-        return images.prefix + img + ext
-      }
-    }
-    return null
-  }
-
-  async function save (img, data) {
-    if (data) {
-      if (data.startsWith('data:')) {
-        var extension
-        if (data.startsWith('data:image/png;base64,')) {
-          extension = '.png'
-        } else {
-          assert(data.startsWith('data:image/jpeg;base64,'))
-          extension = '.jpg'
-        }
-        data = Buffer.from(data.slice(22), 'base64') // @todo slice(23) for jpg!
-        await images.save(img + extension, data)
-        for (var ext of imageExtensions) {
-          if (ext !== extension) {
-            await images.del(img + ext)
-          }
-        }
-      } else {
-        assert(imageExtensions.some(ext => data === images.prefix + img + ext))
-      }
-    } else {
-      for (ext of imageExtensions) {
-        await images.del(img + ext)
-      }
-    }
-  }
-
-  return {get, save}
-}
-
-async function make ({db, images, clock}) {
-  images = imagesManager(images)
+async function make ({db, clock}) {
   clock = clock || datetime.now
 
   const artistsCollection = db.collection('artists')
@@ -83,12 +40,14 @@ async function make ({db, images, clock}) {
 
   async function putArtist ({artist: {slug, name, description, website, image}}) {
     const _id = slug
-    const dbArtist = {_id, name, description, website}
+    const dbArtist = {_id, name, description, website, image}
+    if (!dbArtist.image) {
+      delete dbArtist.image
+    }
     if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
       throw new Error('Incorrect slug')
     }
     await artistsCollection.replaceOne({_id}, dbArtist, {upsert: true})
-    await images.save(`artists/${slug}`, image)
     return makeArtist(dbArtist)
   }
 
@@ -112,8 +71,7 @@ async function make ({db, images, clock}) {
     }
   }
 
-  async function makeArtist ({_id: slug, name, description, website}) {
-    const image = await images.get(`artists/${slug}`)
+  async function makeArtist ({_id: slug, name, description, website, image}) {
     description = description || []
     return {slug, name, description, website, image}
   }
@@ -138,7 +96,7 @@ async function make ({db, images, clock}) {
     }
   }
 
-  async function makeCity ({_id: slug, name, tags: dbTags}) {
+  async function makeCity ({_id: slug, name, tags: dbTags, image, allTagsImage}) {
     const citySlug = slug
 
     async function location ({slug}) {
@@ -161,8 +119,7 @@ async function make ({db, images, clock}) {
       }
     }
 
-    const tags = await Promise.all((dbTags || []).map(async function ({slug, title}) {
-      const image = await images.get(`cities/${citySlug}/tags/${slug}`)
+    const tags = await Promise.all((dbTags || []).map(async function ({slug, title, image}) {
       return {slug, title, image}
     }))
 
@@ -245,26 +202,25 @@ async function make ({db, images, clock}) {
       }
     }
 
-    const image = await images.get(`cities/${slug}`)
-    const allTagsImage = await images.get(`cities/${slug}/all-tags`)
     return {slug, name, tags, location, locations, event, events, allTagsImage, image, firstDate, dateAfter}
   }
 
   async function putLocation ({citySlug, location: {slug, name, description, address, phone, website, image}}) {
     const _id = citySlug + ':' + slug
-    const dbLocation = {_id, citySlug, name, description, address, phone, website}
+    const dbLocation = {_id, citySlug, name, description, address, phone, website, image}
+    if (!dbLocation.image) {
+      delete dbLocation.image
+    }
     if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
       throw new Error('Incorrect slug')
     }
     await locationsCollection.replaceOne({_id}, dbLocation, {upsert: true})
-    await images.save(`cities/${citySlug}/locations/${slug}`, image)
     return makeLocation(citySlug, dbLocation)
   }
 
-  async function makeLocation (citySlug, {_id, name, description, address, phone, website}) {
+  async function makeLocation (citySlug, {_id, name, description, address, phone, website, image}) {
     assert.equal(_id.split(':').length, 2)
     const slug = _id.split(':')[1]
-    const image = await images.get(`cities/${citySlug}/locations/${slug}`)
     description = description || []
     address = address || []
     return {slug, name, description, address, phone, website, image}
@@ -273,9 +229,8 @@ async function make ({db, images, clock}) {
   async function putEvent ({citySlug, event: {id, title, artist, location, tags, occurrences, reservationPage}}) {
     const dbCity = await citiesCollection.findOne({_id: citySlug})
 
-    const tagsBySlug = Object.assign({}, ...await Promise.all((dbCity.tags || []).map(async function ({slug, title}) {
+    const tagsBySlug = Object.assign({}, ...await Promise.all((dbCity.tags || []).map(async function ({slug, title, image}) {
       const o = {}
-      const image = await images.get(`cities/${citySlug}/tags/${slug}`)
       o[slug] = {slug, title, image}
       return o
     })))
@@ -308,9 +263,8 @@ async function make ({db, images, clock}) {
   async function deleteEvent ({citySlug, eventId}) {
     const dbCity = await citiesCollection.findOne({_id: citySlug})
 
-    const tagsBySlug = Object.assign({}, ...await Promise.all((dbCity.tags || []).map(async function ({slug, title}) {
+    const tagsBySlug = Object.assign({}, ...await Promise.all((dbCity.tags || []).map(async function ({slug, title, image}) {
       const o = {}
-      const image = await images.get(`cities/${citySlug}/tags/${slug}`)
       o[slug] = {slug, title, image}
       return o
     })))

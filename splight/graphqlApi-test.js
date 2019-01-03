@@ -27,7 +27,7 @@ describe('graphqlApi', function () {
     mongodbServer.stop()
   })
 
-  async function make (data = {}, {images, clock} = {}) {
+  async function make (data = {}, {clock} = {}) {
     const dbArtists = Object.entries(data.artists || {}).map(([slug, artist]) => Object.assign({_id: slug}, artist))
     const dbLocations = [].concat(...Object.entries(data.cities || {}).map(function ([citySlug, city]) {
       const {locations} = city
@@ -63,9 +63,7 @@ describe('graphqlApi', function () {
     await setCollection('events', dbEvents)
     await setCollection('sequences', dbSequences)
 
-    images = images || {}
-
-    const api = await graphqlApi.make({db, images: makeTestImages(images), clock})
+    const api = await graphqlApi.make({db, clock})
 
     async function checkRequest (requestString, variableValues, expected) {
       if (!expected) { // A poor man's variadic function
@@ -152,27 +150,7 @@ describe('graphqlApi', function () {
       assert.deepStrictEqual(actual, expected)
     }
 
-    function checkImages (expected) {
-      assert.deepStrictEqual(images, expected)
-    }
-
-    return {checkRequest, checkData, checkImages}
-  }
-
-  function makeTestImages (images) {
-    function exists (fileName) {
-      return !!images[fileName]
-    }
-
-    function save (fileName, data) {
-      images[fileName] = data.toString()
-    }
-
-    function del (fileName) {
-      delete images[fileName]
-    }
-
-    return {exists, save, del, prefix: 'prefix/'}
+    return {checkRequest, checkData}
   }
 
   describe('full query', function () {
@@ -252,18 +230,18 @@ describe('graphqlApi', function () {
       const {checkRequest} = await make(
         {
           artists: {
-            'artist-1': {name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com'},
+            'artist-1': {name: 'Artist 1', description: ['Artist 1 description'], website: 'http://artist-1.com', image: 'prefix/artists/artist-1.png'},
             'artist-2': {name: 'Artist 2'}
           },
           cities: {
             'city': {
               name: 'City',
               locations: {
-                'location-1': {name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', phone: '0123456789', address: ['Location 1 address']},
+                'location-1': {name: 'Location 1', description: ['Location 1 description'], website: 'http://location-1.com', phone: '0123456789', address: ['Location 1 address'], image: 'prefix/cities/city/locations/location-1.png'},
                 'location-2': {name: 'Location 2'}
               },
               tags: [
-                {slug: 'tag-1', title: 'Tag 1'},
+                {slug: 'tag-1', title: 'Tag 1', image: 'prefix/cities/city/tags/tag-1.png'},
                 {slug: 'tag-2', title: 'Tag 2'}
               ],
               events: [
@@ -282,17 +260,10 @@ describe('graphqlApi', function () {
                   occurrences: [{start: '2018-07-14T12:00'}],
                   reservationPage: 'http://reserve.com/'
                 }
-              ]
+              ],
+              allTagsImage: 'prefix/cities/city/all-tags.png',
+              image: 'prefix/cities/city.png'
             }
-          }
-        },
-        {
-          images: {
-            'cities/city.png': true,
-            'cities/city/all-tags.png': true,
-            'cities/city/locations/location-1.png': true,
-            'cities/city/tags/tag-1.png': true,
-            'artists/artist-1.png': true
           }
         }
       )
@@ -1025,11 +996,7 @@ describe('graphqlApi', function () {
 
   describe('mutations', function () {
     const pngData = 'png data'
-    const pngDataBase64 = Buffer.from(pngData).toString('base64')
-    const pngDataUrl = 'data:image/png;base64,' + pngDataBase64
-    const jpgData = 'jpg data'
-    const jpgDataBase64 = Buffer.from(jpgData).toString('base64')
-    const jpgDataUrl = 'data:image/jpeg;base64,' + jpgDataBase64
+    const pngDataUrl = 'data:image/png;base64,' + Buffer.from(pngData).toString('base64')
 
     describe('putArtist', function () {
       const fields = 'slug name description website image'
@@ -1037,25 +1004,23 @@ describe('graphqlApi', function () {
       const put = `mutation($artist:IArtist!){putArtist(artist:$artist){${fields}}}`
 
       it('adds an artist', async function () {
-        const {checkRequest, checkData, checkImages} = await make()
+        const {checkRequest, checkData} = await make()
 
         await checkRequest(get, {data: {artists: []}})
 
         await checkRequest(
           put,
           {artist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}},
-          {data: {putArtist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}}}
+          {data: {putArtist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}}}
         )
 
-        await checkData({artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}})
+        await checkData({artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}}})
 
-        await checkImages({'artists/artist.png': pngData})
-
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}]}})
       })
 
       it("doesn't add an artist with a bad slug", async function () {
-        const {checkRequest, checkData, checkImages} = await make()
+        const {checkRequest, checkData} = await make()
 
         await checkRequest(
           put,
@@ -1071,53 +1036,48 @@ describe('graphqlApi', function () {
         )
 
         await checkData({})
-        await checkImages({})
       })
 
       it('modifies an artist', async function () {
-        const {checkRequest, checkData, checkImages} = await make({artists: {'artist': {name: 'Artist'}}})
+        const {checkRequest, checkData} = await make({artists: {'artist': {name: 'Artist'}}})
 
         await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: [], website: null, image: null}]}})
 
         await checkRequest(
           put,
           {artist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}},
-          {data: {putArtist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}}}
+          {data: {putArtist: {slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}}}
         )
 
-        await checkData({artists: {'artist': {name: 'New name', description: ['Description'], website: 'http://foo.bar'}}})
-        await checkImages({'artists/artist.png': pngData})
+        await checkData({artists: {'artist': {name: 'New name', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}}})
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}]}})
       })
 
       it('modifies an artist - no change', async function () {
-        const {checkRequest, checkData, checkImages} = await make(
-          {artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}},
-          {images: {'artists/artist.png': pngData}}
+        const {checkRequest, checkData} = await make(
+          {artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}}}
         )
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}]}})
 
         await checkRequest(
           put,
-          {artist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}},
-          {data: {putArtist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}}}
+          {artist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}},
+          {data: {putArtist: {slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}}}
         )
 
-        await checkData({artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}})
-        await checkImages({'artists/artist.png': pngData})
+        await checkData({artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}}})
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}]}})
       })
 
       it('modifies an artist - reset', async function () {
-        const {checkRequest, checkData, checkImages} = await make(
-          {artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar'}}},
-          {images: {'artists/artist.png': pngData}}
+        const {checkRequest, checkData} = await make(
+          {artists: {'artist': {name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}}}
         )
 
-        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: 'prefix/artists/artist.png'}]}})
+        await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'Artist', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl}]}})
 
         await checkRequest(
           put,
@@ -1126,7 +1086,6 @@ describe('graphqlApi', function () {
         )
 
         await checkData({artists: {'artist': {name: 'New name', description: []}}})
-        await checkImages({})
 
         await checkRequest(get, {data: {artists: [{slug: 'artist', name: 'New name', description: [], website: null, image: null}]}})
       })
@@ -1134,7 +1093,7 @@ describe('graphqlApi', function () {
       it('propagates changes to events', async function () {
         const {checkRequest} = await make(
           {
-            artists: {'artist': {name: 'Artist'}},
+            artists: {'artist': {name: 'Artist', image: pngDataUrl}},
             cities: {
               'city': {
                 name: 'City',
@@ -1148,15 +1107,14 @@ describe('graphqlApi', function () {
                 }]
               }
             }
-          },
-          {images: {'artists/artist.png': pngData}}
+          }
         )
 
         const getEvents = `{cities{events{artist{${fields}}}}}`
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{events: [{artist: {slug: 'artist', name: 'Artist', description: [], website: null, image: 'prefix/artists/artist.png'}}]}]}}
+          {data: {cities: [{events: [{artist: {slug: 'artist', name: 'Artist', description: [], website: null, image: pngDataUrl}}]}]}}
         )
 
         await checkRequest(
@@ -1172,58 +1130,38 @@ describe('graphqlApi', function () {
       })
     })
 
-    it('changes image type', async function () {
-      const put = 'mutation($image:URL!){putArtist(artist:{slug:"artist",name:"Artist",description:[],image:$image}){image}}'
-
-      const {checkRequest, checkData, checkImages} = await make()
-
-      await checkRequest(put, {image: pngDataUrl}, {data: {putArtist: {image: 'prefix/artists/artist.png'}}})
-      await checkData({artists: {'artist': {name: 'Artist', description: []}}})
-      await checkImages({'artists/artist.png': pngData})
-
-      await checkRequest(put, {image: jpgDataUrl}, {data: {putArtist: {image: 'prefix/artists/artist.jpg'}}})
-      await checkData({artists: {'artist': {name: 'Artist', description: []}}})
-      await checkImages({'artists/artist.jpg': jpgData})
-
-      await checkRequest(put, {image: pngDataUrl}, {data: {putArtist: {image: 'prefix/artists/artist.png'}}})
-      await checkData({artists: {'artist': {name: 'Artist', description: []}}})
-      await checkImages({'artists/artist.png': pngData})
-    })
-
     describe('putLocation', function () {
       const fields = 'slug name description website image phone address'
       const get = `{cities{slug locations{${fields}}}}`
       const put = `mutation($citySlug:ID!,$location:ILocation!){putLocation(citySlug:$citySlug,location:$location){${fields}}}`
 
       it('adds a location', async function () {
-        const {checkRequest, checkData, checkImages} = await make({cities: {'city': {name: 'City'}}})
+        const {checkRequest, checkData} = await make({cities: {'city': {name: 'City'}}})
 
         await checkRequest(get, {data: {cities: [{slug: 'city', locations: []}]}})
 
         await checkRequest(
           put,
           {citySlug: 'city', location: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}},
-          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'prefix/cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
+          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}}}
         )
 
         await checkData({
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address']}}
+              locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address'], image: pngDataUrl}}
             }
           }
         })
 
-        await checkImages({'cities/city/locations/location.png': pngData})
-
-        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'prefix/cities/city/locations/location.png', phone: '0123456789', address: ['Address']}]}]}})
+        await checkRequest(get, {data: {cities: [{slug: 'city', locations: [{slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}]}]}})
       })
 
       // @todo Test adding a lodation to an unexisting city
 
       it("doesn't add a location with bad slug", async function () {
-        const {checkRequest, checkData, checkImages} = await make({cities: {'city': {name: 'City'}}})
+        const {checkRequest, checkData} = await make({cities: {'city': {name: 'City'}}})
 
         await checkRequest(
           put,
@@ -1239,12 +1177,10 @@ describe('graphqlApi', function () {
         )
 
         await checkData({cities: {'city': {name: 'City'}}})
-
-        await checkImages({})
       })
 
       it('modifies a location', async function () {
-        const {checkRequest, checkData, checkImages} = await make({
+        const {checkRequest, checkData} = await make({
           cities: {'city': {name: 'City', locations: {'location': {name: 'Location'}}}}
         })
 
@@ -1264,19 +1200,17 @@ describe('graphqlApi', function () {
         await checkRequest(
           put,
           {citySlug: 'city', location: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}},
-          {data: {putLocation: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: 'prefix/cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
+          {data: {putLocation: {slug: 'location', name: 'New name', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}}}
         )
 
         await checkData({
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'New name', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address']}}
+              locations: {'location': {name: 'New name', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address'], image: pngDataUrl}}
             }
           }
         })
-
-        await checkImages({'cities/city/locations/location.png': pngData})
 
         await checkRequest(get, {data: {cities: [{
           slug: 'city',
@@ -1285,7 +1219,7 @@ describe('graphqlApi', function () {
             name: 'New name',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'prefix/cities/city/locations/location.png',
+            image: pngDataUrl,
             phone: '0123456789',
             address: ['Address']
           }]
@@ -1293,9 +1227,8 @@ describe('graphqlApi', function () {
       })
 
       it('modifies a location - no change', async function () {
-        const {checkRequest, checkData, checkImages} = await make(
-          {cities: {'city': {name: 'City', locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address']}}}}},
-          {images: {'cities/city/locations/location.png': pngData}}
+        const {checkRequest, checkData} = await make(
+          {cities: {'city': {name: 'City', locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address'], image: pngDataUrl}}}}}
         )
 
         await checkRequest(get, {data: {cities: [{
@@ -1305,7 +1238,7 @@ describe('graphqlApi', function () {
             name: 'Location',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'prefix/cities/city/locations/location.png',
+            image: pngDataUrl,
             phone: '0123456789',
             address: ['Address']
           }]
@@ -1313,20 +1246,18 @@ describe('graphqlApi', function () {
 
         await checkRequest(
           put,
-          {citySlug: 'city', location: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'prefix/cities/city/locations/location.png', phone: '0123456789', address: ['Address']}},
-          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: 'prefix/cities/city/locations/location.png', phone: '0123456789', address: ['Address']}}}
+          {citySlug: 'city', location: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}},
+          {data: {putLocation: {slug: 'location', name: 'Location', description: ['Description'], website: 'http://foo.bar', image: pngDataUrl, phone: '0123456789', address: ['Address']}}}
         )
 
         await checkData({
           cities: {
             'city': {
               name: 'City',
-              locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address']}}
+              locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['Address'], image: pngDataUrl}}
             }
           }
         })
-
-        await checkImages({'cities/city/locations/location.png': pngData})
 
         await checkRequest(get, {data: {cities: [{
           slug: 'city',
@@ -1335,7 +1266,7 @@ describe('graphqlApi', function () {
             name: 'Location',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'prefix/cities/city/locations/location.png',
+            image: pngDataUrl,
             phone: '0123456789',
             address: ['Address']
           }]
@@ -1343,9 +1274,8 @@ describe('graphqlApi', function () {
       })
 
       it('modifies a location - reset', async function () {
-        const {checkRequest, checkData, checkImages} = await make(
-          {cities: {'city': {name: 'City', locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['1 rue de Gaule', '92000 Issy-ou-là']}}}}},
-          {images: {'cities/city/locations/location.png': pngData}}
+        const {checkRequest, checkData} = await make(
+          {cities: {'city': {name: 'City', locations: {'location': {name: 'Location', description: ['Description'], website: 'http://foo.bar', phone: '0123456789', address: ['1 rue de Gaule', '92000 Issy-ou-là'], image: pngDataUrl}}}}}
         )
 
         await checkRequest(get, {data: {cities: [{
@@ -1355,7 +1285,7 @@ describe('graphqlApi', function () {
             name: 'Location',
             description: ['Description'],
             website: 'http://foo.bar',
-            image: 'prefix/cities/city/locations/location.png',
+            image: pngDataUrl,
             phone: '0123456789',
             address: ['1 rue de Gaule', '92000 Issy-ou-là']
           }]
@@ -1375,8 +1305,6 @@ describe('graphqlApi', function () {
             }
           }
         })
-
-        await checkImages({})
 
         await checkRequest(get, {data: {cities: [{
           slug: 'city',
@@ -1418,12 +1346,12 @@ describe('graphqlApi', function () {
         await checkRequest(
           put,
           {citySlug: 'city', location: {slug: 'location', name: 'New name', description: [], image: pngDataUrl, address: []}},
-          {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null, image: 'prefix/cities/city/locations/location.png', phone: null, address: []}}}
+          {data: {putLocation: {slug: 'location', name: 'New name', description: [], website: null, image: pngDataUrl, phone: null, address: []}}}
         )
 
         await checkRequest(
           getEvents,
-          {data: {cities: [{events: [{location: {slug: 'location', name: 'New name', description: [], website: null, image: 'prefix/cities/city/locations/location.png', phone: null, address: []}}]}]}}
+          {data: {cities: [{events: [{location: {slug: 'location', name: 'New name', description: [], website: null, image: pngDataUrl, phone: null, address: []}}]}]}}
         )
       })
     })

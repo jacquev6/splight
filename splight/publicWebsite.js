@@ -17,10 +17,10 @@ const durations = require('./publicWebsite/durations')
 const pages = require('./publicWebsite/pages')
 const tagColoring = require('./tagColoring')
 
-async function makeRouter ({api, imagesDirectory, scripts, generationDate}) {
+async function makeRouter ({api, scripts, generationDate}) {
   const router = express.Router()
 
-  router.use('/images', express.static(imagesDirectory))
+  router.use('/images', express.static('splight/images'))
 
   router.use(bodyParser.json({limit: '50mb'})) // https://stackoverflow.com/a/19965089/905845
   router.use('/graphql', expressGraphql(Object.assign({graphiql: true}, api)))

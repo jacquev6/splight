@@ -19,14 +19,6 @@ spec:
           image: eu.gcr.io/jacquev6-0001/splight-admin:20190102-191317
           ports:
             - containerPort: 80
-          volumeMounts:
-            - mountPath: /app/test-data/images
-              name: splight-images
-      volumes:
-        - name: splight-images
-          gcePersistentDisk:
-            pdName: splight-images
-            fsType: ext4
   strategy:
     type: Recreate
 ---

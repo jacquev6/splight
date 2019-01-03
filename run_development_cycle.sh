@@ -54,7 +54,7 @@ case $CLUSTER in
     MOUNT_ROOT=/mounts/splight
     PROCESSES=$(ps ux)
     RESTART_POD=false
-    for MOUNT in $PROJECT_ROOT/splight:/mounts/splight/splight $PROJECT_ROOT/coverage:/mounts/splight/coverage $PROJECT_ROOT/test-data:/mounts/splight/test-data
+    for MOUNT in $PROJECT_ROOT/splight:/mounts/splight/splight $PROJECT_ROOT/coverage:/mounts/splight/coverage
     do
       if ! echo "$PROCESSES" | grep -e "minikube mount $MOUNT" >/dev/null
       then
@@ -98,10 +98,10 @@ show_in_browser "Unit test coverage details" $PROJECT_ROOT/coverage/index.html
 
 if $SERVE
 then
-  for F in test-data/mongo-exports/*.json
+  for F in test-data/*.json
   do
     COLLECTION=${F%.json}
-    COLLECTION=${COLLECTION#test-data/mongo-exports/}
+    COLLECTION=${COLLECTION#test-data/}
     cat $F | kubectl exec --stdin $(kubectl get pod | grep "splight-mongo.*Running" | cut -d " " -f 1) -- mongoimport --db splight --collection $COLLECTION --jsonArray --drop --quiet
   done
 
@@ -119,10 +119,10 @@ then
   npm run serve ./test-data/repo || true
   trap - SIGINT
 
-  for F in test-data/mongo-exports/*.json
+  for F in test-data/*.json
   do
     COLLECTION=${F%.json}
-    COLLECTION=${COLLECTION#test-data/mongo-exports/}
+    COLLECTION=${COLLECTION#test-data/}
     kubectl exec $(kubectl get pod | grep "splight-mongo.*Running" | cut -d " " -f 1) -- mongoexport --db splight --collection $COLLECTION --jsonArray --quiet | ./sort_by_id.py >$F
   done
 fi

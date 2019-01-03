@@ -907,7 +907,6 @@ async function initialize () {
         tooMany = false
 
         artists.forEach(artist => {
-          artist.image = artist.image && artist.image + '?' + new Date().getTime()
           artist.details = {html: artistDetails.render({artist})}
         })
 
@@ -1199,7 +1198,6 @@ async function initialize () {
         tooMany = false
 
         locations.forEach(location => {
-          location.image = location.image && location.image + '?' + new Date().getTime()
           location.details = {html: locationDetails.render({location})}
         })
 

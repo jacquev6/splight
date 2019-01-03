@@ -21,8 +21,6 @@ spec:
               name: splight-sources
             - mountPath: /app/coverage
               name: splight-coverage
-            - mountPath: /app/test-data
-              name: splight-test-data
           ports:
             - containerPort: 80
           command: ["tail", "-f", "/dev/null"]
@@ -34,10 +32,6 @@ spec:
         - name: splight-coverage
           hostPath:
             path: MOUNT_ROOT/coverage
-            type: Directory
-        - name: splight-test-data
-          hostPath:
-            path: MOUNT_ROOT/test-data
             type: Directory
 ---
 apiVersion: v1
