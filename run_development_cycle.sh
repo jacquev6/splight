@@ -123,7 +123,7 @@ then
   do
     COLLECTION=${F%.json}
     COLLECTION=${COLLECTION#test-data/mongo-exports/}
-    kubectl exec $(kubectl get pod | grep "splight-mongo.*Running" | cut -d " " -f 1) -- mongoexport --db splight --collection $COLLECTION --jsonArray --quiet | python3 -m json.tool --sort-keys >$F
+    kubectl exec $(kubectl get pod | grep "splight-mongo.*Running" | cut -d " " -f 1) -- mongoexport --db splight --collection $COLLECTION --jsonArray --quiet | ./sort_by_id.py >$F
   done
 fi
 
