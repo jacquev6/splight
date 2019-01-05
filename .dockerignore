@@ -3,6 +3,3 @@
 !package-lock.json
 !ssh
 !splight
-
-# @todo Remove (and use k8s secrets?)
-!secrets/jacquev6-0001-430328cf0505.json

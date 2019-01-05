@@ -11,4 +11,12 @@ spec:
           args:
             - restore
             - 20190101-084407
+          volumeMounts:
+            - mountPath: /app/jacquev6-0001-430328cf0505.json
+              name: splight-backups-service-account
+              subPath: jacquev6-0001-430328cf0505.json
+      volumes:
+        - name: splight-backups-service-account
+          secret:
+            secretName: splight-backups-service-account
       restartPolicy: Never
