@@ -1,16 +1,16 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: splight-restore-20190101-095048
+  name: splight-restore-20190105-055455
 spec:
   template:
     spec:
       containers:
         - name: splight-backup
-          image: eu.gcr.io/jacquev6-0001/splight-backup:20190103-063007
+          image: eu.gcr.io/jacquev6-0001/splight-backup:20190105-055706
           args:
             - restore
-            - 20190101-084407
+            - 20190105-045114
           volumeMounts:
             - mountPath: /app/jacquev6-0001-430328cf0505.json
               name: splight-backups-service-account
