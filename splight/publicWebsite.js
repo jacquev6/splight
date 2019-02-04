@@ -3,6 +3,7 @@
 const bodyParser = require('body-parser')
 const browserify = require('browserify')
 const CleanCSS = require('clean-css')
+const cors = require('cors')
 const express = require('express')
 const expressGraphql = require('express-graphql')
 const htmlMinifier = require('html-minifier')
@@ -22,6 +23,7 @@ async function makeRouter ({api, scripts, generationDate}) {
 
   router.use('/images', express.static('splight/images'))
 
+  router.use(cors()) // https://www.prisma.io/blog/enabling-cors-for-express-graphql-apollo-server-1ef999bfb38d
   router.use(bodyParser.json({limit: '50mb'})) // https://stackoverflow.com/a/19965089/905845
   router.use('/graphql', expressGraphql(Object.assign({graphiql: true}, api)))
 

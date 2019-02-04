@@ -20,7 +20,7 @@ function show_in_browser {
 while [[ "$#" > 0 ]]
 do
   case $1 in
-    --workdirb|---workdireb-browser)
+    -wb|--web-browser)
       SHOW_IN_BROWSER=true
       ;;
     -s|--serve)
