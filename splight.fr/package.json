@@ -1,0 +1,15 @@
+{
+  "name": "splight.fr",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve"
+  },
+  "dependencies": {
+    "vue": "^2.6.0",
+    "vue-router": "^3.0.2"
+  },
+  "devDependencies": {
+    "@vue/cli-service": "^3.4.0",
+    "vue-template-compiler": "^2.6.0"
+  }
+}
