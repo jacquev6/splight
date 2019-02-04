@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Cities</h1>
-    <p v-for="city in cities"><router-link :key="city.slug" :to="{name: 'city', params: {citySlug: city.slug}}"><img :src="city.image" />{{ city.name }}</router-link></p>
+    <p v-for="city in cities" :key="city.slug"><router-link :key="city.slug" :to="{name: 'city', params: {citySlug: city.slug}}"><img :src="city.image" />{{ city.name }}</router-link></p>
   </div>
 </template>
 

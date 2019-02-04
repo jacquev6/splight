@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import VueApollo from 'vue-apollo'
-import { createApolloClient, restartWebsockets } from 'vue-cli-plugin-apollo/graphql-client'
+import { createApolloClient } from 'vue-cli-plugin-apollo/graphql-client'
 
 import App from './App.vue'
 import Cities from './views/Cities.vue'
@@ -15,11 +15,11 @@ const apolloProvider = new VueApollo({
     httpEndpoint: 'http://192.168.99.100:30072/graphql',
     persisting: false,
     websocketsOnly: false,
-    ssr: false,
+    ssr: false
   }).apolloClient,
   errorHandler (error) {
     console.log(error.message)
-  },
+  }
 })
 
 const router = new Router({
@@ -39,7 +39,7 @@ const router = new Router({
   ]
 })
 
-const app = new Vue({
+new Vue({
   router,
   apolloProvider,
   render: function (h) { return h(App) }

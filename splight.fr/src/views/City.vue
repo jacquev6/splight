@@ -16,7 +16,7 @@ export default {
   apollo: {
     city: {
       query: gql`query($citySlug:ID!){city(slug:$citySlug){slug name tags{slug title image} allTagsImage}}`,
-      variables() {
+      variables () {
         return {
           citySlug: this.citySlug
         }
