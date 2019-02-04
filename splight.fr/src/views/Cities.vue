@@ -1,3 +1,3 @@
 <template>
-  <p>Index.vue</p>
+  <p>Cities.vue</p>
 </template>

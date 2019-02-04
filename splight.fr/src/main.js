@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import App from './App.vue'
-import Index from './views/Index.vue'
+import Cities from './views/Cities.vue'
+import City from './views/City.vue'
 
 Vue.use(Router)
 
@@ -11,8 +12,14 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'index',
-      component: Index
+      name: 'cities',
+      component: Cities
+    },
+    {
+      path: '/:citySlug',
+      name: 'city',
+      component: City,
+      props: true
     }
   ]
 })
