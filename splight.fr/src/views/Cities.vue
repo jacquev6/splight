@@ -11,6 +11,11 @@
 import gql from 'graphql-tag'
 
 export default {
+  data () {
+    return {
+      cities: {}
+    }
+  },
   apollo: {
     cities: gql`{cities{slug name image}}`
   }

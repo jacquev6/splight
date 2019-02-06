@@ -25,6 +25,11 @@ export default {
   props: [
     'citySlug'
   ],
+  data () {
+    return {
+      city: {}
+    }
+  },
   apollo: {
     city: {
       query: gql`query($citySlug:ID!){city(slug:$citySlug){slug name tags{slug title image} allTagsImage}}`,
