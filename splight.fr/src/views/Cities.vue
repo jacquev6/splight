@@ -1,8 +1,10 @@
 <template>
-  <div>
-    <h1>Cities</h1>
-    <p v-for="city in cities" :key="city.slug"><router-link :key="city.slug" :to="{name: 'city', params: {citySlug: city.slug}}"><img :src="city.image" />{{ city.name }}</router-link></p>
-  </div>
+  <b-row>
+    <b-col v-for="city in cities" :key="city.slug" cols="6" md="3">
+      <p><router-link :key="city.slug" :to="{name: 'city', params: {citySlug: city.slug}}"><img class="img-fluid" :alt="city.name" :src="city.image" /></router-link></p>
+      <p><router-link :key="city.slug" :to="{name: 'city', params: {citySlug: city.slug}}">{{ city.name }}</router-link></p>
+    </b-col>
+  </b-row>
 </template>
 
 <script>

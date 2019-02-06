@@ -2,6 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import VueApollo from 'vue-apollo'
 import { createApolloClient } from 'vue-cli-plugin-apollo/graphql-client'
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import App from './App.vue'
 import Cities from './views/Cities.vue'
@@ -9,6 +12,7 @@ import City from './views/City.vue'
 
 Vue.use(Router)
 Vue.use(VueApollo)
+Vue.use(BootstrapVue)
 
 const apolloProvider = new VueApollo({
   defaultClient: createApolloClient({

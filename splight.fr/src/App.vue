@@ -1,8 +1,9 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Cities</router-link>
-    </div>
+  <b-container>
+    <b-jumbotron header="Splight" lead="Votre agenda culturel régional"></b-jumbotron>
+
     <router-view/>
-  </div>
+
+    <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018-2019.</p>
+  </b-container>
 </template>
