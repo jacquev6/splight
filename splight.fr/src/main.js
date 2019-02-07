@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import VueApollo from 'vue-apollo'
 import { createApolloClient } from 'vue-cli-plugin-apollo/graphql-client'
 import BootstrapVue from 'bootstrap-vue'
+import VueHeadful from 'vue-headful'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
@@ -14,6 +15,7 @@ import Layout from './components/Layout.vue'
 Vue.use(Router)
 Vue.use(VueApollo)
 Vue.use(BootstrapVue)
+Vue.component('vue-headful', VueHeadful)
 
 Vue.component('sp-layout', Layout)
 

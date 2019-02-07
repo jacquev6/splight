@@ -1,5 +1,5 @@
 <template>
-  <sp-layout>
+  <sp-layout title="Splight">
     <template v-slot:content>
       <b-row>
         <b-col v-for="city in cities" :key="city.slug" cols="6" md="3">

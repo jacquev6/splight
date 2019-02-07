@@ -1,5 +1,5 @@
 <template>
-  <sp-layout>
+  <sp-layout :title="city.name + ' - Splight'">
     <template v-slot:subtitle>
       <span> - <router-link :to="{name: 'city', params: {citySlug}}">{{ city. name }}</router-link></span>
     </template>
