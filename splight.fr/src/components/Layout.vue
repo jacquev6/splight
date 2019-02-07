@@ -15,11 +15,11 @@
 <script>
 export default {
   props: {
-    'title': {
+    title: {
       type: String,
       required: true
     },
-    'lead': {
+    lead: {
       type: String,
       required: true
     }

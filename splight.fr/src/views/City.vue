@@ -1,7 +1,7 @@
 <template>
   <sp-layout :title="city.name + ' - Splight'" :lead="'Votre agenda culturel à ' + city.name + ' et dans sa région'">
     <template v-slot:subtitle>
-      <span> - <router-link :to="{name: 'city', params: {citySlug}}">{{ city. name }}</router-link></span>
+      <span> - <router-link :to="{name: 'city', params: {citySlug}}">{{ city.name }}</router-link></span>
     </template>
 
     <template v-slot:content>
@@ -29,7 +29,7 @@ import gql from 'graphql-tag'
 
 export default {
   props: {
-    'citySlug': {
+    citySlug: {
       type: String,
       required: true
     }
@@ -41,7 +41,7 @@ export default {
   },
   apollo: {
     city: {
-      query: gql`query($citySlug:ID!){city(slug:$citySlug){slug name tags{slug title image} allTagsImage}}`,
+      query: gql`query($citySlug:ID!){city(slug:$citySlug){name tags{slug title image} allTagsImage}}`,
       variables () {
         return {
           // @todo 404 if citySlug is wrong

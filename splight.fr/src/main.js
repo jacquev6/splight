@@ -8,9 +8,9 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import App from './App.vue'
+import Layout from './components/Layout.vue'
 import Cities from './views/Cities.vue'
 import City from './views/City.vue'
-import Layout from './components/Layout.vue'
 
 Vue.use(Router)
 Vue.use(VueApollo)
