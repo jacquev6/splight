@@ -1,5 +1,5 @@
 <template>
-  <sp-layout :title="city.name + ' - Splight'">
+  <sp-layout :title="city.name + ' - Splight'" :lead="'Votre agenda culturel à ' + city.name + ' et dans sa région'">
     <template v-slot:subtitle>
       <span> - <router-link :to="{name: 'city', params: {citySlug}}">{{ city. name }}</router-link></span>
     </template>
