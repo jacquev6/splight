@@ -28,9 +28,12 @@
 import gql from 'graphql-tag'
 
 export default {
-  props: [
-    'citySlug'
-  ],
+  props: {
+    'citySlug': {
+      type: String,
+      required: true
+    }
+  },
   data () {
     return {
       city: {}
