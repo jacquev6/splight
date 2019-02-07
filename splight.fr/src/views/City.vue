@@ -44,6 +44,7 @@ export default {
       query: gql`query($citySlug:ID!){city(slug:$citySlug){slug name tags{slug title image} allTagsImage}}`,
       variables () {
         return {
+          // @todo 404 if citySlug is wrong
           citySlug: this.citySlug
         }
       }
