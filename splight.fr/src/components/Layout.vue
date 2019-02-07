@@ -1,7 +1,7 @@
 <template>
   <div>
     <vue-headful :title="title"></vue-headful>
-    <b-jumbotron lead="Votre agenda culturel régional">
+    <b-jumbotron lead="Votre agenda culturel régional" header-level="4">
       <template slot="header">
         <router-link :to="{name: 'cities'}">Splight</router-link>
         <slot name="subtitle"></slot>
