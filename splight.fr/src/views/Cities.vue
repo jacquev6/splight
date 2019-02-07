@@ -14,8 +14,6 @@
 <script>
 import gql from 'graphql-tag'
 
-import Layout from '../Layout.vue'
-
 export default {
   data () {
     return {
@@ -24,9 +22,6 @@ export default {
   },
   apollo: {
     cities: gql`{cities{slug name image}}`
-  },
-  components: {
-    'sp-layout': Layout
   }
 }
 </script>

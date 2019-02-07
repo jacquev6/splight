@@ -27,9 +27,6 @@
 <script>
 import gql from 'graphql-tag'
 
-// @todo How can we do this globally?
-import Layout from '../Layout.vue'
-
 export default {
   props: [
     'citySlug'
@@ -48,9 +45,6 @@ export default {
         }
       }
     }
-  },
-  components: {
-    'sp-layout': Layout
   }
 }
 </script>
