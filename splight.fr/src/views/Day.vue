@@ -4,6 +4,7 @@
 
 <script>
 import moment from 'moment'
+import durations from '../durations'
 
 export default {
   props: {
@@ -23,7 +24,7 @@ export default {
   },
   data () {
     return {
-      duration: 1
+      duration: durations.oneDay
     }
   },
   computed: {

@@ -16,6 +16,7 @@
 
       <b-row>
         <b-col>
+          <sp-links-toolbar :citySlug="citySlug" :startDate="startDate" :duration="duration" />
           <p>This is a timespan starting at {{ startDate }}, with duration {{ duration }}, and with tags {{ tags }}.</p>
           <p>{{ city }}</p>
         </b-col>

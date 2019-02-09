@@ -8,6 +8,7 @@ import VueHeadful from 'vue-headful'
 import App from './App.vue'
 import Layout from './components/Layout.vue'
 import Timespan from './components/Timespan.vue'
+import LinksToolbar from './components/LinksToolbar.vue'
 import Cities from './views/Cities.vue'
 import City from './views/City.vue'
 import Week from './views/Week.vue'
@@ -21,6 +22,7 @@ Vue.component('vue-headful', VueHeadful)
 
 Vue.component('sp-layout', Layout)
 Vue.component('sp-timespan', Timespan)
+Vue.component('sp-links-toolbar', LinksToolbar)
 
 const apolloProvider = new VueApollo({
   defaultClient: createApolloClient({

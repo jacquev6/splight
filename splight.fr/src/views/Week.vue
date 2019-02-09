@@ -4,6 +4,7 @@
 
 <script>
 import moment from 'moment'
+import durations from '../durations'
 
 export default {
   props: {
@@ -20,13 +21,13 @@ export default {
   },
   data () {
     return {
-      duration: 7
+      duration: durations.oneWeek
     }
   },
   computed: {
     startDate () {
       // @todo 404 when date is invalid
-      return moment(this.year + '-' + this.week, 'GGGG-WW', true)
+      return moment.utc(this.year + '-' + this.week, 'GGGG-WW', true)
     }
   }
 }
