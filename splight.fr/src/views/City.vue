@@ -6,8 +6,8 @@
 
     <template v-slot:content>
       <b-row><b-col>
-        <p><router-link :to="{name: 'cities'}"><img class="img-fluid" alt="Toute l'actualité" :src="city.allTagsImage" /></router-link></p>
-        <p><router-link :to="{name: 'cities'}">Toute l'actualité</router-link></p>
+        <p><router-link :to="weekLink()"><img class="img-fluid" alt="Toute l'actualité" :src="city.allTagsImage" /></router-link></p>
+        <p><router-link :to="weekLink()">Toute l'actualité</router-link></p>
       </b-col></b-row>
 
       <b-row><b-col>
@@ -16,8 +16,8 @@
 
       <b-row>
         <b-col v-for="tag in city.tags" :key="tag.slug" cols="6" md="3">
-          <p><router-link :to="{name: 'cities'}"><img class="img-fluid" :alt="tag.title" :src="tag.image" /></router-link></p>
-          <p><router-link :to="{name: 'cities'}">{{ tag.title }}</router-link></p>
+          <p><router-link :to="weekLink(tag)"><img class="img-fluid" :alt="tag.title" :src="tag.image" /></router-link></p>
+          <p><router-link :to="weekLink(tag)">{{ tag.title }}</router-link></p>
         </b-col>
       </b-row>
     </template>
@@ -26,6 +26,7 @@
 
 <script>
 import gql from 'graphql-tag'
+import moment from 'moment'
 
 export default {
   props: {
@@ -47,6 +48,29 @@ export default {
           // @todo 404 if citySlug is wrong
           citySlug: this.citySlug
         }
+      }
+    }
+  },
+  methods: {
+    weekLink (tag) {
+      const startDate = moment().startOf('isoWeek')
+      const base = {
+        name: 'week',
+        params: {
+          citySlug: this.citySlug,
+          year: startDate.format('GGGG'),
+          week: startDate.format('WW')
+        }
+      }
+      if (tag) {
+        const query = {}
+        query[tag.slug] = null
+        return {
+          ...base,
+          query
+        }
+      } else {
+        return base
       }
     }
   }
