@@ -28,6 +28,10 @@ $sp-complement-color: #FFBA31;
 // $sp-complement-color-dark: #FFAA00;
 $sp-complement-color-very-dark: #B17600;
 
+$primary: $sp-main-color;
+$secondary: $sp-complement-color;
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
 body {
   background-color: $sp-main-color-very-light;
 }

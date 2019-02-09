@@ -4,8 +4,6 @@ import VueApollo from 'vue-apollo'
 import { createApolloClient } from 'vue-cli-plugin-apollo/graphql-client'
 import BootstrapVue from 'bootstrap-vue'
 import VueHeadful from 'vue-headful'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import App from './App.vue'
 import Layout from './components/Layout.vue'
