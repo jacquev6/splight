@@ -9,7 +9,7 @@
         <b-col>
           <div class="sp-advertisement">
             <p>Publicité</p>
-            <p><img class="img-fluid" alt="Publicité 468x60" src="../assets/ads/468x60.png" /></p>
+            <p><img class="img-fluid" alt="Publicité 468x60" src="./assets/ads/468x60.png" /></p>
           </div>
         </b-col>
       </b-row>
@@ -24,7 +24,7 @@
         <b-col lg="3" xl="2" class="d-none d-lg-inline-block">
           <div class="sp-advertisement">
             <p>Publicité</p>
-            <p><img class="img-fluid" alt="Publicité 160x600" src="../assets/ads/160x600.png" /></p>
+            <p><img class="img-fluid" alt="Publicité 160x600" src="./assets/ads/160x600.png" /></p>
           </div>
         </b-col>
       </b-row>

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import durations from '../durations.js'
+import durations from './durations'
 
 export default {
   props: {

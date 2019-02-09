@@ -4,7 +4,7 @@
 
 <script>
 import moment from 'moment'
-import durations from '../durations'
+import durations from './durations'
 
 export default {
   props: {
