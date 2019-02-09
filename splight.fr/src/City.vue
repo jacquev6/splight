@@ -53,13 +53,11 @@ export default {
   },
   methods: {
     weekLink (tag) {
-      const startDate = moment().startOf('isoWeek')
       const base = {
-        name: 'week',
+        name: 'timespan',
         params: {
           citySlug: this.citySlug,
-          year: startDate.format('GGGG'),
-          week: startDate.format('WW')
+          timespan: moment().startOf('isoWeek').format(moment.HTML5_FMT.WEEK)
         }
       }
       if (tag) {

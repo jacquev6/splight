@@ -16,8 +16,9 @@
 
       <b-row>
         <b-col>
-          <sp-links-toolbar :citySlug="citySlug" :startDate="startDate" :duration="duration" />
-          <p>This is a timespan starting at {{ startDate }}, with duration {{ duration }}, and with tags {{ tags }}.</p>
+          <sp-links-toolbar :links="links" />
+          <h1>{{ startDate.format(duration.titleFormat) }}</h1>
+          <p>This is timespan {{ timespan }}, from {{ startDate.format(moment.HTML5_FMT.DATE) }} to {{ dateAfter.format(moment.HTML5_FMT.DATE) }}, and with tags {{ tags }}.</p>
           <p>{{ city }}</p>
         </b-col>
 
@@ -46,6 +47,62 @@
 
 <script>
 import gql from 'graphql-tag'
+import moment from 'moment'
+import 'moment/locale/fr'
+
+const durations = (function () {
+  const oneDay = {
+    days: 1,
+    delta: 1,
+    name: 'une journée',
+    clip: 'day',
+    titleFormat: '[Journée du] dddd LL',
+    slugFormat: moment.HTML5_FMT.DATE,
+    links: {
+      prev: 'Journée précédente',
+      next: 'Journée suivante',
+      now1: { text: "Aujourd'hui", startDate: clipped => clipped },
+      now2: { text: 'Demain', startDate: clipped => clipped.clone().add(1, 'day') }
+    }
+  }
+
+  const threeDays = {
+    days: 3,
+    delta: 1,
+    name: 'trois jours',
+    clip: 'day',
+    titleFormat: '[3 jours à partir du] dddd LL',
+    slugFormat: moment.HTML5_FMT.DATE + '+2',
+    links: {
+      prev: 'Jours précédents',
+      next: 'Jours suivants',
+      now1: { text: 'Ces 3 jours', startDate: clipped => clipped },
+      now2: { text: 'Le week-end prochain', startDate: clipped => clipped.clone().add(3, 'days').startOf('isoWeek').add(4, 'days') }
+    }
+  }
+
+  const oneWeek = {
+    days: 7,
+    delta: 7,
+    name: 'une semaine',
+    clip: 'isoWeek',
+    titleFormat: '[Semaine du] dddd LL',
+    slugFormat: moment.HTML5_FMT.WEEK,
+    links: {
+      prev: 'Semaine précédente',
+      next: 'Semaine suivante',
+      now1: { text: 'Cette semaine', startDate: clipped => clipped },
+      now2: { text: 'La semaine prochaine', startDate: clipped => clipped.clone().add(7, 'days') }
+    }
+  }
+
+  return {
+    all: [oneDay, threeDays, oneWeek],
+    oneDay,
+    threeDays,
+    oneWeek
+  }
+})()
 
 export default {
   props: {
@@ -53,16 +110,15 @@ export default {
       type: String,
       required: true
     },
-    startDate: {
-      required: true
-    },
-    duration: {
+    timespan: {
       required: true
     }
   },
   data () {
     return {
-      city: {}
+      // @todo Remove (Display "loading" message to avoid accessing the undefined 'city' attribute)
+      city: {},
+      moment
     }
   },
   apollo: {
@@ -89,7 +145,7 @@ export default {
           // @todo 404 if citySlug is wrong
           citySlug: this.citySlug,
           first: this.startDate.format('YYYY-MM-DD'),
-          after: this.startDate.clone().add(this.duration, 'days').format('YYYY-MM-DD')
+          after: this.dateAfter.format('YYYY-MM-DD')
         }
       }
     }
@@ -97,6 +153,75 @@ export default {
   computed: {
     tags () {
       return Object.keys(this.$route.query)
+    },
+    duration () {
+      if (this.timespan[5] === 'W') {
+        return durations.oneWeek
+      } else if (this.timespan[10] === '+') {
+        return durations.threeDays
+      } else {
+        return durations.oneDay
+      }
+    },
+    startDate () {
+      return moment.utc(this.timespan, this.duration.slugFormat, true)
+    },
+    dateAfter () {
+      return this.startDate.clone().add(this.duration.days, 'days')
+    },
+    links () {
+      return {
+        prev: {
+          text: this.duration.links.prev,
+          to: {
+            name: 'timespan',
+            params: {
+              citySlug: this.citySlug,
+              timespan: this.startDate.clone().subtract(this.duration.delta, 'days').format(this.duration.slugFormat)
+            }
+          }
+        },
+        next: {
+          text: this.duration.links.next,
+          to: {
+            name: 'timespan',
+            params: {
+              citySlug: this.citySlug,
+              timespan: this.startDate.clone().add(this.duration.delta, 'days').format(this.duration.slugFormat)
+            }
+          }
+        },
+        durations: durations.all.map(duration => ({
+          name: duration.name,
+          to: {
+            name: 'timespan',
+            params: {
+              citySlug: this.citySlug,
+              timespan: this.startDate.clone().startOf(duration.clip).format(duration.slugFormat)
+            }
+          }
+        })),
+        now1: {
+          text: this.duration.links.now1.text,
+          to: {
+            name: 'timespan',
+            params: {
+              citySlug: this.citySlug,
+              timespan: this.duration.links.now1.startDate(moment.utc().startOf(this.duration.clip)).format(this.duration.slugFormat)
+            }
+          }
+        },
+        now2: {
+          text: this.duration.links.now2.text,
+          to: {
+            name: 'timespan',
+            params: {
+              citySlug: this.citySlug,
+              timespan: this.duration.links.now2.startDate(moment.utc().startOf(this.duration.clip)).format(this.duration.slugFormat)
+            }
+          }
+        }
+      }
     }
   }
 }
