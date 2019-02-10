@@ -59,7 +59,7 @@ export default {
       return this.tags.map(({ slug, title }, index) => ({
         slug,
         title,
-        clazz: 'sp-btn-' + index + '-' + this.tags.length,
+        clazz: 'sp-btn-' + (index + 1) + '-' + this.tags.length,
         pressed: this.allTagsAreActive || this.activeTagSlugs.has(slug),
         to: {
           path: this.$route.path,
@@ -72,24 +72,24 @@ export default {
 </script>
 
 <style scoped lang="scss">
-// @todo Import just the part we need from Bootstrap
-@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins/hover";
+@import "../node_modules/bootstrap/scss/mixins/buttons";
+@import "../node_modules/bootstrap/scss/mixins/box-shadow";
+@import "../node_modules/bootstrap/scss/mixins/gradients";
 
-// @todo Generate classes for sizes 1 to N (and for index 1 to size) with N >= max number of tags in a single city
-$sp-tag-colors: (
-  "0-3": #f00,
-  "1-3": #0f0,
-  "2-3": #00f,
-);
+@for $size from 1 through 30 {
+  @for $index from 1 through $size {
+    $color: hsl(($index - 1) / $size * 360, 100%, 50%);
 
-@each $suffix, $color in $sp-tag-colors {
-  .sp-btn-#{$suffix} {
-    @include button-variant(
-      lighten($color, 50%), lighten($color, 20%), // Normal (background, border)
-      lighten($color, 45%), lighten($color, 20%), // Hover (background, border)
-      lighten($color, 40%), lighten($color, 20%), // Active (background, border)
-    );
+    .sp-btn-#{$index}-#{$size} {
+      @include button-variant(
+        lighten($color, 50%), lighten($color, 20%), // Normal (background, border)
+        lighten($color, 45%), lighten($color, 20%), // Hover (background, border)
+        lighten($color, 40%), lighten($color, 20%), // Active (background, border)
+      );
+    }
   }
 }
-
 </style>
