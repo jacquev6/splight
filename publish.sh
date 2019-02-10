@@ -4,9 +4,6 @@ set -o errexit
 
 TAG=$(date "+%Y%m%d-%H%M%S")
 
-# sed -i "s/[0-9]\{8\}-[0-9]\{6\}/$TAG/g" splight/adminWebsite/page.html
-# sed -i "s/:[0-9]\{8\}-[0-9]\{6\}/:$TAG/g" *prod.yml
-
 echo "--------------------------------------------"
 echo "Building jacquev6/splight:admin-$TAG"
 echo "--------------------------------------------"
@@ -29,14 +26,3 @@ docker push jacquev6/splight:backup-$TAG
 echo "--------------------------------------------"
 echo "Images pushed"
 echo "--------------------------------------------"
-
-# function k8s_config {
-#   local F
-#   for F in *.prod.yml
-#   do
-#     echo "---"
-#     cat $F
-#   done
-# }
-
-# k8s_config | kubectl apply -f -
