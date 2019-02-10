@@ -19,8 +19,7 @@
           <sp-links-toolbar :links="links" />
           <h1>{{ startDate.format(duration.titleFormat) }}</h1>
           <sp-tags-filter :tags="city.tags" />
-          <p>This is timespan {{ timespan }}, from {{ startDate.format(moment.HTML5_FMT.DATE) }} to {{ dateAfter.format(moment.HTML5_FMT.DATE) }}, and with tags {{ tags }}.</p>
-          <p>{{ city }}</p>
+          <sp-calendar :startDate="startDate" :dateAfter="dateAfter" :city="city" />
         </b-col>
 
         <b-col lg="3" xl="2" class="d-none d-lg-inline-block">
@@ -119,7 +118,8 @@ export default {
     return {
       // @todo Remove (Display "loading" message to avoid accessing the undefined 'city' attribute)
       city: {
-        tags: []
+        tags: [],
+        events: []
       },
       moment
     }

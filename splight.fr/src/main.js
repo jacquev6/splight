@@ -6,6 +6,7 @@ import BootstrapVue from 'bootstrap-vue'
 import VueHeadful from 'vue-headful'
 
 import App from './App.vue'
+import Calendar from './Calendar.vue'
 import Cities from './Cities.vue'
 import City from './City.vue'
 import Layout from './Layout.vue'
@@ -18,6 +19,7 @@ Vue.use(VueApollo)
 Vue.use(BootstrapVue)
 Vue.component('vue-headful', VueHeadful)
 
+Vue.component('sp-calendar', Calendar)
 Vue.component('sp-layout', Layout)
 Vue.component('sp-links-toolbar', LinksToolbar)
 Vue.component('sp-tags-filter', TagsFilter)
