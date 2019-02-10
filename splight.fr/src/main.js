@@ -6,11 +6,12 @@ import BootstrapVue from 'bootstrap-vue'
 import VueHeadful from 'vue-headful'
 
 import App from './App.vue'
-import Layout from './Layout.vue'
-import Timespan from './Timespan.vue'
-import LinksToolbar from './LinksToolbar.vue'
 import Cities from './Cities.vue'
 import City from './City.vue'
+import Layout from './Layout.vue'
+import LinksToolbar from './LinksToolbar.vue'
+import Timespan from './Timespan.vue'
+import TagsFilter from './TagsFilter.vue'
 
 Vue.use(Router)
 Vue.use(VueApollo)
@@ -19,6 +20,7 @@ Vue.component('vue-headful', VueHeadful)
 
 Vue.component('sp-layout', Layout)
 Vue.component('sp-links-toolbar', LinksToolbar)
+Vue.component('sp-tags-filter', TagsFilter)
 
 const apolloProvider = new VueApollo({
   defaultClient: createApolloClient({

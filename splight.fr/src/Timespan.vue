@@ -18,6 +18,7 @@
         <b-col>
           <sp-links-toolbar :links="links" />
           <h1>{{ startDate.format(duration.titleFormat) }}</h1>
+          <sp-tags-filter :tags="city.tags" />
           <p>This is timespan {{ timespan }}, from {{ startDate.format(moment.HTML5_FMT.DATE) }} to {{ dateAfter.format(moment.HTML5_FMT.DATE) }}, and with tags {{ tags }}.</p>
           <p>{{ city }}</p>
         </b-col>
@@ -117,7 +118,9 @@ export default {
   data () {
     return {
       // @todo Remove (Display "loading" message to avoid accessing the undefined 'city' attribute)
-      city: {},
+      city: {
+        tags: []
+      },
       moment
     }
   },
@@ -178,7 +181,8 @@ export default {
             params: {
               citySlug: this.citySlug,
               timespan: this.startDate.clone().subtract(this.duration.delta, 'days').format(this.duration.slugFormat)
-            }
+            },
+            query: this.$route.query
           }
         },
         next: {
@@ -188,7 +192,8 @@ export default {
             params: {
               citySlug: this.citySlug,
               timespan: this.startDate.clone().add(this.duration.delta, 'days').format(this.duration.slugFormat)
-            }
+            },
+            query: this.$route.query
           }
         },
         durations: durations.all.map(duration => ({
@@ -198,7 +203,8 @@ export default {
             params: {
               citySlug: this.citySlug,
               timespan: this.startDate.clone().startOf(duration.clip).format(duration.slugFormat)
-            }
+            },
+            query: this.$route.query
           }
         })),
         now1: {
@@ -208,7 +214,8 @@ export default {
             params: {
               citySlug: this.citySlug,
               timespan: this.duration.links.now1.startDate(moment.utc().startOf(this.duration.clip)).format(this.duration.slugFormat)
-            }
+            },
+            query: this.$route.query
           }
         },
         now2: {
@@ -218,7 +225,8 @@ export default {
             params: {
               citySlug: this.citySlug,
               timespan: this.duration.links.now2.startDate(moment.utc().startOf(this.duration.clip)).format(this.duration.slugFormat)
-            }
+            },
+            query: this.$route.query
           }
         }
       }
