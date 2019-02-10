@@ -4,8 +4,7 @@
       <b-col v-for="day in days" :key="day.date.format(moment.HTML5_FMT.DATE)" :md="true">
         <p v-if="days.length > 1"><strong>{{ day.date.format('ddd Do MMM') }}</strong></p>
           <router-link v-for="event in day.events" :key="event.id"
-            tag="div"
-            class="sp-event"
+            class="sp-event text-reset"
             :class="event.clazz"
             :data-sp-event-id="event.id"
            :to="event.to"
@@ -71,7 +70,7 @@
   margin-left: -10px;
   margin-right: -10px;
 
-  cursor: pointer;
+  display: block;
 }
 
 .sp-event > * {
