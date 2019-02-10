@@ -30,7 +30,6 @@
       <div class="row">
         <div class="col">
           <h3>Quoi, qui&nbsp;?</h3>
-          <!-- @todo Add sp-small-tag and sp-main-tag-x-y classes -->
           <p><span v-for="tag in detailedEvent.tags" :key="tag.slug"
             class="sp-small-tag"
             :class="tagClasses[tag.slug]"
@@ -38,15 +37,14 @@
           <p>{{ detailedEvent.title }}</p>
           <p>{{ detailedEvent.artist.name }}</p>
           <p v-if="detailedEvent.reservationPage"><a :href="detailedEvent.reservationPage" target="_blank">Réserver en ligne</a></p>
-          <p v-if="detailedEvent.artist.image"><img class="img-fluid" :src="detailedEvent.artist.image" /></p>
+          <p v-if="detailedEvent.artist.image"><b-img fluid :src="detailedEvent.artist.image" /></p>
           <p v-for="line in detailedEvent.artist.description" :key="line" class="text-justify">{{ line }}</p>
           <p v-if="detailedEvent.artist.website"><a :href="detailedEvent.artist.website" target="_blank">Site officiel</a></p>
         </div>
         <div class="col">
           <h3>Où&nbsp;?</h3>
           <p>{{ detailedEvent.location.name }}</p>
-          <!-- @todo Is there a b-img in vue-bootstrap? -->
-          <p v-if="detailedEvent.location.image"><img class="img-fluid" :src="detailedEvent.location.image" /></p>
+          <p v-if="detailedEvent.location.image"><b-img fluid :src="detailedEvent.location.image" /></p>
           <p v-for="line in detailedEvent.location.description" :key="line" class="text-justify">{{ line }}</p>
           <p v-if="detailedEvent.location.website"><a :href="detailedEvent.location.website" target="_blank">Site officiel</a></p>
           <p v-if="detailedEvent.location.phone">{{ detailedEvent.location.phone }}</p>
