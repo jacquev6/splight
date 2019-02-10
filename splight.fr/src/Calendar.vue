@@ -166,7 +166,8 @@ export default {
                 params: {
                   citySlug: this.city.slug,
                   eventId: id
-                }
+                },
+                query: this.$route.query
               }
             })
           }
