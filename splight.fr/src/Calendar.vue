@@ -35,11 +35,13 @@
             :class="tagClasses[tag.slug]"
           >{{ tag.title }}</span></p>
           <p>{{ detailedEvent.title }}</p>
-          <p>{{ detailedEvent.artist.name }}</p>
-          <p v-if="detailedEvent.reservationPage"><a :href="detailedEvent.reservationPage" target="_blank">Réserver en ligne</a></p>
-          <p v-if="detailedEvent.artist.image"><b-img fluid :src="detailedEvent.artist.image" /></p>
-          <p v-for="line in detailedEvent.artist.description" :key="line" class="text-justify">{{ line }}</p>
-          <p v-if="detailedEvent.artist.website"><a :href="detailedEvent.artist.website" target="_blank">Site officiel</a></p>
+          <template v-if="detailedEvent.artist !== null">
+            <p>{{ detailedEvent.artist.name }}</p>
+            <p v-if="detailedEvent.reservationPage"><a :href="detailedEvent.reservationPage" target="_blank">Réserver en ligne</a></p>
+            <p v-if="detailedEvent.artist.image"><b-img fluid :src="detailedEvent.artist.image" /></p>
+            <p v-for="line in detailedEvent.artist.description" :key="line" class="text-justify">{{ line }}</p>
+            <p v-if="detailedEvent.artist.website"><a :href="detailedEvent.artist.website" target="_blank">Site officiel</a></p>
+          </template>
         </div>
         <div class="col">
           <h3>Où&nbsp;?</h3>
