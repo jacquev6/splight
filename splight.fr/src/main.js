@@ -10,8 +10,8 @@ import Cities from './Cities.vue'
 import City from './City.vue'
 import Layout from './Layout.vue'
 import LinksToolbar from './LinksToolbar.vue'
-import Timespan from './Timespan.vue'
 import TagsFilter from './TagsFilter.vue'
+import Timespan from './Timespan.vue'
 
 Vue.use(Router)
 Vue.use(VueApollo)

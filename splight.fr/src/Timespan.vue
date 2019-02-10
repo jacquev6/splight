@@ -174,6 +174,7 @@ export default {
     },
     links () {
       return {
+        // @todo Deactivate prev link on current week
         prev: {
           text: this.duration.links.prev,
           to: {
@@ -185,6 +186,7 @@ export default {
             query: this.$route.query
           }
         },
+        // @todo Deactivate next link on week + 5
         next: {
           text: this.duration.links.next,
           to: {
