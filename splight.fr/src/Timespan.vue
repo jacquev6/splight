@@ -19,7 +19,7 @@
           <sp-links-toolbar :links="links" />
           <h1>{{ startDate.format(duration.titleFormat) }}</h1>
           <sp-tags-filter :tags="city.tags" />
-          <sp-calendar :startDate="startDate" :dateAfter="dateAfter" :city="city" />
+          <sp-calendar :startDate="startDate" :dateAfter="dateAfter" :city="city" :timespan="timespan" :eventId="eventId" />
         </b-col>
 
         <b-col lg="3" xl="2" class="d-none d-lg-inline-block">
@@ -112,6 +112,9 @@ export default {
     },
     timespan: {
       required: true
+    },
+    eventId: {
+      default: null
     }
   },
   data () {

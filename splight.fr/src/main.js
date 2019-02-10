@@ -55,6 +55,12 @@ const router = new Router({
       name: 'timespan',
       component: Timespan,
       props: true
+    },
+    {
+      path: '/:citySlug/:timespan/:eventId',
+      name: 'eventDetail',
+      component: Timespan,
+      props: true
     }
   ]
 })

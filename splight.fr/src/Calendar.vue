@@ -3,15 +3,60 @@
     <b-row>
       <b-col v-for="day in days" :key="day.date.format(moment.HTML5_FMT.DATE)" :md="true">
         <p v-if="days.length > 1"><strong>{{ day.date.format('ddd Do MMM') }}</strong></p>
-        <div v-for="event in day.events" :key="event.id"
-          class="sp-event"
-          :class="event.clazz"
-          :data-sp-event-id="event.id"
-        >
-          <p><strong>{{ event.time }}</strong>{{ ' ' }}<span class="sp-event-title">{{ event.title }}</span></p>
-        </div>
+          <router-link v-for="event in day.events" :key="event.id"
+            tag="div"
+            class="sp-event"
+            :class="event.clazz"
+            :data-sp-event-id="event.id"
+           :to="event.to"
+          >
+            <p><strong>{{ event.time }}</strong>{{ ' ' }}<span class="sp-event-title">{{ event.title }}</span></p>
+          </router-link>
       </b-col>
     </b-row>
+
+    <b-modal
+      v-if="detailedEvent != null"
+      centered size="lg"
+      :hide-footer="true"
+      :title="detailedEvent.title"
+      :visible="true"
+      @hidden="eventDetailHidden"
+    >
+      <h3>Quand&nbsp;?</h3>
+      <ul>
+        <li v-for="occurrence in detailedEvent.occurrences" :key="occurrence.start"
+        >Le {{ moment(occurrence.start).format('ddd Do MMM') }} à {{ moment(occurrence.start).format('LT') }}</li>
+      </ul>
+      <div class="row">
+        <div class="col">
+          <h3>Quoi, qui&nbsp;?</h3>
+          <!-- @todo Add sp-small-tag and sp-main-tag-x-y classes -->
+          <p><span v-for="tag in detailedEvent.tags" :key="tag.slug"
+            class="sp-small-tag"
+            :class="tagClasses[tag.slug]"
+          >{{ tag.title }}</span></p>
+          <p>{{ detailedEvent.title }}</p>
+          <p>{{ detailedEvent.artist.name }}</p>
+          <p v-if="detailedEvent.reservationPage"><a :href="detailedEvent.reservationPage" target="_blank">Réserver en ligne</a></p>
+          <p v-if="detailedEvent.artist.image"><img class="img-fluid" :src="detailedEvent.artist.image" /></p>
+          <p v-for="line in detailedEvent.artist.description" :key="line" class="text-justify">{{ line }}</p>
+          <p v-if="detailedEvent.artist.website"><a :href="detailedEvent.artist.website" target="_blank">Site officiel</a></p>
+        </div>
+        <div class="col">
+          <h3>Où&nbsp;?</h3>
+          <p>{{ detailedEvent.location.name }}</p>
+          <!-- @todo Is there a b-img in vue-bootstrap? -->
+          <p v-if="detailedEvent.location.image"><img class="img-fluid" :src="detailedEvent.location.image" /></p>
+          <p v-for="line in detailedEvent.location.description" :key="line" class="text-justify">{{ line }}</p>
+          <p v-if="detailedEvent.location.website"><a :href="detailedEvent.location.website" target="_blank">Site officiel</a></p>
+          <p v-if="detailedEvent.location.phone">{{ detailedEvent.location.phone }}</p>
+          <p v-if="detailedEvent.location.address.length > 0">
+            <span v-for="line in detailedEvent.location.address" :key="line">{{ line }}<br/></span>
+          </p>
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -25,6 +70,8 @@
   margin-bottom: 3px;
   margin-left: -10px;
   margin-right: -10px;
+
+  cursor: pointer;
 }
 
 .sp-event > * {
@@ -42,6 +89,15 @@
     }
   }
 }
+
+.sp-small-tag {
+  font-size: 90%;
+  border-radius: 3px;
+  border-width: 1px;
+  border-style: solid;
+  padding-left: 3px;
+  padding-right: 3px;
+}
 </style>
 
 <script>
@@ -57,6 +113,13 @@ export default {
     },
     city: {
       required: true
+    },
+    // @todo Rethink props, especially timespan introduces weird coupling with Timespan view
+    timespan: {
+      required: true
+    },
+    eventId: {
+      default: null
     }
   },
   data () {
@@ -98,7 +161,14 @@ export default {
               id,
               time: start.format(moment.HTML5_FMT.TIME),
               title,
-              clazz: this.tagClasses[tags[0].slug]
+              clazz: this.tagClasses[tags[0].slug],
+              to: {
+                name: 'eventDetail',
+                params: {
+                  citySlug: this.city.slug,
+                  eventId: id
+                }
+              }
             })
           }
         })
@@ -114,6 +184,27 @@ export default {
         })
       }
       return days
+    },
+    detailedEvent () {
+      const detailedEvent = this.city.events.filter(({ id }) => id === this.eventId)
+      if (detailedEvent.length === 1) {
+        return detailedEvent[0]
+      } else {
+        return null
+      }
+    }
+  },
+  methods: {
+    eventDetailHidden () {
+      // @todo Find a way to avoid that Calendar knows how to go to timespan route
+      this.$router.push({
+        name: 'timespan',
+        params: {
+          citySlug: this.city.slug,
+          timespan: this.timespan
+        },
+        query: this.$route.query
+      })
     }
   }
 }
