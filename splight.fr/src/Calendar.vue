@@ -30,10 +30,9 @@
       <div class="row">
         <div class="col">
           <h3>Quoi, qui&nbsp;?</h3>
-          <p><span v-for="tag in detailedEvent.tags" :key="tag.slug"
-            class="sp-small-tag"
-            :class="tagClasses[tag.slug]"
-          >{{ tag.title }}</span></p>
+          <p><span v-for="tag in detailedEvent.tags" :key="tag.slug">
+            <span class="sp-small-tag" :class="tagClasses[tag.slug]">{{ tag.title }}</span>{{ ' ' }}
+          </span></p>
           <p>{{ detailedEvent.title }}</p>
           <template v-if="detailedEvent.artist !== null">
             <p>{{ detailedEvent.artist.name }}</p>
