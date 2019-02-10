@@ -1,12 +1,14 @@
 <template>
   <b-row>
     <b-col>
-      <b-button v-for="tag in tagsForDisplay" :key="tag.slug"
-        :pressed="tag.pressed"
-        :to="tag.to"
-        :class="tag.clazz"
-        active-class="sp-noop"
-      >{{ tag.title }}</b-button>
+      <template v-for="tag in tagsForDisplay">
+        <b-button :key="tag.slug"
+          :pressed="tag.pressed"
+          :to="tag.to"
+          :class="tag.clazz"
+          active-class="sp-noop"
+        >{{ tag.title }}</b-button>{{ ' ' }}
+      </template>
     </b-col>
   </b-row>
 </template>
