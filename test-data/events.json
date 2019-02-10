@@ -6,16 +6,16 @@
         "location": "location-1",
         "occurrences": [
             {
-                "start": "2018-08-17T13:00"
+                "start": "2019-02-17T13:00"
             },
             {
-                "start": "2018-08-18T13:00"
+                "start": "2019-02-18T13:00"
             },
             {
-                "start": "2018-08-19T13:00"
+                "start": "2019-02-19T13:00"
             },
             {
-                "start": "2018-08-19T18:00"
+                "start": "2019-02-19T18:00"
             }
         ],
         "tags": [
@@ -30,7 +30,7 @@
         "location": "location-2",
         "occurrences": [
             {
-                "start": "2018-08-16T14:00"
+                "start": "2019-02-16T14:00"
             }
         ],
         "tags": [
@@ -46,7 +46,7 @@
         "location": "location-2",
         "occurrences": [
             {
-                "start": "2018-08-14T14:00"
+                "start": "2019-02-14T14:00"
             }
         ],
         "tags": [
@@ -60,7 +60,7 @@
         "location": "location-1",
         "occurrences": [
             {
-                "start": "2018-08-21T15:00"
+                "start": "2019-02-21T15:00"
             }
         ],
         "tags": [
@@ -74,7 +74,7 @@
         "location": "location-1",
         "occurrences": [
             {
-                "start": "2018-08-07T13:00"
+                "start": "2019-02-07T13:00"
             }
         ],
         "reservationPage": "http://reserve.com/",
@@ -89,7 +89,7 @@
         "location": "location-1",
         "occurrences": [
             {
-                "start": "2018-08-15T14:00"
+                "start": "2019-02-15T14:00"
             }
         ],
         "tags": [
@@ -104,7 +104,7 @@
         "location": "location-1",
         "occurrences": [
             {
-                "start": "2018-08-15T12:00"
+                "start": "2019-02-15T12:00"
             }
         ],
         "tags": [
@@ -118,7 +118,7 @@
         "location": "location-2",
         "occurrences": [
             {
-                "start": "2018-08-28T16:00"
+                "start": "2019-02-28T16:00"
             }
         ],
         "tags": [
@@ -132,7 +132,7 @@
         "location": "location-1",
         "occurrences": [
             {
-                "start": "2018-09-04T17:00"
+                "start": "2019-03-04T17:00"
             }
         ],
         "tags": [
@@ -147,7 +147,7 @@
         "location": "location-1",
         "occurrences": [
             {
-                "start": "2018-08-17T14:00"
+                "start": "2019-02-17T14:00"
             }
         ],
         "tags": [
@@ -161,7 +161,7 @@
         "location": "location-1",
         "occurrences": [
             {
-                "start": "2018-09-11T18:00"
+                "start": "2019-03-11T18:00"
             }
         ],
         "tags": [
