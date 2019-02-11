@@ -26,7 +26,7 @@ Vue.component('sp-tags-filter', TagsFilter)
 
 const apolloProvider = new VueApollo({
   defaultClient: createApolloClient({
-    httpEndpoint: 'http://192.168.99.100:30072/graphql',
+    httpEndpoint: 'http://localhost:8081/graphql',
     persisting: false,
     websocketsOnly: false,
     ssr: false

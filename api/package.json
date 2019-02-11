@@ -2,8 +2,8 @@
   "name": "splight.fr-generator",
   "version": "1.0.0",
   "scripts": {
-    "test": "standard && nyc --reporter=html --reporter=text mocha $(find splight -name '*-test.js' | grep -v node_modules)",
-    "serve": "nodemon --ignore test --ext js,scss,html,gqls splight/serveDeveloperWebsite.js"
+    "test": "standard && echo Coding conventions checked && nyc --reporter=html --reporter=text mocha $(find . -name '*-test.js' | grep -v node_modules)",
+    "serve": "nodemon --ignore test --ext js,scss,html,gqls serveDeveloperWebsite.js"
   },
   "dependencies": {
     "@google-cloud/storage": "^2.3.4",

@@ -21,7 +21,7 @@ const tagColoring = require('./tagColoring')
 async function makeRouter ({api, scripts, generationDate}) {
   const router = express.Router()
 
-  router.use('/images', express.static('splight/images'))
+  router.use('/images', express.static('images'))
 
   router.use(cors()) // https://www.prisma.io/blog/enabling-cors-for-express-graphql-apollo-server-1ef999bfb38d
   router.use(bodyParser.json({limit: '50mb'})) // https://stackoverflow.com/a/19965089/905845
@@ -133,7 +133,7 @@ function makeIndexJs () {
   return {
     path: '/index.js',
     content: new Promise((resolve, reject) =>
-      browserify('splight/publicWebsite/assets/index.js')
+      browserify('publicWebsite/assets/index.js')
         .transform('stringify', ['.html'])
         .transform('unassertify')
         .transform('uglifyify', {global: true})
@@ -164,7 +164,7 @@ async function makeIndexCss_ ({modernizrFeatures, api}) {
     sassData.push(line)
   }
 
-  sassData.push('@import "splight/publicWebsite/assets/index.scss";')
+  sassData.push('@import "publicWebsite/assets/index.scss";')
 
   return new Promise((resolve, reject) =>
     sass.render(

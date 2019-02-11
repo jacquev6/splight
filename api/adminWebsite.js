@@ -21,7 +21,7 @@ function * generateAssets ({scripts, api}) {
     path: '/admin/index.js',
     type: '.js',
     content: new Promise((resolve, reject) =>
-      browserify('splight/adminWebsite/assets/index.js')
+      browserify('adminWebsite/assets/index.js')
         .transform('stringify', ['.html'])
         .bundle(function (error, result) {
           if (error) {
@@ -47,7 +47,7 @@ async function makeIndexCss ({api}) {
     sassData.push(line)
   }
 
-  sassData.push('@import "splight/adminWebsite/assets/index.scss";')
+  sassData.push('@import "adminWebsite/assets/index.scss";')
 
   return new Promise((resolve, reject) =>
     sass.render(
@@ -66,7 +66,7 @@ async function makeIndexCss ({api}) {
 async function makeRouter ({scripts}) {
   const router = express.Router()
 
-  const client = await mongodb.MongoClient.connect('mongodb://splight-mongo:27017/', {useNewUrlParser: true})
+  const client = await mongodb.MongoClient.connect('mongodb://mongo:27017/', {useNewUrlParser: true})
   const db = client.db('splight')
   const api = await graphqlApi.make({db})
 

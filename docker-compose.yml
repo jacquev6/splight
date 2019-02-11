@@ -1,0 +1,31 @@
+version: '3'
+services:
+
+  dev-daemon:
+    image: "node:11.9"
+    command: tail -f /dev/null
+    volumes:
+      - ".:/app"
+
+  mongo:
+    image: mongo:3.6.10
+
+  api:
+    image: node:11.9
+    depends_on:
+      - mongo
+    ports:
+      - "8081:80"
+    working_dir: /app
+    volumes:
+      - "./api:/app"
+    command: npm run serve
+
+  public-frontend:
+    image: node:11.9
+    ports:
+      - "8080:8080"
+    working_dir: /app
+    volumes:
+      - "./public-frontend:/app"
+    command: npm run serve
