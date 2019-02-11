@@ -8,9 +8,7 @@
       </template>
     </b-jumbotron>
 
-    <div>
-      <slot name="content"></slot>
-    </div>
+    <slot name="content"></slot>
 
     <p>Copyright <a href="mailto:vincent@vincent-jacques.net">Vincent Jacques</a> 2018-2019.</p>
   </b-container>

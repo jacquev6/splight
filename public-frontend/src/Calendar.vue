@@ -3,14 +3,14 @@
     <b-row>
       <b-col v-for="day in days" :key="day.date.format(moment.HTML5_FMT.DATE)" :md="true">
         <p v-if="days.length > 1"><strong>{{ day.date.format('ddd Do MMM') }}</strong></p>
-          <router-link v-for="event in day.events" :key="event.id"
-            class="sp-event text-reset"
-            :class="event.clazz"
-            :data-sp-event-id="event.id"
-           :to="event.to"
-          >
-            <p><strong>{{ event.time }}</strong>{{ ' ' }}<span class="sp-event-title">{{ event.title }}</span></p>
-          </router-link>
+        <router-link v-for="event in day.events" :key="event.id"
+          class="sp-event text-reset"
+          :class="event.clazz"
+          :data-sp-event-id="event.id"
+         :to="event.to"
+        >
+          <p><strong>{{ event.time }}</strong>{{ ' ' }}<span class="sp-event-title">{{ event.title }}</span></p>
+        </router-link>
       </b-col>
     </b-row>
 
@@ -24,11 +24,10 @@
     >
       <h3>Quand&nbsp;?</h3>
       <ul>
-        <li v-for="occurrence in detailedEvent.occurrences" :key="occurrence.start"
-        >Le {{ moment(occurrence.start).format('ddd Do MMM') }} à {{ moment(occurrence.start).format('LT') }}</li>
+        <li v-for="occurrence in detailedEvent.occurrences" :key="occurrence.start">Le {{ moment(occurrence.start).format('ddd Do MMM') }} à {{ moment(occurrence.start).format('LT') }}</li>
       </ul>
-      <div class="row">
-        <div class="col">
+      <b-row>
+        <b-col>
           <h3>Quoi, qui&nbsp;?</h3>
           <p><span v-for="tag in detailedEvent.tags" :key="tag.slug">
             <span class="sp-small-tag" :class="tagClasses[tag.slug]">{{ tag.title }}</span>{{ ' ' }}
@@ -41,8 +40,8 @@
             <p v-for="line in detailedEvent.artist.description" :key="line" class="text-justify">{{ line }}</p>
             <p v-if="detailedEvent.artist.website"><a :href="detailedEvent.artist.website" target="_blank">Site officiel</a></p>
           </template>
-        </div>
-        <div class="col">
+        </b-col>
+        <b-col>
           <h3>Où&nbsp;?</h3>
           <p>{{ detailedEvent.location.name }}</p>
           <p v-if="detailedEvent.location.image"><b-img fluid :src="detailedEvent.location.image" /></p>
@@ -52,8 +51,8 @@
           <p v-if="detailedEvent.location.address.length > 0">
             <span v-for="line in detailedEvent.location.address" :key="line">{{ line }}<br/></span>
           </p>
-        </div>
-      </div>
+        </b-col>
+      </b-row>
     </b-modal>
   </div>
 </template>
