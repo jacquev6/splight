@@ -1,5 +1,5 @@
 {
-  "name": "splight-public-frontend",
+  "name": "splight-admin-frontend",
   "private": true,
   "scripts": {
     "build": "vue-cli-service build",

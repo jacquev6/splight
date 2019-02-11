@@ -29,3 +29,12 @@ services:
     volumes:
       - "./public-frontend:/app"
     command: npm run serve
+
+  admin-frontend:
+    image: node:11.9
+    ports:
+      - "8082:8080"
+    working_dir: /app
+    volumes:
+      - "./admin-frontend:/app"
+    command: npm run serve
