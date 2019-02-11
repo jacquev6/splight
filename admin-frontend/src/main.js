@@ -3,10 +3,10 @@ import Router from 'vue-router'
 import VueApollo from 'vue-apollo'
 import { createApolloClient } from 'vue-cli-plugin-apollo/graphql-client'
 import BootstrapVue from 'bootstrap-vue'
-import VueHeadful from 'vue-headful'
 
 import App from './App.vue'
-import Index from './Index.vue'
+import Cities from './Cities.vue'
+import City from './City.vue'
 
 Vue.use(Router)
 Vue.use(VueApollo)
@@ -29,8 +29,14 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'index',
-      component: Index
+      name: 'cities',
+      component: Cities
+    },
+    {
+      path: '/:citySlug',
+      name: 'city',
+      component: City,
+      props: true
     }
   ]
 })
