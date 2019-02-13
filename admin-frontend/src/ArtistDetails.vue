@@ -1,7 +1,7 @@
 <template>
   <div v-if="validateArtist">
     <spa-field title="Slug" :invalidFeedback="slugValidation">
-      <b-input :disabled="preExisting" v-model="artist.slug" :state="validating ? !slugValidation : null"/>
+      <b-input :disabled="!!initialArtist" v-model="artist.slug" :state="validating ? !slugValidation : null"/>
     </spa-field>
     <spa-field title="Nom" :invalidFeedback="nameValidation">
       <b-input v-model="artist.name" :state="validating ? !nameValidation : null"/>
@@ -21,6 +21,7 @@
     <spa-field title="Site officiel" :invalidFeedback="websiteValidation">
       <b-input v-model="artist.website" :state="validating ? !websiteValidation : null"/>
     </spa-field>
+    <b-row><b-col><b-btn variant="primary" :disabled="!enabled" @click="save">{{ saveButtonTitle }}</b-btn></b-col></b-row>
   </div>
 </template>
 
@@ -34,28 +35,37 @@ export default {
     'spa-field': ArtistDetailsField
   },
   props: {
-    'artist': {},
-    'preExisting': {
-      default: true
+    initialArtist: {},
+    saveButtonTitle: {}
+  },
+  data () {
+    return {
+      artist: this.makeArtist(),
+      rawDescription: null
     }
   },
   apollo: {
     validateArtist: {
       query: gql`query($forInsert:Boolean!,$artist:IArtist!){validateArtist(forInsert:$forInsert,artist:$artist){field message}}`,
       variables () {
-        const artist = { ...this.artist }
-        delete artist['__typename']
-        const forInsert = !this.preExisting
-        return { forInsert, artist }
+        return {
+          forInsert: !this.initialArtist,
+          artist: { ...this.artist } // Required for reactiveness. Don't ask why...
+        }
       }
     }
   },
-  data () {
-    return {
-      rawDescription: null
-    }
-  },
   methods: {
+    makeArtist () {
+      const { slug, name, image, description, website } = this.initialArtist || {
+        slug: '',
+        name: '',
+        image: null,
+        description: [],
+        website: ''
+      }
+      return { slug, name, image, description, website }
+    },
     setImage (change) {
       const reader = new FileReader()
       reader.onload = e => {
@@ -70,6 +80,18 @@ export default {
       } else {
         return null
       }
+    },
+    save () {
+      this.$apollo.mutate({
+        mutation: gql`mutation($artist:IArtist!){putArtist(artist:$artist){slug}}`,
+        variables: { artist: this.artist }
+      }).then(() => {
+        if (!this.initialArtist) {
+          this.artist = this.makeArtist()
+          this.rawDescription = ''
+        }
+        this.$emit('saved')
+      })
     }
   },
   computed: {
@@ -90,29 +112,8 @@ export default {
     nameValidation () { return this.fieldValidation('name') },
     imageValidation () { return this.fieldValidation('image') },
     descriptionValidation () { return this.fieldValidation('description') },
-    websiteValidation () { return this.fieldValidation('website') }
-  },
-  watch: {
-    artist () {
-      this.rawDescription = null
-    }
-  },
-  makeEmpty () {
-    return {
-      slug: '',
-      name: '',
-      image: null,
-      description: [],
-      website: ''
-    }
-  },
-  putArtist (apollo, artist) {
-    artist = { ...artist }
-    delete artist['__typename']
-    return apollo.mutate({
-      mutation: gql`mutation($artist:IArtist!){putArtist(artist:$artist){slug}}`,
-      variables: { artist }
-    })
+    websiteValidation () { return this.fieldValidation('website') },
+    enabled () { return this.validating && this.validateArtist.length === 0 }
   }
 }
 </script>

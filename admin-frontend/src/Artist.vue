@@ -1,9 +1,7 @@
 <template>
   <spa-layout v-if="artist" :breadcrumbItems="breadcrumbItems">
     <h1>{{ artist.name }}</h1>
-    <spa-artist-details :artist="artist"/>
-    <!-- @todo Disable button when ^ artist-details fails validation -->
-    <p><b-btn variant="primary" @click="saveArtist">Enregistrer</b-btn></p>
+    <spa-artist-details :initialArtist="artist" saveButtonTitle="Enregistrer" @saved="$apollo.queries.artist.refetch()"/>
   </spa-layout>
 </template>
 
@@ -34,13 +32,6 @@ export default {
         { text: 'Artistes', to: { name: 'artists' } },
         { text: this.artist.name, to: { name: 'artist', params: { artistSlug: this.artistSlug } } }
       ]
-    }
-  },
-  methods: {
-    saveArtist () {
-      ArtistDetails.putArtist(this.$apollo, this.artist).catch((error) => {
-        console.error(error)
-      })
     }
   }
 }
