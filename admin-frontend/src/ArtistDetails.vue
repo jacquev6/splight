@@ -84,7 +84,7 @@ export default {
     },
     validating () {
       const { slug, name, image, description, website } = this.artist
-      return slug !== '' || name !== '' || image !== null || description.length !== 0 || website !== null
+      return slug !== '' || name !== '' || image !== null || description.length !== 0 || website !== ''
     },
     slugValidation () { return this.fieldValidation('slug') },
     nameValidation () { return this.fieldValidation('name') },
@@ -103,7 +103,7 @@ export default {
       name: '',
       image: null,
       description: [],
-      website: null
+      website: ''
     }
   },
   putArtist (apollo, artist) {
