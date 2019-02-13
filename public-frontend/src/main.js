@@ -14,7 +14,7 @@ import LinksToolbar from './LinksToolbar.vue'
 import TagsFilter from './TagsFilter.vue'
 import Timespan from './Timespan.vue'
 
-// @todo Evaluate https://github.com/egoist/vue-preload
+// @todo Evaluate https://github.com/egoist/vue-preload and https://github.com/egoist/vue-router-prefetch
 Vue.use(Router)
 Vue.use(VueApollo)
 Vue.use(BootstrapVue)
