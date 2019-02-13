@@ -1,38 +1,38 @@
 <template>
   <div v-if="validateArtist">
-    <p><label>Slug&nbsp;:
+    <spa-field title="Slug" :invalidFeedback="slugValidation">
       <b-input :disabled="preExisting" v-model="artist.slug" :state="validating ? !slugValidation : null"/>
-      <b-form-invalid-feedback>{{ slugValidation }}</b-form-invalid-feedback>
-    </label></p>
-    <p><label>Nom&nbsp;:
+    </spa-field>
+    <spa-field title="Nom" :invalidFeedback="nameValidation">
       <b-input v-model="artist.name" :state="validating ? !nameValidation : null"/>
-      <b-form-invalid-feedback>{{ nameValidation }}</b-form-invalid-feedback>
-    </label></p>
-    <p><label>Image&nbsp;:
+    </spa-field>
+    <spa-field title="Image" :invalidFeedback="imageValidation">
       <template v-if="artist.image === null">
         <b-file @change="setImage" :state="validating ? !imageValidation : null"/>
-        <b-form-invalid-feedback>{{ imageValidation }}</b-form-invalid-feedback>
       </template>
       <template v-else>
         <b-img fluid :src="artist.image"/>
         <b-btn @click="artist.image = null">Modifier</b-btn>
       </template>
-    </label></p>
-    <p><label>Description&nbsp;:
+    </spa-field>
+    <spa-field title="Description" :invalidFeedback="descriptionValidation">
       <b-textarea v-model="description" :state="validating ? !descriptionValidation : null"></b-textarea>
-      <b-form-invalid-feedback>{{ descriptionValidation }}</b-form-invalid-feedback>
-    </label></p>
-    <p><label>Site officiel&nbsp;:
+    </spa-field>
+    <spa-field title="Site officiel" :invalidFeedback="websiteValidation">
       <b-input v-model="artist.website" :state="validating ? !websiteValidation : null"/>
-      <b-form-invalid-feedback>{{ websiteValidation }}</b-form-invalid-feedback>
-    </label></p>
+    </spa-field>
   </div>
 </template>
 
 <script>
 import gql from 'graphql-tag'
 
+import ArtistDetailsField from './ArtistDetailsField.vue'
+
 export default {
+  components: {
+    'spa-field': ArtistDetailsField
+  },
   props: {
     'artist': {},
     'preExisting': {
