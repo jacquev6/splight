@@ -38,14 +38,30 @@ async function make ({db, clock}) {
     }
   }
 
-  async function putArtist ({artist: {slug, name, description, website, image}}) {
+  async function validateArtist ({forInsert, artist: {slug, name, description, website, image}}) {
+    const validation = []
+    if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
+      validation.push({field: 'slug', message: "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."})
+    }
+    if (forInsert && await artistsCollection.countDocuments({_id: slug}) > 0) {
+      validation.push({field: 'slug', message: 'Les slugs de chaque artiste doivent être uniques.'})
+    }
+    if (!name) {
+      validation.push({field: 'name', message: "Le nom d'un artiste ne peut pas être vide."})
+    }
+    return validation
+  }
+
+  async function putArtist ({artist}) {
+    const validation = await validateArtist({forInsert: false, artist})
+    if (validation.length) {
+      throw new Error(validation[0].message)
+    }
+    const {slug, name, description, website, image} = artist
     const _id = slug
     const dbArtist = {_id, name, description, website, image}
     if (!dbArtist.image) {
       delete dbArtist.image
-    }
-    if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
-      throw new Error('Incorrect slug')
     }
     await artistsCollection.replaceOne({_id}, dbArtist, {upsert: true})
     return makeArtist(dbArtist)
@@ -302,7 +318,7 @@ async function make ({db, clock}) {
     return {id, title, artist: artist_, location: location_, tags, occurrences, reservationPage}
   }
 
-  const rootValue = {generation, putArtist, artist, artists, city, cities, putLocation, putEvent, deleteEvent}
+  const rootValue = {generation, validateArtist, putArtist, artist, artists, city, cities, putLocation, putEvent, deleteEvent}
 
   function request ({requestString, variableValues}) {
     return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)

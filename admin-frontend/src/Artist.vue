@@ -2,6 +2,7 @@
   <spa-layout v-if="artist" :breadcrumbItems="breadcrumbItems">
     <h1>{{ artist.name }}</h1>
     <spa-artist-details :artist="artist"/>
+    <!-- @todo Disable button when ^ artist-details fails validation -->
     <p><b-btn variant="primary" @click="saveArtist">Enregistrer</b-btn></p>
   </spa-layout>
 </template>

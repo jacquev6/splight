@@ -2,6 +2,7 @@
   <spa-layout :breadcrumbItems="breadcrumbItems">
     <h1>Nouveau</h1>
     <spa-artist-details :artist="newArtist" :preExisting="false"/>
+    <!-- @todo Disable button when ^ artist-details fails validation -->
     <p><b-btn variant="primary" @click="addArtist">Ajouter</b-btn></p>
     <h1>Existants</h1>
     <h2>Filtre</h2>

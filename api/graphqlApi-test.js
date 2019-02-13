@@ -1029,7 +1029,7 @@ describe('graphqlApi', function () {
             data: null,
             errors: [{
               locations: [{line: 1, column: 28}],
-              message: 'Incorrect slug',
+              message: "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets.",
               path: ['putArtist']
             }]
           }
