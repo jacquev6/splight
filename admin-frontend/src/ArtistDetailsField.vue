@@ -1,8 +1,13 @@
 <template>
-  <p><label>{{ title }}&nbsp;:
-    <slot/>
-    <b-form-invalid-feedback>{{ invalidFeedback }}</b-form-invalid-feedback>
-  </label></p>
+  <b-row>
+    <b-col md="2">
+      {{ title }}&nbsp;:
+    </b-col>
+    <b-col>
+      <slot/>
+      <b-form-invalid-feedback>X {{ invalidFeedback }}</b-form-invalid-feedback>
+    </b-col>
+  </b-row>
 </template>
 
 <script>
