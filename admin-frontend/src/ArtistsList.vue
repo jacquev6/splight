@@ -1,5 +1,5 @@
 <template>
-  <p v-if="$apollo.loading || artists === undefined">Chargement...</p>
+  <p v-if="!artists">Chargement...</p>
   <p v-else-if="artists.length === 0">Aucun artiste ne correspond au filtre</p>
   <ul v-else>
     <li v-for="artist in artists" :key="artist.slug">

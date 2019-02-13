@@ -9,7 +9,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import App from './App.vue'
 import Artist from './Artist.vue'
 import Artists from './Artists.vue'
-import ArtistsList from './ArtistsList.vue'
 import Layout from './Layout.vue'
 import Root from './Root.vue'
 
@@ -18,7 +17,6 @@ Vue.use(VueApollo)
 Vue.use(BootstrapVue)
 
 Vue.component('spa-layout', Layout)
-Vue.component('spa-artists-list', ArtistsList)
 
 const apolloProvider = new VueApollo({
   defaultClient: createApolloClient({
@@ -27,6 +25,11 @@ const apolloProvider = new VueApollo({
     websocketsOnly: false,
     ssr: false
   }).apolloClient,
+  defaultOptions: {
+    $query: {
+      fetchPolicy: 'no-cache'
+    }
+  },
   errorHandler (error) {
     console.log(error.message)
   }
