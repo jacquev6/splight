@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import ArtistsList from './ArtistsList.vue'
 import ArtistDetails from './ArtistDetails.vue'
+import ArtistsList from './ArtistsList.vue'
 
 export default {
   components: {
-    'spa-artists-list': ArtistsList,
-    'spa-artist-details': ArtistDetails
+    'spa-artist-details': ArtistDetails,
+    'spa-artists-list': ArtistsList
   },
   data () {
     return {

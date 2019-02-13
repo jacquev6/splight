@@ -5,7 +5,7 @@
     </b-col>
     <b-col>
       <slot/>
-      <b-form-invalid-feedback>X {{ invalidFeedback }}</b-form-invalid-feedback>
+      <b-form-invalid-feedback>{{ invalidFeedback }}</b-form-invalid-feedback>
     </b-col>
   </b-row>
 </template>
