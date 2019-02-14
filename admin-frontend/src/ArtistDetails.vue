@@ -1,25 +1,25 @@
 <template>
   <div v-if="validateArtist">
-    <spa-field title="Slug" :invalidFeedback="slugValidation">
-      <b-input :disabled="!!initialArtist" v-model="artist.slug" :state="validating ? !slugValidation : null"/>
+    <spa-field title="Slug" :invalidFeedback="validateArtist.slug">
+      <b-input :disabled="!!initialArtist" v-model="artist.slug" :state="validating ? !validateArtist.slug : null"/>
     </spa-field>
-    <spa-field title="Nom" :invalidFeedback="nameValidation">
-      <b-input v-model="artist.name" :state="validating ? !nameValidation : null"/>
+    <spa-field title="Nom" :invalidFeedback="validateArtist.name">
+      <b-input v-model="artist.name" :state="validating ? !validateArtist.name : null"/>
     </spa-field>
-    <spa-field title="Image" :invalidFeedback="imageValidation">
+    <spa-field title="Image" :invalidFeedback="validateArtist.image">
       <template v-if="artist.image === null">
-        <b-file @change="setImage" :state="validating ? !imageValidation : null"/>
+        <b-file @change="setImage" :state="validating ? !validateArtist.image : null"/>
       </template>
       <template v-else>
         <b-img fluid :src="artist.image"/>
         <b-btn @click="artist.image = null">Modifier</b-btn>
       </template>
     </spa-field>
-    <spa-field title="Description" :invalidFeedback="descriptionValidation">
-      <b-textarea v-model="description" :state="validating ? !descriptionValidation : null"></b-textarea>
+    <spa-field title="Description" :invalidFeedback="validateArtist.description">
+      <b-textarea v-model="description" :state="validating ? !validateArtist.description : null"></b-textarea>
     </spa-field>
-    <spa-field title="Site officiel" :invalidFeedback="websiteValidation">
-      <b-input v-model="artist.website" :state="validating ? !websiteValidation : null"/>
+    <spa-field title="Site officiel" :invalidFeedback="validateArtist.website">
+      <b-input v-model="artist.website" :state="validating ? !validateArtist.website : null"/>
     </spa-field>
     <b-row><b-col><b-btn variant="primary" :disabled="!enabled" @click="save">{{ saveButtonTitle }}</b-btn></b-col></b-row>
   </div>
@@ -46,7 +46,7 @@ export default {
   },
   apollo: {
     validateArtist: {
-      query: gql`query($forInsert:Boolean!,$artist:IArtist!){validateArtist(forInsert:$forInsert,artist:$artist){field message}}`,
+      query: gql`query($forInsert:Boolean!,$artist:IArtist!){validateArtist(forInsert:$forInsert,artist:$artist){slug name image description website}}`,
       variables () {
         return {
           forInsert: !this.initialArtist,
@@ -72,14 +72,6 @@ export default {
         this.artist.image = e.target.result
       }
       reader.readAsDataURL(change.target.files[0])
-    },
-    fieldValidation (fieldName) {
-      const messages = this.validateArtist.filter(({ field }) => field === fieldName).map(({ message }) => message)
-      if (messages.length > 0) {
-        return messages[0]
-      } else {
-        return null
-      }
     },
     save () {
       this.$apollo.mutate({
@@ -108,12 +100,10 @@ export default {
       const { slug, name, image, description, website } = this.artist
       return slug !== '' || name !== '' || image !== null || description.length !== 0 || website !== ''
     },
-    slugValidation () { return this.fieldValidation('slug') },
-    nameValidation () { return this.fieldValidation('name') },
-    imageValidation () { return this.fieldValidation('image') },
-    descriptionValidation () { return this.fieldValidation('description') },
-    websiteValidation () { return this.fieldValidation('website') },
-    enabled () { return this.validating && this.validateArtist.length === 0 }
+    enabled () {
+      const { slug, name, image, description, website } = this.validateArtist
+      return this.validating && !(slug || name || image || description || website)
+    }
   }
 }
 </script>

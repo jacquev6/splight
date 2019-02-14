@@ -39,23 +39,22 @@ async function make ({db, clock}) {
   }
 
   async function validateArtist ({forInsert, artist: {slug, name, description, website, image}}) {
-    const validation = []
+    const validation = {}
     if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
-      validation.push({field: 'slug', message: "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."})
-    }
-    if (forInsert && await artistsCollection.countDocuments({_id: slug}) > 0) {
-      validation.push({field: 'slug', message: 'Les slugs de chaque artiste doivent être uniques.'})
+      validation.slug = "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."
+    } else if (forInsert && await artistsCollection.countDocuments({_id: slug}) > 0) {
+      validation.slug = 'Les slugs de chaque artiste doivent être uniques.'
     }
     if (!name) {
-      validation.push({field: 'name', message: "Le nom d'un artiste ne peut pas être vide."})
+      validation.name = "Le nom d'un artiste ne peut pas être vide."
     }
     return validation
   }
 
   async function putArtist ({artist}) {
     const validation = await validateArtist({forInsert: false, artist})
-    if (validation.length) {
-      throw new Error(validation[0].message)
+    if (Object.keys(validation).length) {
+      throw new Error(validation.slug || validation.name)
     }
     const {slug, name, description, website, image} = artist
     const _id = slug

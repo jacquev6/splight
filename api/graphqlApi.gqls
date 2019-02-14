@@ -5,7 +5,7 @@ type Query {
   cities: [City!]!
   city(slug: ID!): City!
 
-  validateArtist(forInsert: Boolean!, artist: IArtist!): [ValidationError!]!
+  validateArtist(forInsert: Boolean!, artist: IArtist!): ArtistValidation!
 }
 
 scalar Date
@@ -71,9 +71,12 @@ type Occurrence {
   start: DateTime!
 }
 
-type ValidationError {
-  field: String!
-  message: String!
+type ArtistValidation {
+  slug: String
+  name: String
+  description: String
+  website: String
+  image: String
 }
 
 
