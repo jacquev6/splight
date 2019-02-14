@@ -1,8 +1,8 @@
 <template>
   <spa-layout :breadcrumbItems="breadcrumbItems">
-    <h1>Nouveau</h1>
+    <h1>Nouvel artiste</h1>
     <spa-artist-details saveButtonTitle="Ajouter" @saved="++refetchTrigger"/>
-    <h1>Existants</h1>
+    <h1>Artistes existants</h1>
     <h2>Filtre</h2>
     <p><label>Nom&nbsp;: <input v-model="filter.name"/></label></p>
     <h2>Résultat</h2>
