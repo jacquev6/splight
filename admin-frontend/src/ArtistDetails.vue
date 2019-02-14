@@ -28,14 +28,14 @@
 <script>
 import gql from 'graphql-tag'
 
-import ArtistDetailsField from './ArtistDetailsField.vue'
+import DetailsField from './DetailsField.vue'
 
 export default {
   components: {
-    'spa-field': ArtistDetailsField
+    'spa-field': DetailsField
   },
   props: {
-    initialArtist: {},
+    initialArtist: {}, // @todo Accept an artistSlug instead, and fetch it. Currently two files need to know the list of fields in Artist
     saveButtonTitle: {}
   },
   data () {
