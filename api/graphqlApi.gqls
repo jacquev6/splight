@@ -6,6 +6,7 @@ type Query {
   city(slug: ID!): City!
 
   validateArtist(forInsert: Boolean!, artist: IArtist!): ArtistValidation!
+  validateLocation(forInsert: Boolean!, citySlug:ID!, location: ILocation!): LocationValidation!
 }
 
 scalar Date
@@ -77,6 +78,16 @@ type ArtistValidation {
   description: String
   website: String
   image: String
+}
+
+type LocationValidation {
+  slug: String
+  name: String
+  description: String
+  website: String
+  image: String
+  phone: String
+  address: String
 }
 
 

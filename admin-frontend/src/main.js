@@ -9,6 +9,10 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import App from './App.vue'
 import Artist from './Artist.vue'
 import Artists from './Artists.vue'
+import Cities from './Cities.vue'
+import City from './City.vue'
+import CityLocations from './CityLocations.vue'
+import CityLocation from './CityLocation.vue'
 import Layout from './Layout.vue'
 import Root from './Root.vue'
 
@@ -52,6 +56,29 @@ const router = new Router({
       path: '/artists/:artistSlug',
       name: 'artist',
       component: Artist,
+      props: true
+    },
+    {
+      path: '/cities',
+      name: 'cities',
+      component: Cities
+    },
+    {
+      path: '/cities/:citySlug',
+      name: 'city',
+      component: City,
+      props: true
+    },
+    {
+      path: '/cities/:citySlug/locations',
+      name: 'locations',
+      component: CityLocations,
+      props: true
+    },
+    {
+      path: '/cities/:citySlug/locations/:locationSlug',
+      name: 'location',
+      component: CityLocation,
       props: true
     }
   ]

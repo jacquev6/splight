@@ -220,6 +220,21 @@ async function make ({db, clock}) {
     return {slug, name, tags, location, locations, event, events, allTagsImage, image, firstDate, dateAfter}
   }
 
+  async function validateLocation ({forInsert, citySlug, location: {slug, name, description, address, phone, website, image}}) {
+    const _id = citySlug + ':' + slug
+
+    const validation = {}
+    if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
+      validation.slug = "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."
+    } else if (forInsert && await locationsCollection.countDocuments({_id}) > 0) {
+      validation.slug = "Les slugs de chaque lieu doivent être uniques au sein d'une ville."
+    }
+    if (!name) {
+      validation.name = "Le nom d'un lieu ne peut pas être vide."
+    }
+    return validation
+  }
+
   async function putLocation ({citySlug, location: {slug, name, description, address, phone, website, image}}) {
     const _id = citySlug + ':' + slug
     const dbLocation = {_id, citySlug, name, description, address, phone, website, image}
@@ -317,7 +332,7 @@ async function make ({db, clock}) {
     return {id, title, artist: artist_, location: location_, tags, occurrences, reservationPage}
   }
 
-  const rootValue = {generation, validateArtist, putArtist, artist, artists, city, cities, putLocation, putEvent, deleteEvent}
+  const rootValue = {generation, validateArtist, putArtist, artist, artists, city, cities, validateLocation, putLocation, putEvent, deleteEvent}
 
   function request ({requestString, variableValues}) {
     return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
