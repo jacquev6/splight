@@ -1,7 +1,7 @@
 <template>
   <spa-layout v-if="artist" :breadcrumbItems="breadcrumbItems">
     <h1>{{ artist.name }}</h1>
-    <spa-artist-details :initialArtist="artist" saveButtonTitle="Enregistrer" @saved="$apollo.queries.artist.refetch()"/>
+    <spa-artist-details :artistSlug="artistSlug" saveButtonTitle="Enregistrer" @saved="$apollo.queries.artist.refetch()"/>
   </spa-layout>
 </template>
 
@@ -17,7 +17,7 @@ export default {
   props: ['artistSlug'],
   apollo: {
     artist: {
-      query: gql`query($artistSlug:ID!){artist(slug:$artistSlug){slug name image description website}}`,
+      query: gql`query($artistSlug:ID!){artist(slug:$artistSlug){slug name}}`,
       variables () {
         return {
           artistSlug: this.artistSlug

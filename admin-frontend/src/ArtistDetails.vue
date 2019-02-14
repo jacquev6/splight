@@ -1,7 +1,7 @@
 <template>
-  <div v-if="validateArtist">
+  <div v-if="artist && validateArtist">
     <spa-field title="Slug" :invalidFeedback="validateArtist.slug">
-      <b-input :disabled="!!initialArtist" v-model="artist.slug" :state="validating ? !validateArtist.slug : null"/>
+      <b-input :disabled="!!artistSlug" v-model="artist.slug" :state="validating ? !validateArtist.slug : null"/>
     </spa-field>
     <spa-field title="Nom" :invalidFeedback="validateArtist.name">
       <b-input v-model="artist.name" :state="validating ? !validateArtist.name : null"/>
@@ -35,7 +35,7 @@ export default {
     'spa-field': DetailsField
   },
   props: {
-    initialArtist: {}, // @todo Accept an artistSlug instead, and fetch it. Currently two files need to know the list of fields in Artist
+    artistSlug: {},
     saveButtonTitle: {}
   },
   data () {
@@ -49,22 +49,46 @@ export default {
       query: gql`query($forInsert:Boolean!,$artist:IArtist!){validateArtist(forInsert:$forInsert,artist:$artist){slug name image description website}}`,
       variables () {
         return {
-          forInsert: !this.initialArtist,
-          artist: { ...this.artist } // Required for reactiveness. Don't ask why...
+          forInsert: !this.artistSlug,
+          artist: { ...this.artist } // To be reactive to each field in this.artist
         }
+      },
+      skip () {
+        return !this.artist
+      }
+    },
+    initialArtist: {
+      query: gql`query($artistSlug:ID!){artist(slug:$artistSlug){slug name image description website}}`,
+      variables () {
+        return {
+          artistSlug: this.artistSlug
+        }
+      },
+      manual: true,
+      result ({ data, loading }) {
+        if (!loading) {
+          const { slug, name, image, description, website } = data.artist
+          this.artist = { slug, name, image, description, website }
+        }
+      },
+      skip () {
+        return !this.artistSlug
       }
     }
   },
   methods: {
     makeArtist () {
-      const { slug, name, image, description, website } = this.initialArtist || {
-        slug: '',
-        name: '',
-        image: null,
-        description: [],
-        website: ''
+      if (this.artistSlug) {
+        return null
+      } else {
+        return {
+          slug: '',
+          name: '',
+          image: null,
+          description: [],
+          website: ''
+        }
       }
-      return { slug, name, image, description, website }
     },
     setImage (change) {
       const reader = new FileReader()
@@ -78,7 +102,7 @@ export default {
         mutation: gql`mutation($artist:IArtist!){putArtist(artist:$artist){slug}}`,
         variables: { artist: this.artist }
       }).then(() => {
-        if (!this.initialArtist) {
+        if (!this.artistSlug) {
           this.artist = this.makeArtist()
           this.rawDescription = ''
         }
@@ -98,9 +122,10 @@ export default {
     },
     validating () {
       const { slug, name, image, description, website } = this.artist
-      return slug !== '' || name !== '' || image !== null || description.length !== 0 || website !== ''
+      return slug || name || image || description.length || website
     },
     enabled () {
+      if (!this.validateArtist) return false
       const { slug, name, image, description, website } = this.validateArtist
       return this.validating && !(slug || name || image || description || website)
     }
