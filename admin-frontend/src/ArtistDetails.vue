@@ -1,26 +1,10 @@
 <template>
   <div v-if="artist && validateArtist">
-    <spa-field title="Slug" :invalidFeedback="validateArtist.slug">
-      <b-input :disabled="!!artistSlug" v-model="artist.slug" :state="validating ? !validateArtist.slug : null"/>
-    </spa-field>
-    <spa-field title="Nom" :invalidFeedback="validateArtist.name">
-      <b-input v-model="artist.name" :state="validating ? !validateArtist.name : null"/>
-    </spa-field>
-    <spa-field title="Image" :invalidFeedback="validateArtist.image">
-      <template v-if="artist.image === null">
-        <b-file @change="setImage" :state="validating ? !validateArtist.image : null"/>
-      </template>
-      <template v-else>
-        <b-img fluid :src="artist.image"/>
-        <b-btn @click="artist.image = null">Modifier</b-btn>
-      </template>
-    </spa-field>
-    <spa-field title="Description" :invalidFeedback="validateArtist.description">
-      <b-textarea v-model="description" :state="validating ? !validateArtist.description : null"></b-textarea>
-    </spa-field>
-    <spa-field title="Site officiel" :invalidFeedback="validateArtist.website">
-      <b-input v-model="artist.website" :state="validating ? !validateArtist.website : null"/>
-    </spa-field>
+    <spa-input-field title="Slug" v-model="artist.slug" :feedback="feedback.slug" :disabled="!!artistSlug"/>
+    <spa-input-field title="Nom" v-model="artist.name" :feedback="feedback.name"/>
+    <spa-image-field title="Image" v-model="artist.image" :feedback="feedback.image"/>
+    <spa-textarea-field title="Description" v-model="artist.description" :feedback="feedback.description"/>
+    <spa-input-field title="Site officiel" v-model="artist.website" :feedback="feedback.website"/>
     <b-row><b-col><b-btn variant="primary" :disabled="!enabled" @click="save">{{ saveButtonTitle }}</b-btn></b-col></b-row>
   </div>
 </template>
@@ -28,11 +12,11 @@
 <script>
 import gql from 'graphql-tag'
 
-import DetailsField from './DetailsField.vue'
+import Fields from './fields'
 
 export default {
   components: {
-    'spa-field': DetailsField
+    ...Fields
   },
   props: {
     artistSlug: {},
@@ -40,8 +24,7 @@ export default {
   },
   data () {
     return {
-      artist: this.makeArtist(),
-      rawDescription: null
+      artist: this.makeArtist()
     }
   },
   apollo: {
@@ -104,22 +87,12 @@ export default {
       }).then(() => {
         if (!this.artistSlug) {
           this.artist = this.makeArtist()
-          this.rawDescription = ''
         }
         this.$emit('saved')
       })
     }
   },
   computed: {
-    description: {
-      get () {
-        return this.rawDescription || this.artist.description.join('\n\n')
-      },
-      set (description) {
-        this.rawDescription = description
-        this.artist.description = this.rawDescription.split(/\n\n+/).map(part => part.trim()).filter(part => part !== '')
-      }
-    },
     validating () {
       const { slug, name, image, description, website } = this.artist
       return slug || name || image || description.length || website
@@ -128,6 +101,30 @@ export default {
       if (!this.validateArtist) return false
       const { slug, name, image, description, website } = this.validateArtist
       return this.validating && !(slug || name || image || description || website)
+    },
+    feedback () {
+      return {
+        slug: {
+          state: this.validating ? !this.validateArtist.slug : null,
+          invalid: this.validateArtist.slug
+        },
+        name: {
+          state: this.validating ? !this.validateArtist.name : null,
+          invalid: this.validateArtist.name
+        },
+        image: {
+          state: this.validating ? !this.validateArtist.image : null,
+          invalid: this.validateArtist.image
+        },
+        description: {
+          state: this.validating ? !this.validateArtist.description : null,
+          invalid: this.validateArtist.description
+        },
+        website: {
+          state: this.validating ? !this.validateArtist.website : null,
+          invalid: this.validateArtist.website
+        }
+      }
     }
   }
 }
