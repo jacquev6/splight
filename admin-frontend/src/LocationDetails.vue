@@ -37,7 +37,7 @@ export default {
         return {
           forInsert: !this.locationSlug,
           citySlug: this.citySlug,
-          location: { ...this.location } // To be reactive to each field in this.artist
+          location: { ...this.location } // To be reactive to each field
         }
       },
       skip () {

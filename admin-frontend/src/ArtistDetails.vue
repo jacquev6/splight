@@ -45,7 +45,7 @@ export default {
       variables () {
         return {
           forInsert: !this.artistSlug,
-          artist: { ...this.artist } // To be reactive to each field in this.artist
+          artist: { ...this.artist } // To be reactive to each field
         }
       },
       skip () {
