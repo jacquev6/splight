@@ -30,7 +30,7 @@ async function makeRouter ({api, scripts, generationDate}) {
   for (var asset of generateAssets({api})) {
     const type = path.extname(asset.path)
     console.log('Preparing to serve', asset.path, 'as', type)
-    router.get(asset.path, (content => async (req, res) => res.type(type).send(content))(await asset.content))
+    // router.get(asset.path, (content => async (req, res) => res.type(type).send(content))(await asset.content))
   }
 
   function htmlHandler (pageClass) {
