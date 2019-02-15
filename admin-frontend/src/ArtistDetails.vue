@@ -4,7 +4,7 @@
     <spa-input-field title="Nom" v-model="artist.name" :feedback="feedback.name"/>
     <spa-image-field title="Image" v-model="artist.image" :feedback="feedback.image"/>
     <spa-textarea-field title="Description" v-model="artist.description" :feedback="feedback.description"/>
-    <spa-input-field title="Site officiel" v-model="artist.website" :feedback="feedback.website"/>
+    <spa-input-field title="Site web" v-model="artist.website" :feedback="feedback.website"/>
     <b-row><b-col><b-btn variant="primary" :disabled="!enabled" @click="save">{{ saveButtonTitle }}</b-btn></b-col></b-row>
   </div>
 </template>

@@ -4,6 +4,7 @@
     <b-jumbotron :lead="lead" header-level="4">
       <template slot="header">
         <router-link :to="{name: 'cities'}">Splight</router-link>
+        <!-- @todo Evaluate https://github.com/LinusBorg/portal-vue. It could replace this multi-slot approach. Not sure if it would be a Good Thing (TM) -->
         <slot name="subtitle"></slot>
       </template>
     </b-jumbotron>
