@@ -15,5 +15,5 @@ async function main () {
 
   app.listen(80, () => console.log('Website live!'))
 }
-
+// @todo Ensure we handle SIGTERM in a timely manner
 main()

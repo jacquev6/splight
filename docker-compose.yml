@@ -19,10 +19,14 @@ services:
     working_dir: /app
     volumes:
       - "./api:/app"
+    environment:
+      SPLIGHT_MONGODB_URL: "mongodb://mongo:27017/"
     command: npm run serve
 
   public-frontend:
     image: node:11.9
+    depends_on:
+      - api
     ports:
       - "8080:8080"
     working_dir: /app
@@ -32,6 +36,8 @@ services:
 
   admin-frontend:
     image: node:11.9
+    depends_on:
+      - api
     ports:
       - "8082:8080"
     working_dir: /app

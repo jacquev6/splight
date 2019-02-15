@@ -1,3 +1,5 @@
+/* global splightApiUrl */
+
 import Vue from 'vue'
 import Router from 'vue-router'
 import VueApollo from 'vue-apollo'
@@ -27,7 +29,7 @@ Vue.component('sp-tags-filter', TagsFilter)
 
 const apolloProvider = new VueApollo({
   defaultClient: createApolloClient({
-    httpEndpoint: 'http://localhost:8081/graphql',
+    httpEndpoint: splightApiUrl,
     persisting: false,
     websocketsOnly: false,
     ssr: false

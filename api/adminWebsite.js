@@ -66,7 +66,7 @@ async function makeIndexCss ({api}) {
 async function makeRouter ({scripts}) {
   const router = express.Router()
 
-  const client = await mongodb.MongoClient.connect('mongodb://mongo:27017/', {useNewUrlParser: true})
+  const client = await mongodb.MongoClient.connect(process.env.SPLIGHT_MONGODB_URL, {useNewUrlParser: true})
   const db = client.db('splight')
   const api = await graphqlApi.make({db})
 
