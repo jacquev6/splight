@@ -18,7 +18,7 @@ import Fields from './fields'
 
 export default {
   components: {
-    ...Fields,
+    ...Fields
   },
   props: {
     citySlug: {},
