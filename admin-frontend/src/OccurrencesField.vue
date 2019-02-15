@@ -1,7 +1,7 @@
 <template>
   <spa-base title="Représentations" :feedback="feedback">
     <ul>
-      <li v-for="occurrence in value">{{ occurrence.start }} <b-btn size="sm" @click="remove(occurrence)">Supprimer</b-btn></li>
+      <li v-for="occurrence in value" :key="occurrence.start">{{ occurrence.start }} <b-btn size="sm" @click="remove(occurrence)">Supprimer</b-btn></li>
     </ul>
     <b-input v-model="newStart" :state="feedback.state" placeholder="aaaa-mm-jjThh:mm"/>
     <b-btn size="sm" @click="add">Ajouter</b-btn>

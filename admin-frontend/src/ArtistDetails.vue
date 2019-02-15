@@ -13,7 +13,7 @@
       Observe:
         - description is reverted to previous value
         - new description is restored on reload
-      Also in LocationDetails, on description and address
+      Also in LocationDetails, on description and address. Actually maybe on all fields :-/
     -->
     <spa-textarea-field title="Description" v-model="artist.description" :feedback="feedback.description"/>
     <spa-input-field title="Site web" v-model="artist.website" :feedback="feedback.website"/>
