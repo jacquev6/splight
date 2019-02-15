@@ -3,6 +3,18 @@
     <spa-input-field title="Slug" v-model="artist.slug" :feedback="feedback.slug" :disabled="!!artistSlug"/>
     <spa-input-field title="Nom" v-model="artist.name" :feedback="feedback.name"/>
     <spa-image-field title="Image" v-model="artist.image" :feedback="feedback.image"/>
+    <!-- @todo Fix following bug
+      Reproduce:
+        - load existing artist
+        - edit description
+        - save
+      Expect:
+        - no change in fields
+      Observe:
+        - description is reverted to previous value
+        - new description is restored on reload
+      Also in LocationDetails, on description and address
+    -->
     <spa-textarea-field title="Description" v-model="artist.description" :feedback="feedback.description"/>
     <spa-input-field title="Site web" v-model="artist.website" :feedback="feedback.website"/>
     <b-row><b-col><b-btn variant="primary" :disabled="!enabled" @click="save">{{ saveButtonTitle }}</b-btn></b-col></b-row>
@@ -73,13 +85,6 @@ export default {
         }
       }
     },
-    setImage (change) {
-      const reader = new FileReader()
-      reader.onload = e => {
-        this.artist.image = e.target.result
-      }
-      reader.readAsDataURL(change.target.files[0])
-    },
     save () {
       this.$apollo.mutate({
         mutation: gql`mutation($artist:IArtist!){putArtist(artist:$artist){slug}}`,
@@ -94,6 +99,7 @@ export default {
   },
   computed: {
     validating () {
+      if (!this.artist) return false
       const { slug, name, image, description, website } = this.artist
       return slug || name || image || description.length || website
     },

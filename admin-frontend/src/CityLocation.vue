@@ -1,7 +1,7 @@
 <template>
   <spa-layout v-if="city" :breadcrumbItems="breadcrumbItems">
     <h1>{{ city.location.name }}</h1>
-    <spa-location-details :citySlug="citySlug" :initialLocation="city.location" saveButtonTitle="Enregistrer" @saved="$apollo.queries.city.refetch()"/>
+    <spa-location-details :citySlug="citySlug" :locationSlug="locationSlug" saveButtonTitle="Enregistrer" @saved="$apollo.queries.city.refetch()"/>
   </spa-layout>
 </template>
 
@@ -17,7 +17,7 @@ export default {
   props: ['citySlug', 'locationSlug'],
   apollo: {
     city: {
-      query: gql`query($citySlug:ID!,$locationSlug:ID!){city(slug:$citySlug){name location(slug:$locationSlug){slug name image description website phone address}}}`,
+      query: gql`query($citySlug:ID!,$locationSlug:ID!){city(slug:$citySlug){name location(slug:$locationSlug){name}}}`,
       variables () {
         return {
           citySlug: this.citySlug,
