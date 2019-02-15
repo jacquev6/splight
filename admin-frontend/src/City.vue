@@ -3,7 +3,7 @@
     <h1>{{ city.name }}</h1>
     <b-row>
       <b-col><h2><router-link :to="{name: 'locations', params: {citySlug}}">Lieux</router-link></h2></b-col>
-      <!-- <b-col><h2><router-link :to="{name: 'events', params: {citySlug}}">Événements</router-link></h2></b-col> -->
+      <b-col><h2><router-link :to="{name: 'events', params: {citySlug}}">Événements</router-link></h2></b-col>
     </b-row>
   </spa-layout>
 </template>

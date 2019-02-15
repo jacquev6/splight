@@ -13,6 +13,8 @@ import Cities from './Cities.vue'
 import City from './City.vue'
 import CityLocations from './CityLocations.vue'
 import CityLocation from './CityLocation.vue'
+import CityEvents from './CityEvents.vue'
+import CityEvent from './CityEvent.vue'
 import Layout from './Layout.vue'
 import Root from './Root.vue'
 
@@ -79,6 +81,18 @@ const router = new Router({
       path: '/cities/:citySlug/locations/:locationSlug',
       name: 'location',
       component: CityLocation,
+      props: true
+    },
+    {
+      path: '/cities/:citySlug/events',
+      name: 'events',
+      component: CityEvents,
+      props: true
+    },
+    {
+      path: '/cities/:citySlug/events/:eventId',
+      name: 'event',
+      component: CityEvent,
       props: true
     }
   ]

@@ -256,6 +256,23 @@ async function make ({db, clock}) {
     return {slug, name, description, address, phone, website, image}
   }
 
+  async function validateEvent ({citySlug, event: {id, title, artist, location, tags, occurrences, reservationPage}}) {
+    const validation = {}
+    if (!title && !artist) {
+      validation.title = 'Un événement doit avoir un titre ou un artiste.'
+    }
+    if (!location) {
+      validation.location = 'Un événement doit avoir un lieu.'
+    }
+    if (!tags.length) {
+      validation.tags = 'Un événement doit avoir au moins une catégorie.'
+    }
+    if (!occurrences.length) {
+      validation.occurrences = 'Un événement doit avoir au moins une représentation.'
+    }
+    return validation
+  }
+
   async function putEvent ({citySlug, event: {id, title, artist, location, tags, occurrences, reservationPage}}) {
     const dbCity = await citiesCollection.findOne({_id: citySlug})
 
@@ -332,7 +349,20 @@ async function make ({db, clock}) {
     return {id, title, artist: artist_, location: location_, tags, occurrences, reservationPage}
   }
 
-  const rootValue = {generation, validateArtist, putArtist, artist, artists, city, cities, validateLocation, putLocation, putEvent, deleteEvent}
+  const rootValue = {
+    generation,
+    validateArtist,
+    putArtist,
+    artist,
+    artists,
+    city,
+    cities,
+    validateLocation,
+    putLocation,
+    validateEvent,
+    putEvent,
+    deleteEvent
+  }
 
   function request ({requestString, variableValues}) {
     return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
