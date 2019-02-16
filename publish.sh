@@ -2,23 +2,56 @@
 
 set -o errexit
 set -u
+shopt -s nullglob
+
+PUSH=false
+
+while [[ "$#" > 0 ]]
+do
+  case $1 in
+    --push)
+      PUSH=true
+      ;;
+    *)
+      echo "Unknown parameter passed: $1"
+      exit 1;;
+  esac
+  shift
+done
 
 DATE_TAG=$(date "+%Y%m%d-%H%M%S")
-HOST_TAG=latest-built-on-$(hostname)
+HOST_TAG=latest-built-on-$(hostname -s)
 
-for DOCKERFILE in */Dockerfile
+function build {
+  local BASE_TAG=$1
+  shift
+
+  echo "Building jacquev6/splight:$DATE_TAG.$BASE_TAG"
+  echo "Building jacquev6/splight:$DATE_TAG.$BASE_TAG" | sed "s/./=/g"
+  docker build "$@" --tag jacquev6/splight:$DATE_TAG.$BASE_TAG .
+  docker tag jacquev6/splight:$DATE_TAG.$BASE_TAG jacquev6/splight:$HOST_TAG.$BASE_TAG
+
+  if $PUSH
+  then
+    docker push jacquev6/splight:$DATE_TAG.$BASE_TAG
+    docker push jacquev6/splight:$HOST_TAG.$BASE_TAG
+  fi
+  echo
+}
+
+for DIRECTORY in $(find . -name "*Dockerfile" | grep -v node_modules | while read f; do dirname $f; done | sort -u)
 do
-  DIRECTORY=${DOCKERFILE%/Dockerfile}
-  BASE_TAG=jacquev6/splight:$DIRECTORY
   cd $DIRECTORY
-  echo "Building ${BASE_TAG}_$DATE_TAG"
-  echo "Building ${BASE_TAG}_$DATE_TAG" | sed "s/./=/g"
-  docker build --tag ${BASE_TAG}_$DATE_TAG .
-  docker tag ${BASE_TAG}_$DATE_TAG ${BASE_TAG}_$HOST_TAG
 
-  # Keep one image built by each host. This way all `docker push`es will have as many "Layer already exists" as possible.
-  docker push ${BASE_TAG}_$HOST_TAG
-  # Images tagged with a date can all be deleted except the last one.
-  docker push ${BASE_TAG}_$DATE_TAG
-  cd ..
+  if [ -f Dockerfile ]
+  then
+    build ${DIRECTORY#./}
+  fi
+
+  for f in *.Dockerfile
+  do
+    build ${DIRECTORY#./}.${f%.Dockerfile} -f $f
+  done
+
+  cd - >/dev/null
 done
