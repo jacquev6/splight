@@ -12,7 +12,7 @@ RUN sed -i "s/splightApiUrl =.*/splightApiUrl = 'SED_BEFORE_RUN'/" public/index.
 
 COPY src src
 
-COPY vue.config.js ./
+COPY preview.vue.config.js vue.config.js
 # ENV BASE_URL /preview/
 
 RUN npm run build
@@ -20,7 +20,7 @@ RUN npm run build
 
 FROM nginx:1.15.8-alpine
 
-COPY nginx.conf /etc/nginx/
+COPY preview.nginx.conf /etc/nginx/nginx.conf
 
 COPY --from=builder /app/dist /usr/share/nginx/html/preview/
 
