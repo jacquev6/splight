@@ -5,15 +5,15 @@ const googleCloudStorage = require('@google-cloud/storage')
 const moment = require('moment')
 
 const storage = new googleCloudStorage.Storage({
-  projectId: 'jacquev6-0001',
-  keyFilename: './jacquev6-0001-430328cf0505.json'
+  projectId: process.env.SPLIGHT_PROJECT_ID,
+  keyFilename: '/service-accounts/splight-backup.json'
 })
 
 function backup () {
   const fileName = makeFileName(moment().format('YYYYMMDD-HHmmss'))
   console.log('Backup to ' + fileName)
 
-  const mongodump = childProcess.spawn('mongodump', ['--uri', 'mongodb://splight-mongo:27017/splight', '--archive', '--gzip'])
+  const mongodump = childProcess.spawn('mongodump', ['--uri', process.env.SPLIGHT_MONGODB_URL, '--archive', '--gzip'])
   mongodump.stderr.pipe(process.stderr)
   mongodump.stdout.pipe(storage.bucket('splight-backups').file(fileName).createWriteStream())
 }
@@ -22,14 +22,14 @@ function restore (datetime) {
   const fileName = makeFileName(datetime)
   console.log('Restore from ' + fileName)
 
-  const mongorestore = childProcess.spawn('mongorestore', ['--uri', 'mongodb://splight-mongo:27017/splight', '--drop', '--archive', '--gzip'])
+  const mongorestore = childProcess.spawn('mongorestore', ['--uri', process.env.SPLIGHT_MONGODB_URL, '--drop', '--archive', '--gzip'])
   mongorestore.stdout.pipe(process.stdout)
   mongorestore.stderr.pipe(process.stderr)
   storage.bucket('splight-backups').file(fileName).createReadStream().pipe(mongorestore.stdin)
 }
 
 function makeFileName (datetime) {
-  return 'mongodump-' + datetime + '.gz'
+  return datetime + '-mongodump.gz'
 }
 
 if (process.argv[2] === 'backup') {

@@ -1,0 +1,15 @@
+{
+  "name": "splight-backup",
+  "private": true,
+  "scripts": {
+    "test": "standard --fix",
+    "run": "node src/backup.js"
+  },
+  "dependencies": {
+    "@google-cloud/storage": "^2.4.2",
+    "moment": "^2.24.0"
+  },
+  "devDependencies": {
+    "standard": "^12.0.1"
+  }
+}
