@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "test": "standard --fix && echo Coding conventions checked && nyc --reporter=html --reporter=text mocha $(find . -name '*-test.js' | grep -v node_modules)",
-    "serve": "nodemon --ext js,gqls src/index.js serve"
+    "serve": "nodemon --ext js,gqls src/serve.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",

@@ -27,9 +27,4 @@ async function serve () {
 }
 // @todo Ensure we handle SIGTERM in a timely manner
 
-if (process.argv[2] === 'serve') {
-  serve()
-} else {
-  console.log('Usage: ' + process.argv[1] + ' serve')
-  process.exit(1)
-}
+serve()
