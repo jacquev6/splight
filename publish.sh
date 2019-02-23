@@ -20,7 +20,6 @@ do
 done
 
 DATE_TAG=$(date "+%Y%m%d-%H%M%S")
-HOST_TAG=latest-built-on-$(hostname -s)
 
 function build {
   local BASE_TAG=$1
@@ -29,12 +28,11 @@ function build {
   echo "Building jacquev6/splight:$DATE_TAG.$BASE_TAG"
   echo "Building jacquev6/splight:$DATE_TAG.$BASE_TAG" | sed "s/./=/g"
   docker build "$@" --tag jacquev6/splight:$DATE_TAG.$BASE_TAG .
-  docker tag jacquev6/splight:$DATE_TAG.$BASE_TAG jacquev6/splight:$HOST_TAG.$BASE_TAG
+  docker tag jacquev6/splight:$DATE_TAG.$BASE_TAG jacquev6/splight:latest.$BASE_TAG
 
   if $PUSH
   then
     docker push jacquev6/splight:$DATE_TAG.$BASE_TAG
-    docker push jacquev6/splight:$HOST_TAG.$BASE_TAG
   fi
   echo
 }
