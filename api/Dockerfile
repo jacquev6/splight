@@ -6,8 +6,8 @@ COPY package.json package-lock.json ./
 
 RUN npm install --production
 
-COPY . ./
+COPY src ./
 
 EXPOSE 80
 
-CMD ["node", "serveLongRunningWebsite.js"]
+CMD ["node", "src/index.js", "serve"]

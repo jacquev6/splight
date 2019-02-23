@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "test": "standard && echo Coding conventions checked && nyc --reporter=html --reporter=text mocha $(find . -name '*-test.js' | grep -v node_modules)",
-    "serve": "nodemon --ignore test --ext js,scss,html,gqls serveDeveloperWebsite.js"
+    "serve": "nodemon --ext js,gqls src/index.js serve"
   },
   "dependencies": {
     "@google-cloud/storage": "^2.3.4",

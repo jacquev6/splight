@@ -3,14 +3,24 @@
 const assert = require('assert').strict
 const graphql = require('graphql')
 const Hashids = require('hashids')
+const moment = require('moment')
+// @todo Remove when fix for https://github.com/moment/moment/issues/4698 is on npm
+moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 
-const datetime = require('./datetime')
-const durations = require('./publicWebsite/durations')
 const schemaString = require('./graphqlApi.gqls')
 
 const schema = graphql.buildSchema(schemaString)
 
 const hashids = new Hashids('', 10)
+
+const datetime = {
+  datetime (s) {
+    return moment(s, moment.HTML5_FMT.DATETIME_LOCAL, true)
+  },
+  now () {
+    return moment()
+  }
+}
 
 async function make ({db, clock}) {
   clock = clock || datetime.now
@@ -33,8 +43,8 @@ async function make ({db, clock}) {
   function generation () {
     const generationDate = clock()
     return {
-      date: generationDate.format(datetime.HTML5_FMT.DATE),
-      dateAfter: durations.oneWeek.clip(generationDate).add(5, 'weeks').format(datetime.HTML5_FMT.DATE)
+      date: generationDate.format(moment.HTML5_FMT.DATE),
+      dateAfter: generationDate.clone().startOf('isoWeek').add(5, 'weeks').format(moment.HTML5_FMT.DATE)
     }
   }
 
@@ -195,12 +205,12 @@ async function make ({db, clock}) {
 
     function firstDate () {
       const d = reduceOccurrencesStarts((a, b) => a < b ? a : b)
-      return d && datetime.datetime(d).format(datetime.HTML5_FMT.DATE)
+      return d && datetime.datetime(d).format(moment.HTML5_FMT.DATE)
     }
 
     function dateAfter () {
       const d = reduceOccurrencesStarts((a, b) => a < b ? b : a)
-      return d && datetime.datetime(d).add(1, 'day').format(datetime.HTML5_FMT.DATE)
+      return d && datetime.datetime(d).add(1, 'day').format(moment.HTML5_FMT.DATE)
     }
 
     function reduceOccurrencesStarts (f) {
