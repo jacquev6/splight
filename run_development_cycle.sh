@@ -61,8 +61,7 @@ then
     COLLECTION=${F%.json}
     COLLECTION=${COLLECTION#test-data/}
     echo "Dumping $COLLECTION"
-    docker-compose exec -T mongo mongoexport --db splight --collection $COLLECTION --jsonArray --quiet \
-    | python3 -c 'import json; import sys; json.dump(sorted(json.load(sys.stdin), key=lambda d: d["_id"]), sys.stdout, sort_keys=True, indent=4)' >$F
+    docker-compose exec -T mongo mongoexport --db splight --collection $COLLECTION --sort "{_id:1}" --jsonArray --quiet --pretty >$F
   done
 
   docker-compose down
