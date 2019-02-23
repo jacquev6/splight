@@ -2,7 +2,7 @@
 
 const assert = require('assert').strict
 const graphql = require('graphql')
-const Hashids = require('hashids')
+const Hashids = require('hashids') // @todo Do not rely on sequences, let MongoDB assign ids
 const moment = require('moment')
 // @todo Remove when fix for https://github.com/moment/moment/issues/4698 is on npm
 moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
@@ -22,7 +22,7 @@ const datetime = {
   }
 }
 
-async function make ({db, clock}) {
+async function make ({ db, clock }) {
   clock = clock || datetime.now
 
   const artistsCollection = db.collection('artists')
@@ -32,7 +32,7 @@ async function make ({db, clock}) {
   const sequencesCollection = db.collection('sequences')
 
   async function nextSequenceValue (_id) {
-    const sequence = (await sequencesCollection.findOneAndUpdate({_id}, {$inc: {value: 1}}, {upsert: true})).value
+    const sequence = (await sequencesCollection.findOneAndUpdate({ _id }, { $inc: { value: 1 } }, { upsert: true })).value
     if (sequence) {
       return sequence.value
     } else {
@@ -48,11 +48,11 @@ async function make ({db, clock}) {
     }
   }
 
-  async function validateArtist ({forInsert, artist: {slug, name, description, website, image}}) {
+  async function validateArtist ({ forInsert, artist: { slug, name, description, website, image } }) {
     const validation = {}
     if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
       validation.slug = "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."
-    } else if (forInsert && await artistsCollection.countDocuments({_id: slug}) > 0) {
+    } else if (forInsert && await artistsCollection.countDocuments({ _id: slug }) > 0) {
       validation.slug = 'Les slugs de chaque artiste doivent être uniques.'
     }
     if (!name) {
@@ -61,23 +61,23 @@ async function make ({db, clock}) {
     return validation
   }
 
-  async function putArtist ({artist}) {
-    const validation = await validateArtist({forInsert: false, artist})
+  async function putArtist ({ artist }) {
+    const validation = await validateArtist({ forInsert: false, artist })
     if (Object.keys(validation).length) {
       throw new Error(validation.slug || validation.name)
     }
-    const {slug, name, description, website, image} = artist
+    const { slug, name, description, website, image } = artist
     const _id = slug
-    const dbArtist = {_id, name, description, website, image}
+    const dbArtist = { _id, name, description, website, image }
     if (!dbArtist.image) {
       delete dbArtist.image
     }
-    await artistsCollection.replaceOne({_id}, dbArtist, {upsert: true})
+    await artistsCollection.replaceOne({ _id }, dbArtist, { upsert: true })
     return makeArtist(dbArtist)
   }
 
-  async function artist ({slug}) {
-    const dbArtist = await artistsCollection.findOne({_id: slug})
+  async function artist ({ slug }) {
+    const dbArtist = await artistsCollection.findOne({ _id: slug })
     if (dbArtist) {
       return makeArtist(dbArtist)
     } else {
@@ -85,7 +85,7 @@ async function make ({db, clock}) {
     }
   }
 
-  async function artists ({name, max}) {
+  async function artists ({ name, max }) {
     const nameMatches = matches(name)
     // This is bad: we must filter and limit in MongoDB
     const artists = (await artistsCollection.find().toArray()).filter(artist => nameMatches(artist.name))
@@ -96,13 +96,13 @@ async function make ({db, clock}) {
     }
   }
 
-  async function makeArtist ({_id: slug, name, description, website, image}) {
+  async function makeArtist ({ _id: slug, name, description, website, image }) {
     description = description || []
-    return {slug, name, description, website, image}
+    return { slug, name, description, website, image }
   }
 
-  async function city ({slug}) {
-    const dbCity = await citiesCollection.findOne({_id: slug})
+  async function city ({ slug }) {
+    const dbCity = await citiesCollection.findOne({ _id: slug })
     if (dbCity) {
       return makeCity(dbCity)
     } else {
@@ -110,7 +110,7 @@ async function make ({db, clock}) {
     }
   }
 
-  async function cities ({name, max}) {
+  async function cities ({ name, max }) {
     const nameMatches = matches(name)
     // This is bad: we must filter and limit in MongoDB
     const cities = (await citiesCollection.find().toArray()).filter(city => nameMatches(city.name))
@@ -121,11 +121,11 @@ async function make ({db, clock}) {
     }
   }
 
-  async function makeCity ({_id: slug, name, tags: dbTags, image, allTagsImage}) {
+  async function makeCity ({ _id: slug, name, tags: dbTags, image, allTagsImage }) {
     const citySlug = slug
 
-    async function location ({slug}) {
-      const dbLocation = await locationsCollection.findOne({_id: citySlug + ':' + slug})
+    async function location ({ slug }) {
+      const dbLocation = await locationsCollection.findOne({ _id: citySlug + ':' + slug })
       if (dbLocation) {
         return makeLocation(citySlug, dbLocation)
       } else {
@@ -133,10 +133,10 @@ async function make ({db, clock}) {
       }
     }
 
-    async function locations ({name, max}) {
+    async function locations ({ name, max }) {
       const nameMatches = matches(name)
       // This is bad: we must filter and limit in MongoDB
-      const locations = (await locationsCollection.find({citySlug}).toArray()).filter(location => nameMatches(location.name))
+      const locations = (await locationsCollection.find({ citySlug }).toArray()).filter(location => nameMatches(location.name))
       if (max && locations.length > max) {
         return null
       } else {
@@ -144,8 +144,8 @@ async function make ({db, clock}) {
       }
     }
 
-    const tags = await Promise.all((dbTags || []).map(async function ({slug, title, image}) {
-      return {slug, title, image}
+    const tags = await Promise.all((dbTags || []).map(async function ({ slug, title, image }) {
+      return { slug, title, image }
     }))
 
     const tagsBySlug = Object.assign({}, ...tags.map(function (tag) {
@@ -154,12 +154,12 @@ async function make ({db, clock}) {
       return o
     }))
 
-    const dbEvents = await eventsCollection.find({citySlug}).toArray()
+    const dbEvents = await eventsCollection.find({ citySlug }).toArray()
     const events_ = await Promise.all(dbEvents.map(dbEvent => makeEvent(citySlug, tagsBySlug, dbEvent)))
 
-    async function event ({id}) {
+    async function event ({ id }) {
       const _id = id
-      const dbEvent = await eventsCollection.findOne({_id})
+      const dbEvent = await eventsCollection.findOne({ _id })
       if (dbEvent) {
         return makeEvent(citySlug, tagsBySlug, dbEvent)
       } else {
@@ -167,10 +167,10 @@ async function make ({db, clock}) {
       }
     }
 
-    function events ({tag, location, artist, title, dates, max}) {
+    function events ({ tag, location, artist, title, dates, max }) {
       const titleMatches = matches(title)
 
-      function selectOccurrence ({start, after}) {
+      function selectOccurrence ({ start, after }) {
         return function (occurrence) {
           if (start && occurrence.start < start) {
             return false
@@ -182,19 +182,19 @@ async function make ({db, clock}) {
         }
       }
 
-      var filtered = events_.filter(({title}) => titleMatches(title))
+      var filtered = events_.filter(({ title }) => titleMatches(title))
       if (tag) {
-        filtered = filtered.filter(({tags}) => tags.some(({slug}) => slug === tag))
+        filtered = filtered.filter(({ tags }) => tags.some(({ slug }) => slug === tag))
       }
       if (location) {
-        filtered = filtered.filter(({location: {slug}}) => slug === location)
+        filtered = filtered.filter(({ location: { slug } }) => slug === location)
       }
       if (artist) {
-        filtered = filtered.filter(({artist: a}) => a && a.slug === artist)
+        filtered = filtered.filter(({ artist: a }) => a && a.slug === artist)
       }
       if (dates) {
         const occurrenceMatches = selectOccurrence(dates)
-        filtered = filtered.filter(({occurrences}) => occurrences.some(occurrenceMatches))
+        filtered = filtered.filter(({ occurrences }) => occurrences.some(occurrenceMatches))
       }
       if (max && filtered.length > max) {
         return null
@@ -227,16 +227,16 @@ async function make ({db, clock}) {
       }
     }
 
-    return {slug, name, tags, location, locations, event, events, allTagsImage, image, firstDate, dateAfter}
+    return { slug, name, tags, location, locations, event, events, allTagsImage, image, firstDate, dateAfter }
   }
 
-  async function validateLocation ({forInsert, citySlug, location: {slug, name, description, address, phone, website, image}}) {
+  async function validateLocation ({ forInsert, citySlug, location: { slug, name, description, address, phone, website, image } }) {
     const _id = citySlug + ':' + slug
 
     const validation = {}
     if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
       validation.slug = "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."
-    } else if (forInsert && await locationsCollection.countDocuments({_id}) > 0) {
+    } else if (forInsert && await locationsCollection.countDocuments({ _id }) > 0) {
       validation.slug = "Les slugs de chaque lieu doivent être uniques au sein d'une ville."
     }
     if (!name) {
@@ -245,28 +245,28 @@ async function make ({db, clock}) {
     return validation
   }
 
-  async function putLocation ({citySlug, location: {slug, name, description, address, phone, website, image}}) {
+  async function putLocation ({ citySlug, location: { slug, name, description, address, phone, website, image } }) {
     const _id = citySlug + ':' + slug
-    const dbLocation = {_id, citySlug, name, description, address, phone, website, image}
+    const dbLocation = { _id, citySlug, name, description, address, phone, website, image }
     if (!dbLocation.image) {
       delete dbLocation.image
     }
     if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
       throw new Error('Incorrect slug')
     }
-    await locationsCollection.replaceOne({_id}, dbLocation, {upsert: true})
+    await locationsCollection.replaceOne({ _id }, dbLocation, { upsert: true })
     return makeLocation(citySlug, dbLocation)
   }
 
-  async function makeLocation (citySlug, {_id, name, description, address, phone, website, image}) {
+  async function makeLocation (citySlug, { _id, name, description, address, phone, website, image }) {
     assert.equal(_id.split(':').length, 2)
     const slug = _id.split(':')[1]
     description = description || []
     address = address || []
-    return {slug, name, description, address, phone, website, image}
+    return { slug, name, description, address, phone, website, image }
   }
 
-  async function validateEvent ({citySlug, event: {id, title, artist, location, tags, occurrences, reservationPage}}) {
+  async function validateEvent ({ citySlug, event: { id, title, artist, location, tags, occurrences, reservationPage } }) {
     const validation = {}
     if (!title && !artist) {
       validation.title = 'Un événement doit avoir un titre ou un artiste.'
@@ -283,12 +283,12 @@ async function make ({db, clock}) {
     return validation
   }
 
-  async function putEvent ({citySlug, event: {id, title, artist, location, tags, occurrences, reservationPage}}) {
-    const dbCity = await citiesCollection.findOne({_id: citySlug})
+  async function putEvent ({ citySlug, event: { id, title, artist, location, tags, occurrences, reservationPage } }) {
+    const dbCity = await citiesCollection.findOne({ _id: citySlug })
 
-    const tagsBySlug = Object.assign({}, ...await Promise.all((dbCity.tags || []).map(async function ({slug, title, image}) {
+    const tagsBySlug = Object.assign({}, ...await Promise.all((dbCity.tags || []).map(async function ({ slug, title, image }) {
       const o = {}
-      o[slug] = {slug, title, image}
+      o[slug] = { slug, title, image }
       return o
     })))
 
@@ -300,15 +300,15 @@ async function make ({db, clock}) {
     }
 
     const dbEvent = Object.assign(
-      {_id, citySlug, location, tags, occurrences},
-      reservationPage ? {reservationPage} : {},
-      artist ? {artist} : {},
-      title ? {title} : {}
+      { _id, citySlug, location, tags, occurrences },
+      reservationPage ? { reservationPage } : {},
+      artist ? { artist } : {},
+      title ? { title } : {}
     )
 
     const event = await makeEvent(citySlug, tagsBySlug, dbEvent)
 
-    const ret = await eventsCollection.replaceOne({_id}, dbEvent, {upsert})
+    const ret = await eventsCollection.replaceOne({ _id }, dbEvent, { upsert })
     // console.log(id, ret.matchedCount)
     if (id && ret.matchedCount === 0) {
       throw new Error(`No event with id "${id}"`)
@@ -317,32 +317,32 @@ async function make ({db, clock}) {
     return event
   }
 
-  async function deleteEvent ({citySlug, eventId}) {
-    const dbCity = await citiesCollection.findOne({_id: citySlug})
+  async function deleteEvent ({ citySlug, eventId }) {
+    const dbCity = await citiesCollection.findOne({ _id: citySlug })
 
-    const tagsBySlug = Object.assign({}, ...await Promise.all((dbCity.tags || []).map(async function ({slug, title, image}) {
+    const tagsBySlug = Object.assign({}, ...await Promise.all((dbCity.tags || []).map(async function ({ slug, title, image }) {
       const o = {}
-      o[slug] = {slug, title, image}
+      o[slug] = { slug, title, image }
       return o
     })))
 
     const _id = eventId
 
-    const dbEvent = await eventsCollection.findOne({_id})
+    const dbEvent = await eventsCollection.findOne({ _id })
     if (!dbEvent) {
       throw new Error(`No event with id "${eventId}"`)
     }
     const event = await makeEvent(citySlug, tagsBySlug, dbEvent)
 
-    await eventsCollection.deleteOne({_id})
+    await eventsCollection.deleteOne({ _id })
 
     return event
   }
 
-  async function makeEvent (citySlug, tagsBySlug, {_id, title, artist: artistSlug, location: locationSlug, tags: tagSlugs, occurrences, reservationPage}) {
+  async function makeEvent (citySlug, tagsBySlug, { _id, title, artist: artistSlug, location: locationSlug, tags: tagSlugs, occurrences, reservationPage }) {
     const id = _id
-    const artist_ = artistSlug ? await artist({slug: artistSlug}) : null
-    const dbLocation = await locationsCollection.findOne({_id: citySlug + ':' + locationSlug})
+    const artist_ = artistSlug ? await artist({ slug: artistSlug }) : null
+    const dbLocation = await locationsCollection.findOne({ _id: citySlug + ':' + locationSlug })
     // @todo Factorize with makeCity.location
     if (!dbLocation) {
       throw new Error(`No location with slug "${locationSlug}"`)
@@ -356,7 +356,7 @@ async function make ({db, clock}) {
       }
       return tag
     })
-    return {id, title, artist: artist_, location: location_, tags, occurrences, reservationPage}
+    return { id, title, artist: artist_, location: location_, tags, occurrences, reservationPage }
   }
 
   const rootValue = {
@@ -374,11 +374,11 @@ async function make ({db, clock}) {
     deleteEvent
   }
 
-  function request ({requestString, variableValues}) {
+  function request ({ requestString, variableValues }) {
     return graphql.graphql(schema, requestString, rootValue, undefined, variableValues)
   }
 
-  return {schema, rootValue, request}
+  return { schema, rootValue, request }
 }
 
 function matches (needles) {
@@ -403,4 +403,4 @@ function normalizeString (s) {
   return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
-Object.assign(exports, {make})
+Object.assign(exports, { make })
