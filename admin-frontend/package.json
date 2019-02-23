@@ -7,23 +7,21 @@
     "serve": "vue-cli-service serve"
   },
   "dependencies": {
-    "bootstrap-vue": "^2.0.0-rc.11",
-    "jquery": "^3.3.1",
-    "moment": "^2.24.0",
-    "vue": "^2.6.0",
-    "vue-apollo": "^3.0.0-beta.28",
-    "vue-headful": "^2.0.1",
-    "vue-router": "^3.0.2"
-  },
-  "devDependencies": {
     "@vue/cli-plugin-eslint": "^3.4.0",
     "@vue/cli-service": "^3.4.0",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
+    "bootstrap-vue": "^2.0.0-rc.11",
     "graphql-tag": "^2.10.1",
+    "jquery": "^3.3.1",
+    "moment": "^2.24.0",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
+    "vue": "^2.6.0",
+    "vue-apollo": "^3.0.0-beta.28",
     "vue-cli-plugin-apollo": "^0.19.1",
+    "vue-headful": "^2.0.1",
+    "vue-router": "^3.0.2",
     "vue-template-compiler": "^2.6.0"
   },
   "eslintConfig": {

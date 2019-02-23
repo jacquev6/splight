@@ -1,3 +1,9 @@
-/.dockerignore
-/Dockerfile
-/node_modules/
+*
+!/public/
+!/src/
+!/package-lock.json
+!/package.json
+!/preview.nginx.conf
+!/preview.vue.config.js
+!/public.nginx.conf
+!/public.vue.config.js
