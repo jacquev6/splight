@@ -23,6 +23,8 @@ async function serve () {
   app.use(bodyParser.json({ limit: '50mb' })) // https://stackoverflow.com/a/19965089/905845
   app.use('/graphql', expressGraphql(Object.assign({ graphiql: true }, api)))
 
+  app.get('/', (req, res) => res.type('text/plain').send('OK'))
+
   app.listen(80, () => console.log('Website live!'))
 }
 // @todo Ensure we handle SIGTERM in a timely manner
