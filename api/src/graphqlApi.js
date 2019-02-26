@@ -9,6 +9,8 @@ moment.HTML5_FMT.WEEK = 'GGGG-[W]WW'
 
 const schemaString = require('./graphqlApi.gqls')
 
+// @todo See https://principledgraphql.com/operations#8-access-and-demand-control
+
 const schema = graphql.buildSchema(schemaString)
 
 const hashids = new Hashids('', 10)
