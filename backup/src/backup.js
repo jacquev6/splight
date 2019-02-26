@@ -29,7 +29,7 @@ function restore (datetime) {
 }
 
 function makeFileName (datetime) {
-  return datetime + '-mongodump.gz'
+  return datetime + '-mongodump.gz' // @todo add instance (e.g. "splight-prod") in name, automatically for backup, manually for restore, to allow cross-instance restores
 }
 
 if (process.argv[2] === 'backup') {
