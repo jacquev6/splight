@@ -2,22 +2,48 @@
 
 require('stringify').registerWithRequire(['.gqls'])
 
+const apolloServerExpress = require('apollo-server-express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const express = require('express')
-const expressGraphql = require('express-graphql')
 const mongodb = require('mongodb')
 
 const authentication = require('./authentication')
 const graphqlApi = require('./graphqlApi')
+const schemaString = require('./graphqlApi.gqls')
+
+function adaptResolvers (graphqlStyleResolvers) {
+  const apolloStyleResolvers = {}
+  Object.keys(graphqlStyleResolvers).forEach(name => {
+    apolloStyleResolvers[name] = function (parent, args, context, info) {
+      return graphqlStyleResolvers[name](args, context)
+    }
+  })
+  return apolloStyleResolvers
+}
 
 async function serve () {
   console.log('Starting website...')
 
   const client = await mongodb.MongoClient.connect(process.env.SPLIGHT_MONGODB_URL, { useNewUrlParser: true })
   const db = client.db('splight')
-  const { schema, rootValue } = await graphqlApi.make({ db })
+  const { rootValue: { viewer, generation, artists, artist, cities, city, validateArtist, validateLocation, validateEvent, putArtist, putLocation, putEvent, deleteEvent } } = await graphqlApi.make({ db })
+
+  const typeDefs = apolloServerExpress.gql(schemaString)
+
+  const resolvers = {
+    Query: adaptResolvers({ viewer, generation, artists, artist, cities, city, validateArtist, validateLocation, validateEvent }),
+    Mutation: adaptResolvers({ putArtist, putLocation, putEvent, deleteEvent })
+  }
+
+  const server = new apolloServerExpress.ApolloServer({
+    typeDefs,
+    resolvers,
+    context: ({ req }) => ({
+      viewer: authentication.getViewer(req)
+    })
+  })
 
   const app = express()
 
@@ -25,16 +51,11 @@ async function serve () {
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(cookieParser())
   app.use(cors({ origin: true, credentials: true })) // https://www.npmjs.com/package/cors#configuration-options
-  app.use('/graphql', expressGraphql(async (request, response, params) => {
-    return {
-      schema,
-      rootValue,
-      context: {
-        viewer: authentication.getViewer(request)
-      },
-      graphiql: true
-    }
-  }))
+
+  server.applyMiddleware({
+    app,
+    cors: { origin: true, credentials: true }
+  })
 
   authentication.register(app)
 

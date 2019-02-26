@@ -6,11 +6,11 @@
     "serve": "nodemon --ext js,gqls src/serve.js"
   },
   "dependencies": {
+    "apollo-server-express": "^2.4.8",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "express": "^4.16.4",
-    "express-graphql": "^0.7.1",
     "graphql": "^14.1.1",
     "hashids": "^1.2.2",
     "moment": "^2.24.0",
