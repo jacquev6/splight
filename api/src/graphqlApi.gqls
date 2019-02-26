@@ -1,4 +1,5 @@
 type Query {
+  viewer: Viewer!
   generation: Generation
   artists(name: String, max: Int): [Artist!]
   artist(slug: ID!): Artist!
@@ -15,6 +16,14 @@ scalar Time
 scalar DateTime
 
 scalar URL
+
+type Viewer {
+  authenticated: AuthenticatedUser
+}
+
+type AuthenticatedUser {
+  name: String!
+}
 
 type Generation {
   date: Date!

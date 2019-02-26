@@ -40,6 +40,19 @@ async function make ({ db, clock }) {
     }
   }
 
+  function viewer (_, { viewer }) {
+    if (viewer) {
+      return {
+        authenticated: {
+          name: viewer
+        }
+      }
+    } else {
+      return {
+      }
+    }
+  }
+
   function generation () {
     const generationDate = clock()
     return {
@@ -360,6 +373,7 @@ async function make ({ db, clock }) {
   }
 
   const rootValue = {
+    viewer,
     generation,
     validateArtist,
     putArtist,

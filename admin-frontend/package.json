@@ -10,6 +10,7 @@
     "@vue/cli-plugin-eslint": "^3.4.0",
     "@vue/cli-service": "^3.4.0",
     "@vue/eslint-config-standard": "^4.0.0",
+    "axios": "^0.18.0",
     "babel-eslint": "^10.0.1",
     "bootstrap-vue": "^2.0.0-rc.11",
     "graphql-tag": "^2.10.1",
