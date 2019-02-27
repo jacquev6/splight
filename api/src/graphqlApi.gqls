@@ -1,7 +1,7 @@
 type Query {
   viewer: Viewer!
   generation: Generation
-  artists(name: String, max: Int): [Artist!]
+  artists(name: String, max: Int): [Artist!] # @todo Remove max
   artist(slug: ID!): Artist!
   cities: [City!]!
   city(slug: ID!): City!
@@ -42,10 +42,10 @@ type City {
   slug: ID!
   name: String!
   tags: [Tag!]!
-  locations(name: String, max: Int): [Location!]
+  locations(name: String, max: Int): [Location!] # @todo Remove max
   location(slug: ID!): Location!
   event(id: ID!): Event!
-  events(tag: ID, location: ID, artist: ID, title: String, dates: IDateInterval, max: Int): [Event!]
+  events(tag: ID, location: ID, artist: ID, title: String, dates: IDateInterval, max: Int): [Event!] # @todo Remove max
   firstDate: Date
   dateAfter: Date
   image: URL

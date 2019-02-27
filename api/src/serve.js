@@ -10,19 +10,8 @@ const express = require('express')
 const mongodb = require('mongodb')
 
 const authentication = require('./authentication')
-const graphqlApi = require('./graphqlApi')
-const resolvers_ = require('./resolvers')
+const resolvers = require('./resolvers')
 const schemaString = require('./graphqlApi.gqls')
-
-function adaptResolvers (graphqlStyleResolvers) {
-  const apolloStyleResolvers = {}
-  Object.keys(graphqlStyleResolvers).forEach(name => {
-    apolloStyleResolvers[name] = function (parent, args, context, info) {
-      return graphqlStyleResolvers[name](args, context)
-    }
-  })
-  return apolloStyleResolvers
-}
 
 async function serve () {
   console.log('Starting website...')
@@ -30,28 +19,23 @@ async function serve () {
   const client = await mongodb.MongoClient.connect(process.env.SPLIGHT_MONGODB_URL, { useNewUrlParser: true })
   const db = client.db('splight')
   const dbArtists = db.collection('artists')
-  const { rootValue: { generation, cities, city, validateLocation, validateEvent, putLocation, putEvent, deleteEvent } } = await graphqlApi.make({ db })
+  const dbCities = db.collection('cities')
+  const dbEvents = db.collection('events')
+  const dbLocations = db.collection('locations')
+  const dbSequences = db.collection('sequences')
 
   const typeDefs = apolloServerExpress.gql(schemaString)
-
-  const resolvers = {
-    ...resolvers_,
-    Query: {
-      ...resolvers_.Query,
-      ...adaptResolvers({ generation, cities, city, validateLocation, validateEvent })
-    },
-    Mutation: {
-      ...resolvers_.Mutation,
-      ...adaptResolvers({ putLocation, putEvent, deleteEvent })
-    }
-  }
 
   const server = new apolloServerExpress.ApolloServer({
     typeDefs,
     resolvers,
     context: ({ req }) => ({
       viewer: authentication.getViewer(req),
-      dbArtists
+      dbArtists,
+      dbCities,
+      dbEvents,
+      dbLocations,
+      dbSequences
     })
   })
 
