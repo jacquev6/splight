@@ -90,7 +90,7 @@ export default {
           this.event = {
             id,
             title,
-            artist: artist.slug,
+            artist: artist && artist.slug,
             location: location.slug,
             tags: tags.map(({ slug }) => slug),
             occurrences: occurrences.map(({ start }) => ({ start })),
