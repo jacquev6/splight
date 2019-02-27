@@ -29,7 +29,8 @@ async function serve () {
 
   const client = await mongodb.MongoClient.connect(process.env.SPLIGHT_MONGODB_URL, { useNewUrlParser: true })
   const db = client.db('splight')
-  const { rootValue: { generation, artists, artist, cities, city, validateArtist, validateLocation, validateEvent, putArtist, putLocation, putEvent, deleteEvent } } = await graphqlApi.make({ db })
+  const dbArtists = db.collection('artists')
+  const { rootValue: { generation, cities, city, validateLocation, validateEvent, putLocation, putEvent, deleteEvent } } = await graphqlApi.make({ db })
 
   const typeDefs = apolloServerExpress.gql(schemaString)
 
@@ -37,11 +38,11 @@ async function serve () {
     ...resolvers_,
     Query: {
       ...resolvers_.Query,
-      ...adaptResolvers({ generation, artists, artist, cities, city, validateArtist, validateLocation, validateEvent })
+      ...adaptResolvers({ generation, cities, city, validateLocation, validateEvent })
     },
     Mutation: {
       ...resolvers_.Mutation,
-      ...adaptResolvers({ putArtist, putLocation, putEvent, deleteEvent })
+      ...adaptResolvers({ putLocation, putEvent, deleteEvent })
     }
   }
 
@@ -49,7 +50,8 @@ async function serve () {
     typeDefs,
     resolvers,
     context: ({ req }) => ({
-      viewer: authentication.getViewer(req)
+      viewer: authentication.getViewer(req),
+      dbArtists
     })
   })
 
