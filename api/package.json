@@ -2,7 +2,8 @@
   "name": "splight-api",
   "private": true,
   "scripts": {
-    "test": "standard --fix && echo Coding conventions checked && nyc --reporter=html --reporter=text mocha $(find . -name '*-test.js' | grep -v node_modules)",
+    "test": "standard --fix && echo Coding conventions checked && nyc --reporter=html --reporter=text mocha **/*-test.js",
+    "test:watch": "mocha --watch **/*-test.js",
     "serve": "nodemon --ext js,gqls src/serve.js"
   },
   "dependencies": {
