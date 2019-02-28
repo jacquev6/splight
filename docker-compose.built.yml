@@ -20,7 +20,7 @@ services:
     ports:
       - "8080:80"
     environment:
-      SPLIGHT_API_URL: "http://localhost:9000/graphql"
+      SPLIGHT_API_URL: "http://localhost:9000/"
 
   admin-frontend:
     image: jacquev6/splight:latest.admin-frontend
@@ -29,7 +29,7 @@ services:
     ports:
       - "8081:80"
     environment:
-      SPLIGHT_API_URL: "http://localhost:9000/graphql"
+      SPLIGHT_API_URL: "http://localhost:9000/"
 
   public-frontend-preview:
     image: jacquev6/splight:latest.public-frontend.preview
@@ -38,4 +38,4 @@ services:
     ports:
       - "8082:80"
     environment:
-      SPLIGHT_API_URL: "http://localhost:9000/graphql"
+      SPLIGHT_API_URL: "http://localhost:9000/"

@@ -29,7 +29,7 @@ Vue.component('spa-layout', Layout)
 const apolloProvider = new VueApollo({
   // https://github.com/Akryum/vue-cli-plugin-apollo/blob/b99182283eeb8ea49336bb1617a309269d32dc8b/graphql-client/src/index.js#L14
   defaultClient: createApolloClient({
-    httpEndpoint: splightApiUrl,
+    httpEndpoint: splightApiUrl + 'graphql',
     persisting: false,
     websocketsOnly: false,
     ssr: false,

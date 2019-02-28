@@ -48,12 +48,12 @@ export default {
   },
   methods: {
     async login () {
-      axios.post(splightApiUrl + '/../login', { username: this.username }, { withCredentials: true }).then(response => {
+      axios.post(splightApiUrl + 'login', { username: this.username }, { withCredentials: true }).then(response => {
         this.$apollo.queries.viewer.refetch()
       })
     },
     async logout () {
-      axios.post(splightApiUrl + '/../login', {}, { withCredentials: true }).then(response => {
+      axios.post(splightApiUrl + 'login', {}, { withCredentials: true }).then(response => {
         this.$apollo.queries.viewer.refetch()
       })
     }
