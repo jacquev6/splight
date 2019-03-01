@@ -94,9 +94,11 @@ describe('API integration test', function () {
       const actual = await apolloLink.toPromise(apolloLink.execute(link, { query, variables }))
       if (actual.errors) {
         delete actual.errors[0].extensions
+        delete actual.errors[0].path
         delete actual.errors[0].locations
       }
       if (expected.errors) {
+        delete expected.errors[0].path
         delete expected.errors[0].locations
       }
       // Not strict because graphql's returned data doesn't have Object prototype

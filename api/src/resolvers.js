@@ -1,9 +1,6 @@
 'use strict'
 
-const Hashids = require('hashids') // @todo Do not rely on sequences, let MongoDB assign ids
 const moment = require('moment')
-
-const hashids = new Hashids('', 10)
 
 const Query = {
   viewer (_, __, { viewer }) {
@@ -20,124 +17,49 @@ const Query = {
   },
 
   // @todo See test-vue/apollo for how to paginate and "subscribe to more"
-  async artists (_, { name }, { dbArtists }) {
+  async artists (_, { name }, { data }) {
     const nameMatches = matches(name)
-    // @todo This is BAD: we must filter and limit in MongoDB
-    return (await dbArtists.find().toArray()).filter(artist => nameMatches(artist.name))
+    // @todo Filter in data (same for all (cities, locations, events, ...))
+    return (await data.artists.getAll()).filter(artist => nameMatches(artist.name))
   },
-  async artist (_, { slug }, { dbArtists }) {
-    const dbArtist = await dbArtists.findOne({ _id: slug })
-    if (dbArtist) {
-      return dbArtist
-    } else {
-      throw new Error(`No artist with slug "${slug}"`)
-    }
+  async artist (_, { slug }, { data }) {
+    return data.artists.getBySlug(slug)
   },
 
-  // @todo Deduplicate with artists
-  async cities (_, { name }, { dbCities }) {
+  async cities (_, { name }, { data }) {
     const nameMatches = matches(name)
-    return (await dbCities.find().toArray()).filter(city => nameMatches(city.name))
+    return (await data.cities.getAll()).filter(city => nameMatches(city.name))
   },
-  async city (_, { slug }, { dbCities }) {
-    const dbCity = await dbCities.findOne({ _id: slug })
-    if (dbCity) {
-      return dbCity
-    } else {
-      throw new Error(`No city with slug "${slug}"`)
-    }
+  async city (_, { slug }, { data }) {
+    return data.cities.getBySlug(slug)
   },
 
-  async validateArtist (_, { forInsert, artist: { slug, name, description, website, image } }, { dbArtists }) {
-    const validation = {}
-    if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
-      validation.slug = "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."
-    } else if (forInsert && await dbArtists.countDocuments({ _id: slug }) > 0) {
-      validation.slug = 'Les slugs de chaque artiste doivent être uniques.'
-    }
-    if (!name) {
-      validation.name = "Le nom d'un artiste ne peut pas être vide."
-    }
-    return validation
+  async validateArtist (_, { forInsert, artist }, { data }) {
+    return data.artists.validate(forInsert, artist)
   },
-  async validateLocation (_, { forInsert, citySlug, location: { slug, name, description, address, phone, website, image } }, { dbLocations }) {
-    const _id = citySlug + ':' + slug
-
-    const validation = {}
-    if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
-      validation.slug = "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."
-    } else if (forInsert && await dbLocations.countDocuments({ _id }) > 0) {
-      validation.slug = "Les slugs de chaque lieu doivent être uniques au sein d'une ville."
-    }
-    if (!name) {
-      validation.name = "Le nom d'un lieu ne peut pas être vide."
-    }
-    return validation
+  async validateLocation (_, { forInsert, citySlug, location }, { data }) {
+    return data.locations(citySlug).validate(forInsert, location)
   },
-  async validateEvent (_, { citySlug, event: { id, title, artist, location, tags, occurrences, reservationPage } }, { dbArtists, dbCities, dbLocations }) {
-    const dbCity = await dbCities.findOne({ _id: citySlug })
-    const tagsBySlug = Object.assign({}, ...(dbCity.tags || []).map(({ slug, title, image }) => {
-      const o = {}
-      o[slug] = { slug, title, image }
-      return o
-    }))
-
-    const validation = {}
-    if (!title && !artist) {
-      validation.title = 'Un événement doit avoir un titre ou un artiste.'
-    }
-    if (artist && !await dbArtists.countDocuments({ _id: artist })) {
-      validation.artist = 'No artist with slug "' + artist + '"'
-    }
-    if (!location) {
-      validation.location = 'Un événement doit avoir un lieu.'
-    } else if (!await dbLocations.countDocuments({ _id: citySlug + ':' + location })) {
-      validation.location = 'No location with slug "' + location + '"'
-    }
-    if (!tags.length) {
-      validation.tags = 'Un événement doit avoir au moins une catégorie.'
-    }
-    tags.forEach(tagSlug => {
-      if (!tagsBySlug[tagSlug]) {
-        validation.tags = 'No tag with slug "' + tagSlug + '"'
-      }
-    })
-    if (!occurrences.length) {
-      validation.occurrences = 'Un événement doit avoir au moins une représentation.'
-    }
-    return validation
-  }
-}
-
-const Artist = {
-  slug ({ _id }) {
-    return _id
-  },
-  description ({ description }) {
-    return description || []
+  async validateEvent (_, { forInsert, citySlug, event }, { data }) {
+    return data.events(citySlug).validate(forInsert, event)
   }
 }
 
 const City = {
-  slug ({ _id }) {
-    return _id
-  },
-
   // @todo Deduplicate with artists
-  async locations ({ _id: citySlug }, { name }, { dbLocations }) {
+  async locations ({ slug: citySlug }, { name }, { data }) {
     const nameMatches = matches(name)
-    return (await dbLocations.find({ citySlug }).toArray()).filter(location => nameMatches(location.name))
+    return (await data.locations(citySlug).getAll()).filter(location => nameMatches(location.name))
   },
-  async location ({ _id: citySlug }, { slug }, { dbLocations }) {
-    const dbLocation = await dbLocations.findOne({ _id: citySlug + ':' + slug })
-    if (dbLocation) {
-      return dbLocation
-    } else {
-      throw new Error(`No location with slug "${slug}"`)
-    }
+  async location ({ slug: citySlug }, { slug }, { data }) {
+    return data.locations(citySlug).getBySlug(slug)
   },
 
-  async events ({ _id: citySlug }, { tag, location, artist, title, dates }, { dbEvents }) {
+  async tags ({ slug: citySlug }, _, { data }) {
+    return data.tags(citySlug).getAll()
+  },
+
+  async events ({ slug: citySlug }, { tag, location, artist, title, dates }, { data }) {
     const titleMatches = matches(title)
     const filters = [({ title }) => titleMatches(title)]
 
@@ -167,29 +89,24 @@ const City = {
       filters.push(({ occurrences }) => occurrences.some(occurrenceMatches))
     }
 
-    return (await dbEvents.find({ citySlug }).toArray()).filter(event => filters.every(filter => filter(event)))
+    return (await data.events(citySlug).getAll()).filter(event => filters.every(filter => filter(event)))
   },
-  async event (_, { id }, { dbEvents }) {
-    const dbEvent = await dbEvents.findOne({ _id: id })
-    if (dbEvent) {
-      return dbEvent
-    } else {
-      throw new Error(`No event with id "${id}"`)
-    }
+  async event ({ slug: citySlug }, { id }, { data }) {
+    return data.events(citySlug).getById(id)
   },
 
-  async firstDate ({ _id: citySlug }, _, { dbEvents }) {
-    const d = await reduceOccurrencesStarts(citySlug, dbEvents, (a, b) => a < b ? a : b)
+  async firstDate ({ slug: citySlug }, _, { data }) {
+    const d = await reduceOccurrencesStarts(citySlug, data, (a, b) => a < b ? a : b)
     return d && moment(d, moment.HTML5_FMT.DATE_TIME).format(moment.HTML5_FMT.DATE)
   },
-  async dateAfter ({ _id: citySlug }, _, { dbEvents }) {
-    const d = await reduceOccurrencesStarts(citySlug, dbEvents, (a, b) => a < b ? b : a)
+  async dateAfter ({ slug: citySlug }, _, { data }) {
+    const d = await reduceOccurrencesStarts(citySlug, data, (a, b) => a < b ? b : a)
     return d && moment(d, moment.HTML5_FMT.DATE_TIME).add(1, 'day').format(moment.HTML5_FMT.DATE)
   }
 }
 
-async function reduceOccurrencesStarts (citySlug, dbEvents, f) {
-  const events = await dbEvents.find({ citySlug }).toArray()
+async function reduceOccurrencesStarts (citySlug, data, f) {
+  const events = await data.events(citySlug).getAll()
 
   if (events.length && events[0].occurrences.length) {
     var ret = events[0].occurrences[0].start
@@ -204,116 +121,30 @@ async function reduceOccurrencesStarts (citySlug, dbEvents, f) {
   }
 }
 
-const Location = {
-  slug ({ _id }) {
-    return _id.split(':')[1]
-  },
-  description ({ description }) {
-    return description || []
-  },
-  address ({ address }) {
-    return address || []
-  }
-}
-
 const Event = {
-  id ({ _id }) {
-    return _id
+  async location ({ citySlug, location }, _, { data }) {
+    return data.locations(citySlug).getBySlug(location)
   },
-  location ({ citySlug, location: locationSlug }, _, { dbLocations }) {
-    return dbLocations.findOne({ _id: citySlug + ':' + locationSlug })
+  async artist ({ artist }, _, { data }) {
+    return data.artists.tryGetBySlug(artist)
   },
-  artist ({ artist: artistSlug }, _, { dbArtists }) {
-    return dbArtists.findOne({ _id: artistSlug })
-  },
-  async tags ({ citySlug, tags: tagSlugs }, _, { dbCities }) {
-    const dbCity = await dbCities.findOne({ _id: citySlug })
-    const tagsBySlug = Object.assign({}, ...(dbCity.tags || []).map(({ slug, title, image }) => {
-      const o = {}
-      o[slug] = { slug, title, image }
-      return o
-    }))
-
-    return tagSlugs.map(tagSlug => tagsBySlug[tagSlug])
+  async tags ({ citySlug, tags }, _, { data }) {
+    return Promise.all(tags.map(tag => data.tags(citySlug).getBySlug(tag)))
   }
 }
 
 const Mutation = {
-  async putArtist (_, { artist: { slug, name, description, website, image } }, { dbArtists }) {
-    const validation = await Query.validateArtist(...arguments) // By chance, not providing forInsert will have the same effect as forInsert: false
-    if (Object.keys(validation).length) {
-      throw new Error(validation.slug || validation.name)
-    }
-    const _id = slug
-    const dbArtist = { _id, name, description, website, image }
-    if (!dbArtist.description.length) delete dbArtist.description
-    if (!dbArtist.website) delete dbArtist.website
-    if (!dbArtist.image) delete dbArtist.image
-    await dbArtists.replaceOne({ _id }, dbArtist, { upsert: true })
-    return dbArtist
+  async putArtist (_, { artist }, { data }) {
+    return data.artists.put(artist)
   },
-
-  async putLocation (_, { citySlug, location: { slug, name, description, address, phone, website, image } }, { dbLocations }) {
-    const validation = await Query.validateLocation(...arguments) // By chance, not providing forInsert will have the same effect as forInsert: false
-    if (Object.keys(validation).length) {
-      throw new Error(validation.slug || validation.name)
-    }
-    const _id = citySlug + ':' + slug
-    const dbLocation = { _id, citySlug, name, description, address, phone, website, image }
-    if (!dbLocation.description.length) delete dbLocation.description
-    if (!dbLocation.address.length) delete dbLocation.address
-    if (!dbLocation.website) delete dbLocation.website
-    if (!dbLocation.phone) delete dbLocation.phone
-    if (!dbLocation.image) delete dbLocation.image
-    await dbLocations.replaceOne({ _id }, dbLocation, { upsert: true })
-    return dbLocation
+  async putLocation (_, { citySlug, location }, { data }) {
+    return data.locations(citySlug).put(location)
   },
-
-  async putEvent (_, { citySlug, event: { id: _id, title, artist, location, tags, occurrences, reservationPage } }, { dbSequences, dbCities, dbEvents }) {
-    const validation = await Query.validateEvent(...arguments)
-    if (Object.keys(validation).length) {
-      throw new Error(validation.title || validation.artist || validation.location || validation.tags || validation.tags || validation.occurrences)
-    }
-
-    const dbEvent = { citySlug, location, tags, occurrences, reservationPage, artist, title }
-    if (!dbEvent.reservationPage) delete dbEvent.reservationPage
-    if (!dbEvent.artist) delete dbEvent.artist
-    if (!dbEvent.title) delete dbEvent.title
-
-    if (_id) {
-      dbEvent._id = _id
-      const ret = await dbEvents.replaceOne({ _id }, dbEvent)
-      if (_id && ret.matchedCount === 0) {
-        throw new Error(`No event with id "${_id}"`)
-      }
-    } else {
-      dbEvent._id = hashids.encode(await nextSequenceValue(dbSequences, 'events')) // @todo Let MongoDB generate ObjectIds
-      const ret = await dbEvents.insertOne(dbEvent)
-      dbEvent._id = ret.insertedId
-    }
-
-    return dbEvent
+  async putEvent (_, { citySlug, event }, { data }) {
+    return data.events(citySlug).put(event)
   },
-  async deleteEvent (_, { citySlug, eventId }, { dbCities, dbEvents }) {
-    const _id = eventId
-
-    const dbEvent = await dbEvents.findOne({ _id })
-    if (!dbEvent) {
-      throw new Error(`No event with id "${eventId}"`)
-    }
-
-    await dbEvents.deleteOne({ _id })
-
-    return dbEvent
-  }
-}
-
-async function nextSequenceValue (dbSequences, _id) {
-  const sequence = (await dbSequences.findOneAndUpdate({ _id }, { $inc: { value: 1 } }, { upsert: true })).value
-  if (sequence) {
-    return sequence.value
-  } else {
-    return 0
+  async deleteEvent (_, { citySlug, eventId }, { data }) {
+    return data.events(citySlug).deleteById(eventId)
   }
 }
 
@@ -339,4 +170,4 @@ function normalizeString (s) {
   return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
-module.exports = { Query, Mutation, Artist, City, Location, Event }
+module.exports = { Query, Mutation, City, Event }

@@ -7,14 +7,10 @@ const apolloServerExpress = require('apollo-server-express')
 const authentication = require('./authentication')
 const resolvers = require('./resolvers')
 const schema = require('./schema.gqls')
+const data_ = require('./data')
 
 async function make (mongoDbClient) {
-  const db = mongoDbClient.db('splight')
-  const dbArtists = db.collection('artists')
-  const dbCities = db.collection('cities')
-  const dbEvents = db.collection('events')
-  const dbLocations = db.collection('locations')
-  const dbSequences = db.collection('sequences')
+  const data = data_(mongoDbClient)
 
   const typeDefs = apolloServerExpress.gql(schema)
 
@@ -23,11 +19,7 @@ async function make (mongoDbClient) {
     resolvers,
     context: ({ req }) => ({
       viewer: authentication.getViewer(req),
-      dbArtists,
-      dbCities,
-      dbEvents,
-      dbLocations,
-      dbSequences
+      data
     })
   })
 }
