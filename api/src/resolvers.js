@@ -1,6 +1,7 @@
 'use strict'
 
 const Hashids = require('hashids') // @todo Do not rely on sequences, let MongoDB assign ids
+const moment = require('moment')
 
 const hashids = new Hashids('', 10)
 
@@ -73,17 +74,34 @@ const Query = {
     }
     return validation
   },
-  async validateEvent (_, { citySlug, event: { id, title, artist, location, tags, occurrences, reservationPage } }) {
+  async validateEvent (_, { citySlug, event: { id, title, artist, location, tags, occurrences, reservationPage } }, { dbArtists, dbCities, dbLocations }) {
+    const dbCity = await dbCities.findOne({ _id: citySlug })
+    const tagsBySlug = Object.assign({}, ...(dbCity.tags || []).map(({ slug, title, image }) => {
+      const o = {}
+      o[slug] = { slug, title, image }
+      return o
+    }))
+
     const validation = {}
     if (!title && !artist) {
       validation.title = 'Un événement doit avoir un titre ou un artiste.'
     }
+    if (artist && !await dbArtists.countDocuments({ _id: artist })) {
+      validation.artist = 'No artist with slug "' + artist + '"'
+    }
     if (!location) {
       validation.location = 'Un événement doit avoir un lieu.'
+    } else if (!await dbLocations.countDocuments({ _id: citySlug + ':' + location })) {
+      validation.location = 'No location with slug "' + location + '"'
     }
     if (!tags.length) {
       validation.tags = 'Un événement doit avoir au moins une catégorie.'
     }
+    tags.forEach(tagSlug => {
+      if (!tagsBySlug[tagSlug]) {
+        validation.tags = 'No tag with slug "' + tagSlug + '"'
+      }
+    })
     if (!occurrences.length) {
       validation.occurrences = 'Un événement doit avoir au moins une représentation.'
     }
@@ -104,6 +122,7 @@ const City = {
   slug ({ _id }) {
     return _id
   },
+
   // @todo Deduplicate with artists
   async locations ({ _id: citySlug }, { name }, { dbLocations }) {
     const nameMatches = matches(name)
@@ -119,41 +138,35 @@ const City = {
   },
 
   async events ({ _id: citySlug }, { tag, location, artist, title, dates }, { dbEvents }) {
-    const filters = []
+    const titleMatches = matches(title)
+    const filters = [({ title }) => titleMatches(title)]
 
-    // const titleMatches = matches(title)
+    if (tag) {
+      filters.push(({ tags }) => tags.includes(tag))
+    }
+    if (location) {
+      filters.push(({ location: loc }) => loc === location)
+    }
+    if (artist) {
+      filters.push(({ artist: art }) => art === artist)
+    }
 
-    // function selectOccurrence ({ start, after }) {
-    //   return function (occurrence) {
-    //     if (start && occurrence.start < start) {
-    //       return false
-    //     }
-    //     if (after && occurrence.start >= after) {
-    //       return false
-    //     }
-    //     return true
-    //   }
-    // }
+    function selectOccurrence ({ start, after }) {
+      return function (occurrence) {
+        if (start && occurrence.start < start) {
+          return false
+        }
+        if (after && occurrence.start >= after) {
+          return false
+        }
+        return true
+      }
+    }
+    if (dates) {
+      const occurrenceMatches = selectOccurrence(dates)
+      filters.push(({ occurrences }) => occurrences.some(occurrenceMatches))
+    }
 
-    // var filtered = events_.filter(({ title }) => titleMatches(title))
-    // if (tag) {
-    //   filtered = filtered.filter(({ tags }) => tags.some(({ slug }) => slug === tag))
-    // }
-    // if (location) {
-    //   filtered = filtered.filter(({ location: { slug } }) => slug === location)
-    // }
-    // if (artist) {
-    //   filtered = filtered.filter(({ artist: a }) => a && a.slug === artist)
-    // }
-    // if (dates) {
-    //   const occurrenceMatches = selectOccurrence(dates)
-    //   filtered = filtered.filter(({ occurrences }) => occurrences.some(occurrenceMatches))
-    // }
-    // if (max && filtered.length > max) {
-    //   return null
-    // } else {
-    //   return filtered
-    // }
     return (await dbEvents.find({ citySlug }).toArray()).filter(event => filters.every(filter => filter(event)))
   },
   async event (_, { id }, { dbEvents }) {
@@ -163,6 +176,31 @@ const City = {
     } else {
       throw new Error(`No event with id "${id}"`)
     }
+  },
+
+  async firstDate ({ _id: citySlug }, _, { dbEvents }) {
+    const d = await reduceOccurrencesStarts(citySlug, dbEvents, (a, b) => a < b ? a : b)
+    return d && moment(d, moment.HTML5_FMT.DATE_TIME).format(moment.HTML5_FMT.DATE)
+  },
+  async dateAfter ({ _id: citySlug }, _, { dbEvents }) {
+    const d = await reduceOccurrencesStarts(citySlug, dbEvents, (a, b) => a < b ? b : a)
+    return d && moment(d, moment.HTML5_FMT.DATE_TIME).add(1, 'day').format(moment.HTML5_FMT.DATE)
+  }
+}
+
+async function reduceOccurrencesStarts (citySlug, dbEvents, f) {
+  const events = await dbEvents.find({ citySlug }).toArray()
+
+  if (events.length && events[0].occurrences.length) {
+    var ret = events[0].occurrences[0].start
+    events.forEach(event => {
+      event.occurrences.forEach(occurrence => {
+        ret = f(ret, occurrence.start)
+      })
+    })
+    return ret
+  } else {
+    return null
   }
 }
 
@@ -234,7 +272,7 @@ const Mutation = {
   async putEvent (_, { citySlug, event: { id: _id, title, artist, location, tags, occurrences, reservationPage } }, { dbSequences, dbCities, dbEvents }) {
     const validation = await Query.validateEvent(...arguments)
     if (Object.keys(validation).length) {
-      throw new Error(validation)
+      throw new Error(validation.title || validation.artist || validation.location || validation.tags || validation.tags || validation.occurrences)
     }
 
     const dbEvent = { citySlug, location, tags, occurrences, reservationPage, artist, title }
@@ -253,6 +291,18 @@ const Mutation = {
       const ret = await dbEvents.insertOne(dbEvent)
       dbEvent._id = ret.insertedId
     }
+
+    return dbEvent
+  },
+  async deleteEvent (_, { citySlug, eventId }, { dbCities, dbEvents }) {
+    const _id = eventId
+
+    const dbEvent = await dbEvents.findOne({ _id })
+    if (!dbEvent) {
+      throw new Error(`No event with id "${eventId}"`)
+    }
+
+    await dbEvents.deleteOne({ _id })
 
     return dbEvent
   }
