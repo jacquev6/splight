@@ -1,17 +1,22 @@
 'use strict'
 
-/* globals describe, it, after */
+/* globals describe, it, after, afterEach */
 
-require('stringify').registerWithRequire(['.gqls'])
-
+const apolloLink = require('apollo-link')
+const apolloLinkHttp = require('apollo-link-http')
 const assert = require('assert').strict
 const assertNotStrict = require('assert')
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
+const express = require('express')
+const fetch = require('node-fetch')
+const gql = require('graphql-tag')
 const Hashids = require('hashids')
-const moment = require('moment')
+// const moment = require('moment')
 const mondodbMemoryServer = require('mongodb-memory-server')
 const mongodb = require('mongodb')
 
-const graphqlApi = require('./graphqlApi')
+const server_ = require('./server')
 
 const hashids = new Hashids('', 10)
 
@@ -27,6 +32,10 @@ describe('graphqlApi', function () {
     client.close()
     mongodbServer.stop()
   })
+
+  var httpServer
+
+  afterEach(async () => httpServer.close())
 
   async function make (data = {}, { clock } = {}) {
     const dbArtists = Object.entries(data.artists || {}).map(([slug, artist]) => Object.assign({ _id: slug }, artist))
@@ -48,7 +57,7 @@ describe('graphqlApi', function () {
     const dbSequences = Object.entries((data._ || {}).sequences || {}).map(([_id, value]) => ({ _id, value }))
 
     const client = await clientPromise
-    const db = client.db('splight-tests')
+    const db = client.db('splight')
 
     async function setCollection (name, items) {
       const coll = db.collection(name)
@@ -64,18 +73,34 @@ describe('graphqlApi', function () {
     await setCollection('events', dbEvents)
     await setCollection('sequences', dbSequences)
 
-    const api = await graphqlApi.make({ db, clock })
+    const server = await server_.make(client)
 
-    async function checkRequest (requestString, variableValues, expected) {
+    const app = express()
+
+    app.use(bodyParser.json({ limit: '50mb' })) // https://stackoverflow.com/a/19965089/905845
+    app.use(cookieParser())
+    server.applyMiddleware({ app })
+
+    httpServer = await app.listen(0)
+    const port = httpServer.address().port
+    const link = new apolloLinkHttp.HttpLink({ uri: `http://localhost:${port}/graphql`, fetch })
+
+    async function checkRequest (query, variables, expected) {
+      query = gql(query)
       if (!expected) { // A poor man's variadic function
-        expected = variableValues
-        variableValues = undefined
+        expected = variables
+        variables = {}
+      }
+      const actual = await apolloLink.toPromise(apolloLink.execute(link, { query, variables }))
+      if (actual.errors) {
+        delete actual.errors[0].extensions
+        delete actual.errors[0].locations
+      }
+      if (expected.errors) {
+        delete expected.errors[0].locations
       }
       // Not strict because graphql's returned data doesn't have Object prototype
-      assertNotStrict.deepEqual( // eslint-disable-line
-        await api.request({ requestString, variableValues }),
-        expected
-      )
+      assertNotStrict.deepEqual(actual, expected) // eslint-disable-line
     }
 
     async function checkData (expected) {
@@ -319,14 +344,14 @@ describe('graphqlApi', function () {
   })
 
   describe('generation', function () {
-    it('uses injected date', async function () {
-      const { checkRequest } = await make({}, { clock: () => moment('2018-08-15', moment.HTML5_FMT.SATE, true) })
+    // it('uses injected date', async function () {
+    //   const { checkRequest } = await make({}, { clock: () => moment('2018-08-15', moment.HTML5_FMT.SATE, true) })
 
-      await checkRequest(
-        '{generation{date dateAfter}}',
-        { data: { generation: { date: '2018-08-15', dateAfter: '2018-09-17' } } }
-      )
-    })
+    //   await checkRequest(
+    //     '{generation{date dateAfter}}',
+    //     { data: { generation: { date: '2018-08-15', dateAfter: '2018-09-17' } } }
+    //   )
+    // })
   })
 
   describe('city.dates', function () {
@@ -415,45 +440,6 @@ describe('graphqlApi', function () {
           '{artists(name:"name aeiou"){slug}}',
           {
             data: { artists: [{ slug: 'ok-literal' }, { slug: 'ok-reversed' }, { slug: 'ok-uppercase' }, { slug: 'ok-accentuated' }] }
-          }
-        )
-      })
-
-      it('limits artists returned', async function () {
-        const { checkRequest } = await make({
-          artists: {
-            'a-1': { name: '1' },
-            'a-2': { name: '2' },
-            'a-3': { name: '3' },
-            'a-4': { name: '4' }
-          }
-        })
-
-        await checkRequest(
-          '{artists(max:2){slug}}',
-          {
-            data: { artists: null }
-          }
-        )
-
-        await checkRequest(
-          '{artists(max:3){slug}}',
-          {
-            data: { artists: null }
-          }
-        )
-
-        await checkRequest(
-          '{artists(max:4){slug}}',
-          {
-            data: { artists: [{ slug: 'a-1' }, { slug: 'a-2' }, { slug: 'a-3' }, { slug: 'a-4' }] }
-          }
-        )
-
-        await checkRequest(
-          '{artists(max:25){slug}}',
-          {
-            data: { artists: [{ slug: 'a-1' }, { slug: 'a-2' }, { slug: 'a-3' }, { slug: 'a-4' }] }
           }
         )
       })
@@ -570,50 +556,6 @@ describe('graphqlApi', function () {
             data: { cities: [{
               locations: [{ slug: 'ok-literal' }, { slug: 'ok-reversed' }, { slug: 'ok-uppercase' }, { slug: 'ok-accentuated' }]
             }] }
-          }
-        )
-      })
-
-      it('limits locations returned', async function () {
-        const { checkRequest } = await make({
-          cities: {
-            'city': {
-              name: 'City',
-              locations: {
-                'l-1': { name: '1' },
-                'l-2': { name: '2' },
-                'l-3': { name: '3' },
-                'l-4': { name: '4' }
-              }
-            }
-          }
-        })
-
-        await checkRequest(
-          '{cities{locations(max:2){slug}}}',
-          {
-            data: { cities: [{ locations: null }] }
-          }
-        )
-
-        await checkRequest(
-          '{cities{locations(max:3){slug}}}',
-          {
-            data: { cities: [{ locations: null }] }
-          }
-        )
-
-        await checkRequest(
-          '{cities{locations(max:4){slug}}}',
-          {
-            data: { cities: [{ locations: [{ slug: 'l-1' }, { slug: 'l-2' }, { slug: 'l-3' }, { slug: 'l-4' }] }] }
-          }
-        )
-
-        await checkRequest(
-          '{cities{locations(max:25){slug}}}',
-          {
-            data: { cities: [{ locations: [{ slug: 'l-1' }, { slug: 'l-2' }, { slug: 'l-3' }, { slug: 'l-4' }] }] }
           }
         )
       })
@@ -882,64 +824,6 @@ describe('graphqlApi', function () {
           { data: { cities: [{ events: [{ id: 'ok-1' }, { id: 'ok-2' }] }] } }
         )
       })
-
-      it('limits events returned', async function () {
-        const { checkRequest } = await make({
-          cities: {
-            'city': {
-              name: 'City',
-              locations: { 'location': { name: 'Location' } },
-              tags: [{ slug: 'tag', title: 'Tag' }],
-              events: [
-                {
-                  id: '1',
-                  location: 'location',
-                  tags: ['tag'],
-                  occurrences: [{ start: '2018-07-14T12:00' }]
-                },
-                {
-                  id: '2',
-                  location: 'location',
-                  tags: ['tag'],
-                  occurrences: [{ start: '2018-07-14T12:00' }]
-                },
-                {
-                  id: '3',
-                  location: 'location',
-                  tags: ['tag'],
-                  occurrences: [{ start: '2018-07-14T12:00' }]
-                },
-                {
-                  id: '4',
-                  location: 'location',
-                  tags: ['tag'],
-                  occurrences: [{ start: '2018-07-14T12:00' }]
-                }
-              ]
-            }
-          }
-        })
-
-        await checkRequest(
-          '{cities{events(max:2){id}}}',
-          { data: { cities: [{ events: null }] } }
-        )
-
-        await checkRequest(
-          '{cities{events(max:3){id}}}',
-          { data: { cities: [{ events: null }] } }
-        )
-
-        await checkRequest(
-          '{cities{events(max:4){id}}}',
-          { data: { cities: [{ events: [{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }] }] } }
-        )
-
-        await checkRequest(
-          '{cities{events(max:25){id}}}',
-          { data: { cities: [{ events: [{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }] }] } }
-        )
-      })
     })
 
     describe('city.event', function () {
@@ -1087,7 +971,7 @@ describe('graphqlApi', function () {
           { data: { putArtist: { slug: 'artist', name: 'New name', description: [], website: null, image: null } } }
         )
 
-        await checkData({ artists: { 'artist': { name: 'New name', description: [] } } })
+        await checkData({ artists: { 'artist': { name: 'New name' } } })
 
         await checkRequest(get, { data: { artists: [{ slug: 'artist', name: 'New name', description: [], website: null, image: null }] } })
       })
@@ -1172,7 +1056,7 @@ describe('graphqlApi', function () {
             data: null,
             errors: [{
               locations: [{ line: 1, column: 46 }],
-              message: 'Incorrect slug',
+              message: "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets.",
               path: ['putLocation']
             }]
           }
@@ -1303,7 +1187,7 @@ describe('graphqlApi', function () {
           cities: {
             'city': {
               name: 'City',
-              locations: { 'location': { name: 'New name', description: [], address: [] } }
+              locations: { 'location': { name: 'New name' } }
             }
           }
         })
@@ -1623,7 +1507,6 @@ describe('graphqlApi', function () {
         )
 
         await checkData({
-          _: { sequences: { events: 1 } },
           cities: {
             'city': {
               name: 'City',
@@ -1671,7 +1554,6 @@ describe('graphqlApi', function () {
         )
 
         await checkData({
-          _: { sequences: { events: 1 } },
           artists: { 'artist': { name: 'Artist' } },
           cities: {
             'city': {
@@ -1719,7 +1601,6 @@ describe('graphqlApi', function () {
         )
 
         await checkData({
-          _: { sequences: { events: 1 } },
           artists: { 'artist': { name: 'Artist' } },
           cities: {
             'city': {
@@ -1897,7 +1778,7 @@ describe('graphqlApi', function () {
           {
             data: null,
             errors: [{
-              locations: [{ line: 1, column: 40 }],
+              locations: [{ line: 2, column: 3 }],
               message: 'No event with id "event"',
               path: ['putEvent']
             }]
@@ -2006,7 +1887,7 @@ describe('graphqlApi', function () {
           {
             data: null,
             errors: [{
-              locations: [{ line: 1, column: 38 }],
+              locations: [{ line: 2, column: 3 }],
               message: 'No event with id "event"',
               path: ['deleteEvent']
             }]

@@ -1,23 +1,20 @@
 'use strict'
 
-require('stringify').registerWithRequire(['.gqls'])
-
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const express = require('express')
-const expressGraphql = require('express-graphql')
 const mongodb = require('mongodb')
 
 const authentication = require('./authentication')
-const graphqlApi = require('./graphqlApi')
+const server_ = require('./server')
 
 async function serve () {
   console.log('Starting website...')
 
-  const client = await mongodb.MongoClient.connect(process.env.SPLIGHT_MONGODB_URL, { useNewUrlParser: true })
-  const db = client.db('splight')
-  const { schema, rootValue } = await graphqlApi.make({ db })
+  const server = await server_.make(
+    await mongodb.MongoClient.connect(process.env.SPLIGHT_MONGODB_URL, { useNewUrlParser: true })
+  )
 
   const app = express()
 
@@ -25,16 +22,11 @@ async function serve () {
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(cookieParser())
   app.use(cors({ origin: true, credentials: true })) // https://www.npmjs.com/package/cors#configuration-options
-  app.use('/graphql', expressGraphql(async (request, response, params) => {
-    return {
-      schema,
-      rootValue,
-      context: {
-        viewer: authentication.getViewer(request)
-      },
-      graphiql: true
-    }
-  }))
+
+  server.applyMiddleware({
+    app,
+    cors: { origin: true, credentials: true }
+  })
 
   authentication.register(app)
 
