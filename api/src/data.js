@@ -118,7 +118,31 @@ module.exports = function (mongoDbClient) {
       return (await collection.find().toArray()).map(toPublic)
     }
 
-    return { tryGetBySlug, getBySlug, existsBySlug, getAll }
+    async function validate (forInsert, { slug, name }) {
+      const validation = {}
+
+      if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
+        validation.slug = "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."
+      } else if (forInsert && await existsBySlug(slug)) {
+        validation.slug = 'Les slugs de chaque ville doivent être uniques.'
+      }
+
+      if (!name) {
+        validation.name = "Le nom d'une ville ne peut pas être vide."
+      }
+
+      return validation
+    }
+
+    async function put (city) {
+      throwValidationError(await validate(false, city))
+
+      const dbCity = toDatabase(city)
+      await collection.replaceOne({ _id: dbCity._id }, dbCity, { upsert: true })
+      return toPublic(dbCity)
+    }
+
+    return { tryGetBySlug, getBySlug, existsBySlug, getAll, validate, put }
 
     function toPublic ({ _id, name, image, allTagsImage }) {
       return {
@@ -127,6 +151,20 @@ module.exports = function (mongoDbClient) {
         image,
         allTagsImage
       }
+    }
+
+    function toDatabase ({ slug, name, tags, image, allTagsImage }) {
+      const city = {
+        _id: slug,
+        name,
+        tags,
+        image,
+        allTagsImage
+      }
+      if (!city.image) delete city.image
+      if (!city.allTagsImage) delete city.allTagsImage
+
+      return city
     }
   })()
 

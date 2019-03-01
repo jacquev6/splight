@@ -1,23 +1,23 @@
 <template>
   <spa-layout v-if="city" :breadcrumbItems="breadcrumbItems">
     <h1>{{ city.name }}</h1>
-    <b-row>
-      <b-col><h2><router-link :to="{name: 'locations', params: {citySlug}}">Lieux</router-link></h2></b-col>
-      <b-col><h2><router-link :to="{name: 'events', params: {citySlug}}">Événements</router-link></h2></b-col>
-    </b-row>
+    <h2><router-link :to="{name: 'locations', params: {citySlug}}">Lieux</router-link></h2>
+    <h2><router-link :to="{name: 'events', params: {citySlug}}">Événements</router-link></h2>
+    <h2>Détails</h2>
+    <spa-city-details :citySlug="citySlug" saveButtonTitle="Enregistrer" @saved="$apollo.queries.city.refetch()"/>
   </spa-layout>
 </template>
 
 <script>
 import gql from 'graphql-tag'
 
+import CityDetails from './CityDetails.vue'
+
 export default {
-  props: {
-    citySlug: {
-      type: String,
-      required: true
-    }
+  components: {
+    'spa-city-details': CityDetails
   },
+  props: ['citySlug'],
   apollo: {
     city: {
       query: gql`query($citySlug:ID!){city(slug:$citySlug){name}}`,

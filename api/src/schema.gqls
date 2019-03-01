@@ -1,12 +1,14 @@
 type Query {
   viewer: Viewer!
-  generation: Generation
-  artists(name: String, max: Int): [Artist!] # @todo Remove max
+
+  artists(name: String): [Artist!]!
   artist(slug: ID!): Artist!
-  cities: [City!]!
+
+  cities(name: String): [City!]!
   city(slug: ID!): City!
 
   validateArtist(forInsert: Boolean!, artist: IArtist!): ArtistValidation!
+  validateCity(forInsert: Boolean!, city: ICity!): CityValidation!
   validateLocation(forInsert: Boolean!, citySlug:ID!, location: ILocation!): LocationValidation!
   validateEvent(forInsert: Boolean!, citySlug:ID!, event: IEvent!): EventValidation!
 }
@@ -25,11 +27,6 @@ type AuthenticatedUser {
   name: String!
 }
 
-type Generation {
-  date: Date!
-  dateAfter: Date!
-}
-
 type Artist {
   slug: ID!
   name: String!
@@ -42,10 +39,10 @@ type City {
   slug: ID!
   name: String!
   tags: [Tag!]!
-  locations(name: String, max: Int): [Location!] # @todo Remove max
+  locations(name: String): [Location!]!
   location(slug: ID!): Location!
   event(id: ID!): Event!
-  events(tag: ID, location: ID, artist: ID, title: String, dates: IDateInterval, max: Int): [Event!] # @todo Remove max
+  events(tag: ID, location: ID, artist: ID, title: String, dates: IDateInterval): [Event!]!
   firstDate: Date
   dateAfter: Date
   image: URL
@@ -82,37 +79,15 @@ type Occurrence {
   start: DateTime!
 }
 
-type ArtistValidation {
-  slug: String
-  name: String
-  description: String
-  website: String
-  image: String
-}
-
-type LocationValidation {
-  slug: String
-  name: String
-  description: String
-  website: String
-  image: String
-  phone: String
-  address: String
-}
-
-type EventValidation {
-  id: String
-  title: String
-  artist: String
-  location: String
-  tags: String
-  occurrences: String
-  reservationPage: String
+input IDateInterval {
+  start: Date!
+  after: Date!
 }
 
 
 type Mutation {
   putArtist(artist: IArtist!): Artist!
+  putCity(city: ICity!): City!
   putLocation(citySlug: ID!, location: ILocation!): Location!
   putEvent(citySlug: ID!, event: IEvent!): Event!
   deleteEvent(citySlug: ID!, eventId: ID!): Event!
@@ -126,6 +101,36 @@ input IArtist {
   image: URL
 }
 
+type ArtistValidation {
+  slug: String
+  name: String
+  description: String
+  website: String
+  image: String
+}
+
+input ICity {
+  slug: ID!
+  name: String!
+  tags: [ITag!]!
+  image: URL
+  allTagsImage: URL
+}
+
+input ITag {
+  slug: ID!
+  title: String!
+  image: URL
+}
+
+type CityValidation {
+  slug: String
+  name: String
+  tags: String
+  image: String
+  allTagsImage: String
+}
+
 input ILocation {
   slug: ID!
   name: String!
@@ -134,6 +139,16 @@ input ILocation {
   image: URL
   phone: String
   address: [String!]!
+}
+
+type LocationValidation {
+  slug: String
+  name: String
+  description: String
+  website: String
+  image: String
+  phone: String
+  address: String
 }
 
 input IEvent {
@@ -150,7 +165,12 @@ input IOccurrence {
   start: DateTime!
 }
 
-input IDateInterval {
-  start: Date!
-  after: Date!
+type EventValidation {
+  id: String
+  title: String
+  artist: String
+  location: String
+  tags: String
+  occurrences: String
+  reservationPage: String
 }

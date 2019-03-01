@@ -37,6 +37,9 @@ const Query = {
   async validateArtist (_, { forInsert, artist }, { data }) {
     return data.artists.validate(forInsert, artist)
   },
+  async validateCity (_, { forInsert, city }, { data }) {
+    return data.cities.validate(forInsert, city)
+  },
   async validateLocation (_, { forInsert, citySlug, location }, { data }) {
     return data.locations(citySlug).validate(forInsert, location)
   },
@@ -47,19 +50,19 @@ const Query = {
 
 const City = {
   // @todo Deduplicate with artists
-  async locations ({ slug: citySlug }, { name }, { data }) {
+  async locations ({ slug }, { name }, { data }) {
     const nameMatches = matches(name)
-    return (await data.locations(citySlug).getAll()).filter(location => nameMatches(location.name))
+    return (await data.locations(slug).getAll()).filter(location => nameMatches(location.name))
   },
-  async location ({ slug: citySlug }, { slug }, { data }) {
-    return data.locations(citySlug).getBySlug(slug)
-  },
-
-  async tags ({ slug: citySlug }, _, { data }) {
-    return data.tags(citySlug).getAll()
+  async location ({ slug }, { slug: locationSlug }, { data }) {
+    return data.locations(slug).getBySlug(locationSlug)
   },
 
-  async events ({ slug: citySlug }, { tag, location, artist, title, dates }, { data }) {
+  async tags ({ slug }, _, { data }) {
+    return data.tags(slug).getAll()
+  },
+
+  async events ({ slug }, { tag, location, artist, title, dates }, { data }) {
     const titleMatches = matches(title)
     const filters = [({ title }) => titleMatches(title)]
 
@@ -89,18 +92,18 @@ const City = {
       filters.push(({ occurrences }) => occurrences.some(occurrenceMatches))
     }
 
-    return (await data.events(citySlug).getAll()).filter(event => filters.every(filter => filter(event)))
+    return (await data.events(slug).getAll()).filter(event => filters.every(filter => filter(event)))
   },
-  async event ({ slug: citySlug }, { id }, { data }) {
-    return data.events(citySlug).getById(id)
+  async event ({ slug }, { id }, { data }) {
+    return data.events(slug).getById(id)
   },
 
-  async firstDate ({ slug: citySlug }, _, { data }) {
-    const d = await reduceOccurrencesStarts(citySlug, data, (a, b) => a < b ? a : b)
+  async firstDate ({ slug }, _, { data }) {
+    const d = await reduceOccurrencesStarts(slug, data, (a, b) => a < b ? a : b)
     return d && moment(d, moment.HTML5_FMT.DATE_TIME).format(moment.HTML5_FMT.DATE)
   },
-  async dateAfter ({ slug: citySlug }, _, { data }) {
-    const d = await reduceOccurrencesStarts(citySlug, data, (a, b) => a < b ? b : a)
+  async dateAfter ({ slug }, _, { data }) {
+    const d = await reduceOccurrencesStarts(slug, data, (a, b) => a < b ? b : a)
     return d && moment(d, moment.HTML5_FMT.DATE_TIME).add(1, 'day').format(moment.HTML5_FMT.DATE)
   }
 }
@@ -136,6 +139,9 @@ const Event = {
 const Mutation = {
   async putArtist (_, { artist }, { data }) {
     return data.artists.put(artist)
+  },
+  async putCity (_, { city }, { data }) {
+    return data.cities.put(city)
   },
   async putLocation (_, { citySlug, location }, { data }) {
     return data.locations(citySlug).put(location)

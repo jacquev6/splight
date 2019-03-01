@@ -1,8 +1,9 @@
 <template>
   <spa-layout v-if="artist" :breadcrumbItems="breadcrumbItems">
     <h1>{{ artist.name }}</h1>
+    <h2>Détails</h2>
     <spa-artist-details :artistSlug="artistSlug" saveButtonTitle="Enregistrer" @saved="$apollo.queries.artist.refetch()"/>
-  </spa-layout>
+</spa-layout>
 </template>
 
 <script>
