@@ -1,41 +1,21 @@
 'use strict'
 
-/* globals describe, it, after, afterEach */
+/* globals describe, it */
 
-const apolloLink = require('apollo-link')
-const apolloLinkHttp = require('apollo-link-http')
 const assert = require('assert').strict
-const assertNotStrict = require('assert')
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-const express = require('express')
-const fetch = require('node-fetch')
 const gql = require('graphql-tag')
 const Hashids = require('hashids')
-// const moment = require('moment')
-const mondodbMemoryServer = require('mongodb-memory-server')
-const mongodb = require('mongodb')
 
-const server_ = require('./server')
+const testUtils = require('./test-utils')
 
 const hashids = new Hashids('', 10)
 
 describe('API integration test', function () {
-  const mongodbServer = new mondodbMemoryServer.MongoMemoryServer()
+  // These tests *do* know the internal MongoDB storage schema.
+  // This makes them fragile to implementation changes.
+  // So, we should test here only things related to strorage schema.
 
-  const clientPromise = (async function () {
-    return mongodb.MongoClient.connect(await mongodbServer.getConnectionString(), { useNewUrlParser: true })
-  })()
-
-  after(async function () {
-    const client = await clientPromise
-    client.close()
-    mongodbServer.stop()
-  })
-
-  var httpServer
-
-  afterEach(async () => httpServer.close())
+  const { run, makeMongodbClient } = testUtils()
 
   async function make (data = {}, { clock } = {}) {
     const dbArtists = Object.entries(data.artists || {}).map(([slug, artist]) => Object.assign({ _id: slug }, artist))
@@ -56,12 +36,11 @@ describe('API integration test', function () {
     const dbCities = Object.entries(data.cities || {}).map(([slug, city]) => Object.assign({ _id: slug }, city))
     const dbSequences = Object.entries((data._ || {}).sequences || {}).map(([_id, value]) => ({ _id, value }))
 
-    const client = await clientPromise
+    const client = await makeMongodbClient()
     const db = client.db('splight')
 
     async function setCollection (name, items) {
       const coll = db.collection(name)
-      await coll.deleteMany()
       if (items.length > 0) {
         await coll.insertMany(items)
       }
@@ -73,25 +52,12 @@ describe('API integration test', function () {
     await setCollection('events', dbEvents)
     await setCollection('sequences', dbSequences)
 
-    const server = await server_.make(client)
-
-    const app = express()
-
-    app.use(bodyParser.json({ limit: '50mb' })) // https://stackoverflow.com/a/19965089/905845
-    app.use(cookieParser())
-    server.applyMiddleware({ app })
-
-    httpServer = await app.listen(0)
-    const port = httpServer.address().port
-    const link = new apolloLinkHttp.HttpLink({ uri: `http://localhost:${port}/graphql`, fetch })
-
     async function checkRequest (query, variables, expected) {
-      query = gql(query)
       if (!expected) { // A poor man's variadic function
         expected = variables
         variables = {}
       }
-      const actual = await apolloLink.toPromise(apolloLink.execute(link, { query, variables }))
+      const actual = await run(gql(query), variables)
       if (actual.errors) {
         delete actual.errors[0].extensions
         delete actual.errors[0].path
@@ -101,8 +67,7 @@ describe('API integration test', function () {
         delete expected.errors[0].path
         delete expected.errors[0].locations
       }
-      // Not strict because graphql's returned data doesn't have Object prototype
-      assertNotStrict.deepEqual(actual, expected) // eslint-disable-line
+      assert.deepEqual(actual, expected)
     }
 
     async function checkData (expected) {
@@ -176,7 +141,7 @@ describe('API integration test', function () {
       if (Object.keys(actual.cities).length === 0) {
         delete actual.cities
       }
-      assert.deepStrictEqual(actual, expected)
+      assert.deepEqual(actual, expected)
     }
 
     return { checkRequest, checkData }
