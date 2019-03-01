@@ -1,5 +1,7 @@
 /* global splightApiUrl */
 
+// @todo Have a look at https://jestjs.io/
+
 import Vue from 'vue'
 import Router from 'vue-router'
 import VueApollo from 'vue-apollo'

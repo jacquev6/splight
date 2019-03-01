@@ -20,7 +20,7 @@ const server_ = require('./server')
 
 const hashids = new Hashids('', 10)
 
-describe('graphqlApi', function () {
+describe('API integration test', function () {
   const mongodbServer = new mondodbMemoryServer.MongoMemoryServer()
 
   const clientPromise = (async function () {
