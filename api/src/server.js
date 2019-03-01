@@ -6,7 +6,7 @@ const apolloServerExpress = require('apollo-server-express')
 
 const authentication = require('./authentication')
 const resolvers = require('./resolvers')
-const schemaString = require('./graphqlApi.gqls')
+const schema = require('./schema.gqls')
 
 async function make (mongoDbClient) {
   const db = mongoDbClient.db('splight')
@@ -16,7 +16,7 @@ async function make (mongoDbClient) {
   const dbLocations = db.collection('locations')
   const dbSequences = db.collection('sequences')
 
-  const typeDefs = apolloServerExpress.gql(schemaString)
+  const typeDefs = apolloServerExpress.gql(schema)
 
   return new apolloServerExpress.ApolloServer({
     typeDefs,

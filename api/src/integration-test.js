@@ -2,8 +2,6 @@
 
 /* globals describe, it, after, afterEach */
 
-require('stringify').registerWithRequire(['.gqls'])
-
 const apolloLink = require('apollo-link')
 const apolloLinkHttp = require('apollo-link-http')
 const assert = require('assert').strict
