@@ -15,10 +15,10 @@ import Artist from './Artist.vue'
 import Artists from './Artists.vue'
 import Cities from './Cities.vue'
 import City from './City.vue'
-import CityLocations from './CityLocations.vue'
-import CityLocation from './CityLocation.vue'
-import CityEvents from './CityEvents.vue'
-import CityEvent from './CityEvent.vue'
+import Locations from './Locations.vue'
+import Location from './Location.vue'
+import Events from './Events.vue'
+import Event from './Event.vue'
 import Layout from './Layout.vue'
 import Root from './Root.vue'
 
@@ -82,25 +82,25 @@ const router = new Router({
     {
       path: '/cities/:citySlug/locations',
       name: 'locations',
-      component: CityLocations,
+      component: Locations,
       props: true
     },
     {
       path: '/cities/:citySlug/locations/:locationSlug',
       name: 'location',
-      component: CityLocation,
+      component: Location,
       props: true
     },
     {
       path: '/cities/:citySlug/events',
       name: 'events',
-      component: CityEvents,
+      component: Events,
       props: true
     },
     {
       path: '/cities/:citySlug/events/:eventId',
       name: 'event',
-      component: CityEvent,
+      component: Event,
       props: true
     }
   ]
