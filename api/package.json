@@ -2,8 +2,8 @@
   "name": "splight-api",
   "private": true,
   "scripts": {
-    "test": "standard --fix && echo Coding conventions checked && nyc --reporter=html --reporter=text mocha --async-only --check-leaks --timeout 10000 **/*-test.js",
-    "test:watch": "nodemon --ext js,gqls --exec nyc --reporter=html --reporter=text mocha --async-only --check-leaks --timeout 10000 --bail **/*-test.js",
+    "test": "standard --fix && echo Coding conventions checked && nyc --reporter=html --reporter=text mocha --async-only --check-leaks --timeout 10000 **/*-tests.js",
+    "test:watch": "nodemon --ext js,gqls --exec nyc --reporter=html --reporter=text mocha --async-only --check-leaks --timeout 10000 --bail **/*-tests.js",
     "serve": "nodemon --ext js,gqls src/serve.js"
   },
   "dependencies": {
