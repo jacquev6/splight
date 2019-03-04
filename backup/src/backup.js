@@ -10,7 +10,7 @@ const storage = new googleCloudStorage.Storage({
 })
 
 function backup () {
-  const fileName = makeFileName(moment().format('YYYYMMDD-HHmmss'))
+  const fileName = process.env.SPLIGHT_INSTANCE_SLUG + '-' + moment().format('YYYYMMDD-HHmmss') + '-mongodump.gz'
   console.log('Backup to ' + fileName)
 
   const mongodump = childProcess.spawn('mongodump', ['--uri', process.env.SPLIGHT_MONGODB_URL, '--archive', '--gzip'])
@@ -18,8 +18,7 @@ function backup () {
   mongodump.stdout.pipe(storage.bucket('splight-backups').file(fileName).createWriteStream())
 }
 
-function restore (datetime) {
-  const fileName = makeFileName(datetime)
+function restore (fileName) {
   console.log('Restore from ' + fileName)
 
   const mongorestore = childProcess.spawn('mongorestore', ['--uri', process.env.SPLIGHT_MONGODB_URL, '--drop', '--archive', '--gzip'])
@@ -28,15 +27,26 @@ function restore (datetime) {
   storage.bucket('splight-backups').file(fileName).createReadStream().pipe(mongorestore.stdin)
 }
 
-function makeFileName (datetime) {
-  return datetime + '-mongodump.gz' // @todo add instance (e.g. "splight-prod") in name, automatically for backup, manually for restore, to allow cross-instance restores
+async function restoreLatest (slug) {
+  const fileNames = (await storage.bucket('splight-backups').getFiles({prefix: slug + '-'}))[0].map(({name}) => name)
+
+  if (fileNames.length) {
+    const fileName = fileNames.reduce(function (p, v) {
+      return p > v ? p : v
+    })
+    restore(fileName)
+  } else {
+    console.log('Nothing to restore')
+  }
 }
 
 if (process.argv[2] === 'backup') {
   backup()
 } else if (process.argv[2] === 'restore') {
   restore(process.argv[3])
+} else if (process.argv[2] === 'restore-latest') {
+  restoreLatest(process.argv[3])
 } else {
-  console.log('Usage: ' + process.argv[1] + ' [backup | restore YYYMMDD-HHMMSS]')
+  console.log('Usage: ' + process.argv[1] + ' [backup | restore slug-yyyymmdd-hhmmss-mongodump.gz | restore-latest slug]')
   process.exit(1)
 }
