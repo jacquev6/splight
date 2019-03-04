@@ -21,6 +21,8 @@ services:
       - "./api:/app"
     environment:
       SPLIGHT_MONGODB_URL: "mongodb://mongo:27017/"
+      SPLIGHT_INSTANCE_NAME: "développement"
+      SPLIGHT_INSTANCE_WARNINGS: "les données sont stockées dans git\nelles sont restaurées au démarrage et sauvées à l’arrêt"
     command: npm run serve
 
   public-frontend:

@@ -16,6 +16,15 @@ const Query = {
     }
   },
 
+  instance () {
+    const name = process.env.SPLIGHT_INSTANCE_NAME
+    var warnings = []
+    if (process.env.SPLIGHT_INSTANCE_WARNINGS) {
+      warnings = process.env.SPLIGHT_INSTANCE_WARNINGS.split('\n')
+    }
+    return { name, warnings }
+  },
+
   // @todo See test-vue/apollo for how to paginate and "subscribe to more"
   async artists (_, { name }, { data }) {
     const nameMatches = matches(name)

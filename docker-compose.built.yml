@@ -12,6 +12,7 @@ services:
       - "9000:80"
     environment:
       SPLIGHT_MONGODB_URL: "mongodb://mongo:27017/"
+      SPLIGHT_INSTANCE_NAME: "post-développement"
 
   public-frontend-public:
     image: jacquev6/splight:latest.public-frontend.public

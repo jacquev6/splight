@@ -1,5 +1,11 @@
 <template>
-  <b-container v-if="viewer">
+  <b-container v-if="instance && viewer">
+    <b-alert v-if="instance.warnings.length" show variant="danger">
+      <p>Ceci est la version &quot;{{ instance.name }}&quot; de l'admin de Splight:</p>
+      <ul>
+        <li v-for="warning in instance.warnings">{{ warning }}</li>
+      </ul>
+    </b-alert>
     <template v-if="viewer.authenticated">
       <b-row>
         <b-col><b-breadcrumb :items="breadcrumbItems"/></b-col>
@@ -39,7 +45,8 @@ export default {
     }
   },
   apollo: {
-    viewer: gql`query{viewer{authenticated{name}}}`
+    viewer: gql`query{viewer{authenticated{name}}}`,
+    instance: gql`query{instance{name warnings}}`
   },
   computed: {
     enabled () {

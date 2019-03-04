@@ -1,4 +1,6 @@
 type Query {
+  instance: Instance!
+
   viewer: Viewer!
 
   artists(name: String): [Artist!]!
@@ -18,6 +20,11 @@ scalar Time
 scalar DateTime
 
 scalar URL
+
+type Instance {
+  name: String!
+  warnings: [String!]!
+}
 
 type Viewer {
   authenticated: AuthenticatedUser

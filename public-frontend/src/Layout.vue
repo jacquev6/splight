@@ -1,6 +1,11 @@
 <template>
   <b-container>
     <vue-headful :title="title"></vue-headful>
+
+    <b-alert v-if="instance && instance.warnings.length" show variant="danger">
+      <p>Ceci est la version &quot;{{ instance.name }}&quot; de Splight&nbsp;: les données ne sont pas réelles.</p>
+    </b-alert>
+
     <b-jumbotron :lead="lead" header-level="4">
       <template slot="header">
         <router-link :to="{name: 'cities'}">Splight</router-link>
@@ -65,6 +70,8 @@ a[target=_blank] {
 </style>
 
 <script>
+import gql from 'graphql-tag'
+
 export default {
   props: {
     title: {
@@ -75,6 +82,9 @@ export default {
       type: String,
       required: true
     }
+  },
+  apollo: {
+    instance: gql`query{instance{name warnings}}`
   }
 }
 </script>
