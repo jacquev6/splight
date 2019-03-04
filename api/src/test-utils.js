@@ -1,6 +1,6 @@
 'use strict'
 
-/* globals before, after, afterEach */
+/* globals before, after */
 
 const apolloLink = require('apollo-link')
 const apolloLinkHttp = require('apollo-link-http')
@@ -31,17 +31,6 @@ module.exports = function () {
     link = new apolloLinkHttp.HttpLink({ uri: `http://localhost:${port}/graphql`, fetch })
   })
 
-  afterEach(async () => {
-    const collections = [
-      'artists',
-      'cities',
-      'events',
-      'locations',
-      'sequences'
-    ]
-    await Promise.all(collections.map(coll => mongodbClient.db('splight').collection(coll).deleteMany({})))
-  })
-
   after(() => {
     mongodbClients.forEach(client => client.close())
     mongodbClient.close()
@@ -61,11 +50,27 @@ module.exports = function () {
     assert.deepEqual(await run(query, variables), { data: expected })
   }
 
+  async function error (query, variables, expected) {
+    if (!expected) {
+      expected = variables
+      variables = {}
+    }
+    const actual = await run(query, variables)
+    assert(actual.errors)
+    assert(actual.errors.length)
+    assert.deepEqual(actual.errors[0].message, expected)
+  }
+
+  async function reset () {
+    const collections = ['artists', 'cities', 'events', 'locations', 'sequences']
+    await Promise.all(collections.map(coll => mongodbClient.db('splight').collection(coll).deleteMany({})))
+  }
+
   async function makeMongodbClient () {
     const client = await mongodb.MongoClient.connect(await mongodbServer.getConnectionString(), { useNewUrlParser: true })
     mongodbClients.push(client)
     return client
   }
 
-  return { run, success, makeMongodbClient }
+  return { run, success, error, reset, makeMongodbClient }
 }

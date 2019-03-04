@@ -15,7 +15,7 @@ describe('API integration test', function () {
   // This makes them fragile to implementation changes.
   // So, we should test here only things related to strorage schema.
 
-  const { run, makeMongodbClient } = testUtils()
+  const { run, reset, makeMongodbClient } = testUtils()
 
   async function make (data = {}, { clock } = {}) {
     const dbArtists = Object.entries(data.artists || {}).map(([slug, artist]) => Object.assign({ _id: slug }, artist))
@@ -46,6 +46,7 @@ describe('API integration test', function () {
       }
     }
 
+    await reset()
     await setCollection('artists', dbArtists)
     await setCollection('cities', dbCities)
     await setCollection('locations', dbLocations)
