@@ -3,18 +3,6 @@
     <spa-input-field title="Slug" v-model="artist.slug" :feedback="feedback.slug" :disabled="!!artistSlug"/>
     <spa-input-field title="Nom" v-model="artist.name" :feedback="feedback.name"/>
     <spa-image-field title="Image" v-model="artist.image" :feedback="feedback.image"/>
-    <!-- @todo Fix following bug
-      Reproduce:
-        - load existing artist
-        - edit description
-        - save
-      Expect:
-        - no change in fields
-      Observe:
-        - description is reverted to previous value
-        - new description is restored on reload
-      Also in LocationDetails, on description and address. Actually maybe on all fields :-/
-    -->
     <spa-textarea-field title="Description" v-model="artist.description" :feedback="feedback.description"/>
     <spa-input-field title="Site web" v-model="artist.website" :feedback="feedback.website"/>
     <b-row><b-col><b-btn variant="primary" :disabled="!enabled" @click="save">{{ saveButtonTitle }}</b-btn></b-col></b-row>
@@ -90,7 +78,9 @@ export default {
         mutation: gql`mutation($artist:IArtist!){putArtist(artist:$artist){slug}}`,
         variables: { artist: this.artist }
       }).then(() => {
-        if (!this.artistSlug) {
+        if (this.artistSlug) {
+          this.$apollo.queries.initialArtist.refetch()
+        } else {
           this.artist = this.makeArtist()
         }
         this.$emit('saved')

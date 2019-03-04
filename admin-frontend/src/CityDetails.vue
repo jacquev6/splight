@@ -84,7 +84,9 @@ export default {
         mutation: gql`mutation($city:ICity!){putCity(city:$city){slug}}`,
         variables: { city: this.city }
       }).then(() => {
-        if (!this.citySlug) {
+        if (this.citySlug) {
+          this.$apollo.queries.initialCity.refetch()
+        } else {
           this.city = this.makeCity()
         }
         this.$emit('saved')

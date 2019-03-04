@@ -88,7 +88,9 @@ export default {
           location: this.location
         }
       }).then(() => {
-        if (!this.locationSlug) {
+        if (this.locationSlug) {
+          this.$apollo.queries.initialLocation.refetch()
+        } else {
           this.location = this.makeLocation()
         }
         this.$emit('saved')

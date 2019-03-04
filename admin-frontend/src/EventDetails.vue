@@ -129,7 +129,9 @@ export default {
       // @todo Catch errors, provide feedback and don't erase the form. Same for events and locations
       // @todo Factorize the common logic in XxxDetails somehow
       }).then(() => {
-        if (!this.eventId) {
+        if (this.eventId) {
+          this.$apollo.queries.initialEvent.refetch()
+        } else {
           this.event = this.makeEvent()
         }
         this.$emit('saved')
