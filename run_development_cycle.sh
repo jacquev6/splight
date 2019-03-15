@@ -33,16 +33,14 @@ do
   shift
 done
 
-# Long version --detach unavailable on Ubuntu
-docker-compose up -d dev-daemon
-. ./development_aliases.sh
+. ./dev-daemon/aliases.sh
 
 (cd api; npm test)
 show_in_browser "Unit test coverage details" $PROJECT_ROOT/api/coverage/index.html
 
 if $SERVE
 then
-  docker-compose up -d
+  dev-daemon-docker-compose up -d
 
   for F in test-data/*.json
   do
@@ -50,7 +48,7 @@ then
     COLLECTION=${COLLECTION#test-data/}
     echo "Restoring $COLLECTION"
     # 'docker-compose exec' doesn't seem to handle input data on stdin on Ubuntu
-    cat $F | docker exec --interactive splightfr_mongo_1 mongoimport --db splight --collection $COLLECTION --jsonArray --drop --quiet
+    cat $F | docker exec --interactive devdaemonsplightfr_mongo_1 mongoimport --db splight --collection $COLLECTION --jsonArray --drop --quiet
   done
 
   echo "Press Enter to exit"
@@ -61,10 +59,10 @@ then
     COLLECTION=${F%.json}
     COLLECTION=${COLLECTION#test-data/}
     echo "Dumping $COLLECTION"
-    docker-compose exec -T mongo mongoexport --db splight --collection $COLLECTION --sort "{_id:1}" --jsonArray --quiet --pretty >$F
+    dev-daemon-docker-compose exec -T mongo mongoexport --db splight --collection $COLLECTION --sort "{_id:1}" --jsonArray --quiet --pretty >$F
   done
 
-  docker-compose down
+  dev-daemon-docker-compose down
 fi
 
 echo

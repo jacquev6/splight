@@ -5,7 +5,7 @@ services:
     image: "node:11.9"
     command: tail -f /dev/null
     volumes:
-      - ".:/app"
+      - "..:/app"
 
   mongo:
     image: mongo:3.6.10
@@ -18,7 +18,7 @@ services:
       - "9000:80"
     working_dir: /app
     volumes:
-      - "./api:/app"
+      - "../api:/app"
     environment:
       SPLIGHT_MONGODB_URL: "mongodb://mongo:27017/"
       SPLIGHT_INSTANCE_NAME: "développement"
@@ -33,7 +33,7 @@ services:
       - "8080:8080"
     working_dir: /app
     volumes:
-      - "./public-frontend:/app"
+      - "../public-frontend:/app"
     command: npm run serve
 
   admin-frontend:
@@ -44,5 +44,5 @@ services:
       - "8081:8080"
     working_dir: /app
     volumes:
-      - "./admin-frontend:/app"
+      - "../admin-frontend:/app"
     command: npm run serve
