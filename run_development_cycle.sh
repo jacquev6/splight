@@ -38,31 +38,15 @@ done
 (cd api; npm test)
 show_in_browser "Unit test coverage details" $PROJECT_ROOT/api/coverage/index.html
 
+(cd test-data; npm "run lint")
+
 if $SERVE
 then
   dev-daemon-docker-compose up -d
 
-  for F in test-data/*.json
-  do
-    COLLECTION=${F%.json}
-    COLLECTION=${COLLECTION#test-data/}
-    echo "Restoring $COLLECTION"
-    # 'docker-compose exec' doesn't seem to handle input data on stdin on Ubuntu
-    cat $F | docker exec --interactive devdaemonsplightfr_mongo_1 mongoimport --db splight --collection $COLLECTION --jsonArray --drop --quiet
-  done
+  (cd test-data; npm "run restore")
 
-  echo "Press Enter to exit"
-  read
-
-  for F in test-data/*.json
-  do
-    COLLECTION=${F%.json}
-    COLLECTION=${COLLECTION#test-data/}
-    echo "Dumping $COLLECTION"
-    dev-daemon-docker-compose exec -T mongo mongoexport --db splight --collection $COLLECTION --sort "{_id:1}" --jsonArray --quiet --pretty >$F
-  done
-
-  dev-daemon-docker-compose down
+  echo "Servers are running"
 fi
 
 echo
