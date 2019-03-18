@@ -38,28 +38,22 @@ module.exports = function () {
     httpServer.close()
   })
 
-  async function run (query, variables = {}) {
+  async function run (query, variables) {
     try {
       return await apolloLink.toPromise(apolloLink.execute(link, { query, variables }))
     } catch (e) {
+      /* istanbul ignore next: test code */
       console.log(e.result)
+      /* istanbul ignore next: test code */
       throw e
     }
   }
 
   async function success (query, variables, expected) {
-    if (expected === undefined) {
-      expected = variables
-      variables = {}
-    }
     assert.deepEqual(await run(query, variables), { data: expected })
   }
 
   async function error (query, variables, expected) {
-    if (expected === undefined) {
-      expected = variables
-      variables = {}
-    }
     const actual = await run(query, variables)
     assert(actual.errors)
     assert(actual.errors.length)

@@ -91,9 +91,6 @@ describe('API integration test', function () {
           delete artist._id
           const o = {}
           o[slug] = artist
-          if (artist.website === null) {
-            delete artist.website
-          }
           return o
         })),
         cities: Object.assign({}, ...cities.map(function (city) {
@@ -103,12 +100,6 @@ describe('API integration test', function () {
             const slug = location._id.split(':')[1]
             delete location._id
             delete location.citySlug
-            if (location.website === null) {
-              delete location.website
-            }
-            if (location.phone === null) {
-              delete location.phone
-            }
             const o = {}
             o[slug] = location
             return o

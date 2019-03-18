@@ -366,7 +366,7 @@ describe('API black-box test', function () {
     withoutCities(function () {
       it('finds no cities', async function () {
         await success(
-          getCities,
+          getCities, {},
           { cities: [] }
         )
       })
@@ -375,7 +375,7 @@ describe('API black-box test', function () {
     withCities(function () {
       it('finds cities', async function () {
         await success(
-          getCities,
+          getCities, {},
           { cities: [{ slug: 'city-1' }, { slug: 'city-2' }, { slug: 'city-3' }] }
         )
       })
@@ -486,7 +486,7 @@ describe('API black-box test', function () {
     withoutArtists(function () {
       it('finds no artists', async function () {
         await success(
-          getArtists,
+          getArtists, {},
           { artists: [] }
         )
       })
@@ -495,7 +495,7 @@ describe('API black-box test', function () {
     withArtists(function () {
       it('finds artists', async function () {
         await success(
-          getArtists,
+          getArtists, {},
           { artists: [{ slug: 'artist-1' }, { slug: 'artist-2' }, { slug: 'artist-3' }] }
         )
       })
