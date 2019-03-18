@@ -12,7 +12,6 @@ const mongodb = require('mongodb')
 const makeApp = require('./app')
 
 module.exports = function () {
-  const mongodbClients = []
   var mongodbClient
   var mongodbServer
   var httpServer
@@ -32,7 +31,6 @@ module.exports = function () {
   })
 
   after(() => {
-    mongodbClients.forEach(client => client.close())
     mongodbClient.close()
     mongodbServer.stop()
     httpServer.close()
@@ -65,11 +63,5 @@ module.exports = function () {
     await Promise.all(collections.map(coll => mongodbClient.db('splight').collection(coll).deleteMany({})))
   }
 
-  async function makeMongodbClient () {
-    const client = await mongodb.MongoClient.connect(await mongodbServer.getConnectionString(), { useNewUrlParser: true })
-    mongodbClients.push(client)
-    return client
-  }
-
-  return { run, success, error, reset, makeMongodbClient }
+  return { run, success, error, reset }
 }

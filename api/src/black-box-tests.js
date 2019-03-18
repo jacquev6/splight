@@ -60,8 +60,8 @@ describe('API black-box test', function () {
   `
 
   const getArtists = gql`
-    query {
-      artists {
+    query($name: String) {
+      artists(name: $name) {
         slug
       }
     }
@@ -99,6 +99,16 @@ describe('API black-box test', function () {
         }
         image
         allTagsImage
+      }
+    }
+  `
+
+  const getCityDates = gql`
+    query($slug: ID!) {
+      city(slug: $slug) {
+        slug
+        firstDate
+        dateAfter
       }
     }
   `
@@ -150,9 +160,9 @@ describe('API black-box test', function () {
   `
 
   const getLocations = gql`
-    query($citySlug: ID!) {
+    query($citySlug: ID!, $name: String) {
       city(slug: $citySlug) {
-        locations {
+        locations(name: $name) {
           slug
         }
       }
@@ -210,6 +220,16 @@ describe('API black-box test', function () {
       city(slug: $citySlug) {
         events {
           id
+        }
+      }
+    }
+  `
+
+  const getEventTitles = gql`
+    query($citySlug: ID!, $tag: ID, $location: ID, $artist: ID, $title: String, $dates: IDateInterval) {
+      city(slug: $citySlug) {
+        events(tag: $tag, location: $location, artist: $artist, title: $title, dates: $dates) {
+          title
         }
       }
     }
@@ -500,6 +520,20 @@ describe('API black-box test', function () {
         )
       })
     })
+
+    it('filters by name', async function () {
+      await run(putArtist, { artist: { slug: 'ok-literal', name: 'name aeiou' } })
+      await run(putArtist, { artist: { slug: 'ok-reversed', name: 'aeiou name' } })
+      await run(putArtist, { artist: { slug: 'ok-uppercase', name: 'NAME AEIOU' } })
+      await run(putArtist, { artist: { slug: 'ok-accentuated', name: 'name àéïôù' } })
+      await run(putArtist, { artist: { slug: 'ko-not-all-words', name: 'name' } })
+      await run(putArtist, { artist: { slug: 'ko-title-no-match', name: 'foobar' } })
+
+      await success(
+        getArtists, { name: 'name aeiou' },
+        { artists: [{ slug: 'ok-literal' }, { slug: 'ok-reversed' }, { slug: 'ok-uppercase' }, { slug: 'ok-accentuated' }] }
+      )
+    })
   })
 
   describe('validateArtist', function () {
@@ -661,6 +695,20 @@ describe('API black-box test', function () {
             ] } }
           )
         })
+      })
+
+      it('filters by name', async function () {
+        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ok-literal', name: 'name aeiou' } })
+        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ok-reversed', name: 'aeiou name' } })
+        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ok-uppercase', name: 'NAME AEIOU' } })
+        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ok-accentuated', name: 'name àéïôù' } })
+        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ko-not-all-words', name: 'name' } })
+        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ko-title-no-match', name: 'foobar' } })
+
+        await success(
+          getLocations, { citySlug: 'city-1', name: 'name aeiou' },
+          { city: { locations: [{ slug: 'ok-literal' }, { slug: 'ok-reversed' }, { slug: 'ok-uppercase' }, { slug: 'ok-accentuated' }] } }
+        )
       })
     })
   })
@@ -912,6 +960,65 @@ describe('API black-box test', function () {
               )
             })
           })
+
+          it('filters by tag', async function () {
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ok-single', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ok-main', location: 'location-1', tags: ['tag-1', 'tag-2'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ok-secondary', location: 'location-1', tags: ['tag-2', 'tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ko', location: 'location-1', tags: ['tag-2'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+
+            await success(
+              getEventTitles, { citySlug: 'city-1', tag: 'tag-1' },
+              { city: { events: [{ title: 'ok-single' }, { title: 'ok-main' }, { title: 'ok-secondary' }] } }
+            )
+          })
+
+          it('filters by location', async function () {
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ok', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ko', location: 'location-2', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+
+            await success(
+              getEventTitles, { citySlug: 'city-1', location: 'location-1' },
+              { city: { events: [{ title: 'ok' }] } }
+            )
+          })
+
+          it('filters by artist', async function () {
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ok', artist: 'artist-1', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ko', artist: 'artist-2', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+
+            await success(
+              getEventTitles, { citySlug: 'city-1', artist: 'artist-1' },
+              { city: { events: [{ title: 'ok' }] } }
+            )
+          })
+
+          it('filters by title', async function () {
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'name aeiou', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'aeiou name', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'NAME AEIOU', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'name àéïôù', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'name', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'foobar', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: null, artist: 'artist-1', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+
+            await success(
+              getEventTitles, { citySlug: 'city-1', title: 'name aeiou' },
+              { city: { events: [{ title: 'name aeiou' }, { title: 'aeiou name' }, { title: 'NAME AEIOU' }, { title: 'name àéïôù' }] } }
+            )
+          })
+
+          it('filters by dates', async function () {
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ko-before', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-13T23:59' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ok-1', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-12T12:00' }, { start: '2018-07-14T00:00' }, { start: '2018-07-16T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ok-2', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-15T23:59' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'ko-after', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-16T00:00' }] } })
+
+            await success(
+              getEventTitles, { citySlug: 'city-1', dates: { start: '2018-07-14', after: '2018-07-16' } },
+              { city: { events: [{ title: 'ok-1' }, { title: 'ok-2' }] } }
+            )
+          })
         })
       })
     })
@@ -1117,6 +1224,52 @@ describe('API black-box test', function () {
 
           // @todo withEvents
         })
+      })
+    })
+  })
+
+  describe('getCityDates', function () {
+    withCities(function () {
+      withLocations(function () {
+        it('returns no date', async function () {
+          await success(
+            getCityDates, { slug: 'city-1' },
+            { city: { slug: 'city-1', firstDate: null, dateAfter: null } }
+          )
+        })
+
+        it('uses single occurrence from single event', async function () {
+          await run(putEvent, make([{ start: '2019-03-19T20:35' }]))
+
+          await success(
+            getCityDates, { slug: 'city-1' },
+            { city: { slug: 'city-1', firstDate: '2019-03-19', dateAfter: '2019-03-20' } }
+          )
+        })
+
+        it('uses several occurrences from single event', async function () {
+          await run(putEvent, make([{ start: '2019-03-19T20:35' }, { start: '2019-03-12T20:35' }, { start: '2019-03-27T20:35' }]))
+
+          await success(
+            getCityDates, { slug: 'city-1' },
+            { city: { slug: 'city-1', firstDate: '2019-03-12', dateAfter: '2019-03-28' } }
+          )
+        })
+
+        it('uses single occurrence from several events', async function () {
+          await run(putEvent, make([{ start: '2019-03-19T20:35' }]))
+          await run(putEvent, make([{ start: '2019-03-12T20:35' }]))
+          await run(putEvent, make([{ start: '2019-03-27T20:35' }]))
+
+          await success(
+            getCityDates, { slug: 'city-1' },
+            { city: { slug: 'city-1', firstDate: '2019-03-12', dateAfter: '2019-03-28' } }
+          )
+        })
+
+        function make (occurrences) {
+          return { citySlug: 'city-1', event: { title: 'Event Title', location: 'location-1', tags: ['tag-1'], occurrences } }
+        }
       })
     })
   })
