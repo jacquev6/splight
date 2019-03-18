@@ -1,6 +1,6 @@
 'use strict'
 
-const Hashids = require('hashids') // @todo Do not rely on sequences, let MongoDB assign ids
+const Hashids = require('hashids')
 
 const hashids = new Hashids('', 10)
 
@@ -12,7 +12,6 @@ module.exports = function (mongoDbClient) {
   const artists = (function () {
     const collection = database.collection('artists')
 
-    // @todo Let MongoDB create ObjectIds, and use a unique index on slug
     async function tryGetBySlug (slug) {
       const artist = await collection.findOne({ _id: slug })
       if (artist) {
@@ -93,7 +92,6 @@ module.exports = function (mongoDbClient) {
   const cities = (function () {
     const collection = database.collection('cities')
 
-    // @todo Let MongoDB create ObjectIds, and use a unique index on slug
     async function tryGetBySlug (slug) {
       const city = await collection.findOne({ _id: slug })
       if (city) {
@@ -172,7 +170,6 @@ module.exports = function (mongoDbClient) {
     const collection = database.collection('locations')
 
     return function (citySlug) {
-      // @todo Let MongoDB create ObjectIds, and use a unique index on (citySlug, slug)
       async function tryGetBySlug (slug) {
         const location = await collection.findOne({ _id: citySlug + ':' + slug })
         if (location) {
@@ -185,7 +182,7 @@ module.exports = function (mongoDbClient) {
         if (location) {
           return location
         } else {
-          throw new Error(`No location with slug "${slug}"`) // @todo Add `in city with slug "${citySlug}"`
+          throw new Error(`No location with slug "${slug}" in city with slug "${citySlug}"`)
         }
       }
 
@@ -260,7 +257,6 @@ module.exports = function (mongoDbClient) {
   })()
 
   const tags = (function () {
-    // @todo Put tags in their own collection indexed like locations?
     const collection = database.collection('cities')
 
     return function (citySlug) {
@@ -291,7 +287,7 @@ module.exports = function (mongoDbClient) {
         if (tag) {
           return tag
         } else {
-          throw new Error(`No tag with slug "${slug}"`) // @todo Add `in city with slug "${citySlug}"`
+          throw new Error(`No tag with slug "${slug}" in city with slug "${citySlug}"`)
         }
       }
 
@@ -323,7 +319,6 @@ module.exports = function (mongoDbClient) {
       const tags_ = tags(citySlug)
       const locations_ = locations(citySlug)
 
-      // @todo Let MongoDB create ObjectIds
       async function tryGetById (id) {
         const event = await collection.findOne({ citySlug, _id: id })
         if (event) {
@@ -336,7 +331,7 @@ module.exports = function (mongoDbClient) {
         if (event) {
           return event
         } else {
-          throw new Error(`No event with id "${id}"`) // @todo Add `in city with slug "${citySlug}"`
+          throw new Error(`No event with id "${id}" in city with slug "${citySlug}"`)
         }
       }
 
@@ -392,7 +387,7 @@ module.exports = function (mongoDbClient) {
             throw new Error(`No event with id "${dbEvent._id}"`)
           }
         } else {
-          dbEvent._id = hashids.encode(await nextSequenceValue('events')) // @todo Let MongoDB generate ObjectIds
+          dbEvent._id = hashids.encode(await nextSequenceValue('events'))
           await collection.insertOne(dbEvent)
         }
 
@@ -402,7 +397,7 @@ module.exports = function (mongoDbClient) {
       async function deleteById (_id) {
         const event = await collection.findOne({ citySlug, _id })
         if (!event) {
-          throw new Error(`No event with id "${_id}"`) // @todo add "in city..."
+          throw new Error(`No event with id "${_id}" in city with slug "${citySlug}"`)
         }
 
         await collection.deleteOne({ citySlug, _id })
