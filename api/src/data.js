@@ -81,7 +81,7 @@ module.exports = function (mongoDbClient) {
         image
       }
 
-      if (!artist.description.length) delete artist.description
+      if (!artist.description || !artist.description.length) delete artist.description
       if (!artist.website) delete artist.website
       if (!artist.image) delete artist.image
 
@@ -160,6 +160,7 @@ module.exports = function (mongoDbClient) {
         allTagsImage
       }
       if (!city.image) delete city.image
+      if (!city.tags || !city.tags.length) delete city.tags
       if (!city.allTagsImage) delete city.allTagsImage
 
       return city
@@ -169,7 +170,9 @@ module.exports = function (mongoDbClient) {
   const locations = (function () {
     const collection = database.collection('locations')
 
-    return function (citySlug) {
+    return async function (citySlug) {
+      await cities.getBySlug(citySlug)
+
       async function tryGetBySlug (slug) {
         const location = await collection.findOne({ _id: citySlug + ':' + slug })
         if (location) {
@@ -245,11 +248,11 @@ module.exports = function (mongoDbClient) {
           address
         }
 
-        if (!location.description.length) delete location.description
+        if (!location.description || !location.description.length) delete location.description
         if (!location.website) delete location.website
         if (!location.image) delete location.image
         if (!location.phone) delete location.phone
-        if (!location.address.length) delete location.address
+        if (!location.address || !location.address.length) delete location.address
 
         return location
       }
@@ -259,24 +262,19 @@ module.exports = function (mongoDbClient) {
   const tags = (function () {
     const collection = database.collection('cities')
 
-    return function (citySlug) {
-      const tags = (async function () {
-        const city = await collection.findOne({ _id: citySlug })
+    return async function (citySlug) {
+      await cities.getBySlug(citySlug)
 
-        const tags = city.tags || []
+      const tags = (await collection.findOne({ _id: citySlug })).tags || []
 
-        return {
-          bySlug: Object.assign({}, ...tags.map(({ slug, title, image }) => {
-            const o = {}
-            o[slug] = { slug, title, image }
-            return o
-          })),
-          ordered: tags
-        }
-      })()
+      const tagsBySlug = Object.assign({}, ...tags.map(({ slug, title, image }) => {
+        const o = {}
+        o[slug] = { slug, title, image }
+        return o
+      }))
 
       async function tryGetBySlug (slug) {
-        const tag = (await tags).bySlug[slug]
+        const tag = tagsBySlug[slug]
         if (tag) {
           return toPublic(tag)
         }
@@ -284,6 +282,7 @@ module.exports = function (mongoDbClient) {
 
       async function getBySlug (slug) {
         const tag = await tryGetBySlug(slug)
+        /* istanbul ignore else: dead defensive code */
         if (tag) {
           return tag
         } else {
@@ -296,7 +295,7 @@ module.exports = function (mongoDbClient) {
       }
 
       async function getAll () {
-        return (await tags).ordered
+        return tags
       }
 
       return { tryGetBySlug, getBySlug, existsBySlug, getAll }
@@ -315,9 +314,11 @@ module.exports = function (mongoDbClient) {
   const events = (function () {
     const collection = database.collection('events')
 
-    return function (citySlug) {
-      const tags_ = tags(citySlug)
-      const locations_ = locations(citySlug)
+    return async function (citySlug) {
+      await cities.getBySlug(citySlug)
+
+      const tags_ = await tags(citySlug)
+      const locations_ = await locations(citySlug)
 
       async function tryGetById (id) {
         const event = await collection.findOne({ citySlug, _id: id })
@@ -335,10 +336,6 @@ module.exports = function (mongoDbClient) {
         }
       }
 
-      async function existsById (id) {
-        return !!(await collection.countDocuments({ citySlug, _id: id }))
-      }
-
       async function getAll () {
         return (await collection.find({ citySlug }).toArray()).map(toPublic)
       }
@@ -346,30 +343,33 @@ module.exports = function (mongoDbClient) {
       async function validate (forInsert, { id, title, artist, location, tags, occurrences, reservationPage }) {
         const validation = {}
 
+        // @todo Use French language for all errors
+
         if (!title && !artist) {
           validation.title = 'Un événement doit avoir un titre ou un artiste.'
         }
 
         if (artist && !await artists.existsBySlug(artist)) {
-          validation.artist = 'No artist with slug "' + artist + '"'
+          validation.artist = `No artist with slug "${artist}"`
         }
 
         if (!location) {
           validation.location = 'Un événement doit avoir un lieu.'
         } else if (!await locations_.existsBySlug(location)) {
-          validation.location = 'No location with slug "' + location + '"'
+          validation.location = `No location with slug "${location}" in city with slug "${citySlug}"`
         }
 
-        if (!tags.length) {
+        if (!tags || !tags.length) {
           validation.tags = 'Un événement doit avoir au moins une catégorie.'
+        } else {
+          await Promise.all(tags.map(async tag => {
+            if (!await tags_.existsBySlug(tag)) {
+              validation.tags = `No tag with slug "${tag}" in city with slug "${citySlug}"`
+            }
+          }))
         }
-        await Promise.all(tags.map(async tag => {
-          if (!await tags_.existsBySlug(tag)) {
-            validation.tags = 'No tag with slug "' + tag + '"'
-          }
-        }))
 
-        if (!occurrences.length) {
+        if (!occurrences || !occurrences.length) {
           validation.occurrences = 'Un événement doit avoir au moins une représentation.'
         }
 
@@ -384,7 +384,7 @@ module.exports = function (mongoDbClient) {
         if (dbEvent._id) {
           const ret = await collection.replaceOne({ _id: dbEvent._id }, dbEvent)
           if (ret.matchedCount === 0) {
-            throw new Error(`No event with id "${dbEvent._id}"`)
+            throw new Error(`No event with id "${dbEvent._id}" in city with slug "${citySlug}"`)
           }
         } else {
           dbEvent._id = hashids.encode(await nextSequenceValue('events'))
@@ -405,7 +405,7 @@ module.exports = function (mongoDbClient) {
         return toPublic(event)
       }
 
-      return { tryGetById, getById, existsById, getAll, validate, put, deleteById }
+      return { tryGetById, getById, getAll, validate, put, deleteById }
 
       function toPublic ({ _id, title, artist, location, tags, occurrences, reservationPage }) {
         return {

@@ -38,12 +38,17 @@ module.exports = function () {
     httpServer.close()
   })
 
-  function run (query, variables = {}) {
-    return apolloLink.toPromise(apolloLink.execute(link, { query, variables }))
+  async function run (query, variables = {}) {
+    try {
+      return await apolloLink.toPromise(apolloLink.execute(link, { query, variables }))
+    } catch (e) {
+      console.log(e.result)
+      throw e
+    }
   }
 
   async function success (query, variables, expected) {
-    if (!expected) {
+    if (expected === undefined) {
       expected = variables
       variables = {}
     }
@@ -51,7 +56,7 @@ module.exports = function () {
   }
 
   async function error (query, variables, expected) {
-    if (!expected) {
+    if (expected === undefined) {
       expected = variables
       variables = {}
     }

@@ -11,12 +11,11 @@ type Query {
 
   validateArtist(forInsert: Boolean!, artist: IArtist!): ArtistValidation!
   validateCity(forInsert: Boolean!, city: ICity!): CityValidation!
-  validateLocation(forInsert: Boolean!, citySlug:ID!, location: ILocation!): LocationValidation!
-  validateEvent(forInsert: Boolean!, citySlug:ID!, event: IEvent!): EventValidation!
+  validateLocation(forInsert: Boolean!, citySlug: ID!, location: ILocation!): LocationValidation!
+  validateEvent(forInsert: Boolean!, citySlug: ID!, event: IEvent!): EventValidation!
 }
 
 scalar Date
-scalar Time
 scalar DateTime
 
 scalar URL
@@ -103,7 +102,7 @@ type Mutation {
 input IArtist {
   slug: ID!
   name: String!
-  description: [String!]!
+  description: [String!]
   website: URL
   image: URL
 }
@@ -119,7 +118,7 @@ type ArtistValidation {
 input ICity {
   slug: ID!
   name: String!
-  tags: [ITag!]!
+  tags: [ITag!]
   image: URL
   allTagsImage: URL
 }
@@ -141,11 +140,11 @@ type CityValidation {
 input ILocation {
   slug: ID!
   name: String!
-  description: [String!]!
+  description: [String!]
   website: URL
   image: URL
   phone: String
-  address: [String!]!
+  address: [String!]
 }
 
 type LocationValidation {
@@ -163,8 +162,8 @@ input IEvent {
   title: String
   artist: ID
   location: ID
-  tags: [ID!]!
-  occurrences: [IOccurrence!]!
+  tags: [ID!]
+  occurrences: [IOccurrence!]
   reservationPage: URL
 }
 

@@ -1515,7 +1515,7 @@ describe('API integration test', function () {
             data: null,
             errors: [{
               locations: [{ line: 1, column: 40 }],
-              message: 'No location with slug "location"',
+              message: 'No location with slug "location" in city with slug "city"',
               path: ['putEvent']
             }]
           }
@@ -1562,7 +1562,7 @@ describe('API integration test', function () {
             data: null,
             errors: [{
               locations: [{ line: 1, column: 40 }],
-              message: 'No tag with slug "tag"',
+              message: 'No tag with slug "tag" in city with slug "city"',
               path: ['putEvent']
             }]
           }
@@ -1747,7 +1747,7 @@ describe('API integration test', function () {
             data: null,
             errors: [{
               locations: [{ line: 2, column: 3 }],
-              message: 'No event with id "event"',
+              message: 'No event with id "event" in city with slug "city"',
               path: ['putEvent']
             }]
           }

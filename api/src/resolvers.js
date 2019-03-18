@@ -28,10 +28,10 @@ const Query = {
   // @todo See test-vue/apollo for how to paginate and "subscribe to more"
   async artists (_, { name }, { data }) {
     const nameMatches = matches(name)
-    // @todo Filter in data (same for all (cities, locations, events, ...))
+    // @todo Filter and sort in data (same for all (cities, locations, events, ...))
     return (await data.artists.getAll()).filter(artist => nameMatches(artist.name))
   },
-  async artist (_, { slug }, { data }) {
+  artist (_, { slug }, { data }) {
     return data.artists.getBySlug(slug)
   },
 
@@ -39,21 +39,21 @@ const Query = {
     const nameMatches = matches(name)
     return (await data.cities.getAll()).filter(city => nameMatches(city.name))
   },
-  async city (_, { slug }, { data }) {
+  city (_, { slug }, { data }) {
     return data.cities.getBySlug(slug)
   },
 
-  async validateArtist (_, { forInsert, artist }, { data }) {
+  validateArtist (_, { forInsert, artist }, { data }) {
     return data.artists.validate(forInsert, artist)
   },
-  async validateCity (_, { forInsert, city }, { data }) {
+  validateCity (_, { forInsert, city }, { data }) {
     return data.cities.validate(forInsert, city)
   },
   async validateLocation (_, { forInsert, citySlug, location }, { data }) {
-    return data.locations(citySlug).validate(forInsert, location)
+    return (await data.locations(citySlug)).validate(forInsert, location)
   },
   async validateEvent (_, { forInsert, citySlug, event }, { data }) {
-    return data.events(citySlug).validate(forInsert, event)
+    return (await data.events(citySlug)).validate(forInsert, event)
   }
 }
 
@@ -61,14 +61,14 @@ const City = {
   // @todo Deduplicate with artists
   async locations ({ slug }, { name }, { data }) {
     const nameMatches = matches(name)
-    return (await data.locations(slug).getAll()).filter(location => nameMatches(location.name))
+    return (await (await data.locations(slug)).getAll()).filter(location => nameMatches(location.name))
   },
   async location ({ slug }, { slug: locationSlug }, { data }) {
-    return data.locations(slug).getBySlug(locationSlug)
+    return (await data.locations(slug)).getBySlug(locationSlug)
   },
 
   async tags ({ slug }, _, { data }) {
-    return data.tags(slug).getAll()
+    return (await data.tags(slug)).getAll()
   },
 
   async events ({ slug }, { tag, location, artist, title, dates }, { data }) {
@@ -101,10 +101,10 @@ const City = {
       filters.push(({ occurrences }) => occurrences.some(occurrenceMatches))
     }
 
-    return (await data.events(slug).getAll()).filter(event => filters.every(filter => filter(event)))
+    return (await (await data.events(slug)).getAll()).filter(event => filters.every(filter => filter(event)))
   },
   async event ({ slug }, { id }, { data }) {
-    return data.events(slug).getById(id)
+    return (await data.events(slug)).getById(id)
   },
 
   async firstDate ({ slug }, _, { data }) {
@@ -118,7 +118,7 @@ const City = {
 }
 
 async function reduceOccurrencesStarts (citySlug, data, f) {
-  const events = await data.events(citySlug).getAll()
+  const events = await (await data.events(citySlug)).getAll()
 
   if (events.length && events[0].occurrences.length) {
     var ret = events[0].occurrences[0].start
@@ -135,31 +135,32 @@ async function reduceOccurrencesStarts (citySlug, data, f) {
 
 const Event = {
   async location ({ citySlug, location }, _, { data }) {
-    return data.locations(citySlug).getBySlug(location)
+    return (await data.locations(citySlug)).getBySlug(location)
   },
-  async artist ({ artist }, _, { data }) {
+  artist ({ artist }, _, { data }) {
     return data.artists.tryGetBySlug(artist)
   },
   async tags ({ citySlug, tags }, _, { data }) {
-    return Promise.all(tags.map(tag => data.tags(citySlug).getBySlug(tag)))
+    const tags_ = await data.tags(citySlug)
+    return Promise.all(tags.map(tag => tags_.getBySlug(tag)))
   }
 }
 
 const Mutation = {
-  async putArtist (_, { artist }, { data }) {
+  putArtist (_, { artist }, { data }) {
     return data.artists.put(artist)
   },
-  async putCity (_, { city }, { data }) {
+  putCity (_, { city }, { data }) {
     return data.cities.put(city)
   },
   async putLocation (_, { citySlug, location }, { data }) {
-    return data.locations(citySlug).put(location)
+    return (await data.locations(citySlug)).put(location)
   },
   async putEvent (_, { citySlug, event }, { data }) {
-    return data.events(citySlug).put(event)
+    return (await data.events(citySlug)).put(event)
   },
   async deleteEvent (_, { citySlug, eventId }, { data }) {
-    return data.events(citySlug).deleteById(eventId)
+    return (await data.events(citySlug)).deleteById(eventId)
   }
 }
 
