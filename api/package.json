@@ -20,8 +20,10 @@
   },
   "devDependencies": {
     "apollo-link-http": "^1.5.11",
+    "fetch-cookie": "^0.7.2",
     "mocha": "^6.0.1",
     "mongodb-memory-server": "^3.1.1",
+    "node-fetch": "^2.3.0",
     "nodemon": "^1.18.10",
     "nyc": "^13.3.0",
     "standard": "^12.0.1"

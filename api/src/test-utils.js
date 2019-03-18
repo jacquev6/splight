@@ -5,17 +5,21 @@
 const apolloLink = require('apollo-link')
 const apolloLinkHttp = require('apollo-link-http')
 const assert = require('assert').strict
-const fetch = require('node-fetch')
+const nodeFetch = require('node-fetch')
+const fetchCookie = require('fetch-cookie/node-fetch')
 const mondodbMemoryServer = require('mongodb-memory-server')
 const mongodb = require('mongodb')
 
 const makeApp = require('./app')
+
+const fetch = fetchCookie(nodeFetch)
 
 module.exports = function () {
   var mongodbClient
   var mongodbServer
   var httpServer
   var link
+  var baseUrl
 
   before(async () => {
     mongodbServer = new mondodbMemoryServer.MongoMemoryServer()
@@ -27,7 +31,8 @@ module.exports = function () {
 
     httpServer = await app.listen(0)
     const port = httpServer.address().port
-    link = new apolloLinkHttp.HttpLink({ uri: `http://localhost:${port}/graphql`, fetch })
+    baseUrl = `http://localhost:${port}/`
+    link = new apolloLinkHttp.HttpLink({ uri: `${baseUrl}graphql`, fetch })
   })
 
   after(() => {
@@ -63,5 +68,5 @@ module.exports = function () {
     await Promise.all(collections.map(coll => mongodbClient.db('splight').collection(coll).deleteMany({})))
   }
 
-  return { run, success, error, reset }
+  return { fetch, run, success, error, reset, baseUrl: () => baseUrl }
 }
