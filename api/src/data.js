@@ -9,6 +9,36 @@ module.exports = function (mongoDbClient) {
 
   const sequences = database.collection('sequences')
 
+  // Keeping messages together should help with localization
+  const messages = {
+    badSlugFormat: "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets.",
+    artist: {
+      notFound: slug => `Pas d'artiste avec le slug "${slug}"`,
+      duplicatedSlug: 'Les slugs de chaque artiste doivent être uniques.',
+      emptyName: "Le nom d'un artiste ne peut pas être vide."
+    },
+    city: {
+      notFound: slug => `Pas de ville avec le slug "${slug}"`,
+      duplicatedSlug: 'Les slugs de chaque ville doivent être uniques.',
+      emptyName: "Le nom d'une ville ne peut pas être vide."
+    },
+    tag: {
+      notFound: (citySlug, slug) => `Pas de catégorie avec le slug "${slug}" dans la ville avec le slug "${citySlug}"`
+    },
+    location: {
+      notFound: (citySlug, slug) => `Pas de lieu avec le slug "${slug}" dans la ville avec le slug "${citySlug}"`,
+      duplicatedSlug: "Les slugs de chaque lieu doivent être uniques au sein d'une ville.",
+      emptyName: "Le nom d'un lieu ne peut pas être vide."
+    },
+    event: {
+      notFound: (citySlug, id) => `Pas d'événement avec l'id "${id}" dans la ville avec le slug "${citySlug}"`,
+      noOccurrence: 'Un événement doit avoir au moins une représentation.',
+      noTitleOrArtist: 'Un événement doit avoir un titre ou un artiste.',
+      noLocation: 'Un événement doit avoir un lieu.',
+      noTag: 'Un événement doit avoir au moins une catégorie.'
+    }
+  }
+
   const artists = (function () {
     const collection = database.collection('artists')
 
@@ -24,7 +54,7 @@ module.exports = function (mongoDbClient) {
       if (artist) {
         return artist
       } else {
-        throw new Error(`No artist with slug "${slug}"`)
+        throw new Error(messages.artist.notFound(slug))
       }
     }
 
@@ -40,13 +70,13 @@ module.exports = function (mongoDbClient) {
       const validation = {}
 
       if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
-        validation.slug = "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."
+        validation.slug = messages.badSlugFormat
       } else if (forInsert && await existsBySlug(slug)) {
-        validation.slug = 'Les slugs de chaque artiste doivent être uniques.'
+        validation.slug = messages.artist.duplicatedSlug
       }
 
       if (!name) {
-        validation.name = "Le nom d'un artiste ne peut pas être vide."
+        validation.name = messages.artist.emptyName
       }
 
       return validation
@@ -104,7 +134,7 @@ module.exports = function (mongoDbClient) {
       if (city) {
         return city
       } else {
-        throw new Error(`No city with slug "${slug}"`)
+        throw new Error(messages.city.notFound(slug))
       }
     }
 
@@ -120,13 +150,13 @@ module.exports = function (mongoDbClient) {
       const validation = {}
 
       if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
-        validation.slug = "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."
+        validation.slug = messages.badSlugFormat
       } else if (forInsert && await existsBySlug(slug)) {
-        validation.slug = 'Les slugs de chaque ville doivent être uniques.'
+        validation.slug = messages.city.duplicatedSlug
       }
 
       if (!name) {
-        validation.name = "Le nom d'une ville ne peut pas être vide."
+        validation.name = messages.city.emptyName
       }
 
       return validation
@@ -185,7 +215,7 @@ module.exports = function (mongoDbClient) {
         if (location) {
           return location
         } else {
-          throw new Error(`No location with slug "${slug}" in city with slug "${citySlug}"`)
+          throw new Error(messages.location.notFound(citySlug, slug))
         }
       }
 
@@ -201,13 +231,13 @@ module.exports = function (mongoDbClient) {
         const validation = {}
 
         if (!slug.match(/^[a-z][-a-z0-9]*$/)) {
-          validation.slug = "Un slug doit être constitué d'une lettre, éventuellement suivi de lettres, chiffres, ou tirets."
+          validation.slug = messages.badSlugFormat
         } else if (forInsert && await existsBySlug(slug)) {
-          validation.slug = "Les slugs de chaque lieu doivent être uniques au sein d'une ville."
+          validation.slug = messages.location.duplicatedSlug
         }
 
         if (!name) {
-          validation.name = "Le nom d'un lieu ne peut pas être vide."
+          validation.name = messages.location.emptyName
         }
 
         return validation
@@ -286,7 +316,7 @@ module.exports = function (mongoDbClient) {
         if (tag) {
           return tag
         } else {
-          throw new Error(`No tag with slug "${slug}" in city with slug "${citySlug}"`)
+          throw new Error(messages.tag.notFound(citySlug, slug))
         }
       }
 
@@ -332,7 +362,7 @@ module.exports = function (mongoDbClient) {
         if (event) {
           return event
         } else {
-          throw new Error(`No event with id "${id}" in city with slug "${citySlug}"`)
+          throw new Error(messages.event.notFound(citySlug, id))
         }
       }
 
@@ -343,34 +373,32 @@ module.exports = function (mongoDbClient) {
       async function validate (forInsert, { id, title, artist, location, tags, occurrences, reservationPage }) {
         const validation = {}
 
-        // @todo Use French language for all errors
-
         if (!title && !artist) {
-          validation.title = 'Un événement doit avoir un titre ou un artiste.'
+          validation.title = messages.event.noTitleOrArtist
         }
 
         if (artist && !await artists.existsBySlug(artist)) {
-          validation.artist = `No artist with slug "${artist}"`
+          validation.artist = messages.artist.notFound(artist)
         }
 
         if (!location) {
-          validation.location = 'Un événement doit avoir un lieu.'
+          validation.location = messages.event.noLocation
         } else if (!await locations_.existsBySlug(location)) {
-          validation.location = `No location with slug "${location}" in city with slug "${citySlug}"`
+          validation.location = messages.location.notFound(citySlug, location)
         }
 
         if (!tags || !tags.length) {
-          validation.tags = 'Un événement doit avoir au moins une catégorie.'
+          validation.tags = messages.event.noTag
         } else {
           await Promise.all(tags.map(async tag => {
             if (!await tags_.existsBySlug(tag)) {
-              validation.tags = `No tag with slug "${tag}" in city with slug "${citySlug}"`
+              validation.tags = messages.tag.notFound(citySlug, tag)
             }
           }))
         }
 
         if (!occurrences || !occurrences.length) {
-          validation.occurrences = 'Un événement doit avoir au moins une représentation.'
+          validation.occurrences = messages.event.noOccurrence
         }
 
         return validation
@@ -384,7 +412,7 @@ module.exports = function (mongoDbClient) {
         if (dbEvent._id) {
           const ret = await collection.replaceOne({ _id: dbEvent._id }, dbEvent)
           if (ret.matchedCount === 0) {
-            throw new Error(`No event with id "${dbEvent._id}" in city with slug "${citySlug}"`)
+            throw new Error(messages.event.notFound(citySlug, dbEvent._id))
           }
         } else {
           dbEvent._id = hashids.encode(await nextSequenceValue('events'))
@@ -397,7 +425,7 @@ module.exports = function (mongoDbClient) {
       async function deleteById (_id) {
         const event = await collection.findOne({ citySlug, _id })
         if (!event) {
-          throw new Error(`No event with id "${_id}" in city with slug "${citySlug}"`)
+          throw new Error(messages.event.notFound(citySlug, _id))
         }
 
         await collection.deleteOne({ citySlug, _id })

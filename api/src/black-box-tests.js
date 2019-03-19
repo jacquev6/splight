@@ -323,7 +323,7 @@ describe('API black-box test', function () {
       it('creates city', async function () {
         await error(
           getCity, { slug: 'city-0' },
-          'No city with slug "city-0"'
+          'Pas de ville avec le slug "city-0"'
         )
         await success(
           putCity, { city: { slug: 'city-0', name: 'City Name' } },
@@ -459,7 +459,7 @@ describe('API black-box test', function () {
       it('creates artist', async function () {
         await error(
           getArtist, { slug: 'artist-0' },
-          'No artist with slug "artist-0"'
+          'Pas d\'artiste avec le slug "artist-0"'
         )
         await success(
           putArtist, { artist: { slug: 'artist-0', name: 'Artist Name' } },
@@ -599,7 +599,7 @@ describe('API black-box test', function () {
       it('cannot create location', async function () {
         await error(
           putLocation, { citySlug: 'city-0', location: { slug: 'location-0', name: 'Location Name' } },
-          'No city with slug "city-0"'
+          'Pas de ville avec le slug "city-0"'
         )
       })
     })
@@ -609,7 +609,7 @@ describe('API black-box test', function () {
         it('creates location', async function () {
           await error(
             getLocation, { citySlug: 'city-1', locationSlug: 'location-0' },
-            'No location with slug "location-0" in city with slug "city-1"'
+            'Pas de lieu avec le slug "location-0" dans la ville avec le slug "city-1"'
           )
           await success(
             putLocation, { citySlug: 'city-1', location: { slug: 'location-0', name: 'Location Name' } },
@@ -817,7 +817,7 @@ describe('API black-box test', function () {
             it('creates event with title', async function () {
               await error(
                 getEvent, { citySlug: 'city-1', eventId: 'WjnegYbwZ1' },
-                'No event with id "WjnegYbwZ1" in city with slug "city-1"'
+                'Pas d\'événement avec l\'id "WjnegYbwZ1" dans la ville avec le slug "city-1"'
               )
               await success(
                 putEvent, { citySlug: 'city-1',
@@ -847,7 +847,7 @@ describe('API black-box test', function () {
             it('creates event with artist', async function () {
               await error(
                 getEvent, { citySlug: 'city-2', eventId: 'WjnegYbwZ1' },
-                'No event with id "WjnegYbwZ1" in city with slug "city-2"'
+                'Pas d\'événement avec l\'id "WjnegYbwZ1" dans la ville avec le slug "city-2"'
               )
               await success(
                 putEvent, { citySlug: 'city-2',
@@ -887,7 +887,7 @@ describe('API black-box test', function () {
                     reservationPage: 'http://google.com/'
                   }
                 },
-                'No event with id "VolejRejNm" in city with slug "city-1"'
+                'Pas d\'événement avec l\'id "VolejRejNm" dans la ville avec le slug "city-1"'
               )
             })
           })
@@ -1032,7 +1032,7 @@ describe('API black-box test', function () {
             it('cannot delete event', async function () {
               await error(
                 deleteEvent, { citySlug: 'city-1', eventId: 'nope' },
-                'No event with id "nope" in city with slug "city-1"'
+                'Pas d\'événement avec l\'id "nope" dans la ville avec le slug "city-1"'
               )
             })
           })
@@ -1057,7 +1057,7 @@ describe('API black-box test', function () {
               )
               await error(
                 getEvent, { citySlug: 'city-1', eventId: 'VolejRejNm' },
-                'No event with id "VolejRejNm" in city with slug "city-1"'
+                'Pas d\'événement avec l\'id "VolejRejNm" dans la ville avec le slug "city-1"'
               )
             })
           })
@@ -1121,7 +1121,7 @@ describe('API black-box test', function () {
                   }
                 },
                 { validateEvent: {
-                  id: null, title: null, artist: 'No artist with slug "artist-0"', location: null, tags: null, occurrences: null, reservationPage: null
+                  id: null, title: null, artist: 'Pas d\'artiste avec le slug "artist-0"', location: null, tags: null, occurrences: null, reservationPage: null
                 } }
               )
             })
@@ -1159,7 +1159,7 @@ describe('API black-box test', function () {
                   }
                 },
                 { validateEvent: {
-                  id: null, title: null, artist: null, location: 'No location with slug "location-0" in city with slug "city-1"', tags: null, occurrences: null, reservationPage: null
+                  id: null, title: null, artist: null, location: 'Pas de lieu avec le slug "location-0" dans la ville avec le slug "city-1"', tags: null, occurrences: null, reservationPage: null
                 } }
               )
             })
@@ -1197,7 +1197,7 @@ describe('API black-box test', function () {
                   }
                 },
                 { validateEvent: {
-                  id: null, title: null, artist: null, location: null, tags: 'No tag with slug "tag-0" in city with slug "city-1"', occurrences: null, reservationPage: null
+                  id: null, title: null, artist: null, location: null, tags: 'Pas de catégorie avec le slug "tag-0" dans la ville avec le slug "city-1"', occurrences: null, reservationPage: null
                 } }
               )
             })
