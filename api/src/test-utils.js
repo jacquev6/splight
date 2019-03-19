@@ -52,8 +52,8 @@ module.exports = function () {
     }
   }
 
-  async function success (query, variables, expected) {
-    assert.deepEqual(await run(query, variables), { data: expected })
+  async function success (query, variables, expected, { transform } = { transform: x => x }) {
+    assert.deepEqual(transform((await run(query, variables)).data), expected)
   }
 
   async function error (query, variables, expected) {

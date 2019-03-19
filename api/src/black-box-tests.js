@@ -383,6 +383,10 @@ describe('API black-box test', function () {
   })
 
   describe('getCities', function () {
+    function transform ({ cities }) {
+      return cities.map(({ slug }) => slug).sort()
+    }
+
     withoutCities(function () {
       it('finds no cities', async function () {
         await success(
@@ -396,7 +400,8 @@ describe('API black-box test', function () {
       it('finds cities', async function () {
         await success(
           getCities, {},
-          { cities: [{ slug: 'city-1' }, { slug: 'city-2' }, { slug: 'city-3' }] }
+          ['city-1', 'city-2', 'city-3'],
+          { transform }
         )
       })
     })
@@ -503,6 +508,10 @@ describe('API black-box test', function () {
   })
 
   describe('getArtists', function () {
+    function transform ({ artists }) {
+      return artists.map(({ slug }) => slug).sort()
+    }
+
     withoutArtists(function () {
       it('finds no artists', async function () {
         await success(
@@ -516,7 +525,8 @@ describe('API black-box test', function () {
       it('finds artists', async function () {
         await success(
           getArtists, {},
-          { artists: [{ slug: 'artist-1' }, { slug: 'artist-2' }, { slug: 'artist-3' }] }
+          ['artist-1', 'artist-2', 'artist-3'],
+          { transform }
         )
       })
     })
@@ -527,11 +537,12 @@ describe('API black-box test', function () {
       await run(putArtist, { artist: { slug: 'ok-uppercase', name: 'NAME AEIOU' } })
       await run(putArtist, { artist: { slug: 'ok-accentuated', name: 'name àéïôù' } })
       await run(putArtist, { artist: { slug: 'ko-not-all-words', name: 'name' } })
-      await run(putArtist, { artist: { slug: 'ko-title-no-match', name: 'foobar' } })
+      await run(putArtist, { artist: { slug: 'ko-no-match', name: 'foobar' } })
 
       await success(
         getArtists, { name: 'name aeiou' },
-        { artists: [{ slug: 'ok-literal' }, { slug: 'ok-reversed' }, { slug: 'ok-uppercase' }, { slug: 'ok-accentuated' }] }
+        ['ok-accentuated', 'ok-literal', 'ok-reversed', 'ok-uppercase'],
+        { transform }
       )
     })
   })
@@ -676,6 +687,10 @@ describe('API black-box test', function () {
   })
 
   describe('getLocations', function () {
+    function transform ({ city: { locations } }) {
+      return locations.map(({ slug }) => slug).sort()
+    }
+
     withCities(function () {
       withoutLocations(function () {
         it('finds no locations', async function () {
@@ -690,9 +705,8 @@ describe('API black-box test', function () {
         it('finds locations', async function () {
           await success(
             getLocations, { citySlug: 'city-1' },
-            { city: { locations: [
-              { slug: 'location-1' }, { slug: 'location-2' }, { slug: 'location-3' }
-            ] } }
+            ['location-1', 'location-2', 'location-3'],
+            { transform }
           )
         })
       })
@@ -703,11 +717,12 @@ describe('API black-box test', function () {
         await run(putLocation, { citySlug: 'city-1', location: { slug: 'ok-uppercase', name: 'NAME AEIOU' } })
         await run(putLocation, { citySlug: 'city-1', location: { slug: 'ok-accentuated', name: 'name àéïôù' } })
         await run(putLocation, { citySlug: 'city-1', location: { slug: 'ko-not-all-words', name: 'name' } })
-        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ko-title-no-match', name: 'foobar' } })
+        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ko-no-match', name: 'foobar' } })
 
         await success(
           getLocations, { citySlug: 'city-1', name: 'name aeiou' },
-          { city: { locations: [{ slug: 'ok-literal' }, { slug: 'ok-reversed' }, { slug: 'ok-uppercase' }, { slug: 'ok-accentuated' }] } }
+          [ 'ok-accentuated', 'ok-literal', 'ok-reversed', 'ok-uppercase' ],
+          { transform }
         )
       })
     })
@@ -940,6 +955,10 @@ describe('API black-box test', function () {
   })
 
   describe('getEvents', function () {
+    function transform ({ city: { events } }) {
+      return events.map(({ title }) => title).sort()
+    }
+
     withCities(function () {
       withLocations(function () {
         withArtists(function () {
@@ -969,7 +988,8 @@ describe('API black-box test', function () {
 
             await success(
               getEventTitles, { citySlug: 'city-1', tag: 'tag-1' },
-              { city: { events: [{ title: 'ok-single' }, { title: 'ok-main' }, { title: 'ok-secondary' }] } }
+              ['ok-main', 'ok-secondary', 'ok-single'],
+              { transform }
             )
           })
 
@@ -979,7 +999,8 @@ describe('API black-box test', function () {
 
             await success(
               getEventTitles, { citySlug: 'city-1', location: 'location-1' },
-              { city: { events: [{ title: 'ok' }] } }
+              ['ok'],
+              { transform }
             )
           })
 
@@ -989,7 +1010,8 @@ describe('API black-box test', function () {
 
             await success(
               getEventTitles, { citySlug: 'city-1', artist: 'artist-1' },
-              { city: { events: [{ title: 'ok' }] } }
+              ['ok'],
+              { transform }
             )
           })
 
@@ -1004,7 +1026,8 @@ describe('API black-box test', function () {
 
             await success(
               getEventTitles, { citySlug: 'city-1', title: 'name aeiou' },
-              { city: { events: [{ title: 'name aeiou' }, { title: 'aeiou name' }, { title: 'NAME AEIOU' }, { title: 'name àéïôù' }] } }
+              ['NAME AEIOU', 'aeiou name', 'name aeiou', 'name àéïôù'],
+              { transform }
             )
           })
 
@@ -1016,7 +1039,8 @@ describe('API black-box test', function () {
 
             await success(
               getEventTitles, { citySlug: 'city-1', dates: { start: '2018-07-14', after: '2018-07-16' } },
-              { city: { events: [{ title: 'ok-1' }, { title: 'ok-2' }] } }
+              ['ok-1', 'ok-2'],
+              { transform }
             )
           })
         })
