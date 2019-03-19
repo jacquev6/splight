@@ -1221,8 +1221,6 @@ describe('API black-box test', function () {
               )
             })
           })
-
-          // @todo withEvents
         })
       })
     })

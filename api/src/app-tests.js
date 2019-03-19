@@ -35,11 +35,6 @@ describe('app tests', function () {
     assert(res.ok)
   })
 
-  it('responds to GET /login', async function () {
-    const res = await fetch(baseUrl() + 'login')
-    assert(res.ok)
-  })
-
   it('allows login/logout cycle', async function () {
     const url = baseUrl() + 'login'
 
