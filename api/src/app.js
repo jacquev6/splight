@@ -17,7 +17,7 @@ const data_ = require('./data')
 module.exports = async function ({ mongodbUrl }) {
   const mongoDbClient = await mongodb.MongoClient.connect(mongodbUrl, { useNewUrlParser: true })
 
-  const data = data_(mongoDbClient)
+  const data = await data_(mongoDbClient)
 
   const typeDefs = apolloServerExpress.gql(schema)
 

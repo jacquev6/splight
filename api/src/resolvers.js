@@ -26,18 +26,15 @@ const Query = {
   },
 
   // @todo See test-vue/apollo for how to paginate and "subscribe to more"
-  async artists (_, { name }, { data }) {
-    const nameMatches = matches(name)
-    // @todo Filter and sort in data (same for all (cities, locations, events, ...))
-    return (await data.artists.getAll()).filter(artist => nameMatches(artist.name))
+  artists (_, { name }, { data }) {
+    return data.artists.filter({ needle: name })
   },
   artist (_, { slug }, { data }) {
     return data.artists.getBySlug(slug)
   },
 
-  async cities (_, { name }, { data }) {
-    const nameMatches = matches(name)
-    return (await data.cities.getAll()).filter(city => nameMatches(city.name))
+  cities (_, { name }, { data }) {
+    return data.cities.filter({ needle: name })
   },
   city (_, { slug }, { data }) {
     return data.cities.getBySlug(slug)
@@ -58,10 +55,8 @@ const Query = {
 }
 
 const City = {
-  // @todo Deduplicate with artists
   async locations ({ slug }, { name }, { data }) {
-    const nameMatches = matches(name)
-    return (await (await data.locations(slug)).getAll()).filter(location => nameMatches(location.name))
+    return (await data.locations(slug)).filter({ needle: name })
   },
   async location ({ slug }, { slug: locationSlug }, { data }) {
     return (await data.locations(slug)).getBySlug(locationSlug)
@@ -72,9 +67,9 @@ const City = {
   },
 
   async events ({ slug }, { tag, location, artist, title, dates }, { data }) {
-    const titleMatches = matches(title)
-    const filters = [({ title }) => titleMatches(title)]
+    const filters = []
 
+    // @todo Do this filtering inside MongoDB
     if (tag) {
       filters.push(({ tags }) => tags.includes(tag))
     }
@@ -101,7 +96,7 @@ const City = {
       filters.push(({ occurrences }) => occurrences.some(occurrenceMatches))
     }
 
-    return (await (await data.events(slug)).getAll()).filter(event => filters.every(filter => filter(event)))
+    return (await (await data.events(slug)).filter({ needle: title })).filter(event => filters.every(filter => filter(event)))
   },
   async event ({ slug }, { id }, { data }) {
     return (await data.events(slug)).getById(id)
@@ -117,6 +112,7 @@ const City = {
   }
 }
 
+// @todo Find min and max date in MongoDB
 async function reduceOccurrencesStarts (citySlug, data, f) {
   const events = await (await data.events(citySlug)).getAll()
 
@@ -162,28 +158,6 @@ const Mutation = {
   async deleteEvent (_, { citySlug, eventId }, { data }) {
     return (await data.events(citySlug)).deleteById(eventId)
   }
-}
-
-function matches (needles) {
-  if (needles) {
-    needles = normalizeString(needles).split(/\s+/)
-    return function (haystack) {
-      if (!haystack) {
-        return false
-      }
-      haystack = normalizeString(haystack)
-      return needles.every(needle => haystack.indexOf(needle) !== -1)
-    }
-  } else {
-    return function (haystack) {
-      return true
-    }
-  }
-}
-
-function normalizeString (s) {
-  // https://stackoverflow.com/a/37511463/905845
-  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
 module.exports = { Query, Mutation, City, Event }

@@ -16,10 +16,11 @@ export default {
   props: ['citySlug', 'filter', 'refetchTrigger'],
   apollo: {
     city: {
-      query: gql`query($citySlug:ID!){city(slug:$citySlug){name events{id title artist{name} location{name}}}}`,
+      query: gql`query($citySlug:ID!,$title:String){city(slug:$citySlug){name events(title:$title){id title artist{name} location{name}}}}`,
       variables () {
         return {
-          citySlug: this.citySlug
+          citySlug: this.citySlug,
+          title: this.filter.title
         }
       },
       debounce: 100

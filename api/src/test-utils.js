@@ -53,7 +53,9 @@ module.exports = function () {
   }
 
   async function success (query, variables, expected, { transform } = { transform: x => x }) {
-    assert.deepEqual(transform((await run(query, variables)).data), expected)
+    const result = await run(query, variables)
+    assert.deepEqual(result.errors, undefined)
+    assert.deepEqual(transform(result.data), expected)
   }
 
   async function error (query, variables, expected) {
@@ -64,8 +66,7 @@ module.exports = function () {
   }
 
   async function reset () {
-    const collections = ['artists', 'cities', 'events', 'locations', 'sequences']
-    await Promise.all(collections.map(coll => mongodbClient.db('splight').collection(coll).deleteMany({})))
+    await Promise.all((await mongodbClient.db('splight').collections()).map(collection => collection.deleteMany()))
   }
 
   return { fetch, run, success, error, reset, baseUrl: () => baseUrl }

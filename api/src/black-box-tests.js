@@ -114,8 +114,8 @@ describe('API black-box test', function () {
   `
 
   const getCities = gql`
-    query {
-      cities {
+    query($name: String) {
+      cities(name: $name) {
         slug
       }
     }
@@ -405,6 +405,17 @@ describe('API black-box test', function () {
         )
       })
     })
+
+    it('filters by name', async function () {
+      await run(putCity, { city: { slug: 'ok', name: 'foo' } })
+      await run(putCity, { city: { slug: 'ko', name: 'bar' } })
+
+      await success(
+        getCities, { name: 'foo' },
+        ['ok'],
+        { transform }
+      )
+    })
   })
 
   describe('validateCity', function () {
@@ -532,16 +543,12 @@ describe('API black-box test', function () {
     })
 
     it('filters by name', async function () {
-      await run(putArtist, { artist: { slug: 'ok-literal', name: 'name aeiou' } })
-      await run(putArtist, { artist: { slug: 'ok-reversed', name: 'aeiou name' } })
-      await run(putArtist, { artist: { slug: 'ok-uppercase', name: 'NAME AEIOU' } })
-      await run(putArtist, { artist: { slug: 'ok-accentuated', name: 'name àéïôù' } })
-      await run(putArtist, { artist: { slug: 'ko-not-all-words', name: 'name' } })
-      await run(putArtist, { artist: { slug: 'ko-no-match', name: 'foobar' } })
+      await run(putArtist, { artist: { slug: 'ok', name: 'foo' } })
+      await run(putArtist, { artist: { slug: 'ko', name: 'bar' } })
 
       await success(
-        getArtists, { name: 'name aeiou' },
-        ['ok-accentuated', 'ok-literal', 'ok-reversed', 'ok-uppercase'],
+        getArtists, { name: 'foo' },
+        ['ok'],
         { transform }
       )
     })
@@ -712,16 +719,12 @@ describe('API black-box test', function () {
       })
 
       it('filters by name', async function () {
-        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ok-literal', name: 'name aeiou' } })
-        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ok-reversed', name: 'aeiou name' } })
-        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ok-uppercase', name: 'NAME AEIOU' } })
-        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ok-accentuated', name: 'name àéïôù' } })
-        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ko-not-all-words', name: 'name' } })
-        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ko-no-match', name: 'foobar' } })
+        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ok', name: 'foo' } })
+        await run(putLocation, { citySlug: 'city-1', location: { slug: 'ko', name: 'bar' } })
 
         await success(
-          getLocations, { citySlug: 'city-1', name: 'name aeiou' },
-          [ 'ok-accentuated', 'ok-literal', 'ok-reversed', 'ok-uppercase' ],
+          getLocations, { citySlug: 'city-1', name: 'foo' },
+          [ 'ok' ],
           { transform }
         )
       })
@@ -1016,17 +1019,13 @@ describe('API black-box test', function () {
           })
 
           it('filters by title', async function () {
-            await run(putEvent, { citySlug: 'city-1', event: { title: 'name aeiou', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
-            await run(putEvent, { citySlug: 'city-1', event: { title: 'aeiou name', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
-            await run(putEvent, { citySlug: 'city-1', event: { title: 'NAME AEIOU', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
-            await run(putEvent, { citySlug: 'city-1', event: { title: 'name àéïôù', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
-            await run(putEvent, { citySlug: 'city-1', event: { title: 'name', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
-            await run(putEvent, { citySlug: 'city-1', event: { title: 'foobar', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'foo', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
+            await run(putEvent, { citySlug: 'city-1', event: { title: 'bar', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
             await run(putEvent, { citySlug: 'city-1', event: { title: null, artist: 'artist-1', location: 'location-1', tags: ['tag-1'], occurrences: [{ start: '2018-07-14T12:00' }] } })
 
             await success(
-              getEventTitles, { citySlug: 'city-1', title: 'name aeiou' },
-              ['NAME AEIOU', 'aeiou name', 'name aeiou', 'name àéïôù'],
+              getEventTitles, { citySlug: 'city-1', title: 'foo' },
+              ['foo'],
               { transform }
             )
           })

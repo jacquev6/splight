@@ -4,7 +4,7 @@
     <spa-event-details :citySlug="citySlug" saveButtonTitle="Ajouter" @saved="++refetchTrigger"/>
     <h1>Événements existants à {{ city.name }}</h1>
     <h2>Filtre</h2>
-    <p>todo</p>
+    <p><label>Titre&nbsp;: <input v-model="filter.title"/></label></p>
     <h2>Résultat</h2>
     <spa-events-list :citySlug="citySlug" :filter="filter" :refetchTrigger="refetchTrigger"/>
   </spa-layout>
@@ -40,6 +40,7 @@ export default {
   data () {
     return {
       filter: {
+        title: ''
       },
       refetchTrigger: 0
     }

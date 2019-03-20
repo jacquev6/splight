@@ -2,9 +2,11 @@
 
 const Hashids = require('hashids')
 
+const words__ = require('./words')
+
 const hashids = new Hashids('', 10)
 
-module.exports = function (mongoDbClient) {
+module.exports = async function (mongoDbClient) {
   const database = mongoDbClient.db('splight')
 
   const sequences = database.collection('sequences')
@@ -39,8 +41,16 @@ module.exports = function (mongoDbClient) {
     }
   }
 
-  const artists = (function () {
+  const words_ = await words__(database)
+
+  const artists = await (async function () {
     const collection = database.collection('artists')
+
+    const words = await words_({
+      collection: 'artists',
+      id ({ _id }) { return _id },
+      texts ({ name }) { return [name] }
+    })
 
     async function tryGetBySlug (slug) {
       const artist = await collection.findOne({ _id: slug })
@@ -62,8 +72,13 @@ module.exports = function (mongoDbClient) {
       return !!(await collection.countDocuments({ _id: slug }))
     }
 
-    async function getAll () {
-      return (await collection.find().toArray()).map(toPublic)
+    async function filter ({ needle }) {
+      const query = {}
+      try {
+        const slugs = await words.retrieve(needle)
+        query['_id'] = { $in: slugs }
+      } catch (e) {}
+      return collection.find(query).sort({ name: 1 }).map(toPublic).toArray()
     }
 
     async function validate (forInsert, { slug, name }) {
@@ -87,10 +102,11 @@ module.exports = function (mongoDbClient) {
 
       const dbArtist = toDatabase(artist)
       await collection.replaceOne({ _id: dbArtist._id }, dbArtist, { upsert: true })
+      await words.record(dbArtist) // Maybe this could be made asynchronous?
       return toPublic(dbArtist)
     }
 
-    return { tryGetBySlug, getBySlug, existsBySlug, getAll, validate, put }
+    return { tryGetBySlug, getBySlug, existsBySlug, filter, validate, put }
 
     function toPublic ({ _id, name, description, website, image }) {
       return {
@@ -119,8 +135,14 @@ module.exports = function (mongoDbClient) {
     }
   })()
 
-  const cities = (function () {
+  const cities = await (async function () {
     const collection = database.collection('cities')
+
+    const words = await words_({
+      collection: 'cities',
+      id ({ _id }) { return _id },
+      texts ({ name }) { return [name] }
+    })
 
     async function tryGetBySlug (slug) {
       const city = await collection.findOne({ _id: slug })
@@ -142,8 +164,13 @@ module.exports = function (mongoDbClient) {
       return !!(await collection.countDocuments({ _id: slug }))
     }
 
-    async function getAll () {
-      return (await collection.find().toArray()).map(toPublic)
+    async function filter ({ needle }) {
+      const query = {}
+      try {
+        const slugs = await words.retrieve(needle)
+        query['_id'] = { $in: slugs }
+      } catch (e) {}
+      return collection.find(query).sort({ name: 1 }).map(toPublic).toArray()
     }
 
     async function validate (forInsert, { slug, name }) {
@@ -167,10 +194,11 @@ module.exports = function (mongoDbClient) {
 
       const dbCity = toDatabase(city)
       await collection.replaceOne({ _id: dbCity._id }, dbCity, { upsert: true })
+      await words.record(dbCity)
       return toPublic(dbCity)
     }
 
-    return { tryGetBySlug, getBySlug, existsBySlug, getAll, validate, put }
+    return { tryGetBySlug, getBySlug, existsBySlug, filter, validate, put }
 
     function toPublic ({ _id, name, image, allTagsImage }) {
       return {
@@ -197,8 +225,14 @@ module.exports = function (mongoDbClient) {
     }
   })()
 
-  const locations = (function () {
+  const locations = await (async function () {
     const collection = database.collection('locations')
+
+    const words = await words_({
+      collection: 'locations',
+      id ({ _id }) { return _id },
+      texts ({ name }) { return [name] }
+    })
 
     return async function (citySlug) {
       await cities.getBySlug(citySlug)
@@ -223,8 +257,13 @@ module.exports = function (mongoDbClient) {
         return !!(await collection.countDocuments({ _id: citySlug + ':' + slug }))
       }
 
-      async function getAll () {
-        return (await collection.find({ citySlug }).toArray()).map(toPublic)
+      async function filter ({ needle }) {
+        const query = { citySlug }
+        try {
+          const slugs = await words.retrieve(needle)
+          query['_id'] = { $in: slugs }
+        } catch (e) {}
+        return collection.find(query).sort({ name: 1 }).map(toPublic).toArray()
       }
 
       async function validate (forInsert, { slug, name }) {
@@ -248,10 +287,11 @@ module.exports = function (mongoDbClient) {
 
         const dbLocation = toDatabase(location)
         await collection.replaceOne({ _id: dbLocation._id }, dbLocation, { upsert: true })
+        await words.record(dbLocation)
         return toPublic(dbLocation)
       }
 
-      return { tryGetBySlug, getBySlug, existsBySlug, getAll, validate, put }
+      return { tryGetBySlug, getBySlug, existsBySlug, filter, validate, put }
 
       function toPublic ({ _id, name, description, website, image, phone, address }) {
         return {
@@ -341,8 +381,18 @@ module.exports = function (mongoDbClient) {
     }
   })()
 
-  const events = (function () {
+  const events = await (async function () {
     const collection = database.collection('events')
+
+    const words = await words_({
+      collection: 'events',
+      id ({ _id }) { return _id },
+      texts ({ title }) {
+        if (title) {
+          return [title]
+        } else { return [] }
+      }
+    })
 
     return async function (citySlug) {
       await cities.getBySlug(citySlug)
@@ -366,8 +416,18 @@ module.exports = function (mongoDbClient) {
         }
       }
 
+      async function filter ({ needle }) {
+        const query = { citySlug }
+        try {
+          const ids = await words.retrieve(needle)
+          query['_id'] = { $in: ids }
+        } catch (e) {}
+        return collection.find(query).sort({ name: 1 }).map(toPublic).toArray()
+      }
+
+      // @todo Remove
       async function getAll () {
-        return (await collection.find({ citySlug }).toArray()).map(toPublic)
+        return collection.find({ citySlug }).map(toPublic).toArray()
       }
 
       async function validate (forInsert, { id, title, artist, location, tags, occurrences, reservationPage }) {
@@ -419,6 +479,8 @@ module.exports = function (mongoDbClient) {
           await collection.insertOne(dbEvent)
         }
 
+        await words.record(dbEvent)
+
         return toPublic(dbEvent)
       }
 
@@ -429,11 +491,12 @@ module.exports = function (mongoDbClient) {
         }
 
         await collection.deleteOne({ citySlug, _id })
+        await words.remove(event)
 
         return toPublic(event)
       }
 
-      return { tryGetById, getById, getAll, validate, put, deleteById }
+      return { tryGetById, getById, filter, getAll, validate, put, deleteById }
 
       function toPublic ({ _id, title, artist, location, tags, occurrences, reservationPage }) {
         return {
