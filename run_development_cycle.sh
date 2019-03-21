@@ -36,9 +36,10 @@ done
 . ./dev-daemon/aliases.sh
 
 (cd api; npm test)
-show_in_browser "Unit test coverage details" $PROJECT_ROOT/api/coverage/index.html
+show_in_browser "'api' unit test coverage details" $PROJECT_ROOT/api/coverage/index.html
 
-(cd test-data; npm "run lint")
+(cd test-data; npm test)
+show_in_browser "'test-data' unit test coverage details" $PROJECT_ROOT/test-data/coverage/index.html
 
 if $SERVE
 then
